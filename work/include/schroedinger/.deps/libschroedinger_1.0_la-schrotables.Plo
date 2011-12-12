@@ -1,0 +1,17 @@
+libschroedinger_1.0_la-schrotables.lo: schrotables.c ../config.h \
+ ../schroedinger/schrotables.h ../schroedinger/schroutils.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/stdint.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/include/stddef.h \
+ ../schroedinger/schrobitstream.h
+
+../config.h:
+
+../schroedinger/schrotables.h:
+
+../schroedinger/schroutils.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/stdint.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/include/stddef.h:
+
+../schroedinger/schrobitstream.h:

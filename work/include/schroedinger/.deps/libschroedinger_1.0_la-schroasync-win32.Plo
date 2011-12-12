@@ -1,0 +1,315 @@
+libschroedinger_1.0_la-schroasync-win32.lo: schroasync-win32.c \
+ ../config.h ../schroedinger/schro.h ../schroedinger/schroanalysis.h \
+ ../schroedinger/schroencoder.h ../schroedinger/schroutils.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/stdint.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/include/stddef.h \
+ ../schroedinger/schropack.h ../schroedinger/schrobuffer.h \
+ ../schroedinger/schroparams.h ../schroedinger/schrobitstream.h \
+ ../schroedinger/schroframe.h ../schroedinger/schrodomain.h \
+ ../schroedinger/schroasync.h ../schroedinger/schrolimits.h \
+ ../schroedinger/schrovideoformat.h ../schroedinger/schroqueue.h \
+ ../schroedinger/schromotion.h \
+ C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orc.h \
+ C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcprogram.h \
+ C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcutils.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/limits.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/_mingw.h \
+ C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orc-stdint.h \
+ C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcarm.h \
+ C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcdebug.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/include/stdarg.h \
+ C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcfunctions.h \
+ C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcmmx.h \
+ C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcx86.h \
+ C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcx86insn.h \
+ C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orconce.h \
+ C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcparse.h \
+ C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcsse.h \
+ C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcpowerpc.h \
+ ../schroedinger/schrohistogram.h ../schroedinger/schrolist.h \
+ ../schroedinger/schroarith.h ../schroedinger/schrodecoder.h \
+ ../schroedinger/schrounpack.h ../schroedinger/schrobufferlist.h \
+ ../schroedinger/schroparse.h ../schroedinger/schrodebug.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/stdlib.h \
+ ../schroedinger/schroengine.h ../schroedinger/schrofilter.h \
+ ../schroedinger/schromotionest.h ../schroedinger/schrophasecorrelation.h \
+ ../schroedinger/schrossim.h ../schroedinger/schrotables.h \
+ ../schroedinger/schrowavelet.h ../schroedinger/schrometric.h \
+ ../schroedinger/schroversion.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/string.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/unistd.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/io.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/sys/types.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/process.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/getopt.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/sys/time.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/time.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/windows.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/windef.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/winnt.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/winerror.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/basetsd.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/pshpack4.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/poppack.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/wincon.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/winbase.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/wingdi.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/winuser.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/winnls.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/winver.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/winnetwk.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/winreg.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/winsvc.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/cderr.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/dde.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/ddeml.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/dlgs.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/imm.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/lzexpand.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/mmsystem.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/nb30.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/rpc.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/rpcdce.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/basetyps.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/rpcdcep.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/rpcnsi.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/rpcnterr.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/shellapi.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/pshpack2.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/winperf.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/commdlg.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/winspool.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/winsock2.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/ole2.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/objbase.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/rpcndr.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/rpcnsip.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/objfwd.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/wtypes.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/unknwn.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/objidl.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/cguid.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/olectlid.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/oleauto.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/oaidl.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/oleidl.h
+
+../config.h:
+
+../schroedinger/schro.h:
+
+../schroedinger/schroanalysis.h:
+
+../schroedinger/schroencoder.h:
+
+../schroedinger/schroutils.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/stdint.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/include/stddef.h:
+
+../schroedinger/schropack.h:
+
+../schroedinger/schrobuffer.h:
+
+../schroedinger/schroparams.h:
+
+../schroedinger/schrobitstream.h:
+
+../schroedinger/schroframe.h:
+
+../schroedinger/schrodomain.h:
+
+../schroedinger/schroasync.h:
+
+../schroedinger/schrolimits.h:
+
+../schroedinger/schrovideoformat.h:
+
+../schroedinger/schroqueue.h:
+
+../schroedinger/schromotion.h:
+
+C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orc.h:
+
+C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcprogram.h:
+
+C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcutils.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/limits.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/_mingw.h:
+
+C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orc-stdint.h:
+
+C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcarm.h:
+
+C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcdebug.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/include/stdarg.h:
+
+C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcfunctions.h:
+
+C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcmmx.h:
+
+C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcx86.h:
+
+C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcx86insn.h:
+
+C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orconce.h:
+
+C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcparse.h:
+
+C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcsse.h:
+
+C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcpowerpc.h:
+
+../schroedinger/schrohistogram.h:
+
+../schroedinger/schrolist.h:
+
+../schroedinger/schroarith.h:
+
+../schroedinger/schrodecoder.h:
+
+../schroedinger/schrounpack.h:
+
+../schroedinger/schrobufferlist.h:
+
+../schroedinger/schroparse.h:
+
+../schroedinger/schrodebug.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/stdlib.h:
+
+../schroedinger/schroengine.h:
+
+../schroedinger/schrofilter.h:
+
+../schroedinger/schromotionest.h:
+
+../schroedinger/schrophasecorrelation.h:
+
+../schroedinger/schrossim.h:
+
+../schroedinger/schrotables.h:
+
+../schroedinger/schrowavelet.h:
+
+../schroedinger/schrometric.h:
+
+../schroedinger/schroversion.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/string.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/unistd.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/io.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/sys/types.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/process.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/getopt.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/sys/time.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/time.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/windows.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/windef.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/winnt.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/winerror.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/basetsd.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/pshpack4.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/poppack.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/wincon.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/winbase.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/wingdi.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/winuser.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/winnls.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/winver.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/winnetwk.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/winreg.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/winsvc.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/cderr.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/dde.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/ddeml.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/dlgs.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/imm.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/lzexpand.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/mmsystem.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/nb30.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/rpc.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/rpcdce.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/basetyps.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/rpcdcep.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/rpcnsi.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/rpcnterr.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/shellapi.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/pshpack2.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/winperf.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/commdlg.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/winspool.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/winsock2.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/ole2.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/objbase.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/rpcndr.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/rpcnsip.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/objfwd.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/wtypes.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/unknwn.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/objidl.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/cguid.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/olectlid.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/oleauto.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/oaidl.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/oleidl.h:
