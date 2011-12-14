@@ -65,7 +65,7 @@ int main(void)
            cpu_flags & AV_CPU_FLAG_3DNOW    ? "3DNow "      : "",
            cpu_flags & AV_CPU_FLAG_3DNOWEXT ? "3DNowExt "   : "");
 #endif
-    return 0;
-}
+           return 0;
+       }
 
 #endif

@@ -29,7 +29,8 @@
 #include "intreadwrite.h"
 
 /** hash context */
-typedef struct AVSHA {
+typedef struct AVSHA
+{
     uint8_t  digest_len;  ///< digest length in 32-bit words
     uint64_t count;       ///< number of bytes in buffer
     uint8_t  buffer[64];  ///< 512-bit buffer of input values used in hash updating
@@ -41,7 +42,7 @@ typedef struct AVSHA {
 const int av_sha_size = sizeof(AVSHA);
 FFMPEGLIB_API const int av_getav_sha_size(void)
 {
-	return av_sha_size;
+    return av_sha_size;
 }
 
 #define rol(value, bits) (((value) << (bits)) | ((value) >> (32 - (bits))))
@@ -69,24 +70,28 @@ static void sha1_transform(uint32_t state[5], const uint8_t buffer[64])
     d = state[3];
     e = state[4];
 #if CONFIG_SMALL
-    for (i = 0; i < 80; i++) {
+    for (i = 0; i < 80; i++)
+    {
         int t;
         if (i < 16)
-            t = av_be2ne32(((uint32_t*)buffer)[i]);
+            t = av_be2ne32(((uint32_t *)buffer)[i]);
         else
             t = rol(block[i-3] ^ block[i-8] ^ block[i-14] ^ block[i-16], 1);
         block[i] = t;
         t += e + rol(a, 5);
-        if (i < 40) {
+        if (i < 40)
+        {
             if (i < 20)
-                t += ((b&(c^d))^d)     + 0x5A827999;
+                t += ((b & (c ^ d)) ^ d)     + 0x5A827999;
             else
-                t += ( b^c     ^d)     + 0x6ED9EBA1;
-        } else {
+                t += ( b ^ c     ^ d)     + 0x6ED9EBA1;
+        }
+        else
+        {
             if (i < 60)
-                t += (((b|c)&d)|(b&c)) + 0x8F1BBCDC;
+                t += (((b | c)&d) | (b & c)) + 0x8F1BBCDC;
             else
-                t += ( b^c     ^d)     + 0xCA62C1D6;
+                t += ( b ^ c     ^ d)     + 0xCA62C1D6;
         }
         e = d;
         d = c;
@@ -95,7 +100,8 @@ static void sha1_transform(uint32_t state[5], const uint8_t buffer[64])
         a = t;
     }
 #else
-    for (i = 0; i < 15; i += 5) {
+    for (i = 0; i < 15; i += 5)
+    {
         R0(a, b, c, d, e, 0 + i);
         R0(e, a, b, c, d, 1 + i);
         R0(d, e, a, b, c, 2 + i);
@@ -107,21 +113,24 @@ static void sha1_transform(uint32_t state[5], const uint8_t buffer[64])
     R1(d, e, a, b, c, 17);
     R1(c, d, e, a, b, 18);
     R1(b, c, d, e, a, 19);
-    for (i = 20; i < 40; i += 5) {
+    for (i = 20; i < 40; i += 5)
+    {
         R2(a, b, c, d, e, 0 + i);
         R2(e, a, b, c, d, 1 + i);
         R2(d, e, a, b, c, 2 + i);
         R2(c, d, e, a, b, 3 + i);
         R2(b, c, d, e, a, 4 + i);
     }
-    for (; i < 60; i += 5) {
+    for (; i < 60; i += 5)
+    {
         R3(a, b, c, d, e, 0 + i);
         R3(e, a, b, c, d, 1 + i);
         R3(d, e, a, b, c, 2 + i);
         R3(c, d, e, a, b, 3 + i);
         R3(b, c, d, e, a, 4 + i);
     }
-    for (; i < 80; i += 5) {
+    for (; i < 80; i += 5)
+    {
         R4(a, b, c, d, e, 0 + i);
         R4(e, a, b, c, d, 1 + i);
         R4(d, e, a, b, c, 2 + i);
@@ -136,7 +145,8 @@ static void sha1_transform(uint32_t state[5], const uint8_t buffer[64])
     state[4] += e;
 }
 
-static const uint32_t K256[64] = {
+static const uint32_t K256[64] =
+{
     0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,
     0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
     0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
@@ -197,7 +207,8 @@ static void sha256_transform(uint32_t *state, const uint8_t buffer[64])
     g = state[6];
     h = state[7];
 #if CONFIG_SMALL
-    for (i = 0; i < 64; i++) {
+    for (i = 0; i < 64; i++)
+    {
         if (i < 16)
             T1 = blk0(i);
         else
@@ -214,7 +225,8 @@ static void sha256_transform(uint32_t *state, const uint8_t buffer[64])
         a = T1 + T2;
     }
 #else
-    for (i = 0; i < 16;) {
+    for (i = 0; i < 16;)
+    {
         ROUND256_0_TO_15(a, b, c, d, e, f, g, h);
         ROUND256_0_TO_15(h, a, b, c, d, e, f, g);
         ROUND256_0_TO_15(g, h, a, b, c, d, e, f);
@@ -225,7 +237,8 @@ static void sha256_transform(uint32_t *state, const uint8_t buffer[64])
         ROUND256_0_TO_15(b, c, d, e, f, g, h, a);
     }
 
-    for (; i < 64;) {
+    for (; i < 64;)
+    {
         ROUND256_16_TO_63(a, b, c, d, e, f, g, h);
         ROUND256_16_TO_63(h, a, b, c, d, e, f, g);
         ROUND256_16_TO_63(g, h, a, b, c, d, e, f);
@@ -247,10 +260,11 @@ static void sha256_transform(uint32_t *state, const uint8_t buffer[64])
 }
 
 
-int av_sha_init(AVSHA* ctx, int bits)
+int av_sha_init(AVSHA *ctx, int bits)
 {
     ctx->digest_len = bits >> 5;
-    switch (bits) {
+    switch (bits)
+    {
     case 160: // SHA-1
         ctx->state[0] = 0x67452301;
         ctx->state[1] = 0xEFCDAB89;
@@ -288,34 +302,38 @@ int av_sha_init(AVSHA* ctx, int bits)
     return 0;
 }
 
-void av_sha_update(AVSHA* ctx, const uint8_t* data, unsigned int len)
+void av_sha_update(AVSHA *ctx, const uint8_t *data, unsigned int len)
 {
     unsigned int i, j;
 
     j = ctx->count & 63;
     ctx->count += len;
 #if CONFIG_SMALL
-    for (i = 0; i < len; i++) {
+    for (i = 0; i < len; i++)
+    {
         ctx->buffer[j++] = data[i];
-        if (64 == j) {
+        if (64 == j)
+        {
             ctx->transform(ctx->state, ctx->buffer);
             j = 0;
         }
     }
 #else
-    if ((j + len) > 63) {
+    if ((j + len) > 63)
+    {
         memcpy(&ctx->buffer[j], data, (i = 64 - j));
         ctx->transform(ctx->state, ctx->buffer);
         for (; i + 63 < len; i += 64)
             ctx->transform(ctx->state, &data[i]);
         j = 0;
-    } else
+    }
+    else
         i = 0;
     memcpy(&ctx->buffer[j], &data[i], len - i);
 #endif
 }
 
-void av_sha_final(AVSHA* ctx, uint8_t *digest)
+void av_sha_final(AVSHA *ctx, uint8_t *digest)
 {
     int i;
     uint64_t finalcount = av_be2ne64(ctx->count << 3);
@@ -325,27 +343,28 @@ void av_sha_final(AVSHA* ctx, uint8_t *digest)
         av_sha_update(ctx, "", 1);
     av_sha_update(ctx, (uint8_t *)&finalcount, 8); /* Should cause a transform() */
     for (i = 0; i < ctx->digest_len; i++)
-        AV_WB32(digest + i*4, ctx->state[i]);
+        AV_WB32(digest + i * 4, ctx->state[i]);
 }
 
 #if LIBAVUTIL_VERSION_MAJOR < 51
-struct AVSHA1 {
+struct AVSHA1
+{
     AVSHA sha;
 };
 
 const int av_sha1_size = sizeof(struct AVSHA1);
 
-void av_sha1_init(struct AVSHA1* context)
+void av_sha1_init(struct AVSHA1 *context)
 {
     av_sha_init(&context->sha, 160);
 }
 
-void av_sha1_update(struct AVSHA1* context, const uint8_t* data, unsigned int len)
+void av_sha1_update(struct AVSHA1 *context, const uint8_t *data, unsigned int len)
 {
     av_sha_update(&context->sha, data, len);
 }
 
-void av_sha1_final(struct AVSHA1* context, uint8_t digest[20])
+void av_sha1_final(struct AVSHA1 *context, uint8_t digest[20])
 {
     av_sha_final(&context->sha, digest);
 }
@@ -362,23 +381,26 @@ int main(void)
     unsigned char digest[32];
     const int lengths[3] = { 160, 224, 256 };
 
-    for (j = 0; j < 3; j++) {
+    for (j = 0; j < 3; j++)
+    {
         printf("Testing SHA-%d\n", lengths[j]);
-        for (k = 0; k < 3; k++) {
+        for (k = 0; k < 3; k++)
+        {
             av_sha_init(&ctx, lengths[j]);
             if (k == 0)
                 av_sha_update(&ctx, "abc", 3);
             else if (k == 1)
                 av_sha_update(&ctx, "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq", 56);
             else
-                for (i = 0; i < 1000*1000; i++)
+                for (i = 0; i < 1000 * 1000; i++)
                     av_sha_update(&ctx, "a", 1);
             av_sha_final(&ctx, digest);
             for (i = 0; i < lengths[j] >> 3; i++)
                 printf("%02X", digest[i]);
             putchar('\n');
         }
-        switch (j) {
+        switch (j)
+        {
         case 0:
             //test vectors (from FIPS PUB 180-1)
             printf("A9993E36 4706816A BA3E2571 7850C26C 9CD0D89D\n"

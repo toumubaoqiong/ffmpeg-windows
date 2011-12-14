@@ -70,7 +70,7 @@ FFMPEGLIB_API int av_parse_video_rate(AVRational *rate, const char *str);
  * failure (for example if color_string cannot be parsed).
  */
 FFMPEGLIB_API int av_parse_color(uint8_t *rgba_color, const char *color_string, int slen,
-                   void *log_ctx);
+                                 void *log_ctx);
 
 /**
  * Parses timestr and returns in *time a corresponding number of

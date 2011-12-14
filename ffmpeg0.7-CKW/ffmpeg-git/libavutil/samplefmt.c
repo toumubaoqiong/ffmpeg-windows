@@ -22,13 +22,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct SampleFmtInfo {
+typedef struct SampleFmtInfo
+{
     const char *name;
     int bits;
 } SampleFmtInfo;
 
 /** this table gives more information about formats */
-static const SampleFmtInfo sample_fmt_info[AV_SAMPLE_FMT_NB] = {
+static const SampleFmtInfo sample_fmt_info[AV_SAMPLE_FMT_NB] =
+{
     [AV_SAMPLE_FMT_U8]  = { .name = "u8",  .bits = 8 },
     [AV_SAMPLE_FMT_S16] = { .name = "s16", .bits = 16 },
     [AV_SAMPLE_FMT_S32] = { .name = "s32", .bits = 32 },
@@ -58,7 +60,8 @@ char *av_get_sample_fmt_string (char *buf, int buf_size, enum AVSampleFormat sam
     /* print header */
     if (sample_fmt < 0)
         snprintf(buf, buf_size, "name  " " depth");
-    else if (sample_fmt < AV_SAMPLE_FMT_NB) {
+    else if (sample_fmt < AV_SAMPLE_FMT_NB)
+    {
         SampleFmtInfo info = sample_fmt_info[sample_fmt];
         snprintf (buf, buf_size, "%-6s" "   %2d ", info.name, info.bits);
     }
@@ -69,7 +72,7 @@ char *av_get_sample_fmt_string (char *buf, int buf_size, enum AVSampleFormat sam
 int av_get_bits_per_sample_fmt(enum AVSampleFormat sample_fmt)
 {
     return sample_fmt < 0 || sample_fmt >= AV_SAMPLE_FMT_NB ?
-        0 : sample_fmt_info[sample_fmt].bits;
+           0 : sample_fmt_info[sample_fmt].bits;
 }
 
 int av_samples_fill_arrays(uint8_t *pointers[8], int linesizes[8],
@@ -78,26 +81,29 @@ int av_samples_fill_arrays(uint8_t *pointers[8], int linesizes[8],
 {
     int i, step_size = 0;
     int sample_size = av_get_bits_per_sample_fmt(sample_fmt) >> 3;
-    int channel_step = planar ? FFALIGN(nb_samples*sample_size, align) : sample_size;
+    int channel_step = planar ? FFALIGN(nb_samples * sample_size, align) : sample_size;
 
-    if(nb_channels * (uint64_t)nb_samples * sample_size >= INT_MAX - align*(uint64_t)nb_channels)
+    if(nb_channels * (uint64_t)nb_samples *sample_size >= INT_MAX - align*(uint64_t)nb_channels)
         return AVERROR(EINVAL);
 
-    if (pointers) {
+    if (pointers)
+    {
         pointers[0] = buf;
-        for (i = 0; i < nb_channels; i++) {
+        for (i = 0; i < nb_channels; i++)
+        {
             pointers[i] = buf + step_size;
             step_size += channel_step;
         }
-        memset(&pointers[nb_channels], 0, (8-nb_channels) * sizeof(pointers[0]));
+        memset(&pointers[nb_channels], 0, (8 - nb_channels) * sizeof(pointers[0]));
     }
 
-    if (linesizes) {
-        linesizes[0] = planar ?  sample_size : nb_channels*sample_size;
-        memset(&linesizes[1], 0, (8-1) * sizeof(linesizes[0]));
+    if (linesizes)
+    {
+        linesizes[0] = planar ?  sample_size : nb_channels * sample_size;
+        memset(&linesizes[1], 0, (8 - 1) * sizeof(linesizes[0]));
     }
 
-    return planar ? channel_step * nb_channels : FFALIGN(nb_channels*sample_size*nb_samples, align);
+    return planar ? channel_step * nb_channels : FFALIGN(nb_channels * sample_size * nb_samples, align);
 }
 
 int av_samples_alloc(uint8_t *pointers[8], int linesizes[8],

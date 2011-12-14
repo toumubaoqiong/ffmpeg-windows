@@ -35,7 +35,7 @@ struct AVSHA;
  * @param bits    number of bits in digest (SHA-1 - 160 bits, SHA-2 224 or 256 bits)
  * @return        zero if initialization succeeded, -1 otherwise
  */
-FFMPEGLIB_API int av_sha_init(struct AVSHA* context, int bits);
+FFMPEGLIB_API int av_sha_init(struct AVSHA *context, int bits);
 
 /**
  * Update hash value.
@@ -44,7 +44,7 @@ FFMPEGLIB_API int av_sha_init(struct AVSHA* context, int bits);
  * @param data    input data to update hash with
  * @param len     input data length
  */
-FFMPEGLIB_API void av_sha_update(struct AVSHA* context, const uint8_t* data, unsigned int len);
+FFMPEGLIB_API void av_sha_update(struct AVSHA *context, const uint8_t *data, unsigned int len);
 
 /**
  * Finish hashing and output digest value.
@@ -52,6 +52,6 @@ FFMPEGLIB_API void av_sha_update(struct AVSHA* context, const uint8_t* data, uns
  * @param context hash function context
  * @param digest  buffer where output digest value is stored
  */
-FFMPEGLIB_API void av_sha_final(struct AVSHA* context, uint8_t *digest);
+FFMPEGLIB_API void av_sha_final(struct AVSHA *context, uint8_t *digest);
 
 #endif /* AVUTIL_SHA_H */

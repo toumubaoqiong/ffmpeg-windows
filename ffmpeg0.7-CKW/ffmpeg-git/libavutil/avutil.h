@@ -83,7 +83,8 @@ FFMPEGLIB_API const char *avutil_license(void);
 FFMPEGLIB_API void usleep(const long int mirSec);
 #endif
 
-enum AVMediaType {
+enum AVMediaType
+{
     AVMEDIA_TYPE_UNKNOWN = -1,
     AVMEDIA_TYPE_VIDEO,
     AVMEDIA_TYPE_AUDIO,

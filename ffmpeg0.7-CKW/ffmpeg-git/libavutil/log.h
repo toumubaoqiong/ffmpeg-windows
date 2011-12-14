@@ -29,18 +29,19 @@
  * arbitrary struct of which the first field is a pointer to an
  * AVClass struct (e.g. AVCodecContext, AVFormatContext etc.).
  */
-typedef struct {
+typedef struct
+{
     /**
      * The name of the class; usually it is the same name as the
      * context structure type to which the AVClass is associated.
      */
-    const char* class_name;
+    const char *class_name;
 
     /**
      * A pointer to a function which returns the name of a context
      * instance ctx associated with the class.
      */
-    const char* (*item_name)(void* ctx);
+    const char* (*item_name)(void *ctx);
 
     /**
      * a pointer to the first option specified in the class if any or NULL
@@ -131,9 +132,9 @@ FFMPEGLIB_API void av_log(void *avcl, int level, const char *fmt, ...);
 FFMPEGLIB_API void av_vlog(void *avcl, int level, const char *fmt, va_list);
 FFMPEGLIB_API int av_log_get_level(void);
 FFMPEGLIB_API void av_log_set_level(int);
-FFMPEGLIB_API void av_log_set_callback(void (*)(void*, int, const char*, va_list));
-FFMPEGLIB_API void av_log_default_callback(void* ptr, int level, const char* fmt, va_list vl);
-FFMPEGLIB_API const char* av_default_item_name(void* ctx);
+FFMPEGLIB_API void av_log_set_callback(void ( *)(void *, int, const char *, va_list));
+FFMPEGLIB_API void av_log_default_callback(void *ptr, int level, const char *fmt, va_list vl);
+FFMPEGLIB_API const char *av_default_item_name(void *ctx);
 
 /**
  * av_dlog macros
@@ -157,12 +158,12 @@ FFMPEGLIB_API const char* av_default_item_name(void* ctx);
 #define AV_LOG_SKIP_REPEATED 1
 FFMPEGLIB_API void av_log_set_flags(int arg);
 
-FFMPEGLIB_API inline void TraceOutMsgByDebugString(char* strFormat, ...);
-FFMPEGLIB_API inline void TraceOutMsgByDebugStringNULL(char* strFormat, ...);
+FFMPEGLIB_API inline void TraceOutMsgByDebugString(char *strFormat, ...);
+FFMPEGLIB_API inline void TraceOutMsgByDebugStringNULL(char *strFormat, ...);
 
 #ifdef _DEBUG
-#define TraceOutMsg	TraceOutMsgByDebugString	
+#define TraceOutMsg	TraceOutMsgByDebugString
 #else
-#define TraceOutMsg TraceOutMsgByDebugStringNULL	
+#define TraceOutMsg TraceOutMsgByDebugStringNULL
 #endif
 #endif /* AVUTIL_LOG_H */

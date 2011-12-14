@@ -31,12 +31,13 @@
 /**
  * Linear least squares model.
  */
-typedef struct LLSModel{
+typedef struct LLSModel
+{
     double covariance[MAX_VARS+1][MAX_VARS+1];
     double coeff[MAX_VARS][MAX_VARS];
     double variance[MAX_VARS];
     int indep_count;
-}LLSModel;
+} LLSModel;
 
 FFMPEGLIB_API void av_init_lls(LLSModel *m, int indep_count);
 FFMPEGLIB_API void av_update_lls(LLSModel *m, double *param, double decay);

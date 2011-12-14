@@ -48,13 +48,16 @@ int av_base64_decode(uint8_t *out, const char *in, int out_size)
     uint8_t *dst = out;
 
     v = 0;
-    for (i = 0; in[i] && in[i] != '='; i++) {
-        unsigned int index= in[i]-43;
-        if (index>=FF_ARRAY_ELEMS(map2) || map2[index] == 0xff)
+    for (i = 0; in[i] && in[i] != '='; i++)
+    {
+        unsigned int index = in[i] - 43;
+        if (index >= FF_ARRAY_ELEMS(map2) || map2[index] == 0xff)
             return -1;
         v = (v << 6) + map2[index];
-        if (i & 3) {
-            if (dst - out < out_size) {
+        if (i & 3)
+        {
+            if (dst - out < out_size)
+            {
                 *dst++ = v >> (6 - 2 * (i & 3));
             }
         }
@@ -79,18 +82,21 @@ char *av_base64_encode(char *out, int out_size, const uint8_t *in, int in_size)
     int bytes_remaining = in_size;
 
     if (in_size >= UINT_MAX / 4 ||
-        out_size < AV_BASE64_SIZE(in_size))
+            out_size < AV_BASE64_SIZE(in_size))
         return NULL;
     ret = dst = out;
-    while (bytes_remaining) {
+    while (bytes_remaining)
+    {
         i_bits = (i_bits << 8) + *in++;
         bytes_remaining--;
         i_shift += 8;
 
-        do {
+        do
+        {
             *dst++ = b64[(i_bits << 6 >> i_shift) & 0x3f];
             i_shift -= 6;
-        } while (i_shift > 6 || (bytes_remaining == 0 && i_shift > 0));
+        }
+        while (i_shift > 6 || (bytes_remaining == 0 && i_shift > 0));
     }
     while ((dst - ret) & 3)
         *dst++ = '=';
@@ -113,22 +119,26 @@ static int test_encode_decode(const uint8_t *data, unsigned int data_size,
     uint8_t data2[MAX_DATA_SIZE];
     int data2_size, max_data2_size = MAX_DATA_SIZE;
 
-    if (!av_base64_encode(encoded, MAX_ENCODED_SIZE, data, data_size)) {
+    if (!av_base64_encode(encoded, MAX_ENCODED_SIZE, data, data_size))
+    {
         printf("Failed: cannot encode the input data\n");
         return 1;
     }
-    if (encoded_ref && strcmp(encoded, encoded_ref)) {
+    if (encoded_ref && strcmp(encoded, encoded_ref))
+    {
         printf("Failed: encoded string differs from reference\n"
                "Encoded:\n%s\nReference:\n%s\n", encoded, encoded_ref);
         return 1;
     }
 
-    if ((data2_size = av_base64_decode(data2, encoded, max_data2_size)) < 0) {
+    if ((data2_size = av_base64_decode(data2, encoded, max_data2_size)) < 0)
+    {
         printf("Failed: cannot decode the encoded string\n"
                "Encoded:\n%s\n", encoded);
         return 1;
     }
-    if (memcmp(data2, data, data_size)) {
+    if (memcmp(data2, data, data_size))
+    {
         printf("Failed: encoded/decoded data differs from original data\n");
         return 1;
     }
@@ -140,10 +150,12 @@ static int test_encode_decode(const uint8_t *data, unsigned int data_size,
 int main(void)
 {
     int i, error_count = 0;
-    struct test {
+    struct test
+    {
         const uint8_t *data;
         const char *encoded_ref;
-    } tests[] = {
+    } tests[] =
+    {
         { "",        ""},
         { "1",       "MQ=="},
         { "22",      "MjI="},

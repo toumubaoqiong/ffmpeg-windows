@@ -23,7 +23,8 @@
 
 #include <stdint.h>
 
-struct AVRC4 {
+struct AVRC4
+{
     uint8_t state[256];
     int x, y;
 };

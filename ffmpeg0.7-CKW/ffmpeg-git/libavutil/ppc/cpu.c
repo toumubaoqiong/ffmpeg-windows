@@ -69,10 +69,10 @@ int ff_get_cpu_flags_ppc(void)
     __asm__ volatile("mfspr %0, 287" : "=r" (proc_ver));
     proc_ver >>= 16;
     if (proc_ver  & 0x8000 ||
-        proc_ver == 0x000c ||
-        proc_ver == 0x0039 || proc_ver == 0x003c ||
-        proc_ver == 0x0044 || proc_ver == 0x0045 ||
-        proc_ver == 0x0070)
+            proc_ver == 0x000c ||
+            proc_ver == 0x0039 || proc_ver == 0x003c ||
+            proc_ver == 0x0044 || proc_ver == 0x0045 ||
+            proc_ver == 0x0070)
         return AV_CPU_FLAG_ALTIVEC;
     return 0;
 #else

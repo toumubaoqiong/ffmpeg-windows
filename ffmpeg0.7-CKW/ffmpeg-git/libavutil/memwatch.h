@@ -339,12 +339,12 @@ extern "C" {
 #endif
 
 
-/*
-** Constants used
-**  All MEMWATCH constants start with the prefix MW_, followed by
-**  a short mnemonic which indicates where the constant is used,
-**  followed by a descriptive text about it.
-*/
+    /*
+    ** Constants used
+    **  All MEMWATCH constants start with the prefix MW_, followed by
+    **  a short mnemonic which indicates where the constant is used,
+    **  followed by a descriptive text about it.
+    */
 
 #define MW_ARI_NULLREAD 0x10    /* Null read (to start debugger) */
 #define MW_ARI_ABORT    0x04    /* ARI handler says: abort program! */
@@ -371,183 +371,183 @@ extern "C" {
 #define MW_STAT_LINE    2       /* collect statistics on a line basis */
 #define MW_STAT_DEFAULT 0       /* the default statistics setting */
 
-/*
-** MemWatch internal constants
-**  You may change these and recompile MemWatch to change the limits
-**  of some parameters. Respect the recommended minimums!
-*/
+    /*
+    ** MemWatch internal constants
+    **  You may change these and recompile MemWatch to change the limits
+    **  of some parameters. Respect the recommended minimums!
+    */
 #define MW_TRACE_BUFFER 2048    /* (min 160) size of TRACE()'s output buffer */
 #define MW_FREE_LIST    64      /* (min 4) number of free()'s to track */
 
-/*
-** Exported variables
-**  In case you have to remove the 'const' keyword because your compiler
-**  doesn't support it, be aware that changing the values may cause
-**  unpredictable behaviour.
-**  - mwCounter contains the current action count. You can use this to
-**      place breakpoints using a debugger, if you want.
-*/
+    /*
+    ** Exported variables
+    **  In case you have to remove the 'const' keyword because your compiler
+    **  doesn't support it, be aware that changing the values may cause
+    **  unpredictable behaviour.
+    **  - mwCounter contains the current action count. You can use this to
+    **      place breakpoints using a debugger, if you want.
+    */
 #ifndef __MEMWATCH_C
-extern const unsigned long mwCounter;
+    extern const unsigned long mwCounter;
 #endif
 
-/*
-** System functions
-**  Normally, it is not nessecary to call any of these. MEMWATCH will
-**  automatically initialize itself on the first MEMWATCH function call,
-**  and set up a call to mwAbort() using atexit(). Some C++ implementations
-**  run the atexit() chain before the program has terminated, so you
-**  may have to use mwInit() or the MemWatch C++ class to get good
-**  behaviour.
-**  - mwInit() can be called to disable the atexit() usage. If mwInit()
-**      is called directly, you must call mwTerm() to end MemWatch, or
-**      mwAbort().
-**  - mwTerm() is usually not nessecary to call; but if called, it will
-**      call mwAbort() if it finds that it is cancelling the 'topmost'
-**      mwInit() call.
-**  - mwAbort() cleans up after MEMWATCH, reports unfreed buffers, etc.
-*/
-FFMPEGLIB_API void  mwInit( void );
-FFMPEGLIB_API void  mwTerm( void );
-FFMPEGLIB_API void  mwAbort( void );
+    /*
+    ** System functions
+    **  Normally, it is not nessecary to call any of these. MEMWATCH will
+    **  automatically initialize itself on the first MEMWATCH function call,
+    **  and set up a call to mwAbort() using atexit(). Some C++ implementations
+    **  run the atexit() chain before the program has terminated, so you
+    **  may have to use mwInit() or the MemWatch C++ class to get good
+    **  behaviour.
+    **  - mwInit() can be called to disable the atexit() usage. If mwInit()
+    **      is called directly, you must call mwTerm() to end MemWatch, or
+    **      mwAbort().
+    **  - mwTerm() is usually not nessecary to call; but if called, it will
+    **      call mwAbort() if it finds that it is cancelling the 'topmost'
+    **      mwInit() call.
+    **  - mwAbort() cleans up after MEMWATCH, reports unfreed buffers, etc.
+    */
+    FFMPEGLIB_API void  mwInit( void );
+    FFMPEGLIB_API void  mwTerm( void );
+    FFMPEGLIB_API void  mwAbort( void );
 
-/*
-** Setup functions
-**  These functions control the operation of MEMWATCH's protective features.
-**  - mwFlushNow() causes MEMWATCH to flush it's buffers.
-**  - mwDoFlush() controls whether MEMWATCH flushes the disk buffers after
-**      writes. The default is smart flushing: MEMWATCH will not flush buffers
-**      explicitly until memory errors are detected. Then, all writes are
-**      flushed until program end or mwDoFlush(0) is called.
-**  - mwLimit() sets the allocation limit, an arbitrary limit on how much
-**      memory your program may allocate in bytes. Used to stress-test app.
-**      Also, in virtual-memory or multitasking environs, puts a limit on
-**      how much MW_NML_ALL can eat up.
-**  - mwGrab() grabs up X kilobytes of memory. Allocates actual memory,
-**      can be used to stress test app & OS both.
-**  - mwDrop() drops X kilobytes of grabbed memory.
-**  - mwNoMansLand() sets the behaviour of the NML logic. See the
-**      MW_NML_xxx for more information. The default is MW_NML_DEFAULT.
-**  - mwStatistics() sets the behaviour of the statistics collector. See
-**      the MW_STAT_xxx defines for more information. Default MW_STAT_DEFAULT.
-**  - mwFreeBufferInfo() enables or disables the tagging of free'd buffers
-**      with freeing information. This information is written in text form,
-**      using sprintf(), so it's pretty slow. Disabled by default.
-**  - mwAutoCheck() performs a CHECK() operation whenever a MemWatch function
-**      is used. Slows down performance, of course.
-**  - mwCalcCheck() calculates checksums for all data buffers. Slow!
-**  - mwDumpCheck() logs buffers where stored & calc'd checksums differ. Slow!!
-**  - mwMark() sets a generic marker. Returns the pointer given.
-**  - mwUnmark() removes a generic marker. If, at the end of execution, some
-**      markers are still in existence, these will be reported as leakage.
-**      returns the pointer given.
-*/
-FFMPEGLIB_API void        mwFlushNow( void );
-FFMPEGLIB_API void        mwDoFlush( int onoff );
-FFMPEGLIB_API void        mwLimit( long bytes );
-FFMPEGLIB_API unsigned    mwGrab( unsigned kilobytes );
-FFMPEGLIB_API unsigned    mwDrop( unsigned kilobytes );
-FFMPEGLIB_API void        mwNoMansLand( int mw_nml_level );
-FFMPEGLIB_API void        mwStatistics( int level );
-FFMPEGLIB_API void        mwFreeBufferInfo( int onoff );
-FFMPEGLIB_API void        mwAutoCheck( int onoff );
-FFMPEGLIB_API void        mwCalcCheck( void );
-FFMPEGLIB_API void        mwDumpCheck( void );
-FFMPEGLIB_API void *      mwMark( void *p, const char *description, const char *file, unsigned line );
-FFMPEGLIB_API void *      mwUnmark( void *p, const char *file, unsigned line );
+    /*
+    ** Setup functions
+    **  These functions control the operation of MEMWATCH's protective features.
+    **  - mwFlushNow() causes MEMWATCH to flush it's buffers.
+    **  - mwDoFlush() controls whether MEMWATCH flushes the disk buffers after
+    **      writes. The default is smart flushing: MEMWATCH will not flush buffers
+    **      explicitly until memory errors are detected. Then, all writes are
+    **      flushed until program end or mwDoFlush(0) is called.
+    **  - mwLimit() sets the allocation limit, an arbitrary limit on how much
+    **      memory your program may allocate in bytes. Used to stress-test app.
+    **      Also, in virtual-memory or multitasking environs, puts a limit on
+    **      how much MW_NML_ALL can eat up.
+    **  - mwGrab() grabs up X kilobytes of memory. Allocates actual memory,
+    **      can be used to stress test app & OS both.
+    **  - mwDrop() drops X kilobytes of grabbed memory.
+    **  - mwNoMansLand() sets the behaviour of the NML logic. See the
+    **      MW_NML_xxx for more information. The default is MW_NML_DEFAULT.
+    **  - mwStatistics() sets the behaviour of the statistics collector. See
+    **      the MW_STAT_xxx defines for more information. Default MW_STAT_DEFAULT.
+    **  - mwFreeBufferInfo() enables or disables the tagging of free'd buffers
+    **      with freeing information. This information is written in text form,
+    **      using sprintf(), so it's pretty slow. Disabled by default.
+    **  - mwAutoCheck() performs a CHECK() operation whenever a MemWatch function
+    **      is used. Slows down performance, of course.
+    **  - mwCalcCheck() calculates checksums for all data buffers. Slow!
+    **  - mwDumpCheck() logs buffers where stored & calc'd checksums differ. Slow!!
+    **  - mwMark() sets a generic marker. Returns the pointer given.
+    **  - mwUnmark() removes a generic marker. If, at the end of execution, some
+    **      markers are still in existence, these will be reported as leakage.
+    **      returns the pointer given.
+    */
+    FFMPEGLIB_API void        mwFlushNow( void );
+    FFMPEGLIB_API void        mwDoFlush( int onoff );
+    FFMPEGLIB_API void        mwLimit( long bytes );
+    FFMPEGLIB_API unsigned    mwGrab( unsigned kilobytes );
+    FFMPEGLIB_API unsigned    mwDrop( unsigned kilobytes );
+    FFMPEGLIB_API void        mwNoMansLand( int mw_nml_level );
+    FFMPEGLIB_API void        mwStatistics( int level );
+    FFMPEGLIB_API void        mwFreeBufferInfo( int onoff );
+    FFMPEGLIB_API void        mwAutoCheck( int onoff );
+    FFMPEGLIB_API void        mwCalcCheck( void );
+    FFMPEGLIB_API void        mwDumpCheck( void );
+    FFMPEGLIB_API void       *mwMark( void *p, const char *description, const char *file, unsigned line );
+    FFMPEGLIB_API void       *mwUnmark( void *p, const char *file, unsigned line );
 
-/*
-** Testing/verification/tracing
-**  All of these macros except VERIFY() evaluates to a null statement
-**  if MEMWATCH is not defined during compilation.
-**  - mwIsReadAddr() checks a memory area for read privilige.
-**  - mwIsSafeAddr() checks a memory area for both read & write privilige.
-**      This function and mwIsReadAddr() is highly system-specific and
-**      may not be implemented. If this is the case, they will default
-**      to returning nonzero for any non-NULL pointer.
-**  - CHECK() does a complete memory integrity test. Slow!
-**  - CHECK_THIS() checks only selected components.
-**  - CHECK_BUFFER() checks the indicated buffer for errors.
-**  - mwASSERT() or ASSERT() If the expression evaluates to nonzero, execution continues.
-**      Otherwise, the ARI handler is called, if present. If not present,
-**      the default ARI action is taken (set with mwSetAriAction()).
-**      ASSERT() can be disabled by defining MW_NOASSERT.
-**  - mwVERIFY() or VERIFY() works just like ASSERT(), but when compiling without
-**      MEMWATCH the macro evaluates to the expression.
-**      VERIFY() can be disabled by defining MW_NOVERIFY.
-**  - mwTRACE() or TRACE() writes some text and data to the log. Use like printf().
-**      TRACE() can be disabled by defining MW_NOTRACE.
-*/
-FFMPEGLIB_API int   mwIsReadAddr( const void *p, unsigned len );
-FFMPEGLIB_API int   mwIsSafeAddr( void *p, unsigned len );
-FFMPEGLIB_API int   mwTest( const char *file, int line, int mw_test_flags );
-FFMPEGLIB_API int   mwTestBuffer( const char *file, int line, void *p );
-FFMPEGLIB_API int   mwAssert( int, const char*, const char*, int );
-FFMPEGLIB_API int   mwVerify( int, const char*, const char*, int );
+    /*
+    ** Testing/verification/tracing
+    **  All of these macros except VERIFY() evaluates to a null statement
+    **  if MEMWATCH is not defined during compilation.
+    **  - mwIsReadAddr() checks a memory area for read privilige.
+    **  - mwIsSafeAddr() checks a memory area for both read & write privilige.
+    **      This function and mwIsReadAddr() is highly system-specific and
+    **      may not be implemented. If this is the case, they will default
+    **      to returning nonzero for any non-NULL pointer.
+    **  - CHECK() does a complete memory integrity test. Slow!
+    **  - CHECK_THIS() checks only selected components.
+    **  - CHECK_BUFFER() checks the indicated buffer for errors.
+    **  - mwASSERT() or ASSERT() If the expression evaluates to nonzero, execution continues.
+    **      Otherwise, the ARI handler is called, if present. If not present,
+    **      the default ARI action is taken (set with mwSetAriAction()).
+    **      ASSERT() can be disabled by defining MW_NOASSERT.
+    **  - mwVERIFY() or VERIFY() works just like ASSERT(), but when compiling without
+    **      MEMWATCH the macro evaluates to the expression.
+    **      VERIFY() can be disabled by defining MW_NOVERIFY.
+    **  - mwTRACE() or TRACE() writes some text and data to the log. Use like printf().
+    **      TRACE() can be disabled by defining MW_NOTRACE.
+    */
+    FFMPEGLIB_API int   mwIsReadAddr( const void *p, unsigned len );
+    FFMPEGLIB_API int   mwIsSafeAddr( void *p, unsigned len );
+    FFMPEGLIB_API int   mwTest( const char *file, int line, int mw_test_flags );
+    FFMPEGLIB_API int   mwTestBuffer( const char *file, int line, void *p );
+    FFMPEGLIB_API int   mwAssert( int, const char *, const char *, int );
+    FFMPEGLIB_API int   mwVerify( int, const char *, const char *, int );
 
-/*
-** User I/O functions
-**  - mwTrace() works like printf(), but dumps output either to the
-**      function specified with mwSetOutFunc(), or the log file.
-**  - mwPuts() works like puts(), dumps output like mwTrace().
-**  - mwSetOutFunc() allows you to give the adress of a function
-**      where all user output will go. (exeption: see mwSetAriFunc)
-**      Specifying NULL will direct output to the log file.
-**  - mwSetAriFunc() gives MEMWATCH the adress of a function to call
-**      when an 'Abort, Retry, Ignore' question is called for. The
-**      actual error message is NOT printed when you've set this adress,
-**      but instead it is passed as an argument. If you call with NULL
-**      for an argument, the ARI handler is disabled again. When the
-**      handler is disabled, MEMWATCH will automatically take the
-**      action specified by mwSetAriAction().
-**  - mwSetAriAction() sets the default ARI return value MEMWATCH should
-**      use if no ARI handler is specified. Defaults to MW_ARI_ABORT.
-**  - mwAriHandler() is an ANSI ARI handler you can use if you like. It
-**      dumps output to stderr, and expects input from stdin.
-**  - mwBreakOut() is called in certain cases when MEMWATCH feels it would
-**      be nice to break into a debugger. If you feel like MEMWATCH, place
-**      an execution breakpoint on this function.
-*/
-FFMPEGLIB_API void  mwTrace( const char* format_string, ... );
-FFMPEGLIB_API void  mwPuts( const char* text );
-FFMPEGLIB_API void  mwSetOutFunc( void (*func)(int) );
-FFMPEGLIB_API void  mwSetAriFunc( int (*func)(const char*) );
-FFMPEGLIB_API void  mwSetAriAction( int mw_ari_value );
-FFMPEGLIB_API int   mwAriHandler( const char* cause );
-FFMPEGLIB_API void  mwBreakOut( const char* cause );
+    /*
+    ** User I/O functions
+    **  - mwTrace() works like printf(), but dumps output either to the
+    **      function specified with mwSetOutFunc(), or the log file.
+    **  - mwPuts() works like puts(), dumps output like mwTrace().
+    **  - mwSetOutFunc() allows you to give the adress of a function
+    **      where all user output will go. (exeption: see mwSetAriFunc)
+    **      Specifying NULL will direct output to the log file.
+    **  - mwSetAriFunc() gives MEMWATCH the adress of a function to call
+    **      when an 'Abort, Retry, Ignore' question is called for. The
+    **      actual error message is NOT printed when you've set this adress,
+    **      but instead it is passed as an argument. If you call with NULL
+    **      for an argument, the ARI handler is disabled again. When the
+    **      handler is disabled, MEMWATCH will automatically take the
+    **      action specified by mwSetAriAction().
+    **  - mwSetAriAction() sets the default ARI return value MEMWATCH should
+    **      use if no ARI handler is specified. Defaults to MW_ARI_ABORT.
+    **  - mwAriHandler() is an ANSI ARI handler you can use if you like. It
+    **      dumps output to stderr, and expects input from stdin.
+    **  - mwBreakOut() is called in certain cases when MEMWATCH feels it would
+    **      be nice to break into a debugger. If you feel like MEMWATCH, place
+    **      an execution breakpoint on this function.
+    */
+    FFMPEGLIB_API void  mwTrace( const char *format_string, ... );
+    FFMPEGLIB_API void  mwPuts( const char *text );
+    FFMPEGLIB_API void  mwSetOutFunc( void (*func)(int) );
+    FFMPEGLIB_API void  mwSetAriFunc( int (*func)(const char *) );
+    FFMPEGLIB_API void  mwSetAriAction( int mw_ari_value );
+    FFMPEGLIB_API int   mwAriHandler( const char *cause );
+    FFMPEGLIB_API void  mwBreakOut( const char *cause );
 
-/*
-** Allocation/deallocation functions
-**  These functions are the ones actually to perform allocations
-**  when running MEMWATCH, for both C and C++ calls.
-**  - mwMalloc() debugging allocator
-**  - mwMalloc_() always resolves to a clean call of malloc()
-**  - mwRealloc() debugging re-allocator
-**  - mwRealloc_() always resolves to a clean call of realloc()
-**  - mwCalloc() debugging allocator, fills with zeros
-**  - mwCalloc_() always resolves to a clean call of calloc()
-**  - mwFree() debugging free. Can only free memory which has
-**      been allocated by MEMWATCH.
-**  - mwFree_() resolves to a) normal free() or b) debugging free.
-**      Can free memory allocated by MEMWATCH and malloc() both.
-**      Does not generate any runtime errors.
-*/
-FFMPEGLIB_API void* mwMalloc( size_t, const char*, int );
-FFMPEGLIB_API void* mwMalloc_( size_t );
-FFMPEGLIB_API void* mwRealloc( void *, size_t, const char*, int );
-FFMPEGLIB_API void* mwRealloc_( void *, size_t );
-FFMPEGLIB_API void* mwCalloc( size_t, size_t, const char*, int );
-FFMPEGLIB_API void* mwCalloc_( size_t, size_t );
-FFMPEGLIB_API void  mwFree( void*, const char*, int );
-FFMPEGLIB_API void  mwFree_( void* );
-FFMPEGLIB_API char* mwStrdup( const char *, const char*, int );
+    /*
+    ** Allocation/deallocation functions
+    **  These functions are the ones actually to perform allocations
+    **  when running MEMWATCH, for both C and C++ calls.
+    **  - mwMalloc() debugging allocator
+    **  - mwMalloc_() always resolves to a clean call of malloc()
+    **  - mwRealloc() debugging re-allocator
+    **  - mwRealloc_() always resolves to a clean call of realloc()
+    **  - mwCalloc() debugging allocator, fills with zeros
+    **  - mwCalloc_() always resolves to a clean call of calloc()
+    **  - mwFree() debugging free. Can only free memory which has
+    **      been allocated by MEMWATCH.
+    **  - mwFree_() resolves to a) normal free() or b) debugging free.
+    **      Can free memory allocated by MEMWATCH and malloc() both.
+    **      Does not generate any runtime errors.
+    */
+    FFMPEGLIB_API void *mwMalloc( size_t, const char *, int );
+    FFMPEGLIB_API void *mwMalloc_( size_t );
+    FFMPEGLIB_API void *mwRealloc( void *, size_t, const char *, int );
+    FFMPEGLIB_API void *mwRealloc_( void *, size_t );
+    FFMPEGLIB_API void *mwCalloc( size_t, size_t, const char *, int );
+    FFMPEGLIB_API void *mwCalloc_( size_t, size_t );
+    FFMPEGLIB_API void  mwFree( void *, const char *, int );
+    FFMPEGLIB_API void  mwFree_( void * );
+    FFMPEGLIB_API char *mwStrdup( const char *, const char *, int );
 
-/*
-** Enable/disable precompiler block
-**  This block of defines and if(n)defs make sure that references
-**  to MEMWATCH is completely removed from the code if the MEMWATCH
-**  manifest constant is not defined.
-*/
+    /*
+    ** Enable/disable precompiler block
+    **  This block of defines and if(n)defs make sure that references
+    **  to MEMWATCH is completely removed from the code if the MEMWATCH
+    **  manifest constant is not defined.
+    */
 #ifndef __MEMWATCH_C
 #ifdef MEMWATCH
 
@@ -570,8 +570,8 @@ FFMPEGLIB_API char* mwStrdup( const char *, const char*, int );
 #endif /* !TRACE */
 #endif /* !MW_NOTRACE */
 
-/* some compilers use a define and not a function */
-/* for strdup(). */
+    /* some compilers use a define and not a function */
+    /* for strdup(). */
 #ifdef strdup
 #undef strdup
 #endif
@@ -603,17 +603,17 @@ FFMPEGLIB_API char* mwStrdup( const char *, const char*, int );
 #endif /* !VERIFY */
 #endif /* !MW_NOVERIFY */
 
-/*lint -esym(773,mwTRACE) */
+    /*lint -esym(773,mwTRACE) */
 #define mwTRACE         /*lint -save -e506 */ 1?(void)0:mwDummyTraceFunction /*lint -restore */
 #ifndef MW_NOTRACE
 #ifndef TRACE
-/*lint -esym(773,TRACE) */
+    /*lint -esym(773,TRACE) */
 #define TRACE           mwTRACE
 #endif /* !TRACE */
 #endif /* !MW_NOTRACE */
 
-extern void mwDummyTraceFunction(const char *,...);
-/*lint -save -e652 */
+    extern void mwDummyTraceFunction(const char *, ...);
+    /*lint -save -e652 */
 #define mwDoFlush(n)
 #define mwPuts(s)
 #define mwInit()
@@ -646,13 +646,13 @@ extern void mwDummyTraceFunction(const char *,...);
 #define CHECK_BUFFER(b)
 #define MARK(p)             (p)
 #define UNMARK(p)           (p)
-/*lint -restore */
+    /*lint -restore */
 
 #endif /* MEMWATCH */
 #endif /* !__MEMWATCH_C */
 
 #ifdef __cplusplus
-    }
+}
 #endif
 
 #if 0 /* 980317: disabled C++ */
@@ -685,14 +685,15 @@ extern void mwDummyTraceFunction(const char *,...);
 extern int mwNCur;
 extern const char *mwNFile;
 extern int mwNLine;
-class MemWatch {
+class MemWatch
+{
 public:
     MemWatch();
     ~MemWatch();
-    };
-void * operator new(size_t);
-void * operator new(size_t,const char *,int);
-void * operator new[] (size_t,const char *,int);	// hjc 07/16/02
+};
+void *operator new(size_t);
+void *operator new(size_t, const char *, int);
+void *operator new[] (size_t, const char *, int);	// hjc 07/16/02
 void operator delete(void *);
 #define mwNew new(__FILE__,__LINE__)
 #define mwDelete (mwNCur=1,mwNFile=__FILE__,mwNLine=__LINE__),delete

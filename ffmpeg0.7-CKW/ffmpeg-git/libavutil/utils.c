@@ -46,7 +46,7 @@ const char *avutil_license(void)
 #include <windows.h>
 void usleep(const long int mirSec)
 {
-	Sleep(mirSec/1000);
+    Sleep(mirSec / 1000);
 }
 #endif
 
@@ -54,5 +54,5 @@ static AVRational g_AVRational_TIMEBASE_Q = {1, AV_TIME_BASE};
 
 AVRational av_getTimebase_Q(void)
 {
-	return g_AVRational_TIMEBASE_Q;
+    return g_AVRational_TIMEBASE_Q;
 }

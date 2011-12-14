@@ -33,17 +33,20 @@
 #include "libavutil/avstring.h"
 #include "libavutil/random_seed.h"
 
-typedef struct {
+typedef struct
+{
     const char *abbr;
     int width, height;
 } VideoSizeAbbr;
 
-typedef struct {
+typedef struct
+{
     const char *abbr;
     AVRational rate;
 } VideoRateAbbr;
 
-static const VideoSizeAbbr video_size_abbrs[] = {
+static const VideoSizeAbbr video_size_abbrs[] =
+{
     { "ntsc",      720, 480 },
     { "pal",       720, 576 },
     { "qntsc",     352, 240 }, /* VCD compliant NTSC */
@@ -56,34 +59,35 @@ static const VideoSizeAbbr video_size_abbrs[] = {
     { "qcif",      176, 144 },
     { "cif",       352, 288 },
     { "4cif",      704, 576 },
-    { "16cif",    1408,1152 },
+    { "16cif",    1408, 1152 },
     { "qqvga",     160, 120 },
     { "qvga",      320, 240 },
     { "vga",       640, 480 },
     { "svga",      800, 600 },
     { "xga",      1024, 768 },
-    { "uxga",     1600,1200 },
-    { "qxga",     2048,1536 },
-    { "sxga",     1280,1024 },
-    { "qsxga",    2560,2048 },
-    { "hsxga",    5120,4096 },
+    { "uxga",     1600, 1200 },
+    { "qxga",     2048, 1536 },
+    { "sxga",     1280, 1024 },
+    { "qsxga",    2560, 2048 },
+    { "hsxga",    5120, 4096 },
     { "wvga",      852, 480 },
     { "wxga",     1366, 768 },
-    { "wsxga",    1600,1024 },
-    { "wuxga",    1920,1200 },
-    { "woxga",    2560,1600 },
-    { "wqsxga",   3200,2048 },
-    { "wquxga",   3840,2400 },
-    { "whsxga",   6400,4096 },
-    { "whuxga",   7680,4800 },
+    { "wsxga",    1600, 1024 },
+    { "wuxga",    1920, 1200 },
+    { "woxga",    2560, 1600 },
+    { "wqsxga",   3200, 2048 },
+    { "wquxga",   3840, 2400 },
+    { "whsxga",   6400, 4096 },
+    { "whuxga",   7680, 4800 },
     { "cga",       320, 200 },
     { "ega",       640, 350 },
     { "hd480",     852, 480 },
     { "hd720",    1280, 720 },
-    { "hd1080",   1920,1080 },
+    { "hd1080",   1920, 1080 },
 };
 
-static const VideoRateAbbr video_rate_abbrs[]= {
+static const VideoRateAbbr video_rate_abbrs[] =
+{
     { "ntsc",      { 30000, 1001 } },
     { "pal",       {    25,    1 } },
     { "qntsc",     { 30000, 1001 } }, /* VCD compliant NTSC */
@@ -101,14 +105,17 @@ int av_parse_video_size(int *width_ptr, int *height_ptr, const char *str)
     char *p;
     int width = 0, height = 0;
 
-    for (i = 0; i < n; i++) {
-        if (!strcmp(video_size_abbrs[i].abbr, str)) {
+    for (i = 0; i < n; i++)
+    {
+        if (!strcmp(video_size_abbrs[i].abbr, str))
+        {
             width  = video_size_abbrs[i].width;
             height = video_size_abbrs[i].height;
             break;
         }
     }
-    if (i == n) {
+    if (i == n)
+    {
         p = str;
         width = strtol(p, &p, 10);
         if (*p)
@@ -130,7 +137,8 @@ int av_parse_video_rate(AVRational *rate, const char *arg)
 
     /* First, we check our abbreviation table */
     for (i = 0; i < n; ++i)
-        if (!strcmp(video_rate_abbrs[i].abbr, arg)) {
+        if (!strcmp(video_rate_abbrs[i].abbr, arg))
+        {
             *rate = video_rate_abbrs[i].rate;
             return 0;
         }
@@ -145,12 +153,14 @@ int av_parse_video_rate(AVRational *rate, const char *arg)
     return 0;
 }
 
-typedef struct {
+typedef struct
+{
     const char *name;            ///< a string representing the name of the color
     uint8_t     rgb_color[3];    ///< RGB values for the color
 } ColorEntry;
 
-static ColorEntry color_table[] = {
+static ColorEntry color_table[] =
+{
     { "AliceBlue",            { 0xF0, 0xF8, 0xFF } },
     { "AntiqueWhite",         { 0xFA, 0xEB, 0xD7 } },
     { "Aqua",                 { 0x00, 0xFF, 0xFF } },
@@ -307,65 +317,80 @@ int av_parse_color(uint8_t *rgba_color, const char *color_string, int slen,
     const ColorEntry *entry;
     int len, hex_offset = 0;
 
-    if (color_string[0] == '#') {
+    if (color_string[0] == '#')
+    {
         hex_offset = 1;
-    } else if (!strncmp(color_string, "0x", 2))
+    }
+    else if (!strncmp(color_string, "0x", 2))
         hex_offset = 2;
 
     if (slen < 0)
         slen = strlen(color_string);
     av_strlcpy(color_string2, color_string + hex_offset,
-               FFMIN(slen-hex_offset+1, sizeof(color_string2)));
+               FFMIN(slen - hex_offset + 1, sizeof(color_string2)));
     if ((tail = strchr(color_string2, ALPHA_SEP)))
-        *tail++ = 0;
+        * tail++ = 0;
     len = strlen(color_string2);
     rgba_color[3] = 255;
 
-    if (!strcasecmp(color_string2, "random") || !strcasecmp(color_string2, "bikeshed")) {
+    if (!strcasecmp(color_string2, "random") || !strcasecmp(color_string2, "bikeshed"))
+    {
         int rgba = av_get_random_seed();
         rgba_color[0] = rgba >> 24;
         rgba_color[1] = rgba >> 16;
         rgba_color[2] = rgba >> 8;
         rgba_color[3] = rgba;
-    } else if (hex_offset ||
-               strspn(color_string2, "0123456789ABCDEFabcdef") == len) {
+    }
+    else if (hex_offset ||
+             strspn(color_string2, "0123456789ABCDEFabcdef") == len)
+    {
         char *tail;
         unsigned int rgba = strtoul(color_string2, &tail, 16);
 
-        if (*tail || (len != 6 && len != 8)) {
+        if (*tail || (len != 6 && len != 8))
+        {
             av_log(log_ctx, AV_LOG_ERROR, "Invalid 0xRRGGBB[AA] color string: '%s'\n", color_string2);
             return AVERROR(EINVAL);
         }
-        if (len == 8) {
+        if (len == 8)
+        {
             rgba_color[3] = rgba;
             rgba >>= 8;
         }
         rgba_color[0] = rgba >> 16;
         rgba_color[1] = rgba >> 8;
         rgba_color[2] = rgba;
-    } else {
+    }
+    else
+    {
         entry = bsearch(color_string2,
                         color_table,
                         FF_ARRAY_ELEMS(color_table),
                         sizeof(ColorEntry),
                         color_table_compare);
-        if (!entry) {
+        if (!entry)
+        {
             av_log(log_ctx, AV_LOG_ERROR, "Cannot find color '%s'\n", color_string2);
             return AVERROR(EINVAL);
         }
         memcpy(rgba_color, entry->rgb_color, 3);
     }
 
-    if (tail) {
+    if (tail)
+    {
         unsigned long int alpha;
         const char *alpha_string = tail;
-        if (!strncmp(alpha_string, "0x", 2)) {
+        if (!strncmp(alpha_string, "0x", 2))
+        {
             alpha = strtoul(alpha_string, &tail, 16);
-        } else {
+        }
+        else
+        {
             alpha = 255 * strtod(alpha_string, &tail);
         }
 
-        if (tail == alpha_string || *tail || alpha > 255) {
+        if (tail == alpha_string || *tail || alpha > 255)
+        {
             av_log(log_ctx, AV_LOG_ERROR, "Invalid alpha value specifier '%s' in '%s'\n",
                    alpha_string, color_string);
             return AVERROR(EINVAL);
@@ -386,7 +411,8 @@ static int date_get_num(const char **pp,
 
     p = *pp;
     val = 0;
-    for(i = 0; i < len_max; i++) {
+    for(i = 0; i < len_max; i++)
+    {
         c = *p;
         if (!isdigit(c))
             break;
@@ -409,13 +435,18 @@ const char *small_strptime(const char *p, const char *fmt,
 {
     int c, val;
 
-    for(;;) {
+    for(;;)
+    {
         c = *fmt++;
-        if (c == '\0') {
+        if (c == '\0')
+        {
             return p;
-        } else if (c == '%') {
+        }
+        else if (c == '%')
+        {
             c = *fmt++;
-            switch(c) {
+            switch(c)
+            {
             case 'H':
                 val = date_get_num(&p, 0, 23, 2);
                 if (val == -1)
@@ -457,8 +488,10 @@ const char *small_strptime(const char *p, const char *fmt,
             default:
                 return NULL;
             }
-        } else {
-        match:
+        }
+        else
+        {
+match:
             if (c != *p)
                 return NULL;
             p++;
@@ -473,7 +506,8 @@ static time_t mktimegm(struct tm *tm)
 
     int y = tm->tm_year + 1900, m = tm->tm_mon + 1, d = tm->tm_mday;
 
-    if (m < 3) {
+    if (m < 3)
+    {
         m += 12;
         y--;
     }
@@ -492,11 +526,13 @@ int av_parse_time(int64_t *timeval, const char *datestr, int duration)
     int64_t t;
     struct tm dt;
     int i;
-    static const char * const date_fmt[] = {
+    static const char *const date_fmt[] =
+    {
         "%Y-%m-%d",
         "%Y%m%d",
     };
-    static const char * const time_fmt[] = {
+    static const char *const time_fmt[] =
+    {
         "%H:%M:%S",
         "%H%M%S",
     };
@@ -519,30 +555,40 @@ int av_parse_time(int64_t *timeval, const char *datestr, int duration)
 
     p = datestr;
     q = NULL;
-    if (!duration) {
-        if (!strncasecmp(datestr, "now", len)) {
+    if (!duration)
+    {
+        if (!strncasecmp(datestr, "now", len))
+        {
             *timeval = (int64_t) now * 1000000;
             return 0;
         }
 
         /* parse the year-month-day part */
-        for (i = 0; i < FF_ARRAY_ELEMS(date_fmt); i++) {
+        for (i = 0; i < FF_ARRAY_ELEMS(date_fmt); i++)
+        {
             q = small_strptime(p, date_fmt[i], &dt);
-            if (q) {
+            if (q)
+            {
                 break;
             }
         }
 
         /* if the year-month-day part is missing, then take the
          * current year-month-day time */
-        if (!q) {
-            if (is_utc) {
+        if (!q)
+        {
+            if (is_utc)
+            {
                 dt = *gmtime(&now);
-            } else {
+            }
+            else
+            {
                 dt = *localtime(&now);
             }
             dt.tm_hour = dt.tm_min = dt.tm_sec = 0;
-        } else {
+        }
+        else
+        {
             p = q;
         }
 
@@ -550,24 +596,31 @@ int av_parse_time(int64_t *timeval, const char *datestr, int duration)
             p++;
 
         /* parse the hour-minute-second part */
-        for (i = 0; i < FF_ARRAY_ELEMS(time_fmt); i++) {
+        for (i = 0; i < FF_ARRAY_ELEMS(time_fmt); i++)
+        {
             q = small_strptime(p, time_fmt[i], &dt);
-            if (q) {
+            if (q)
+            {
                 break;
             }
         }
-    } else {
+    }
+    else
+    {
         /* parse datestr as a duration */
-        if (p[0] == '-') {
+        if (p[0] == '-')
+        {
             negative = 1;
             ++p;
         }
         /* parse datestr as HH:MM:SS */
         q = small_strptime(p, time_fmt[0], &dt);
-        if (!q) {
+        if (!q)
+        {
             /* parse datestr as S+ */
             dt.tm_sec = strtol(p, (char **)&q, 10);
-            if (q == p) {
+            if (q == p)
+            {
                 /* the parsing didn't succeed */
                 *timeval = INT64_MIN;
                 return AVERROR(EINVAL);
@@ -578,18 +631,25 @@ int av_parse_time(int64_t *timeval, const char *datestr, int duration)
     }
 
     /* Now we have all the fields that we can get */
-    if (!q) {
+    if (!q)
+    {
         *timeval = INT64_MIN;
         return AVERROR(EINVAL);
     }
 
-    if (duration) {
+    if (duration)
+    {
         t = dt.tm_hour * 3600 + dt.tm_min * 60 + dt.tm_sec;
-    } else {
+    }
+    else
+    {
         dt.tm_isdst = -1;       /* unknown */
-        if (is_utc) {
+        if (is_utc)
+        {
             t = mktimegm(&dt);
-        } else {
+        }
+        else
+        {
             t = mktime(&dt);
         }
     }
@@ -597,10 +657,12 @@ int av_parse_time(int64_t *timeval, const char *datestr, int duration)
     t *= 1000000;
 
     /* parse the .m... part */
-    if (*q == '.') {
+    if (*q == '.')
+    {
         int val, n;
         q++;
-        for (val = 0, n = 100000; n >= 1; n /= 10, q++) {
+        for (val = 0, n = 100000; n >= 1; n /= 10, q++)
+        {
             if (!isdigit(*q))
                 break;
             val += n * (*q - '0');
@@ -619,19 +681,24 @@ int av_find_info_tag(char *arg, int arg_size, const char *tag1, const char *info
     p = info;
     if (*p == '?')
         p++;
-    for(;;) {
+    for(;;)
+    {
         q = tag;
-        while (*p != '\0' && *p != '=' && *p != '&') {
+        while (*p != '\0' && *p != '=' && *p != '&')
+        {
             if ((q - tag) < sizeof(tag) - 1)
                 *q++ = *p;
             p++;
         }
         *q = '\0';
         q = arg;
-        if (*p == '=') {
+        if (*p == '=')
+        {
             p++;
-            while (*p != '&' && *p != '\0') {
-                if ((q - arg) < arg_size - 1) {
+            while (*p != '&' && *p != '\0')
+            {
+                if ((q - arg) < arg_size - 1)
+                {
                     if (*p == '+')
                         *q++ = ' ';
                     else
@@ -659,7 +726,8 @@ int main(void)
     printf("Testing av_parse_video_rate()\n");
     {
         int i;
-        const char *rates[] = {
+        const char *rates[] =
+        {
             "-inf",
             "inf",
             "nan",
@@ -687,9 +755,13 @@ int main(void)
             " -21332.2324   ",
         };
 
-        for (i = 0; i < FF_ARRAY_ELEMS(rates); i++) {
+        for (i = 0; i < FF_ARRAY_ELEMS(rates); i++)
+        {
             int ret;
-            AVRational q = (AVRational){0, 0};
+            AVRational q = (AVRational)
+            {
+                0, 0
+            };
             ret = av_parse_video_rate(&q, rates[i]),
             printf("'%s' -> %d/%d ret:%d\n",
                    rates[i], q.num, q.den, ret);
@@ -700,7 +772,8 @@ int main(void)
     {
         int i;
         uint8_t rgba[4];
-        const char *color_names[] = {
+        const char *color_names[] =
+        {
             "bikeshed",
             "RaNdOm",
             "foo",
@@ -741,7 +814,8 @@ int main(void)
 
         av_log_set_level(AV_LOG_DEBUG);
 
-        for (i = 0;  i < FF_ARRAY_ELEMS(color_names); i++) {
+        for (i = 0;  i < FF_ARRAY_ELEMS(color_names); i++)
+        {
             if (av_parse_color(rgba, color_names[i], -1, NULL) >= 0)
                 printf("%s -> R(%d) G(%d) B(%d) A(%d)\n", color_names[i], rgba[0], rgba[1], rgba[2], rgba[3]);
         }

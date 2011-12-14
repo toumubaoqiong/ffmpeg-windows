@@ -57,12 +57,12 @@ static av_always_inline av_const uint32_t av_bswap32(uint32_t x)
 #if HAVE_ARMV6
     __asm__("rev %0, %0" : "+r"(x));
 #else
-    uint32_t t;
-    __asm__ ("eor %1, %0, %0, ror #16 \n\t"
-             "bic %1, %1, #0xFF0000   \n\t"
-             "mov %0, %0, ror #8      \n\t"
-             "eor %0, %0, %1, lsr #8  \n\t"
-             : "+r"(x), "=&r"(t));
+uint32_t t;
+__asm__ ("eor %1, %0, %0, ror #16 \n\t"
+         "bic %1, %1, #0xFF0000   \n\t"
+         "mov %0, %0, ror #8      \n\t"
+         "eor %0, %0, %1, lsr #8  \n\t"
+         : "+r"(x), "=&r"(t));
 #endif /* HAVE_ARMV6 */
     return x;
 }

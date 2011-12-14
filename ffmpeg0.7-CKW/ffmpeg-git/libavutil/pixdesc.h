@@ -25,23 +25,24 @@
 #include <inttypes.h>
 #include "libavutil/attributes.h"
 
-typedef struct AVComponentDescriptor{
-    uint16_t plane        :2;            ///< which of the 4 planes contains the component
+typedef struct AVComponentDescriptor
+{
+    uint16_t plane        : 2;           ///< which of the 4 planes contains the component
 
     /**
      * Number of elements between 2 horizontally consecutive pixels minus 1.
      * Elements are bits for bitstream formats, bytes otherwise.
      */
-    uint16_t step_minus1  :3;
+    uint16_t step_minus1  : 3;
 
     /**
      * Number of elements before the component of the first pixel plus 1.
      * Elements are bits for bitstream formats, bytes otherwise.
      */
-    uint16_t offset_plus1 :3;
-    uint16_t shift        :3;            ///< number of least significant bits that must be shifted away to get the value
-    uint16_t depth_minus1 :4;            ///< number of bits in the component minus 1
-}AVComponentDescriptor;
+    uint16_t offset_plus1 : 3;
+    uint16_t shift        : 3;           ///< number of least significant bits that must be shifted away to get the value
+    uint16_t depth_minus1 : 4;           ///< number of bits in the component minus 1
+} AVComponentDescriptor;
 
 /**
  * Descriptor that unambiguously describes how the bits of a pixel are
@@ -52,7 +53,8 @@ typedef struct AVComponentDescriptor{
  *       and all the YUV variants) AVPixFmtDescriptor just stores how values
  *       are stored not what these values represent.
  */
-typedef struct AVPixFmtDescriptor{
+typedef struct AVPixFmtDescriptor
+{
     const char *name;
     uint8_t nb_components;      ///< The number of components each pixel has, (1-4)
 
@@ -81,7 +83,7 @@ typedef struct AVPixFmtDescriptor{
      * comp[2].
      */
     AVComponentDescriptor comp[4];
-}AVPixFmtDescriptor;
+} AVPixFmtDescriptor;
 
 #define PIX_FMT_BE        1 ///< Pixel format is big-endian.
 #define PIX_FMT_PAL       2 ///< Pixel format has a palette in data[1], values are indexes in this palette.
@@ -92,7 +94,7 @@ typedef struct AVPixFmtDescriptor{
  * The array of all the pixel format descriptors.
  */
 FFMPEGLIB_API extern const AVPixFmtDescriptor av_pix_fmt_descriptors[];
-FFMPEGLIB_API const AVPixFmtDescriptor* av_getav_pix_fmt_descriptors(void);
+FFMPEGLIB_API const AVPixFmtDescriptor *av_getav_pix_fmt_descriptors(void);
 
 /**
  * Read a line from an image, and write the values of the
@@ -111,7 +113,7 @@ FFMPEGLIB_API const AVPixFmtDescriptor* av_getav_pix_fmt_descriptors(void);
  * data[0]. The behavior is undefined if the format is not paletted.
  */
 FFMPEGLIB_API void av_read_image_line(uint16_t *dst, const uint8_t *data[4], const int linesize[4],
-                        const AVPixFmtDescriptor *desc, int x, int y, int c, int w, int read_pal_component);
+                                      const AVPixFmtDescriptor *desc, int x, int y, int c, int w, int read_pal_component);
 
 /**
  * Write the values from src to the pixel format component c of an
@@ -128,7 +130,7 @@ FFMPEGLIB_API void av_read_image_line(uint16_t *dst, const uint8_t *data[4], con
  * values to write to the image line
  */
 FFMPEGLIB_API void av_write_image_line(const uint16_t *src, uint8_t *data[4], const int linesize[4],
-                         const AVPixFmtDescriptor *desc, int x, int y, int c, int w);
+                                       const AVPixFmtDescriptor *desc, int x, int y, int c, int w);
 
 /**
  * Return the pixel format corresponding to name.

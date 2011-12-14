@@ -33,7 +33,7 @@ struct AVSHA1;
  * @param context pointer to the function context (of size av_sha_size)
  * @deprecated use av_sha_init() instead
  */
-FFMPEGLIB_API void av_sha1_init(struct AVSHA1* context);
+FFMPEGLIB_API void av_sha1_init(struct AVSHA1 *context);
 
 /**
  * Update hash value.
@@ -43,7 +43,7 @@ FFMPEGLIB_API void av_sha1_init(struct AVSHA1* context);
  * @param len     input data length
  * @deprecated use av_sha_update() instead
  */
-FFMPEGLIB_API void av_sha1_update(struct AVSHA1* context, const uint8_t* data, unsigned int len);
+FFMPEGLIB_API void av_sha1_update(struct AVSHA1 *context, const uint8_t *data, unsigned int len);
 
 /**
  * Finish hashing and output digest value.
@@ -52,6 +52,6 @@ FFMPEGLIB_API void av_sha1_update(struct AVSHA1* context, const uint8_t* data, u
  * @param digest  buffer where output digest value is stored
  * @deprecated use av_sha_final() instead
  */
-FFMPEGLIB_API void av_sha1_final(struct AVSHA1* context, uint8_t digest[20]);
+FFMPEGLIB_API void av_sha1_final(struct AVSHA1 *context, uint8_t digest[20]);
 
 #endif /* AVUTIL_SHA1_H */

@@ -57,7 +57,7 @@
 #ifndef av_bswap16
 static av_always_inline av_const uint16_t av_bswap16(uint16_t x)
 {
-    x= (x>>8) | (x<<8);
+    x = (x >> 8) | (x << 8);
     return x;
 }
 #endif
@@ -65,8 +65,8 @@ static av_always_inline av_const uint16_t av_bswap16(uint16_t x)
 #ifndef av_bswap32
 static av_always_inline av_const uint32_t av_bswap32(uint32_t x)
 {
-    x= ((x<<8)&0xFF00FF00) | ((x>>8)&0x00FF00FF);
-    x= (x>>16) | (x<<16);
+    x = ((x << 8) & 0xFF00FF00) | ((x >> 8) & 0x00FF00FF);
+    x = (x >> 16) | (x << 16);
     return x;
 }
 #endif
@@ -75,11 +75,12 @@ static av_always_inline av_const uint32_t av_bswap32(uint32_t x)
 static inline uint64_t av_const av_bswap64(uint64_t x)
 {
 #if 0
-    x= ((x<< 8)&0xFF00FF00FF00FF00ULL) | ((x>> 8)&0x00FF00FF00FF00FFULL);
-    x= ((x<<16)&0xFFFF0000FFFF0000ULL) | ((x>>16)&0x0000FFFF0000FFFFULL);
-    return (x>>32) | (x<<32);
+    x = ((x << 8) & 0xFF00FF00FF00FF00ULL) | ((x >> 8) & 0x00FF00FF00FF00FFULL);
+    x = ((x << 16) & 0xFFFF0000FFFF0000ULL) | ((x >> 16) & 0x0000FFFF0000FFFFULL);
+    return (x >> 32) | (x << 32);
 #else
-    union {
+    union
+    {
         uint64_t ll;
         uint32_t l[2];
     } w, r;

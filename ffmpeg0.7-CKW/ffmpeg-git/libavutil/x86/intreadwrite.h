@@ -34,8 +34,8 @@ static av_always_inline void AV_COPY64(void *d, const void *s)
 {
     __asm__("movq   %1, %%mm0  \n\t"
             "movq   %%mm0, %0  \n\t"
-            : "=m"(*(uint64_t*)d)
-            : "m" (*(const uint64_t*)s)
+            : "=m"(*(uint64_t *)d)
+            : "m" (*(const uint64_t *)s)
             : "mm0");
 }
 
@@ -46,7 +46,7 @@ static av_always_inline void AV_SWAP64(void *a, void *b)
             "movq   %0, %%mm1  \n\t"
             "movq   %%mm0, %0  \n\t"
             "movq   %%mm1, %1  \n\t"
-            : "+m"(*(uint64_t*)a), "+m"(*(uint64_t*)b)
+            : "+m"(*(uint64_t *)a), "+m"(*(uint64_t *)b)
             ::"mm0", "mm1");
 }
 
@@ -55,7 +55,7 @@ static av_always_inline void AV_ZERO64(void *d)
 {
     __asm__("pxor %%mm0, %%mm0  \n\t"
             "movq %%mm0, %0     \n\t"
-            : "=m"(*(uint64_t*)d)
+            : "=m"(*(uint64_t *)d)
             :: "mm0");
 }
 
@@ -66,12 +66,15 @@ static av_always_inline void AV_ZERO64(void *d)
 #define AV_COPY128 AV_COPY128
 static av_always_inline void AV_COPY128(void *d, const void *s)
 {
-    struct v {uint64_t v[2];};
+    struct v
+    {
+        uint64_t v[2];
+    };
 
     __asm__("movaps   %1, %%xmm0  \n\t"
             "movaps   %%xmm0, %0  \n\t"
-            : "=m"(*(struct v*)d)
-            : "m" (*(const struct v*)s)
+            : "=m"(*(struct v *)d)
+            : "m" (*(const struct v *)s)
             : "xmm0");
 }
 
@@ -82,11 +85,14 @@ static av_always_inline void AV_COPY128(void *d, const void *s)
 #define AV_ZERO128 AV_ZERO128
 static av_always_inline void AV_ZERO128(void *d)
 {
-    struct v {uint64_t v[2];};
+    struct v
+    {
+        uint64_t v[2];
+    };
 
     __asm__("pxor %%xmm0, %%xmm0  \n\t"
             "movdqa   %%xmm0, %0  \n\t"
-            : "=m"(*(struct v*)d)
+            : "=m"(*(struct v *)d)
             :: "xmm0");
 }
 

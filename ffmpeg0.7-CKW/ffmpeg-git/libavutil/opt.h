@@ -30,7 +30,8 @@
 #include "rational.h"
 #include "avutil.h"
 
-enum AVOptionType{
+enum AVOptionType
+{
     FF_OPT_TYPE_FLAGS,
     FF_OPT_TYPE_INT,
     FF_OPT_TYPE_INT64,
@@ -39,13 +40,14 @@ enum AVOptionType{
     FF_OPT_TYPE_STRING,
     FF_OPT_TYPE_RATIONAL,
     FF_OPT_TYPE_BINARY,  ///< offset must point to a pointer immediately followed by an int for the length
-    FF_OPT_TYPE_CONST=128,
+    FF_OPT_TYPE_CONST = 128,
 };
 
 /**
  * AVOption
  */
-typedef struct AVOption {
+typedef struct AVOption
+{
     const char *name;
 
     /**
@@ -75,7 +77,7 @@ typedef struct AVOption {
 #define AV_OPT_FLAG_AUDIO_PARAM     8
 #define AV_OPT_FLAG_VIDEO_PARAM     16
 #define AV_OPT_FLAG_SUBTITLE_PARAM  32
-//FIXME think about enc-audio, ... style flags
+    //FIXME think about enc-audio, ... style flags
 
     /**
      * The logical unit to which the option belongs. Non-constant
@@ -91,7 +93,8 @@ typedef struct AVOption {
  * This is identical to AVOption except that default_val was replaced by
  * an union, it should be compatible with AVOption on normal platforms.
  */
-typedef struct AVOption2 {
+typedef struct AVOption2
+{
     const char *name;
 
     /**
@@ -110,7 +113,8 @@ typedef struct AVOption2 {
     /**
      * the default value for scalar options
      */
-    union {
+    union
+    {
         double dbl;
         const char *str;
     } default_val;
@@ -119,15 +123,15 @@ typedef struct AVOption2 {
     double max;                 ///< maximum valid value for the option
 
     int flags;
-/*
-#define AV_OPT_FLAG_ENCODING_PARAM  1   ///< a generic parameter which can be set by the user for muxing or encoding
-#define AV_OPT_FLAG_DECODING_PARAM  2   ///< a generic parameter which can be set by the user for demuxing or decoding
-#define AV_OPT_FLAG_METADATA        4   ///< some data extracted or inserted into the file like title, comment, ...
-#define AV_OPT_FLAG_AUDIO_PARAM     8
-#define AV_OPT_FLAG_VIDEO_PARAM     16
-#define AV_OPT_FLAG_SUBTITLE_PARAM  32
-*/
-//FIXME think about enc-audio, ... style flags
+    /*
+    #define AV_OPT_FLAG_ENCODING_PARAM  1   ///< a generic parameter which can be set by the user for muxing or encoding
+    #define AV_OPT_FLAG_DECODING_PARAM  2   ///< a generic parameter which can be set by the user for demuxing or decoding
+    #define AV_OPT_FLAG_METADATA        4   ///< some data extracted or inserted into the file like title, comment, ...
+    #define AV_OPT_FLAG_AUDIO_PARAM     8
+    #define AV_OPT_FLAG_VIDEO_PARAM     16
+    #define AV_OPT_FLAG_SUBTITLE_PARAM  32
+    */
+    //FIXME think about enc-audio, ... style flags
 
     /**
      * The logical unit to which the option belongs. Non-constant
@@ -221,6 +225,6 @@ FFMPEGLIB_API void av_opt_set_defaults2(void *s, int mask, int flags);
  * cannot be set
  */
 FFMPEGLIB_API int av_set_options_string(void *ctx, const char *opts,
-                          const char *key_val_sep, const char *pairs_sep);
+                                        const char *key_val_sep, const char *pairs_sep);
 
 #endif /* AVUTIL_OPT_H */

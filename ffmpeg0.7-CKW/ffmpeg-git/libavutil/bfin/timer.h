@@ -27,8 +27,10 @@
 
 static inline uint64_t read_time(void)
 {
-    union {
-        struct {
+    union
+    {
+        struct
+        {
             unsigned lo;
             unsigned hi;
         } p;

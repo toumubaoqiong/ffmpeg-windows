@@ -49,10 +49,10 @@ typedef struct AVExpr AVExpr;
  * AVERROR code otherwise
  */
 FFMPEGLIB_API int av_expr_parse_and_eval(double *res, const char *s,
-                           const char * const *const_names, const double *const_values,
-                           const char * const *func1_names, double (* const *funcs1)(void *, double),
-                           const char * const *func2_names, double (* const *funcs2)(void *, double, double),
-                           void *opaque, int log_offset, void *log_ctx);
+        const char *const *const_names, const double *const_values,
+        const char *const *func1_names, double (* const *funcs1)(void *, double),
+        const char *const *func2_names, double (* const *funcs2)(void *, double, double),
+        void *opaque, int log_offset, void *log_ctx);
 
 /**
  * Parse an expression.
@@ -72,10 +72,10 @@ FFMPEGLIB_API int av_expr_parse_and_eval(double *res, const char *s,
  * AVERROR code otherwise
  */
 FFMPEGLIB_API int av_expr_parse(AVExpr **expr, const char *s,
-                  const char * const *const_names,
-                  const char * const *func1_names, double (* const *funcs1)(void *, double),
-                  const char * const *func2_names, double (* const *funcs2)(void *, double, double),
-                  int log_offset, void *log_ctx);
+                                const char *const *const_names,
+                                const char *const *func1_names, double (* const *funcs1)(void *, double),
+                                const char *const *func2_names, double (* const *funcs2)(void *, double, double),
+                                int log_offset, void *log_ctx);
 
 /**
  * Evaluate a previously parsed expression.
@@ -97,20 +97,20 @@ FFMPEGLIB_API void av_expr_free(AVExpr *e);
  */
 attribute_deprecated
 FFMPEGLIB_API int av_parse_and_eval_expr(double *res, const char *s,
-                           const char * const *const_names, const double *const_values,
-                           const char * const *func1_names, double (* const *funcs1)(void *, double),
-                           const char * const *func2_names, double (* const *funcs2)(void *, double, double),
-                           void *opaque, int log_offset, void *log_ctx);
+        const char *const *const_names, const double *const_values,
+        const char *const *func1_names, double (* const *funcs1)(void *, double),
+        const char *const *func2_names, double (* const *funcs2)(void *, double, double),
+        void *opaque, int log_offset, void *log_ctx);
 
 /**
  * @deprecated Deprecated in favor of av_expr_parse().
  */
 attribute_deprecated
 FFMPEGLIB_API int av_parse_expr(AVExpr **expr, const char *s,
-                  const char * const *const_names,
-                  const char * const *func1_names, double (* const *funcs1)(void *, double),
-                  const char * const *func2_names, double (* const *funcs2)(void *, double, double),
-                  int log_offset, void *log_ctx);
+                                const char *const *const_names,
+                                const char *const *func1_names, double (* const *funcs1)(void *, double),
+                                const char *const *func2_names, double (* const *funcs2)(void *, double, double),
+                                int log_offset, void *log_ctx);
 /**
  * @deprecated Deprecated in favor of av_expr_eval().
  */

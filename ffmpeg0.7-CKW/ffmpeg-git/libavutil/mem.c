@@ -65,12 +65,12 @@ void  free(void *ptr);
 
 int av_mem_checkBy_memwatch(const int logInt)
 {
-	if(logInt <= 0)
-	{
-		mwStatistics(2);
-	}
-	mwStatistics(logInt);
-	return 0;
+    if(logInt <= 0)
+    {
+        mwStatistics(2);
+    }
+    mwStatistics(logInt);
+    return 0;
 }
 
 /* You can redefine av_malloc and av_free in your project to use your
@@ -85,22 +85,22 @@ void *av_malloc(FF_INTERNAL_MEM_TYPE size)
 #endif
 
     /* let's disallow possible ambiguous cases */
-    if(size > (INT_MAX-16) )
+    if(size > (INT_MAX - 16) )
         return NULL;
 
 #if CONFIG_MEMALIGN_HACK
-    ptr = malloc(size+16);
+    ptr = malloc(size + 16);
 
     if(!ptr)
         return ptr;
-    diff= ((-(long)ptr - 1)&15) + 1;
-    ptr = (char*)ptr + diff;
-    ((char*)ptr)[-1]= diff;
+    diff = ((-(long)ptr - 1) & 15) + 1;
+    ptr = (char *)ptr + diff;
+    ((char *)ptr)[-1] = diff;
 #elif HAVE_POSIX_MEMALIGN
-    if (posix_memalign(&ptr,16,size))
+    if (posix_memalign(&ptr, 16, size))
         ptr = NULL;
 #elif HAVE_MEMALIGN
-    ptr = memalign(16,size);
+    ptr = memalign(16, size);
     /* Why 64?
        Indeed, we should align it:
          on 4 for 386
@@ -110,23 +110,23 @@ void *av_malloc(FF_INTERNAL_MEM_TYPE size)
        Because L1 and L2 caches are aligned on those values.
        But I don't want to code such logic here!
      */
-     /* Why 16?
-        Because some CPUs need alignment, for example SSE2 on P4, & most RISC CPUs
-        it will just trigger an exception and the unaligned load will be done in the
-        exception handler or it will just segfault (SSE2 on P4).
-        Why not larger? Because I did not see a difference in benchmarks ...
-     */
-     /* benchmarks with P3
-        memalign(64)+1          3071,3051,3032
-        memalign(64)+2          3051,3032,3041
-        memalign(64)+4          2911,2896,2915
-        memalign(64)+8          2545,2554,2550
-        memalign(64)+16         2543,2572,2563
-        memalign(64)+32         2546,2545,2571
-        memalign(64)+64         2570,2533,2558
+    /* Why 16?
+       Because some CPUs need alignment, for example SSE2 on P4, & most RISC CPUs
+       it will just trigger an exception and the unaligned load will be done in the
+       exception handler or it will just segfault (SSE2 on P4).
+       Why not larger? Because I did not see a difference in benchmarks ...
+    */
+    /* benchmarks with P3
+       memalign(64)+1          3071,3051,3032
+       memalign(64)+2          3051,3032,3041
+       memalign(64)+4          2911,2896,2915
+       memalign(64)+8          2545,2554,2550
+       memalign(64)+16         2543,2572,2563
+       memalign(64)+32         2546,2545,2571
+       memalign(64)+64         2570,2533,2558
 
-        BTW, malloc seems to do 8-byte alignment by default here.
-     */
+       BTW, malloc seems to do 8-byte alignment by default here.
+    */
 #else
     ptr = malloc(size);
 #endif
@@ -140,14 +140,14 @@ void *av_realloc(void *ptr, FF_INTERNAL_MEM_TYPE size)
 #endif
 
     /* let's disallow possible ambiguous cases */
-    if(size > (INT_MAX-16) )
+    if(size > (INT_MAX - 16) )
         return NULL;
 
 #if CONFIG_MEMALIGN_HACK
     //FIXME this isn't aligned correctly, though it probably isn't needed
     if(!ptr) return av_malloc(size);
-    diff= ((char*)ptr)[-1];
-    return (char*)realloc((char*)ptr - diff, size + diff) + diff;
+    diff = ((char *)ptr)[-1];
+    return (char *)realloc((char *)ptr - diff, size + diff) + diff;
 #else
     return realloc(ptr, size);
 #endif
@@ -157,7 +157,7 @@ void av_free(void *ptr)
 {
 #if CONFIG_MEMALIGN_HACK
     if (ptr)
-        free((char*)ptr - ((char*)ptr)[-1]);
+        free((char *)ptr - ((char *)ptr)[-1]);
 #else
     free(ptr);
 #endif
@@ -165,7 +165,7 @@ void av_free(void *ptr)
 
 void av_freep(void *arg)
 {
-    void **ptr= (void**)arg;
+    void **ptr = (void **)arg;
     av_free(*ptr);
     *ptr = NULL;
 }
@@ -180,8 +180,9 @@ void *av_mallocz(FF_INTERNAL_MEM_TYPE size)
 
 char *av_strdup(const char *s)
 {
-    char *ptr= NULL;
-    if(s){
+    char *ptr = NULL;
+    if(s)
+    {
         int len = strlen(s) + 1;
         ptr = av_malloc(len);
         if (ptr)

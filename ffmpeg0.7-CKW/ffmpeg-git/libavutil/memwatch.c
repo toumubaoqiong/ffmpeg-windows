@@ -252,10 +252,11 @@ typedef unsigned short mwDWORD;
 
 /* main data holding area, precedes actual allocation */
 typedef struct mwData_ mwData;
-struct mwData_ {
-    mwData*     prev;   /* previous allocation in chain */
-    mwData*     next;   /* next allocation in chain */
-    const char* file;   /* file name where allocated */
+struct mwData_
+{
+    mwData     *prev;   /* previous allocation in chain */
+    mwData     *next;   /* next allocation in chain */
+    const char *file;   /* file name where allocated */
     long        count;  /* action count */
     long        check;  /* integrity check value */
 #if 0
@@ -264,35 +265,38 @@ struct mwData_ {
     size_t      size;   /* size of allocation */
     int         line;   /* line number where allocated */
     unsigned    flag;   /* flag word */
-    };
+};
 
 /* statistics structure */
 typedef struct mwStat_ mwStat;
-struct mwStat_ {
-    mwStat*     next;   /* next statistic buffer */
-    const char* file;
+struct mwStat_
+{
+    mwStat     *next;   /* next statistic buffer */
+    const char *file;
     long        total;  /* total bytes allocated */
     long        num;    /* total number of allocations */
     long        max;    /* max allocated at one time */
     long        curr;   /* current allocations */
     int         line;
-    };
+};
 
 /* grabbing structure, 1K in size */
 typedef struct mwGrabData_ mwGrabData;
-struct mwGrabData_ {
-    mwGrabData* next;
+struct mwGrabData_
+{
+    mwGrabData *next;
     int         type;
-    char        blob[ 1024 - sizeof(mwGrabData*) - sizeof(int) ];
-    };
+    char        blob[ 1024 - sizeof(mwGrabData *) - sizeof(int) ];
+};
 
 typedef struct mwMarker_ mwMarker;
-struct mwMarker_ {
+struct mwMarker_
+{
     void *host;
     char *text;
     mwMarker *next;
     int level;
-    };
+};
 
 #if defined(WIN32) || defined(__WIN32__)
 typedef HANDLE          mwMutex;
@@ -309,7 +313,7 @@ typedef pthread_mutex_t mwMutex;
 static int      mwInited =      0;
 static int      mwInfoWritten = 0;
 static int      mwUseAtexit =   0;
-static FILE*    mwLog =         NULL;
+static FILE    *mwLog =         NULL;
 static int      mwFlushing =    0;
 static int      mwStatLevel =   MW_STAT_DEFAULT;
 static int      mwNML =         MW_NML_DEFAULT;
@@ -318,14 +322,14 @@ static long     mwAllocLimit =  0L;
 static int      mwUseLimit =    0;
 
 static long     mwNumCurAlloc = 0L;
-static mwData*  mwHead = 		NULL;
-static mwData*  mwTail = 		NULL;
+static mwData  *mwHead = 		NULL;
+static mwData  *mwTail = 		NULL;
 static int		mwDataSize =	0;
 static unsigned char mwOverflowZoneTemplate[] = "mEmwAtch";
 static int		mwOverflowZoneSize = mwROUNDALLOC;
 
 static void     (*mwOutFunction)(int) = NULL;
-static int      (*mwAriFunction)(const char*) = NULL;
+static int      (*mwAriFunction)(const char *) = NULL;
 static int      mwAriAction = MW_ARI_ABORT;
 
 static char     mwPrintBuf[MW_TRACE_BUFFER+8];
@@ -336,10 +340,10 @@ static long     mwErrors =      0L;
 static int      mwTestFlags =   0;
 static int      mwTestAlways =  0;
 
-static FILE*    mwLogB1 =       NULL;
+static FILE    *mwLogB1 =       NULL;
 static int      mwFlushingB1 =  0;
 
-static mwStat*  mwStatList = NULL;
+static mwStat  *mwStatList = NULL;
 static long     mwStatTotAlloc = 0L;
 static long     mwStatMaxAlloc = 0L;
 static long     mwStatNumAlloc = 0L;
@@ -347,17 +351,17 @@ static long     mwStatCurAlloc = 0L;
 static long     mwNmlNumAlloc = 0L;
 static long     mwNmlCurAlloc = 0L;
 
-static mwGrabData* mwGrabList = NULL;
+static mwGrabData *mwGrabList = NULL;
 static long     mwGrabSize = 0L;
 
-static void *   mwLastFree[MW_FREE_LIST];
+static void    *mwLastFree[MW_FREE_LIST];
 static const char *mwLFfile[MW_FREE_LIST];
 static int      mwLFline[MW_FREE_LIST];
 static int      mwLFcur = 0;
 
-static mwMarker* mwFirstMark = NULL;
+static mwMarker *mwFirstMark = NULL;
 
-static FILE*    mwLogB2 =       NULL;
+static FILE    *mwLogB2 =       NULL;
 static int      mwFlushingB2 =  0;
 
 #ifdef MW_HAVE_MUTEX
@@ -369,20 +373,20 @@ static mwMutex	mwGlobalMutex;
 ***********************************************************************/
 
 static void     mwAutoInit( void );
-static FILE*    mwLogR( void );
-static void     mwLogW( FILE* );
+static FILE    *mwLogR( void );
+static void     mwLogW( FILE * );
 static int      mwFlushR( void );
 static void     mwFlushW( int );
 static void     mwFlush( void );
 static void     mwIncErr( void );
-static void     mwUnlink( mwData*, const char* file, int line );
-static int      mwRelink( mwData*, const char* file, int line );
+static void     mwUnlink( mwData *, const char *file, int line );
+static int      mwRelink( mwData *, const char *file, int line );
 static int      mwIsHeapOK( mwData *mw );
-static int      mwIsOwned( mwData* mw, const char* file, int line );
-static int      mwTestBuf( mwData* mw, const char* file, int line );
+static int      mwIsOwned( mwData *mw, const char *file, int line );
+static int      mwTestBuf( mwData *mw, const char *file, int line );
 static void     mwDefaultOutFunc( int );
-static void     mwWrite( const char* format, ... );
-static void     mwLogFile( const char* name );
+static void     mwWrite( const char *format, ... );
+static void     mwLogFile( const char *name );
 static size_t   mwFreeUp( size_t, int );
 static const void *mwTestMem( const void *, unsigned, int );
 static int      mwStrCmpI( const char *s1, const char *s2 );
@@ -391,13 +395,13 @@ static void     mwDropAll( void );
 static const char *mwGrabType( int type );
 static unsigned mwGrab_( unsigned kb, int type, int silent );
 static unsigned mwDrop_( unsigned kb, int type, int silent );
-static int      mwARI( const char* text );
+static int      mwARI( const char *text );
 static void     mwStatReport( void );
-static mwStat*  mwStatGet( const char*, int, int );
-static void     mwStatAlloc( size_t, const char*, int );
-static void     mwStatFree( size_t, const char*, int );
-static int		mwCheckOF( const void * p );
-static void		mwWriteOF( void * p );
+static mwStat  *mwStatGet( const char *, int, int );
+static void     mwStatAlloc( size_t, const char *, int );
+static void     mwStatFree( size_t, const char *, int );
+static int		mwCheckOF( const void *p );
+static void		mwWriteOF( void *p );
 static char		mwDummy( char c );
 #ifdef MW_HAVE_MUTEX
 static void		mwMutexInit( void );
@@ -410,27 +414,30 @@ static void		mwMutexUnlock( void );
 ** System functions
 ***********************************************************************/
 
-void mwInit( void ) {
+void mwInit( void )
+{
     time_t tid;
 
     if( mwInited++ > 0 ) return;
 
-	MW_MUTEX_INIT();
+    MW_MUTEX_INIT();
 
     /* start a log if none is running */
     if( mwLogR() == NULL ) mwLogFile( "memwatch.log" );
-    if( mwLogR() == NULL ) {
+    if( mwLogR() == NULL )
+    {
         int i;
         char buf[32];
         /* oops, could not open it! */
         /* probably because it's already open */
         /* so we try some other names */
-        for( i=1; i<100; i++ ) {
+        for( i = 1; i < 100; i++ )
+        {
             sprintf( buf, "memwat%02d.log", i );
             mwLogFile( buf );
             if( mwLogR() != NULL ) break;
-            }
         }
+    }
 
     /* initialize the statistics */
     mwStatList = NULL;
@@ -438,15 +445,16 @@ void mwInit( void ) {
     mwStatCurAlloc = 0L;
     mwStatMaxAlloc = 0L;
     mwStatNumAlloc = 0L;
-	mwNmlCurAlloc = 0L;
-	mwNmlNumAlloc = 0L;
+    mwNmlCurAlloc = 0L;
+    mwNmlNumAlloc = 0L;
 
-	/* calculate the buffer size to use for a mwData */
-	mwDataSize = sizeof(mwData);
-	while( mwDataSize % mwROUNDALLOC ) mwDataSize ++;
+    /* calculate the buffer size to use for a mwData */
+    mwDataSize = sizeof(mwData);
+    while( mwDataSize % mwROUNDALLOC ) mwDataSize ++;
 
     /* write informational header if needed */
-    if( !mwInfoWritten ) {
+    if( !mwInfoWritten )
+    {
         mwInfoWritten = 1;
         (void) time( &tid );
         mwWrite(
@@ -455,8 +463,8 @@ void mwInit( void ) {
             "=============\n");
         mwWrite( "\nStarted at %s\n", ctime( &tid ) );
 
-/**************************************************************** Generic */
-		mwWrite( "Modes: " );
+        /**************************************************************** Generic */
+        mwWrite( "Modes: " );
 #ifdef mwNew
         mwWrite( "C++ " );
 #endif /* mwNew */
@@ -464,63 +472,64 @@ void mwInit( void ) {
         mwWrite( "__STDC__ " );
 #endif /* __STDC__ */
 #ifdef mw16BIT
-		mwWrite( "16-bit " );
+        mwWrite( "16-bit " );
 #endif
 #ifdef mw32BIT
-		mwWrite( "32-bit " );
+        mwWrite( "32-bit " );
 #endif
 #ifdef mw64BIT
-		mwWrite( "64-bit " );
+        mwWrite( "64-bit " );
 #endif
-		mwWrite( "mwDWORD==(" mwDWORD_DEFINED ")\n" );
-		mwWrite( "mwROUNDALLOC==%d sizeof(mwData)==%d mwDataSize==%d\n",
-			mwROUNDALLOC, sizeof(mwData), mwDataSize );
-/**************************************************************** Generic */
+        mwWrite( "mwDWORD==(" mwDWORD_DEFINED ")\n" );
+        mwWrite( "mwROUNDALLOC==%d sizeof(mwData)==%d mwDataSize==%d\n",
+                 mwROUNDALLOC, sizeof(mwData), mwDataSize );
+        /**************************************************************** Generic */
 
-/************************************************************ Microsoft C */
+        /************************************************************ Microsoft C */
 #ifdef _MSC_VER
         mwWrite( "Compiled using Microsoft C" CPPTEXT
-            " %d.%02d\n", _MSC_VER / 100, _MSC_VER % 100 );
+                 " %d.%02d\n", _MSC_VER / 100, _MSC_VER % 100 );
 #endif /* _MSC_VER */
-/************************************************************ Microsoft C */
+        /************************************************************ Microsoft C */
 
-/************************************************************** Borland C */
+        /************************************************************** Borland C */
 #ifdef __BORLANDC__
         mwWrite( "Compiled using Borland C"
 #ifdef __cplusplus
-            "++ %d.%01d\n", __BCPLUSPLUS__/0x100, (__BCPLUSPLUS__%0x100)/0x10 );
+                 "++ %d.%01d\n", __BCPLUSPLUS__ / 0x100, (__BCPLUSPLUS__ % 0x100) / 0x10 );
 #else
-            " %d.%01d\n", __BORLANDC__/0x100, (__BORLANDC__%0x100)/0x10 );
+                 " %d.%01d\n", __BORLANDC__ / 0x100, (__BORLANDC__ % 0x100) / 0x10 );
 #endif /* __cplusplus */
 #endif /* __BORLANDC__ */
-/************************************************************** Borland C */
+        /************************************************************** Borland C */
 
-/************************************************************** Watcom C */
+        /************************************************************** Watcom C */
 #ifdef __WATCOMC__
         mwWrite( "Compiled using Watcom C %d.%02d ",
-            __WATCOMC__/100, __WATCOMC__%100 );
+                 __WATCOMC__ / 100, __WATCOMC__ % 100 );
 #ifdef __FLAT__
         mwWrite( "(32-bit flat model)" );
 #endif /* __FLAT__ */
         mwWrite( "\n" );
 #endif /* __WATCOMC__ */
-/************************************************************** Watcom C */
+        /************************************************************** Watcom C */
 
         mwWrite( "\n" );
         FLUSH();
-        }
+    }
 
     if( mwUseAtexit ) (void) atexit( mwAbort );
     return;
-    }
+}
 
-void mwAbort( void ) {
+void mwAbort( void )
+{
     mwData *mw;
     mwMarker *mrk;
     char *data;
     time_t tid;
     int c, i, j;
-	int errors;
+    int errors;
 
     tid = time( NULL );
     mwWrite( "\nStopped at %s\n", ctime( &tid) );
@@ -532,80 +541,91 @@ void mwAbort( void ) {
     mwDropAll();
 
     /* report mwMarked items */
-    while( mwFirstMark ) {
+    while( mwFirstMark )
+    {
         mrk = mwFirstMark->next;
         mwWrite( "mark: %p: %s\n", mwFirstMark->host, mwFirstMark->text );
         free( mwFirstMark->text );
         free( mwFirstMark );
         mwFirstMark = mrk;
         mwErrors ++;
-        }
+    }
 
     /* release all still allocated memory */
-	errors = 0;
-    while( mwHead != NULL && errors < 3 ) {
-		if( !mwIsOwned(mwHead, __FILE__, __LINE__ ) ) {
-			if( errors < 3 )
-			{
-				errors ++;
-				mwWrite( "internal: NML/unfreed scan restarting\n" );
-				FLUSH();
-				mwHead = mwHead;
-				continue;
-			}
-			mwWrite( "internal: NML/unfreed scan aborted, heap too damaged\n" );
-			FLUSH();
-			break;
-			}
+    errors = 0;
+    while( mwHead != NULL && errors < 3 )
+    {
+        if( !mwIsOwned(mwHead, __FILE__, __LINE__ ) )
+        {
+            if( errors < 3 )
+            {
+                errors ++;
+                mwWrite( "internal: NML/unfreed scan restarting\n" );
+                FLUSH();
+                mwHead = mwHead;
+                continue;
+            }
+            mwWrite( "internal: NML/unfreed scan aborted, heap too damaged\n" );
+            FLUSH();
+            break;
+        }
         mwFlushW(0);
-        if( !(mwHead->flag & MW_NML) ) {
+        if( !(mwHead->flag & MW_NML) )
+        {
             mwErrors++;
-            data = ((char*)mwHead)+mwDataSize;
+            data = ((char *)mwHead) + mwDataSize;
             mwWrite( "unfreed: <%ld> %s(%d), %ld bytes at %p ",
-                mwHead->count, mwHead->file, mwHead->line, (long)mwHead->size, data+mwOverflowZoneSize );
-            if( mwCheckOF( data ) ) {
+                     mwHead->count, mwHead->file, mwHead->line, (long)mwHead->size, data + mwOverflowZoneSize );
+            if( mwCheckOF( data ) )
+            {
                 mwWrite( "[underflowed] ");
                 FLUSH();
-                }
-            if( mwCheckOF( (data+mwOverflowZoneSize+mwHead->size) ) ) {
+            }
+            if( mwCheckOF( (data + mwOverflowZoneSize + mwHead->size) ) )
+            {
                 mwWrite( "[overflowed] ");
                 FLUSH();
-                }
+            }
             mwWrite( " \t{" );
-            j = 16; if( mwHead->size < 16 ) j = (int) mwHead->size;
-            for( i=0;i<16;i++ ) {
-                if( i<j ) mwWrite( "%02X ",
-                    (unsigned char) *(data+mwOverflowZoneSize+i) );
+            j = 16;
+            if( mwHead->size < 16 ) j = (int) mwHead->size;
+            for( i = 0; i < 16; i++ )
+            {
+                if( i < j ) mwWrite( "%02X ",
+                                         (unsigned char) *(data + mwOverflowZoneSize + i) );
                 else mwWrite( ".. " );
-                }
-            for( i=0;i<j;i++ ) {
-                c = *(data+mwOverflowZoneSize+i);
+            }
+            for( i = 0; i < j; i++ )
+            {
+                c = *(data + mwOverflowZoneSize + i);
                 if( c < 32 || c > 126 ) c = '.';
                 mwWrite( "%c", c );
-                }
-            mwWrite( "}\n" );
-			mw = mwHead;
-			mwUnlink( mw, __FILE__, __LINE__ );
-            free( mw );
             }
-        else {
-            data = ((char*)mwHead) + mwDataSize + mwOverflowZoneSize;
-            if( mwTestMem( data, mwHead->size, MW_VAL_NML ) ) {
+            mwWrite( "}\n" );
+            mw = mwHead;
+            mwUnlink( mw, __FILE__, __LINE__ );
+            free( mw );
+        }
+        else
+        {
+            data = ((char *)mwHead) + mwDataSize + mwOverflowZoneSize;
+            if( mwTestMem( data, mwHead->size, MW_VAL_NML ) )
+            {
                 mwErrors++;
                 mwWrite( "wild pointer: <%ld> NoMansLand %p alloc'd at %s(%d)\n",
-                    mwHead->count, data + mwOverflowZoneSize, mwHead->file, mwHead->line );
+                         mwHead->count, data + mwOverflowZoneSize, mwHead->file, mwHead->line );
                 FLUSH();
-                }
-			mwNmlNumAlloc --;
-			mwNmlCurAlloc -= mwHead->size;
-			mw = mwHead;
-			mwUnlink( mw, __FILE__, __LINE__ );
-            free( mw );
             }
+            mwNmlNumAlloc --;
+            mwNmlCurAlloc -= mwHead->size;
+            mw = mwHead;
+            mwUnlink( mw, __FILE__, __LINE__ );
+            free( mw );
         }
+    }
 
-	if( mwNmlNumAlloc ) mwWrite("internal: NoMansLand block counter %ld, not zero\n", mwNmlNumAlloc );
-	if( mwNmlCurAlloc ) mwWrite("internal: NoMansLand byte counter %ld, not zero\n", mwNmlCurAlloc );
+    if( mwNmlNumAlloc ) mwWrite("internal: NoMansLand block counter %ld, not zero\n", mwNmlNumAlloc );
+    if( mwNmlCurAlloc ) mwWrite("internal: NoMansLand byte counter %ld, not zero\n", mwNmlCurAlloc );
 
     /* report statistics */
     mwStatReport();
@@ -614,15 +634,16 @@ void mwAbort( void ) {
     mwInited = 0;
     mwHead = mwTail = NULL;
     if( mwErrors )
-        fprintf(mwSTDERR,"MEMWATCH detected %ld anomalies\n",mwErrors);
+        fprintf(mwSTDERR, "MEMWATCH detected %ld anomalies\n", mwErrors);
     mwLogFile( NULL );
     mwErrors = 0;
 
     MW_MUTEX_TERM();
 
-    }
+}
 
-void mwTerm( void ) {
+void mwTerm( void )
+{
     if( mwInited == 1 )
     {
         mwAbort();
@@ -632,90 +653,97 @@ void mwTerm( void ) {
         mwWrite("internal: mwTerm(): MEMWATCH has not been started!\n");
     else
         mwInited --;
-    }
+}
 
 void mwStatistics( int level )
 {
     mwAutoInit();
-    if( level<0 ) level=0;
+    if( level < 0 ) level = 0;
     if( mwStatLevel != level )
     {
-		mwWrite( "statistics: now collecting on a %s basis\n",
-			level<1?"global":(level<2?"module":"line") );
-	    mwStatLevel = level;
-	}
+        mwWrite( "statistics: now collecting on a %s basis\n",
+                 level < 1 ? "global" : (level < 2 ? "module" : "line") );
+        mwStatLevel = level;
+    }
 }
 
-void mwAutoCheck( int onoff ) {
+void mwAutoCheck( int onoff )
+{
     mwAutoInit();
     mwTestAlways = onoff;
     if( onoff ) mwTestFlags = MW_TEST_ALL;
-    }
+}
 
-void mwSetOutFunc( void (*func)(int) ) {
+void mwSetOutFunc( void (*func)(int) )
+{
     mwAutoInit();
     mwOutFunction = func;
-    }
+}
 
 static void mwWriteOF( void *p )
 {
-	int i;
-	unsigned char *ptr;
-	ptr = (unsigned char*) p;
-	for( i=0; i<mwOverflowZoneSize; i++ )
-	{
-		*(ptr+i) = mwOverflowZoneTemplate[i%8];
-	}
-	return;
+    int i;
+    unsigned char *ptr;
+    ptr = (unsigned char *) p;
+    for( i = 0; i < mwOverflowZoneSize; i++ )
+    {
+        *(ptr + i) = mwOverflowZoneTemplate[i%8];
+    }
+    return;
 }
 
 static int mwCheckOF( const void *p )
 {
-	int i;
-	const unsigned char *ptr;
-	ptr = (const unsigned char *) p;
-	for( i=0; i<mwOverflowZoneSize; i++ )
-	{
-		if( *(ptr+i) != mwOverflowZoneTemplate[i%8] )
-			return 1; /* errors found */
-	}
-	return 0; /* no errors */
+    int i;
+    const unsigned char *ptr;
+    ptr = (const unsigned char *) p;
+    for( i = 0; i < mwOverflowZoneSize; i++ )
+    {
+        if( *(ptr + i) != mwOverflowZoneTemplate[i%8] )
+            return 1; /* errors found */
+    }
+    return 0; /* no errors */
 }
 
-int mwTest( const char *file, int line, int items ) {
+int mwTest( const char *file, int line, int items )
+{
     mwAutoInit();
     mwTestFlags = items;
     return mwTestNow( file, line, 0 );
-    }
+}
 
 /*
 ** Returns zero if there are no errors.
 ** Returns nonzero if there are errors.
 */
-int mwTestBuffer( const char *file, int line, void *p ) {
-    mwData* mw;
+int mwTestBuffer( const char *file, int line, void *p )
+{
+    mwData *mw;
 
     mwAutoInit();
 
     /* do the quick ownership test */
-    mw = (mwData*) mwBUFFER_TO_MW( p );
+    mw = (mwData *) mwBUFFER_TO_MW( p );
 
-    if( mwIsOwned( mw, file, line ) ) {
+    if( mwIsOwned( mw, file, line ) )
+    {
         return mwTestBuf( mw, file, line );
-		}
-	return 1;
-	}
+    }
+    return 1;
+}
 
-void mwBreakOut( const char* cause ) {
+void mwBreakOut( const char *cause )
+{
     fprintf(mwSTDERR, "breakout: %s\n", cause);
     mwWrite("breakout: %s\n", cause );
     return;
-    }
+}
 
 /*
 ** 981217 JLI: is it possible that ->next is not always set?
 */
-void * mwMark( void *p, const char *desc, const char *file, unsigned line ) {
+void *mwMark( void *p, const char *desc, const char *file, unsigned line )
+{
     mwMarker *mrk;
     unsigned n, isnew;
     char *buf;
@@ -723,144 +751,165 @@ void * mwMark( void *p, const char *desc, const char *file, unsigned line ) {
     char wherebuf[128];
 
     mwAutoInit();
-    TESTS(NULL,0);
+    TESTS(NULL, 0);
 
     if( desc == NULL ) desc = "unknown";
     if( file == NULL ) file = "unknown";
 
     tot = sprintf( wherebuf, "%.48s called from %s(%d)", desc, file, line );
-    if( tot >= (int)sizeof(wherebuf) ) { wherebuf[sizeof(wherebuf)-1] = 0; oflow = 1; }
+    if( tot >= (int)sizeof(wherebuf) )
+    {
+        wherebuf[sizeof(wherebuf)-1] = 0;
+        oflow = 1;
+    }
 
-    if( p == NULL ) {
+    if( p == NULL )
+    {
         mwWrite("mark: %s(%d), no mark for NULL:'%s' may be set\n", file, line, desc );
         return p;
+    }
+
+    if( mwFirstMark != NULL && !mwIsReadAddr( mwFirstMark, sizeof( mwMarker ) ) )
+    {
+        mwWrite("mark: %s(%d), mwFirstMark (%p) is trashed, can't mark for %s\n",
+                file, line, mwFirstMark, desc );
+        return p;
+    }
+
+    for( mrk = mwFirstMark; mrk; mrk = mrk->next )
+    {
+        if( mrk->next != NULL && !mwIsReadAddr( mrk->next, sizeof( mwMarker ) ) )
+        {
+            mwWrite("mark: %s(%d), mark(%p)->next(%p) is trashed, can't mark for %s\n",
+                    file, line, mrk, mrk->next, desc );
+            return p;
         }
+        if( mrk->host == p ) break;
+    }
 
-	if( mwFirstMark != NULL && !mwIsReadAddr( mwFirstMark, sizeof( mwMarker ) ) )
-	{
-		mwWrite("mark: %s(%d), mwFirstMark (%p) is trashed, can't mark for %s\n",
-			file, line, mwFirstMark, desc );
-		return p;
-	}
-
-    for( mrk=mwFirstMark; mrk; mrk=mrk->next )
-	{
-		if( mrk->next != NULL && !mwIsReadAddr( mrk->next, sizeof( mwMarker ) ) )
-		{
-			mwWrite("mark: %s(%d), mark(%p)->next(%p) is trashed, can't mark for %s\n",
-				file, line, mrk, mrk->next, desc );
-			return p;
-		}
-		if( mrk->host == p ) break;
-	}
-
-    if( mrk == NULL ) {
+    if( mrk == NULL )
+    {
         isnew = 1;
-        mrk = (mwMarker*) malloc( sizeof( mwMarker ) );
-        if( mrk == NULL ) {
+        mrk = (mwMarker *) malloc( sizeof( mwMarker ) );
+        if( mrk == NULL )
+        {
             mwWrite("mark: %s(%d), no mark for %p:'%s', out of memory\n", file, line, p, desc );
             return p;
-            }
-		mrk->next = NULL;
-        n = 0;
         }
-    else {
+        mrk->next = NULL;
+        n = 0;
+    }
+    else
+    {
         isnew = 0;
         n = strlen( mrk->text );
-        }
+    }
 
     n += strlen( wherebuf );
-    buf = (char*) malloc( n+3 );
-    if( buf == NULL ) {
+    buf = (char *) malloc( n + 3 );
+    if( buf == NULL )
+    {
         if( isnew ) free( mrk );
         mwWrite("mark: %s(%d), no mark for %p:'%s', out of memory\n", file, line, p, desc );
         return p;
-        }
+    }
 
-    if( isnew ) {
-        memcpy( buf, wherebuf, n+1 );
+    if( isnew )
+    {
+        memcpy( buf, wherebuf, n + 1 );
         mrk->next = mwFirstMark;
         mrk->host = p;
         mrk->text = buf;
         mrk->level = 1;
         mwFirstMark = mrk;
-        }
-    else {
+    }
+    else
+    {
         strcpy( buf, mrk->text );
         strcat( buf, ", " );
         strcat( buf, wherebuf );
         free( mrk->text );
         mrk->text = buf;
         mrk->level ++;
-        }
-
-    if( oflow ) {
-        mwIncErr();
-        mwTrace( " [WARNING: OUTPUT BUFFER OVERFLOW - SYSTEM UNSTABLE]\n" );
-        }
-    return p;
     }
 
-void* mwUnmark( void *p, const char *file, unsigned line ) {
+    if( oflow )
+    {
+        mwIncErr();
+        mwTrace( " [WARNING: OUTPUT BUFFER OVERFLOW - SYSTEM UNSTABLE]\n" );
+    }
+    return p;
+}
+
+void *mwUnmark( void *p, const char *file, unsigned line )
+{
     mwMarker *mrk, *prv;
     mrk = mwFirstMark;
     prv = NULL;
-    while( mrk ) {
-        if( mrk->host == p ) {
-            if( mrk->level < 2 ) {
+    while( mrk )
+    {
+        if( mrk->host == p )
+        {
+            if( mrk->level < 2 )
+            {
                 if( prv ) prv->next = mrk->next;
                 else mwFirstMark = mrk->next;
                 free( mrk->text );
                 free( mrk );
                 return p;
-                }
+            }
             mrk->level --;
             return p;
-            }
+        }
         prv = mrk;
         mrk = mrk->next;
-        }
+    }
     mwWrite("mark: %s(%d), no mark found for %p\n", file, line, p );
     return p;
-    }
+}
 
 
 /***********************************************************************
 ** Abort/Retry/Ignore handlers
 ***********************************************************************/
 
-static int mwARI( const char *estr ) {
+static int mwARI( const char *estr )
+{
     char inbuf[81];
     int c;
     fprintf(mwSTDERR, "\n%s\nMEMWATCH: Abort, Retry or Ignore? ", estr);
-    (void) fgets(inbuf,sizeof(inbuf),stdin);
-	for( c=0; inbuf[c] && inbuf[c] <= ' '; c++ ) ;
+    (void) fgets(inbuf, sizeof(inbuf), stdin);
+    for( c = 0; inbuf[c] && inbuf[c] <= ' '; c++ ) ;
     c = inbuf[c];
-    if( c == 'R' || c == 'r' ) {
+    if( c == 'R' || c == 'r' )
+    {
         mwBreakOut( estr );
         return MW_ARI_RETRY;
-        }
+    }
     if( c == 'I' || c == 'i' ) return MW_ARI_IGNORE;
     return MW_ARI_ABORT;
-    }
+}
 
 /* standard ARI handler (exported) */
-int mwAriHandler( const char *estr ) {
+int mwAriHandler( const char *estr )
+{
     mwAutoInit();
     return mwARI( estr );
-    }
+}
 
 /* used to set the ARI function */
-void mwSetAriFunc( int (*func)(const char *) ) {
+void mwSetAriFunc( int (*func)(const char *) )
+{
     mwAutoInit();
     mwAriFunction = func;
-    }
+}
 
 /***********************************************************************
 ** Allocation handlers
 ***********************************************************************/
 
-void* mwMalloc( size_t size, const char* file, int line) {
+void *mwMalloc( size_t size, const char *file, int line)
+{
     size_t needed;
     mwData *mw;
     char *ptr;
@@ -868,47 +917,52 @@ void* mwMalloc( size_t size, const char* file, int line) {
 
     mwAutoInit();
 
-	MW_MUTEX_LOCK();
+    MW_MUTEX_LOCK();
 
-    TESTS(file,line);
+    TESTS(file, line);
 
     mwCounter ++;
-    needed = mwDataSize + mwOverflowZoneSize*2 + size;
+    needed = mwDataSize + mwOverflowZoneSize * 2 + size;
     if( needed < size )
     {
-    	/* theoretical case: req size + mw overhead exceeded size_t limits */
-    	return NULL;
+        /* theoretical case: req size + mw overhead exceeded size_t limits */
+        return NULL;
     }
 
     /* if this allocation would violate the limit, fail it */
-    if( mwUseLimit && ((long)size + mwStatCurAlloc > mwAllocLimit) ) {
+    if( mwUseLimit && ((long)size + mwStatCurAlloc > mwAllocLimit) )
+    {
         mwWrite( "limit fail: <%ld> %s(%d), %ld wanted %ld available\n",
-            mwCounter, file, line, (long)size, mwAllocLimit - mwStatCurAlloc );
+                 mwCounter, file, line, (long)size, mwAllocLimit - mwStatCurAlloc );
         mwIncErr();
         FLUSH();
-		MW_MUTEX_UNLOCK();
+        MW_MUTEX_UNLOCK();
         return NULL;
-        }
+    }
 
-    mw = (mwData*) malloc( needed );
-    if( mw == NULL ) {
-        if( mwFreeUp(needed,0) >= needed ) {
-            mw = (mwData*) malloc(needed);
-            if( mw == NULL ) {
+    mw = (mwData *) malloc( needed );
+    if( mw == NULL )
+    {
+        if( mwFreeUp(needed, 0) >= needed )
+        {
+            mw = (mwData *) malloc(needed);
+            if( mw == NULL )
+            {
                 mwWrite( "internal: mwFreeUp(%u) reported success, but malloc() fails\n", needed );
                 mwIncErr();
                 FLUSH();
-                }
-            }
-        if( mw == NULL ) {
-            mwWrite( "fail: <%ld> %s(%d), %ld wanted %ld allocated\n",
-                mwCounter, file, line, (long)size, mwStatCurAlloc );
-            mwIncErr();
-            FLUSH();
-			MW_MUTEX_UNLOCK();
-            return NULL;
             }
         }
+        if( mw == NULL )
+        {
+            mwWrite( "fail: <%ld> %s(%d), %ld wanted %ld allocated\n",
+                     mwCounter, file, line, (long)size, mwStatCurAlloc );
+            mwIncErr();
+            FLUSH();
+            MW_MUTEX_UNLOCK();
+            return NULL;
+        }
+    }
 
     mw->count = mwCounter;
     mw->prev = NULL;
@@ -923,8 +977,8 @@ void* mwMalloc( size_t size, const char* file, int line) {
     mwHead = mw;
     if( mwTail == NULL ) mwTail = mw;
 
-    ptr = ((char*)mw) + mwDataSize;
-	mwWriteOF( ptr ); /* '*(long*)ptr = PRECHK;' */
+    ptr = ((char *)mw) + mwDataSize;
+    mwWriteOF( ptr ); /* '*(long*)ptr = PRECHK;' */
     ptr += mwOverflowZoneSize;
     p = ptr;
     memset( ptr, MW_VAL_NEW, size );
@@ -940,11 +994,12 @@ void* mwMalloc( size_t size, const char* file, int line) {
 
     if( mwStatLevel ) mwStatAlloc( size, file, line );
 
-	MW_MUTEX_UNLOCK();
+    MW_MUTEX_UNLOCK();
     return p;
-    }
+}
 
-void* mwRealloc( void *p, size_t size, const char* file, int line) {
+void *mwRealloc( void *p, size_t size, const char *file, int line)
+{
     int oldUseLimit, i;
     mwData *mw;
     char *ptr;
@@ -952,145 +1007,160 @@ void* mwRealloc( void *p, size_t size, const char* file, int line) {
     mwAutoInit();
 
     if( p == NULL ) return mwMalloc( size, file, line );
-    if( size == 0 ) { mwFree( p, file, line ); return NULL; }
+    if( size == 0 )
+    {
+        mwFree( p, file, line );
+        return NULL;
+    }
 
-	MW_MUTEX_LOCK();
+    MW_MUTEX_LOCK();
 
     /* do the quick ownership test */
-    mw = (mwData*) mwBUFFER_TO_MW( p );
-    if( mwIsOwned( mw, file, line ) ) {
+    mw = (mwData *) mwBUFFER_TO_MW( p );
+    if( mwIsOwned( mw, file, line ) )
+    {
 
-		/* if the buffer is an NML, treat this as a double-free */
-		if( mw->flag & MW_NML )
-		{
+        /* if the buffer is an NML, treat this as a double-free */
+        if( mw->flag & MW_NML )
+        {
             mwIncErr();
-			if( *((unsigned char*)(mw)+mwDataSize+mwOverflowZoneSize) != MW_VAL_NML )
-			{
-				mwWrite( "internal: <%ld> %s(%d), no-mans-land MW-%p is corrupted\n",
-					mwCounter, file, line, mw );
-			}
-			goto check_dbl_free;
-		}
+            if( *((unsigned char *)(mw) + mwDataSize + mwOverflowZoneSize) != MW_VAL_NML )
+            {
+                mwWrite( "internal: <%ld> %s(%d), no-mans-land MW-%p is corrupted\n",
+                         mwCounter, file, line, mw );
+            }
+            goto check_dbl_free;
+        }
 
         /* if this allocation would violate the limit, fail it */
-        if( mwUseLimit && ((long)size + mwStatCurAlloc - (long)mw->size > mwAllocLimit) ) {
-            TESTS(file,line);
+        if( mwUseLimit && ((long)size + mwStatCurAlloc - (long)mw->size > mwAllocLimit) )
+        {
+            TESTS(file, line);
             mwCounter ++;
             mwWrite( "limit fail: <%ld> %s(%d), %ld wanted %ld available\n",
-                mwCounter, file, line, (unsigned long)size - mw->size, mwAllocLimit - mwStatCurAlloc );
+                     mwCounter, file, line, (unsigned long)size - mw->size, mwAllocLimit - mwStatCurAlloc );
             mwIncErr();
             FLUSH();
-			MW_MUTEX_UNLOCK();
+            MW_MUTEX_UNLOCK();
             return NULL;
-            }
+        }
 
         /* fake realloc operation */
         oldUseLimit = mwUseLimit;
         mwUseLimit = 0;
-        ptr = (char*) mwMalloc( size, file, line );
-        if( ptr != NULL ) {
+        ptr = (char *) mwMalloc( size, file, line );
+        if( ptr != NULL )
+        {
             if( size < mw->size )
                 memcpy( ptr, p, size );
             else
                 memcpy( ptr, p, mw->size );
             mwFree( p, file, line );
-            }
-        mwUseLimit = oldUseLimit;
-		MW_MUTEX_UNLOCK();
-        return (void*) ptr;
         }
+        mwUseLimit = oldUseLimit;
+        MW_MUTEX_UNLOCK();
+        return (void *) ptr;
+    }
 
     /* Unknown pointer! */
 
     /* using free'd pointer? */
 check_dbl_free:
-    for(i=0;i<MW_FREE_LIST;i++) {
-        if( mwLastFree[i] == p ) {
+    for(i = 0; i < MW_FREE_LIST; i++)
+    {
+        if( mwLastFree[i] == p )
+        {
             mwIncErr();
             mwWrite( "realloc: <%ld> %s(%d), %p was"
-                " freed from %s(%d)\n",
-                mwCounter, file, line, p,
-                mwLFfile[i], mwLFline[i] );
+                     " freed from %s(%d)\n",
+                     mwCounter, file, line, p,
+                     mwLFfile[i], mwLFline[i] );
             FLUSH();
-			MW_MUTEX_UNLOCK();
+            MW_MUTEX_UNLOCK();
             return NULL;
-            }
         }
+    }
 
     /* some weird pointer */
     mwIncErr();
     mwWrite( "realloc: <%ld> %s(%d), unknown pointer %p\n",
-        mwCounter, file, line, p );
+             mwCounter, file, line, p );
     FLUSH();
-	MW_MUTEX_UNLOCK();
+    MW_MUTEX_UNLOCK();
     return NULL;
-    }
+}
 
-char *mwStrdup( const char* str, const char* file, int line ) {
+char *mwStrdup( const char *str, const char *file, int line )
+{
     size_t len;
     char *newstring;
 
-	MW_MUTEX_LOCK();
+    MW_MUTEX_LOCK();
 
-    if( str == NULL ) {
+    if( str == NULL )
+    {
         mwIncErr();
         mwWrite( "strdup: <%ld> %s(%d), strdup(NULL) called\n",
-            mwCounter, file, line );
+                 mwCounter, file, line );
         FLUSH();
-		MW_MUTEX_UNLOCK();
+        MW_MUTEX_UNLOCK();
         return NULL;
-        }
-
-    len = strlen( str ) + 1;
-    newstring = (char*) mwMalloc( len, file, line );
-    if( newstring != NULL ) memcpy( newstring, str, len );
-	MW_MUTEX_UNLOCK();
-    return newstring;
     }
 
-void mwFree( void* p, const char* file, int line ) {
+    len = strlen( str ) + 1;
+    newstring = (char *) mwMalloc( len, file, line );
+    if( newstring != NULL ) memcpy( newstring, str, len );
+    MW_MUTEX_UNLOCK();
+    return newstring;
+}
+
+void mwFree( void *p, const char *file, int line )
+{
     int i;
-    mwData* mw;
+    mwData *mw;
     char buffer[ sizeof(mwData) + (mwROUNDALLOC*3) + 64 ];
 
     /* this code is in support of C++ delete */
-    if( file == NULL ) {
+    if( file == NULL )
+    {
         mwFree_( p );
-		MW_MUTEX_UNLOCK();
+        MW_MUTEX_UNLOCK();
         return;
-        }
+    }
 
     mwAutoInit();
 
-	MW_MUTEX_LOCK();
-    TESTS(file,line);
+    MW_MUTEX_LOCK();
+    TESTS(file, line);
     mwCounter ++;
 
     /* on NULL free, write a warning and return */
-    if( p == NULL ) {
+    if( p == NULL )
+    {
         mwWrite( "NULL free: <%ld> %s(%d), NULL pointer free'd\n",
-            mwCounter, file, line );
+                 mwCounter, file, line );
         FLUSH();
-		MW_MUTEX_UNLOCK();
+        MW_MUTEX_UNLOCK();
         return;
-        }
+    }
 
     /* do the quick ownership test */
-    mw = (mwData*) mwBUFFER_TO_MW( p );
+    mw = (mwData *) mwBUFFER_TO_MW( p );
 
-    if( mwIsOwned( mw, file, line ) ) {
+    if( mwIsOwned( mw, file, line ) )
+    {
         (void) mwTestBuf( mw, file, line );
 
-		/* if the buffer is an NML, treat this as a double-free */
-		if( mw->flag & MW_NML )
-		{
-			if( *(((unsigned char*)mw)+mwDataSize+mwOverflowZoneSize) != MW_VAL_NML )
-			{
-				mwWrite( "internal: <%ld> %s(%d), no-mans-land MW-%p is corrupted\n",
-					mwCounter, file, line, mw );
-			}
-			goto check_dbl_free;
-		}
+        /* if the buffer is an NML, treat this as a double-free */
+        if( mw->flag & MW_NML )
+        {
+            if( *(((unsigned char *)mw) + mwDataSize + mwOverflowZoneSize) != MW_VAL_NML )
+            {
+                mwWrite( "internal: <%ld> %s(%d), no-mans-land MW-%p is corrupted\n",
+                         mwCounter, file, line, mw );
+            }
+            goto check_dbl_free;
+        }
 
         /* update the statistics */
         mwNumCurAlloc --;
@@ -1098,24 +1168,27 @@ void mwFree( void* p, const char* file, int line ) {
         if( mwStatLevel ) mwStatFree( mw->size, mw->file, mw->line );
 
         /* we should either free the allocation or keep it as NML */
-        if( mwNML ) {
+        if( mwNML )
+        {
             mw->flag |= MW_NML;
-			mwNmlNumAlloc ++;
-			mwNmlCurAlloc += (long) mw->size;
-            memset( ((char*)mw)+mwDataSize+mwOverflowZoneSize, MW_VAL_NML, mw->size );
-            }
-        else {
+            mwNmlNumAlloc ++;
+            mwNmlCurAlloc += (long) mw->size;
+            memset( ((char *)mw) + mwDataSize + mwOverflowZoneSize, MW_VAL_NML, mw->size );
+        }
+        else
+        {
             /* unlink the allocation, and enter the post-free data */
             mwUnlink( mw, file, line );
             memset( mw, MW_VAL_DEL,
-                mw->size + mwDataSize+mwOverflowZoneSize+mwOverflowZoneSize );
-            if( mwFBI ) {
+                    mw->size + mwDataSize + mwOverflowZoneSize + mwOverflowZoneSize );
+            if( mwFBI )
+            {
                 memset( mw, '.', mwDataSize + mwOverflowZoneSize );
                 sprintf( buffer, "FBI<%ld>%s(%d)", mwCounter, file, line );
-                strncpy( (char*)(void*)mw, buffer, mwDataSize + mwOverflowZoneSize );
-                }
-            free( mw );
+                strncpy( (char *)(void *)mw, buffer, mwDataSize + mwOverflowZoneSize );
             }
+            free( mw );
+        }
 
         /* add the pointer to the last-free track */
         mwLFfile[ mwLFcur ] = file;
@@ -1123,158 +1196,178 @@ void mwFree( void* p, const char* file, int line ) {
         mwLastFree[ mwLFcur++ ] = p;
         if( mwLFcur == MW_FREE_LIST ) mwLFcur = 0;
 
-		MW_MUTEX_UNLOCK();
+        MW_MUTEX_UNLOCK();
         return;
-        }
+    }
 
     /* check for double-freeing */
 check_dbl_free:
-    for(i=0;i<MW_FREE_LIST;i++) {
-        if( mwLastFree[i] == p ) {
+    for(i = 0; i < MW_FREE_LIST; i++)
+    {
+        if( mwLastFree[i] == p )
+        {
             mwIncErr();
             mwWrite( "double-free: <%ld> %s(%d), %p was"
-                " freed from %s(%d)\n",
-                mwCounter, file, line, p,
-                mwLFfile[i], mwLFline[i] );
+                     " freed from %s(%d)\n",
+                     mwCounter, file, line, p,
+                     mwLFfile[i], mwLFline[i] );
             FLUSH();
-			MW_MUTEX_UNLOCK();
+            MW_MUTEX_UNLOCK();
             return;
-            }
         }
+    }
 
     /* some weird pointer... block the free */
     mwIncErr();
     mwWrite( "WILD free: <%ld> %s(%d), unknown pointer %p\n",
-        mwCounter, file, line, p );
+             mwCounter, file, line, p );
     FLUSH();
-	MW_MUTEX_UNLOCK();
+    MW_MUTEX_UNLOCK();
     return;
-    }
+}
 
-void* mwCalloc( size_t a, size_t b, const char *file, int line ) {
+void *mwCalloc( size_t a, size_t b, const char *file, int line )
+{
     void *p;
     size_t size = a * b;
     p = mwMalloc( size, file, line );
     if( p == NULL ) return NULL;
     memset( p, 0, size );
     return p;
-    }
+}
 
-void mwFree_( void *p ) {
-	MW_MUTEX_LOCK();
-    TESTS(NULL,0);
-	MW_MUTEX_UNLOCK();
+void mwFree_( void *p )
+{
+    MW_MUTEX_LOCK();
+    TESTS(NULL, 0);
+    MW_MUTEX_UNLOCK();
     free(p);
-    }
+}
 
-void* mwMalloc_( size_t size ) {
-	MW_MUTEX_LOCK();
-    TESTS(NULL,0);
-	MW_MUTEX_UNLOCK();
+void *mwMalloc_( size_t size )
+{
+    MW_MUTEX_LOCK();
+    TESTS(NULL, 0);
+    MW_MUTEX_UNLOCK();
     return malloc( size );
-    }
+}
 
-void* mwRealloc_( void *p, size_t size ) {
-	MW_MUTEX_LOCK();
-    TESTS(NULL,0);
-	MW_MUTEX_UNLOCK();
+void *mwRealloc_( void *p, size_t size )
+{
+    MW_MUTEX_LOCK();
+    TESTS(NULL, 0);
+    MW_MUTEX_UNLOCK();
     return realloc( p, size );
-    }
+}
 
-void* mwCalloc_( size_t a, size_t b ) {
-	MW_MUTEX_LOCK();
-    TESTS(NULL,0);
-	MW_MUTEX_UNLOCK();
+void *mwCalloc_( size_t a, size_t b )
+{
+    MW_MUTEX_LOCK();
+    TESTS(NULL, 0);
+    MW_MUTEX_UNLOCK();
     return calloc( a, b );
-    }
+}
 
-void mwFlushNow( void ) {
+void mwFlushNow( void )
+{
     if( mwLogR() ) fflush( mwLogR() );
     return;
-    }
+}
 
-void mwDoFlush( int onoff ) {
-    mwFlushW( onoff<1?0:onoff );
+void mwDoFlush( int onoff )
+{
+    mwFlushW( onoff < 1 ? 0 : onoff );
     if( onoff ) if( mwLogR() ) fflush( mwLogR() );
     return;
-    }
+}
 
-void mwLimit( long lim ) {
-    TESTS(NULL,0);
+void mwLimit( long lim )
+{
+    TESTS(NULL, 0);
     mwWrite("limit: old limit = ");
     if( !mwAllocLimit ) mwWrite( "none" );
     else mwWrite( "%ld bytes", mwAllocLimit );
     mwWrite( ", new limit = ");
-    if( !lim ) {
+    if( !lim )
+    {
         mwWrite( "none\n" );
         mwUseLimit = 0;
-        }
-    else {
+    }
+    else
+    {
         mwWrite( "%ld bytes\n", lim );
         mwUseLimit = 1;
-        }
+    }
     mwAllocLimit = lim;
     FLUSH();
-    }
+}
 
-void mwSetAriAction( int action ) {
-	MW_MUTEX_LOCK();
-    TESTS(NULL,0);
+void mwSetAriAction( int action )
+{
+    MW_MUTEX_LOCK();
+    TESTS(NULL, 0);
     mwAriAction = action;
-	MW_MUTEX_UNLOCK();
+    MW_MUTEX_UNLOCK();
     return;
-    }
+}
 
-int mwAssert( int exp, const char *exps, const char *fn, int ln ) {
+int mwAssert( int exp, const char *exps, const char *fn, int ln )
+{
     int i;
     char buffer[MW_TRACE_BUFFER+8];
-    if( exp ) {
-    	return 0;
-    	}
+    if( exp )
+    {
+        return 0;
+    }
     mwAutoInit();
-	MW_MUTEX_LOCK();
-    TESTS(fn,ln);
+    MW_MUTEX_LOCK();
+    TESTS(fn, ln);
     mwIncErr();
     mwCounter++;
     mwWrite( "assert trap: <%ld> %s(%d), %s\n", mwCounter, fn, ln, exps );
-    if( mwAriFunction != NULL ) {
+    if( mwAriFunction != NULL )
+    {
         sprintf( buffer, "MEMWATCH: assert trap: %s(%d), %s", fn, ln, exps );
         i = (*mwAriFunction)(buffer);
-		switch( i ) {
-			case MW_ARI_IGNORE:
-	           	mwWrite( "assert trap: <%ld> IGNORED - execution continues\n", mwCounter );
-				MW_MUTEX_UNLOCK();
-    	        return 0;
-			case MW_ARI_RETRY:
-            	mwWrite( "assert trap: <%ld> RETRY - executing again\n", mwCounter );
-				MW_MUTEX_UNLOCK();
-            	return 1;
-			}
-        }
-    else {
-        if( mwAriAction & MW_ARI_IGNORE ) {
-            mwWrite( "assert trap: <%ld> AUTO IGNORED - execution continues\n", mwCounter );
-			MW_MUTEX_UNLOCK();
+        switch( i )
+        {
+        case MW_ARI_IGNORE:
+            mwWrite( "assert trap: <%ld> IGNORED - execution continues\n", mwCounter );
+            MW_MUTEX_UNLOCK();
             return 0;
-            }
-        fprintf(mwSTDERR,"\nMEMWATCH: assert trap: %s(%d), %s\n", fn, ln, exps );
+        case MW_ARI_RETRY:
+            mwWrite( "assert trap: <%ld> RETRY - executing again\n", mwCounter );
+            MW_MUTEX_UNLOCK();
+            return 1;
         }
+    }
+    else
+    {
+        if( mwAriAction & MW_ARI_IGNORE )
+        {
+            mwWrite( "assert trap: <%ld> AUTO IGNORED - execution continues\n", mwCounter );
+            MW_MUTEX_UNLOCK();
+            return 0;
+        }
+        fprintf(mwSTDERR, "\nMEMWATCH: assert trap: %s(%d), %s\n", fn, ln, exps );
+    }
 
     FLUSH();
     (void) mwTestNow( fn, ln, 1 );
     FLUSH();
 
-	if( mwAriAction & MW_ARI_NULLREAD ) {
-		/* This is made in an attempt to kick in */
-		/* any debuggers or OS stack traces */
-	    FLUSH();
-		/*lint -save -e413 */
-		i = *((int*)NULL);
-		mwDummy( (char)i );
-		/*lint -restore */
-		}
+    if( mwAriAction & MW_ARI_NULLREAD )
+    {
+        /* This is made in an attempt to kick in */
+        /* any debuggers or OS stack traces */
+        FLUSH();
+        /*lint -save -e413 */
+        i = *((int *)NULL);
+        mwDummy( (char)i );
+        /*lint -restore */
+    }
 
-	MW_MUTEX_UNLOCK();
+    MW_MUTEX_UNLOCK();
     exit(255);
     /* NOT REACHED - the return statement is in to keep */
     /* stupid compilers from squeaking about differing return modes. */
@@ -1282,164 +1375,191 @@ int mwAssert( int exp, const char *exps, const char *fn, int ln ) {
     /*lint -save -e527 */
     return 0;
     /*lint -restore */
-    }
+}
 
-int mwVerify( int exp, const char *exps, const char *fn, int ln ) {
+int mwVerify( int exp, const char *exps, const char *fn, int ln )
+{
     int i;
     char buffer[MW_TRACE_BUFFER+8];
-    if( exp ) {
-    	return 0;
-    	}
+    if( exp )
+    {
+        return 0;
+    }
     mwAutoInit();
-	MW_MUTEX_LOCK();
-    TESTS(fn,ln);
+    MW_MUTEX_LOCK();
+    TESTS(fn, ln);
     mwIncErr();
     mwCounter++;
     mwWrite( "verify trap: <%ld> %s(%d), %s\n", mwCounter, fn, ln, exps );
-    if( mwAriFunction != NULL ) {
+    if( mwAriFunction != NULL )
+    {
         sprintf( buffer, "MEMWATCH: verify trap: %s(%d), %s", fn, ln, exps );
         i = (*mwAriFunction)(buffer);
-        if( i == 0 ) {
+        if( i == 0 )
+        {
             mwWrite( "verify trap: <%ld> IGNORED - execution continues\n", mwCounter );
-			MW_MUTEX_UNLOCK();
+            MW_MUTEX_UNLOCK();
             return 0;
-            }
-        if( i == 1 ) {
-            mwWrite( "verify trap: <%ld> RETRY - executing again\n", mwCounter );
-			MW_MUTEX_UNLOCK();
-            return 1;
-            }
         }
-    else {
-        if( mwAriAction & MW_ARI_NULLREAD ) {
+        if( i == 1 )
+        {
+            mwWrite( "verify trap: <%ld> RETRY - executing again\n", mwCounter );
+            MW_MUTEX_UNLOCK();
+            return 1;
+        }
+    }
+    else
+    {
+        if( mwAriAction & MW_ARI_NULLREAD )
+        {
             /* This is made in an attempt to kick in */
             /* any debuggers or OS stack traces */
-		    FLUSH();
+            FLUSH();
             /*lint -save -e413 */
-            i = *((int*)NULL);
-			mwDummy( (char)i );
+            i = *((int *)NULL);
+            mwDummy( (char)i );
             /*lint -restore */
-            }
-        if( mwAriAction & MW_ARI_IGNORE ) {
-            mwWrite( "verify trap: <%ld> AUTO IGNORED - execution continues\n", mwCounter );
-			MW_MUTEX_UNLOCK();
-            return 0;
-            }
-        fprintf(mwSTDERR,"\nMEMWATCH: verify trap: %s(%d), %s\n", fn, ln, exps );
         }
+        if( mwAriAction & MW_ARI_IGNORE )
+        {
+            mwWrite( "verify trap: <%ld> AUTO IGNORED - execution continues\n", mwCounter );
+            MW_MUTEX_UNLOCK();
+            return 0;
+        }
+        fprintf(mwSTDERR, "\nMEMWATCH: verify trap: %s(%d), %s\n", fn, ln, exps );
+    }
     FLUSH();
     (void) mwTestNow( fn, ln, 1 );
     FLUSH();
-	MW_MUTEX_UNLOCK();
-	exit(255);
+    MW_MUTEX_UNLOCK();
+    exit(255);
     /* NOT REACHED - the return statement is in to keep */
     /* stupid compilers from squeaking about differing return modes. */
     /* Smart compilers instead say 'code unreachable...' */
     /*lint -save -e527 */
     return 0;
     /*lint -restore */
-    }
+}
 
-void mwTrace( const char *format, ... ) {
+void mwTrace( const char *format, ... )
+{
     int tot, oflow = 0;
     va_list mark;
 
     mwAutoInit();
-	MW_MUTEX_LOCK();
-    TESTS(NULL,0);
+    MW_MUTEX_LOCK();
+    TESTS(NULL, 0);
     if( mwOutFunction == NULL ) mwOutFunction = mwDefaultOutFunc;
 
     va_start( mark, format );
     tot = vsprintf( mwPrintBuf, format, mark );
     va_end( mark );
-    if( tot >= MW_TRACE_BUFFER ) { mwPrintBuf[MW_TRACE_BUFFER] = 0; oflow = 1; }
-    for(tot=0;mwPrintBuf[tot];tot++)
+    if( tot >= MW_TRACE_BUFFER )
+    {
+        mwPrintBuf[MW_TRACE_BUFFER] = 0;
+        oflow = 1;
+    }
+    for(tot = 0; mwPrintBuf[tot]; tot++)
         (*mwOutFunction)( mwPrintBuf[tot] );
-    if( oflow ) {
+    if( oflow )
+    {
         mwIncErr();
         mwTrace( " [WARNING: OUTPUT BUFFER OVERFLOW - SYSTEM UNSTABLE]\n" );
-        }
+    }
 
     FLUSH();
-	MW_MUTEX_UNLOCK();
-    }
+    MW_MUTEX_UNLOCK();
+}
 
 
 /***********************************************************************
 ** Grab & Drop
 ***********************************************************************/
 
-unsigned mwGrab( unsigned kb ) {
-    TESTS(NULL,0);
+unsigned mwGrab( unsigned kb )
+{
+    TESTS(NULL, 0);
     return mwGrab_( kb, MW_VAL_GRB, 0 );
-    }
+}
 
-unsigned mwDrop( unsigned kb ) {
-    TESTS(NULL,0);
+unsigned mwDrop( unsigned kb )
+{
+    TESTS(NULL, 0);
     return mwDrop_( kb, MW_VAL_GRB, 0 );
-    }
+}
 
-static void mwDropAll() {
-    TESTS(NULL,0);
+static void mwDropAll()
+{
+    TESTS(NULL, 0);
     (void) mwDrop_( 0, MW_VAL_GRB, 0 );
     (void) mwDrop_( 0, MW_VAL_NML, 0 );
     if( mwGrabList != NULL )
         mwWrite( "internal: the grab list is not empty after mwDropAll()\n");
-    }
+}
 
-static const char *mwGrabType( int type ) {
-    switch( type ) {
-        case MW_VAL_GRB:
-            return "grabbed";
-        case MW_VAL_NML:
-            return "no-mans-land";
-        default:
-            /* do nothing */
-            ;
-        }
+static const char *mwGrabType( int type )
+{
+    switch( type )
+    {
+    case MW_VAL_GRB:
+        return "grabbed";
+    case MW_VAL_NML:
+        return "no-mans-land";
+    default:
+        /* do nothing */
+        ;
+    }
     return "<unknown type>";
-    }
+}
 
-static unsigned mwGrab_( unsigned kb, int type, int silent ) {
+static unsigned mwGrab_( unsigned kb, int type, int silent )
+{
     unsigned i = kb;
     mwGrabData *gd;
     if( !kb ) i = kb = 65000U;
 
-    for(;kb;kb--) {
+    for(; kb; kb--)
+    {
         if( mwUseLimit &&
-            (mwStatCurAlloc + mwGrabSize + (long)sizeof(mwGrabData) > mwAllocLimit) ) {
-            if( !silent ) {
+                (mwStatCurAlloc + mwGrabSize + (long)sizeof(mwGrabData) > mwAllocLimit) )
+        {
+            if( !silent )
+            {
                 mwWrite("grabbed: all allowed memory to %s (%u kb)\n",
-                    mwGrabType(type), i-kb);
+                        mwGrabType(type), i - kb);
                 FLUSH();
-                }
-            return i-kb;
             }
-        gd = (mwGrabData*) malloc( sizeof(mwGrabData) );
-        if( gd == NULL ) {
-            if( !silent ) {
+            return i - kb;
+        }
+        gd = (mwGrabData *) malloc( sizeof(mwGrabData) );
+        if( gd == NULL )
+        {
+            if( !silent )
+            {
                 mwWrite("grabbed: all available memory to %s (%u kb)\n",
-                    mwGrabType(type), i-kb);
+                        mwGrabType(type), i - kb);
                 FLUSH();
-                }
-            return i-kb;
             }
+            return i - kb;
+        }
         mwGrabSize += (long) sizeof(mwGrabData);
         gd->next = mwGrabList;
         memset( gd->blob, type, sizeof(gd->blob) );
         gd->type = type;
         mwGrabList = gd;
-        }
-    if( !silent ) {
+    }
+    if( !silent )
+    {
         mwWrite("grabbed: %u kilobytes of %s memory\n", i, mwGrabType(type) );
         FLUSH();
-        }
-    return i;
     }
+    return i;
+}
 
-static unsigned mwDrop_( unsigned kb, int type, int silent ) {
+static unsigned mwDrop_( unsigned kb, int type, int silent )
+{
     unsigned i = kb;
-    mwGrabData *gd,*tmp,*pr;
+    mwGrabData *gd, *tmp, *pr;
     const void *p;
 
     if( mwGrabList == NULL && kb == 0 ) return 0;
@@ -1447,62 +1567,71 @@ static unsigned mwDrop_( unsigned kb, int type, int silent ) {
 
     pr = NULL;
     gd = mwGrabList;
-    for(;kb;) {
-        if( gd == NULL ) {
-            if( i-kb > 0 && !silent ) {
-                mwWrite("dropped: all %s memory (%u kb)\n", mwGrabType(type), i-kb);
+    for(; kb;)
+    {
+        if( gd == NULL )
+        {
+            if( i - kb > 0 && !silent )
+            {
+                mwWrite("dropped: all %s memory (%u kb)\n", mwGrabType(type), i - kb);
                 FLUSH();
-                }
-            return i-kb;
             }
-        if( gd->type == type ) {
+            return i - kb;
+        }
+        if( gd->type == type )
+        {
             if( pr ) pr->next = gd->next;
             kb --;
             tmp = gd;
             if( mwGrabList == gd ) mwGrabList = gd->next;
             gd = gd->next;
             p = mwTestMem( tmp->blob, sizeof( tmp->blob ), type );
-            if( p != NULL ) {
+            if( p != NULL )
+            {
                 mwWrite( "wild pointer: <%ld> %s memory hit at %p\n",
-                    mwCounter, mwGrabType(type), p );
+                         mwCounter, mwGrabType(type), p );
                 FLUSH();
-                }
+            }
             mwGrabSize -= (long) sizeof(mwGrabData);
             free( tmp );
-            }
-        else {
+        }
+        else
+        {
             pr = gd;
             gd = gd->next;
-            }
         }
-    if( !silent ) {
+    }
+    if( !silent )
+    {
         mwWrite("dropped: %u kilobytes of %s memory\n", i, mwGrabType(type) );
         FLUSH();
-        }
-    return i;
     }
+    return i;
+}
 
 /***********************************************************************
 ** No-Mans-Land
 ***********************************************************************/
 
-void mwNoMansLand( int level ) {
+void mwNoMansLand( int level )
+{
     mwAutoInit();
-    TESTS(NULL,0);
-    switch( level ) {
-        case MW_NML_NONE:
-            (void) mwDrop_( 0, MW_VAL_NML, 0 );
-            break;
-        case MW_NML_FREE:
-            break;
-        case MW_NML_ALL:
-            (void) mwGrab_( 0, MW_VAL_NML, 0 );
-            break;
-        default:
-            return;
-        }
-    mwNML = level;
+    TESTS(NULL, 0);
+    switch( level )
+    {
+    case MW_NML_NONE:
+        (void) mwDrop_( 0, MW_VAL_NML, 0 );
+        break;
+    case MW_NML_FREE:
+        break;
+    case MW_NML_ALL:
+        (void) mwGrab_( 0, MW_VAL_NML, 0 );
+        break;
+    default:
+        return;
     }
+    mwNML = level;
+}
 
 /***********************************************************************
 ** Static functions
@@ -1516,51 +1645,59 @@ static void mwAutoInit( void )
     return;
 }
 
-static FILE *mwLogR() {
+static FILE *mwLogR()
+{
     if( (mwLog == mwLogB1) && (mwLog == mwLogB2) ) return mwLog;
     if( mwLog == mwLogB1 ) mwLogB2 = mwLog;
     if( mwLog == mwLogB2 ) mwLogB1 = mwLog;
     if( mwLogB1 == mwLogB2 ) mwLog = mwLogB1;
-    if( (mwLog == mwLogB1) && (mwLog == mwLogB2) ) {
+    if( (mwLog == mwLogB1) && (mwLog == mwLogB2) )
+    {
         mwWrite("internal: log file handle damaged and recovered\n");
         FLUSH();
         return mwLog;
-        }
-    fprintf(mwSTDERR,"\nMEMWATCH: log file handle destroyed, using mwSTDERR\n" );
+    }
+    fprintf(mwSTDERR, "\nMEMWATCH: log file handle destroyed, using mwSTDERR\n" );
     mwLog = mwLogB1 = mwLogB2 = mwSTDERR;
     return mwSTDERR;
-    }
+}
 
-static void mwLogW( FILE *p ) {
+static void mwLogW( FILE *p )
+{
     mwLog = mwLogB1 = mwLogB2 = p;
-    }
+}
 
-static int mwFlushR() {
+static int mwFlushR()
+{
     if( (mwFlushing == mwFlushingB1) && (mwFlushing == mwFlushingB2) ) return mwFlushing;
     if( mwFlushing == mwFlushingB1 ) mwFlushingB2 = mwFlushing;
     if( mwFlushing == mwFlushingB2 ) mwFlushingB1 = mwFlushing;
     if( mwFlushingB1 == mwFlushingB2 ) mwFlushing = mwFlushingB1;
-    if( (mwFlushing == mwFlushingB1) && (mwFlushing == mwFlushingB2) ) {
+    if( (mwFlushing == mwFlushingB1) && (mwFlushing == mwFlushingB2) )
+    {
         mwWrite("internal: flushing flag damaged and recovered\n");
         FLUSH();
         return mwFlushing;
-        }
+    }
     mwWrite("internal: flushing flag destroyed, so set to true\n");
     mwFlushing = mwFlushingB1 = mwFlushingB2 = 1;
     return 1;
-    }
+}
 
-static void mwFlushW( int n ) {
+static void mwFlushW( int n )
+{
     mwFlushing = mwFlushingB1 = mwFlushingB2 = n;
-    }
+}
 
-static void mwIncErr() {
+static void mwIncErr()
+{
     mwErrors++;
-    mwFlushW( mwFlushR()+1 );
+    mwFlushW( mwFlushR() + 1 );
     FLUSH();
-    }
+}
 
-static void mwFlush() {
+static void mwFlush()
+{
     if( mwLogR() == NULL ) return;
 #ifdef MW_FLUSH
     fflush( mwLogR() );
@@ -1568,149 +1705,171 @@ static void mwFlush() {
     if( mwFlushR() ) fflush( mwLogR() );
 #endif
     return;
-    }
+}
 
-static void mwUnlink( mwData* mw, const char* file, int line ) {
-    if( mw->prev == NULL ) {
+static void mwUnlink( mwData *mw, const char *file, int line )
+{
+    if( mw->prev == NULL )
+    {
         if( mwHead != mw )
             mwWrite( "internal: <%ld> %s(%d), MW-%p: link1 NULL, but not head\n",
-                mwCounter, file, line, mw );
+                     mwCounter, file, line, mw );
         mwHead = mw->next;
-        }
-    else {
+    }
+    else
+    {
         if( mw->prev->next != mw )
             mwWrite( "internal: <%ld> %s(%d), MW-%p: link1 failure\n",
-                mwCounter, file, line, mw );
+                     mwCounter, file, line, mw );
         else mw->prev->next = mw->next;
-        }
-    if( mw->next == NULL ) {
+    }
+    if( mw->next == NULL )
+    {
         if( mwTail != mw )
             mwWrite( "internal: <%ld> %s(%d), MW-%p: link2 NULL, but not tail\n",
-                mwCounter, file, line, mw );
+                     mwCounter, file, line, mw );
         mwTail = mw->prev;
-        }
-    else {
+    }
+    else
+    {
         if( mw->next->prev != mw )
             mwWrite( "internal: <%ld> %s(%d), MW-%p: link2 failure\n",
-                mwCounter, file, line, mw );
+                     mwCounter, file, line, mw );
         else mw->next->prev = mw->prev;
-        }
     }
+}
 
 /*
 ** Relinking tries to repair a damaged mw block.
 ** Returns nonzero if it thinks it successfully
 ** repaired the heap chain.
 */
-static int mwRelink( mwData* mw, const char* file, int line ) {
+static int mwRelink( mwData *mw, const char *file, int line )
+{
     int fails;
     mwData *mw1, *mw2;
     long count, size;
     mwStat *ms;
 
-	if( file == NULL ) file = "unknown";
+    if( file == NULL ) file = "unknown";
 
-    if( mw == NULL ) {
+    if( mw == NULL )
+    {
         mwWrite("relink: cannot repair MW at NULL\n");
         FLUSH();
         goto emergency;
-        }
+    }
 
-    if( !mwIsSafeAddr(mw, mwDataSize) ) {
+    if( !mwIsSafeAddr(mw, mwDataSize) )
+    {
         mwWrite("relink: MW-%p is a garbage pointer\n", mw);
         FLUSH();
         goto emergency;
-        }
+    }
 
     mwWrite("relink: <%ld> %s(%d) attempting to repair MW-%p...\n", mwCounter, file, line, mw );
     FLUSH();
     fails = 0;
 
     /* Repair from head */
-    if( mwHead != mw ) {
-        if( !mwIsSafeAddr( mwHead, mwDataSize ) ) {
+    if( mwHead != mw )
+    {
+        if( !mwIsSafeAddr( mwHead, mwDataSize ) )
+        {
             mwWrite("relink: failed for MW-%p; head pointer destroyed\n", mw );
             FLUSH();
             goto emergency;
-            }
-        for( mw1=mwHead; mw1; mw1=mw1->next ) {
-            if( mw1->next == mw ) {
+        }
+        for( mw1 = mwHead; mw1; mw1 = mw1->next )
+        {
+            if( mw1->next == mw )
+            {
                 mw->prev = mw1;
                 break;
-                }
+            }
             if( mw1->next &&
-                ( !mwIsSafeAddr(mw1->next, mwDataSize ) || mw1->next->prev != mw1) ) {
+                    ( !mwIsSafeAddr(mw1->next, mwDataSize ) || mw1->next->prev != mw1) )
+            {
                 mwWrite("relink: failed for MW-%p; forward chain fragmented at MW-%p: 'next' is %p\n", mw, mw1, mw1->next );
                 FLUSH();
                 goto emergency;
-                }
             }
-        if( mw1 == NULL ) {
+        }
+        if( mw1 == NULL )
+        {
             mwWrite("relink: MW-%p not found in forward chain search\n", mw );
             FLUSH();
             fails ++;
-            }
         }
-	else
-	{
-		mwWrite( "relink: MW-%p is the head (first) allocation\n", mw );
-		if( mw->prev != NULL )
-		{
-			mwWrite( "relink: MW-%p prev pointer is non-NULL, you have a wild pointer\n", mw );
-			mw->prev = NULL;
-		}
-	}
+    }
+    else
+    {
+        mwWrite( "relink: MW-%p is the head (first) allocation\n", mw );
+        if( mw->prev != NULL )
+        {
+            mwWrite( "relink: MW-%p prev pointer is non-NULL, you have a wild pointer\n", mw );
+            mw->prev = NULL;
+        }
+    }
 
     /* Repair from tail */
-    if( mwTail != mw ) {
-        if( !mwIsSafeAddr( mwTail, mwDataSize ) ) {
+    if( mwTail != mw )
+    {
+        if( !mwIsSafeAddr( mwTail, mwDataSize ) )
+        {
             mwWrite("relink: failed for MW-%p; tail pointer destroyed\n", mw );
             FLUSH();
             goto emergency;
-            }
-        for( mw1=mwTail; mw1; mw1=mw1->prev ) {
-            if( mw1->prev == mw ) {
+        }
+        for( mw1 = mwTail; mw1; mw1 = mw1->prev )
+        {
+            if( mw1->prev == mw )
+            {
                 mw->next = mw1;
                 break;
-                }
-            if( mw1->prev && (!mwIsSafeAddr(mw1->prev, mwDataSize ) || mw1->prev->next != mw1) ) {
+            }
+            if( mw1->prev && (!mwIsSafeAddr(mw1->prev, mwDataSize ) || mw1->prev->next != mw1) )
+            {
                 mwWrite("relink: failed for MW-%p; reverse chain fragmented at MW-%p, 'prev' is %p\n", mw, mw1, mw1->prev );
                 FLUSH();
                 goto emergency;
-                }
             }
-        if( mw1 == NULL ) {
+        }
+        if( mw1 == NULL )
+        {
             mwWrite("relink: MW-%p not found in reverse chain search\n", mw );
             FLUSH();
             fails ++;
-            }
         }
-	else
-	{
-		mwWrite( "relink: MW-%p is the tail (last) allocation\n", mw );
-		if( mw->next != NULL )
-		{
-			mwWrite( "relink: MW-%p next pointer is non-NULL, you have a wild pointer\n", mw );
-			mw->next = NULL;
-		}
-	}
+    }
+    else
+    {
+        mwWrite( "relink: MW-%p is the tail (last) allocation\n", mw );
+        if( mw->next != NULL )
+        {
+            mwWrite( "relink: MW-%p next pointer is non-NULL, you have a wild pointer\n", mw );
+            mw->next = NULL;
+        }
+    }
 
-    if( fails > 1 ) {
+    if( fails > 1 )
+    {
         mwWrite("relink: heap appears intact, MW-%p probably garbage pointer\n", mw );
         FLUSH();
         goto verifyok;
-        }
+    }
 
     /* restore MW info where possible */
-    if( mwIsReadAddr( mw->file, 1 ) ) {
+    if( mwIsReadAddr( mw->file, 1 ) )
+    {
         ms = mwStatGet( mw->file, -1, 0 );
         if( ms == NULL ) mw->file = "<relinked>";
-        }
+    }
     mw->check = CHKVAL(mw);
     goto verifyok;
 
     /* Emergency repair */
-    emergency:
+emergency:
 
     if( mwHead == NULL && mwTail == NULL )
     {
@@ -1725,168 +1884,178 @@ static int mwRelink( mwData* mw, const char* file, int line ) {
     mwWrite("relink: <%ld> %s(%d) attempting emergency repairs...\n", mwCounter, file, line );
     FLUSH();
 
-	if( mwHead == NULL || mwTail == NULL )
-	{
-		if( mwHead == NULL ) mwWrite("relink: mwHead is NULL, but mwTail is %p\n", mwTail );
-		else mwWrite("relink: mwTail is NULL, but mwHead is %p\n", mwHead );
-	}
+    if( mwHead == NULL || mwTail == NULL )
+    {
+        if( mwHead == NULL ) mwWrite("relink: mwHead is NULL, but mwTail is %p\n", mwTail );
+        else mwWrite("relink: mwTail is NULL, but mwHead is %p\n", mwHead );
+    }
 
-    mw1=NULL;
+    mw1 = NULL;
     if( mwHead != NULL )
-	{
-		if( !mwIsReadAddr( mwHead, mwDataSize ) || mwHead->check != CHKVAL(mwHead) )
-		{
-			mwWrite("relink: mwHead (MW-%p) is damaged, skipping forward scan\n", mwHead );
-			mwHead = NULL;
-			goto scan_reverse;
-		}
-		if( mwHead->prev != NULL )
-		{
-			mwWrite("relink: the mwHead pointer's 'prev' member is %p, not NULL\n", mwHead->prev );
-		}
-        for( mw1=mwHead; mw1; mw1=mw1->next )
-		{
-			if( mw1->next )
-			{
-				if( !mwIsReadAddr(mw1->next,mwDataSize) ||
-					!mw1->next->check != CHKVAL(mw1) ||
-					mw1->next->prev != mw1 )
-				{
-					mwWrite("relink: forward chain's last intact MW is MW-%p, %ld %sbytes at %s(%d)\n",
-						mw1, mw1->size, (mw->flag & MW_NML)?"NoMansLand ":"", mw1->file, mw1->line );
-					if( mwIsReadAddr(mw1->next,mwDataSize ) )
-					{
-						mwWrite("relink: forward chain's first damaged MW is MW-%p, %ld %sbytes at %s(%d)\n",
-							mw1->next, mw1->size, (mw->flag & MW_NML)?"NoMansLand ":"",
-							mwIsReadAddr(mw1->file,16)?mw1->file:"<garbage-pointer>", mw1->line );
-					}
-					else
-					{
-						mwWrite("relink: the 'next' pointer of this MW points to %p, which is out-of-legal-access\n",
-							mw1->next );
-					}
-					break;
-				}
-			}
+    {
+        if( !mwIsReadAddr( mwHead, mwDataSize ) || mwHead->check != CHKVAL(mwHead) )
+        {
+            mwWrite("relink: mwHead (MW-%p) is damaged, skipping forward scan\n", mwHead );
+            mwHead = NULL;
+            goto scan_reverse;
         }
-	}
+        if( mwHead->prev != NULL )
+        {
+            mwWrite("relink: the mwHead pointer's 'prev' member is %p, not NULL\n", mwHead->prev );
+        }
+        for( mw1 = mwHead; mw1; mw1 = mw1->next )
+        {
+            if( mw1->next )
+            {
+                if( !mwIsReadAddr(mw1->next, mwDataSize) ||
+                        !mw1->next->check != CHKVAL(mw1) ||
+                        mw1->next->prev != mw1 )
+                {
+                    mwWrite("relink: forward chain's last intact MW is MW-%p, %ld %sbytes at %s(%d)\n",
+                            mw1, mw1->size, (mw->flag & MW_NML) ? "NoMansLand " : "", mw1->file, mw1->line );
+                    if( mwIsReadAddr(mw1->next, mwDataSize ) )
+                    {
+                        mwWrite("relink: forward chain's first damaged MW is MW-%p, %ld %sbytes at %s(%d)\n",
+                                mw1->next, mw1->size, (mw->flag & MW_NML) ? "NoMansLand " : "",
+                                mwIsReadAddr(mw1->file, 16) ? mw1->file : "<garbage-pointer>", mw1->line );
+                    }
+                    else
+                    {
+                        mwWrite("relink: the 'next' pointer of this MW points to %p, which is out-of-legal-access\n",
+                                mw1->next );
+                    }
+                    break;
+                }
+            }
+        }
+    }
 
 
 scan_reverse:
-    mw2=NULL;
+    mw2 = NULL;
     if( mwTail != NULL )
-	{
-		if( !mwIsReadAddr(mwTail,mwDataSize) || mwTail->check != CHKVAL(mwTail) )
-		{
-			mwWrite("relink: mwTail (%p) is damaged, skipping reverse scan\n", mwTail );
-			mwTail = NULL;
-			goto analyze;
-		}
-		if( mwTail->next != NULL )
-		{
-			mwWrite("relink: the mwTail pointer's 'next' member is %p, not NULL\n", mwTail->next );
-		}
-        for( mw2=mwTail; mw2; mw2=mw2->prev )
-		{
-            if( mw2->prev )
-			{
-				if( !mwIsReadAddr(mw2->prev,mwDataSize) ||
-					!mw2->prev->check != CHKVAL(mw2) ||
-					mw2->prev->next != mw2 )
-				{
-					mwWrite("relink: reverse chain's last intact MW is MW-%p, %ld %sbytes at %s(%d)\n",
-						mw2, mw2->size, (mw->flag & MW_NML)?"NoMansLand ":"", mw2->file, mw2->line );
-					if( mwIsReadAddr(mw2->prev,mwDataSize ) )
-					{
-						mwWrite("relink: reverse chain's first damaged MW is MW-%p, %ld %sbytes at %s(%d)\n",
-							mw2->prev, mw2->size, (mw->flag & MW_NML)?"NoMansLand ":"",
-							mwIsReadAddr(mw2->file,16)?mw2->file:"<garbage-pointer>", mw2->line );
-					}
-					else
-					{
-						mwWrite("relink: the 'prev' pointer of this MW points to %p, which is out-of-legal-access\n",
-							mw2->prev );
-					}
-					break;
-				}
-			}
+    {
+        if( !mwIsReadAddr(mwTail, mwDataSize) || mwTail->check != CHKVAL(mwTail) )
+        {
+            mwWrite("relink: mwTail (%p) is damaged, skipping reverse scan\n", mwTail );
+            mwTail = NULL;
+            goto analyze;
         }
-	}
+        if( mwTail->next != NULL )
+        {
+            mwWrite("relink: the mwTail pointer's 'next' member is %p, not NULL\n", mwTail->next );
+        }
+        for( mw2 = mwTail; mw2; mw2 = mw2->prev )
+        {
+            if( mw2->prev )
+            {
+                if( !mwIsReadAddr(mw2->prev, mwDataSize) ||
+                        !mw2->prev->check != CHKVAL(mw2) ||
+                        mw2->prev->next != mw2 )
+                {
+                    mwWrite("relink: reverse chain's last intact MW is MW-%p, %ld %sbytes at %s(%d)\n",
+                            mw2, mw2->size, (mw->flag & MW_NML) ? "NoMansLand " : "", mw2->file, mw2->line );
+                    if( mwIsReadAddr(mw2->prev, mwDataSize ) )
+                    {
+                        mwWrite("relink: reverse chain's first damaged MW is MW-%p, %ld %sbytes at %s(%d)\n",
+                                mw2->prev, mw2->size, (mw->flag & MW_NML) ? "NoMansLand " : "",
+                                mwIsReadAddr(mw2->file, 16) ? mw2->file : "<garbage-pointer>", mw2->line );
+                    }
+                    else
+                    {
+                        mwWrite("relink: the 'prev' pointer of this MW points to %p, which is out-of-legal-access\n",
+                                mw2->prev );
+                    }
+                    break;
+                }
+            }
+        }
+    }
 
 analyze:
-	if( mwHead == NULL && mwTail == NULL )
-	{
+    if( mwHead == NULL && mwTail == NULL )
+    {
         mwWrite("relink: both head and tail pointers damaged, aborting program\n");
         mwFlushW(1);
         FLUSH();
         abort();
-	}
-	if( mwHead == NULL )
-	{
-		mwHead = mw2;
-		mwWrite("relink: heap truncated, MW-%p designated as new mwHead\n", mw2 );
-		mw2->prev = NULL;
-		mw1 = mw2 = NULL;
-	}
-	if( mwTail == NULL )
-	{
-		mwTail = mw1;
-		mwWrite("relink: heap truncated, MW-%p designated as new mwTail\n", mw1 );
-		mw1->next = NULL;
-		mw1 = mw2 = NULL;
-	}
+    }
+    if( mwHead == NULL )
+    {
+        mwHead = mw2;
+        mwWrite("relink: heap truncated, MW-%p designated as new mwHead\n", mw2 );
+        mw2->prev = NULL;
+        mw1 = mw2 = NULL;
+    }
+    if( mwTail == NULL )
+    {
+        mwTail = mw1;
+        mwWrite("relink: heap truncated, MW-%p designated as new mwTail\n", mw1 );
+        mw1->next = NULL;
+        mw1 = mw2 = NULL;
+    }
     if( mw1 == NULL && mw2 == NULL &&
-        mwHead->prev == NULL && mwTail->next == NULL ) {
+            mwHead->prev == NULL && mwTail->next == NULL )
+    {
         mwWrite("relink: verifying heap integrity...\n" );
         FLUSH();
         goto verifyok;
-        }
-    if( mw1 && mw2 && mw1 != mw2 ) {
+    }
+    if( mw1 && mw2 && mw1 != mw2 )
+    {
         mw1->next = mw2;
         mw2->prev = mw1;
         mwWrite("relink: emergency repairs successful, assessing damage...\n");
         FLUSH();
-        }
-    else {
+    }
+    else
+    {
         mwWrite("relink: heap totally destroyed, aborting program\n");
         mwFlushW(1);
         FLUSH();
         abort();
-        }
+    }
 
     /* Verify by checking that the number of active allocations */
     /* match the number of entries in the chain */
 verifyok:
-    if( !mwIsHeapOK( NULL ) ) {
+    if( !mwIsHeapOK( NULL ) )
+    {
         mwWrite("relink: heap verification FAILS - aborting program\n");
         mwFlushW(1);
         FLUSH();
         abort();
-        }
-    for( size=count=0, mw1=mwHead; mw1; mw1=mw1->next ) {
+    }
+    for( size = count = 0, mw1 = mwHead; mw1; mw1 = mw1->next )
+    {
         count ++;
         size += (long) mw1->size;
-        }
-    if( count == mwNumCurAlloc ) {
+    }
+    if( count == mwNumCurAlloc )
+    {
         mwWrite("relink: successful, ");
-        if( size == mwStatCurAlloc ) {
+        if( size == mwStatCurAlloc )
+        {
             mwWrite("no allocations lost\n");
-            }
-        else {
-            if( mw != NULL ) {
+        }
+        else
+        {
+            if( mw != NULL )
+            {
                 mwWrite("size information lost for MW-%p\n", mw);
                 mw->size = 0;
-                }
             }
         }
-    else {
+    }
+    else
+    {
         mwWrite("relink: partial, %ld MW-blocks of %ld bytes lost\n",
-			mwNmlNumAlloc+mwNumCurAlloc-count, mwNmlCurAlloc+mwStatCurAlloc-size );
+                mwNmlNumAlloc + mwNumCurAlloc - count, mwNmlCurAlloc + mwStatCurAlloc - size );
         return 0;
-        }
+    }
 
     return 1;
-    }
+}
 
 /*
 **  If mwData* is NULL:
@@ -1896,30 +2065,35 @@ verifyok:
 **      Returns 0 if mwData* is missing or if chain is broken.
 **      Returns 1 if chain is intact and mwData* is found.
 */
-static int mwIsHeapOK( mwData *includes_mw ) {
+static int mwIsHeapOK( mwData *includes_mw )
+{
     int found = 0;
     mwData *mw;
 
-    for( mw = mwHead; mw; mw=mw->next ) {
+    for( mw = mwHead; mw; mw = mw->next )
+    {
         if( includes_mw == mw ) found++;
         if( !mwIsSafeAddr( mw, mwDataSize ) ) return 0;
-        if( mw->prev ) {
+        if( mw->prev )
+        {
             if( !mwIsSafeAddr( mw->prev, mwDataSize ) ) return 0;
-            if( mw==mwHead || mw->prev->next != mw ) return 0;
-            }
-        if( mw->next ) {
-            if( !mwIsSafeAddr( mw->next, mwDataSize ) ) return 0;
-            if( mw==mwTail || mw->next->prev != mw ) return 0;
-            }
-        else if( mw!=mwTail ) return 0;
+            if( mw == mwHead || mw->prev->next != mw ) return 0;
         }
+        if( mw->next )
+        {
+            if( !mwIsSafeAddr( mw->next, mwDataSize ) ) return 0;
+            if( mw == mwTail || mw->next->prev != mw ) return 0;
+        }
+        else if( mw != mwTail ) return 0;
+    }
 
     if( includes_mw != NULL && !found ) return 0;
 
     return 1;
-    }
+}
 
-static int mwIsOwned( mwData* mw, const char *file, int line ) {
+static int mwIsOwned( mwData *mw, const char *file, int line )
+{
     int retv;
     mwStat *ms;
 
@@ -1931,55 +2105,71 @@ static int mwIsOwned( mwData* mw, const char *file, int line ) {
         return 0;
 
     /* calculate checksum */
-    if( mw->check != CHKVAL(mw) ) {
+    if( mw->check != CHKVAL(mw) )
+    {
         /* may be damaged checksum, see if block is in heap */
-        if( mwIsHeapOK( mw ) ) {
+        if( mwIsHeapOK( mw ) )
+        {
             /* damaged checksum, repair it */
             mwWrite( "internal: <%ld> %s(%d), checksum for MW-%p is incorrect\n",
-                mwCounter, file, line, mw );
+                     mwCounter, file, line, mw );
             mwIncErr();
-            if( mwIsReadAddr( mw->file, 1 ) ) {
+            if( mwIsReadAddr( mw->file, 1 ) )
+            {
                 ms = mwStatGet( mw->file, -1, 0 );
                 if( ms == NULL ) mw->file = "<relinked>";
-                }
+            }
             else mw->file = "<unknown>";
             mw->size = 0;
             mw->check = CHKVAL(mw);
             return 1;
-            }
+        }
         /* no, it's just some garbage data */
         return 0;
-        }
+    }
 
-	/* check that the non-NULL pointers are safe */
-	if( mw->prev && !mwIsSafeAddr( mw->prev, mwDataSize ) ) mwRelink( mw, file, line );
-	if( mw->next && !mwIsSafeAddr( mw->next, mwDataSize ) ) mwRelink( mw, file, line );
+    /* check that the non-NULL pointers are safe */
+    if( mw->prev && !mwIsSafeAddr( mw->prev, mwDataSize ) ) mwRelink( mw, file, line );
+    if( mw->next && !mwIsSafeAddr( mw->next, mwDataSize ) ) mwRelink( mw, file, line );
 
     /* safe address, checksum OK, proceed with heap checks */
 
     /* see if the block is in the heap */
     retv = 0;
-    if( mw->prev ) { if( mw->prev->next == mw ) retv ++; }
-    else { if( mwHead == mw ) retv++; }
-    if( mw->next ) { if( mw->next->prev == mw ) retv ++; }
-    else { if( mwTail == mw ) retv++; }
+    if( mw->prev )
+    {
+        if( mw->prev->next == mw ) retv ++;
+    }
+    else
+    {
+        if( mwHead == mw ) retv++;
+    }
+    if( mw->next )
+    {
+        if( mw->next->prev == mw ) retv ++;
+    }
+    else
+    {
+        if( mwTail == mw ) retv++;
+    }
     if( mw->check == CHKVAL(mw) ) retv ++;
     if( retv > 2 ) return 1;
 
     /* block not in heap, check heap for corruption */
 
-    if( !mwIsHeapOK( mw ) ) {
+    if( !mwIsHeapOK( mw ) )
+    {
         if( mwRelink( mw, file, line ) )
             return 1;
-        }
+    }
 
     /* unable to repair */
     mwWrite( "internal: <%ld> %s(%d), mwIsOwned fails for MW-%p\n",
-       mwCounter, file, line, mw );
+             mwCounter, file, line, mw );
     mwIncErr();
 
     return 0;
-    }
+}
 
 /*
 ** mwTestBuf:
@@ -1987,62 +2177,71 @@ static int mwIsOwned( mwData* mw, const char *file, int line ) {
 **  Writes errors found to the log.
 **  Returns zero if no errors found.
 */
-static int mwTestBuf( mwData* mw, const char* file, int line ) {
+static int mwTestBuf( mwData *mw, const char *file, int line )
+{
     int retv = 0;
     char *p;
 
     if( file == NULL ) file = "unknown";
 
-    if( !mwIsSafeAddr( mw, mwDataSize + mwOverflowZoneSize ) ) {
+    if( !mwIsSafeAddr( mw, mwDataSize + mwOverflowZoneSize ) )
+    {
         mwWrite( "internal: <%ld> %s(%d): pointer MW-%p is invalid\n",
-            mwCounter, file, line, mw );
+                 mwCounter, file, line, mw );
         mwIncErr();
         return 2;
-        }
+    }
 
-    if( mw->check != CHKVAL(mw) ) {
+    if( mw->check != CHKVAL(mw) )
+    {
         mwWrite( "internal: <%ld> %s(%d), info trashed; relinking\n",
-            mwCounter, file, line );
+                 mwCounter, file, line );
         mwIncErr();
         if( !mwRelink( mw, file, line ) ) return 2;
-        }
+    }
 
-    if( mw->prev && mw->prev->next != mw ) {
+    if( mw->prev && mw->prev->next != mw )
+    {
         mwWrite( "internal: <%ld> %s(%d), buffer <%ld> %s(%d) link1 broken\n",
-            mwCounter,file,line, (long)mw->size, mw->count, mw->file, mw->line );
+                 mwCounter, file, line, (long)mw->size, mw->count, mw->file, mw->line );
         mwIncErr();
         if( !mwRelink( mw, file, line ) ) retv = 2;
-        }
-    if( mw->next && mw->next->prev != mw ) {
+    }
+    if( mw->next && mw->next->prev != mw )
+    {
         mwWrite( "internal: <%ld> %s(%d), buffer <%ld> %s(%d) link2 broken\n",
-            mwCounter,file,line, (long)mw->size, mw->count, mw->file, mw->line );
+                 mwCounter, file, line, (long)mw->size, mw->count, mw->file, mw->line );
         mwIncErr();
         if( !mwRelink( mw, file, line ) ) retv = 2;
-        }
+    }
 
-    p = ((char*)mw) + mwDataSize;
-    if( mwCheckOF( p ) ) {
+    p = ((char *)mw) + mwDataSize;
+    if( mwCheckOF( p ) )
+    {
         mwWrite( "underflow: <%ld> %s(%d), %ld bytes alloc'd at <%ld> %s(%d)\n",
-            mwCounter,file,line, (long)mw->size, mw->count, mw->file, mw->line );
+                 mwCounter, file, line, (long)mw->size, mw->count, mw->file, mw->line );
         mwIncErr();
         retv = 1;
-        }
+    }
     p += mwOverflowZoneSize + mw->size;
-    if( mwIsReadAddr( p, mwOverflowZoneSize ) && mwCheckOF( p ) ) {
+    if( mwIsReadAddr( p, mwOverflowZoneSize ) && mwCheckOF( p ) )
+    {
         mwWrite( "overflow: <%ld> %s(%d), %ld bytes alloc'd at <%ld> %s(%d)\n",
-            mwCounter,file,line, (long)mw->size, mw->count, mw->file, mw->line );
+                 mwCounter, file, line, (long)mw->size, mw->count, mw->file, mw->line );
         mwIncErr();
         retv = 1;
-        }
+    }
 
     return retv;
-    }
+}
 
-static void mwDefaultOutFunc( int c ) {
+static void mwDefaultOutFunc( int c )
+{
     if( mwLogR() ) fputc( c, mwLogR() );
-    }
+}
 
-static void mwWrite( const char *format, ... ) {
+static void mwWrite( const char *format, ... )
+{
     int tot, oflow = 0;
     va_list mark;
     mwAutoInit();
@@ -2050,28 +2249,35 @@ static void mwWrite( const char *format, ... ) {
     va_start( mark, format );
     tot = vsprintf( mwPrintBuf, format, mark );
     va_end( mark );
-    if( tot >= MW_TRACE_BUFFER ) { mwPrintBuf[MW_TRACE_BUFFER] = 0; oflow = 1; }
-    for(tot=0;mwPrintBuf[tot];tot++)
-        (*mwOutFunction)( mwPrintBuf[tot] );
-    if( oflow ) {
-        mwWrite( "\ninternal: mwWrite(): WARNING! OUTPUT EXCEEDED %u CHARS: SYSTEM UNSTABLE\n", MW_TRACE_BUFFER-1 );
-        FLUSH();
-        }
-    return;
+    if( tot >= MW_TRACE_BUFFER )
+    {
+        mwPrintBuf[MW_TRACE_BUFFER] = 0;
+        oflow = 1;
     }
+    for(tot = 0; mwPrintBuf[tot]; tot++)
+        (*mwOutFunction)( mwPrintBuf[tot] );
+    if( oflow )
+    {
+        mwWrite( "\ninternal: mwWrite(): WARNING! OUTPUT EXCEEDED %u CHARS: SYSTEM UNSTABLE\n", MW_TRACE_BUFFER - 1 );
+        FLUSH();
+    }
+    return;
+}
 
-static void mwLogFile( const char *name ) {
+static void mwLogFile( const char *name )
+{
     time_t tid;
     (void) time( &tid );
-    if( mwLogR() != NULL ) {
+    if( mwLogR() != NULL )
+    {
         fclose( mwLogR() );
         mwLogW( NULL );
-        }
+    }
     if( name == NULL ) return;
     mwLogW( fopen( name, "a" COMMIT ) );
     if( mwLogR() == NULL )
         mwWrite( "logfile: failed to open/create file '%s'\n", name );
-    }
+}
 
 /*
 ** Try to free NML memory until a contiguous allocation of
@@ -2079,31 +2285,36 @@ static void mwLogFile( const char *name ) {
 ** and the 'urgent' parameter is nonzero, grabbed memory is
 ** also freed.
 */
-static size_t mwFreeUp( size_t needed, int urgent ) {
+static size_t mwFreeUp( size_t needed, int urgent )
+{
     void *p;
     mwData *mw, *mw2;
     char *data;
 
     /* free grabbed NML memory */
-    for(;;) {
+    for(;;)
+    {
         if( mwDrop_( 1, MW_VAL_NML, 1 ) == 0 ) break;
         p = malloc( needed );
         if( p == NULL ) continue;
         free( p );
         return needed;
-        }
+    }
 
     /* free normal NML memory */
     mw = mwHead;
-    while( mw != NULL ) {
+    while( mw != NULL )
+    {
         if( !(mw->flag & MW_NML) ) mw = mw->next;
-        else {
-            data = ((char*)mw)+mwDataSize+mwOverflowZoneSize;
-            if( mwTestMem( data, mw->size, MW_VAL_NML ) ) {
+        else
+        {
+            data = ((char *)mw) + mwDataSize + mwOverflowZoneSize;
+            if( mwTestMem( data, mw->size, MW_VAL_NML ) )
+            {
                 mwIncErr();
                 mwWrite( "wild pointer: <%ld> NoMansLand %p alloc'd at %s(%d)\n",
-                    mw->count, data + mwOverflowZoneSize, mw->file, mw->line );
-                }
+                         mw->count, data + mwOverflowZoneSize, mw->file, mw->line );
+            }
             mw2 = mw->next;
             mwUnlink( mw, "mwFreeUp", 0 );
             free( mw );
@@ -2112,126 +2323,153 @@ static size_t mwFreeUp( size_t needed, int urgent ) {
             if( p == NULL ) continue;
             free( p );
             return needed;
-            }
         }
+    }
 
     /* if not urgent (for internal purposes), fail */
     if( !urgent ) return 0;
 
     /* free grabbed memory */
-    for(;;) {
+    for(;;)
+    {
         if( mwDrop_( 1, MW_VAL_GRB, 1 ) == 0 ) break;
         p = malloc( needed );
         if( p == NULL ) continue;
         free( p );
         return needed;
-        }
-
-    return 0;
     }
 
-static const void * mwTestMem( const void *p, unsigned len, int c ) {
+    return 0;
+}
+
+static const void *mwTestMem( const void *p, unsigned len, int c )
+{
     const unsigned char *ptr;
     ptr = (const unsigned char *) p;
-    while( len-- ) {
-        if( *ptr != (unsigned char)c ) return (const void*)ptr;
+    while( len-- )
+    {
+        if( *ptr != (unsigned char)c ) return (const void *)ptr;
         ptr ++;
-        }
+    }
     return NULL;
-    }
+}
 
-static int mwStrCmpI( const char *s1, const char *s2 ) {
+static int mwStrCmpI( const char *s1, const char *s2 )
+{
     if( s1 == NULL || s2 == NULL ) return 0;
-    while( *s1 ) {
-        if( toupper(*s2) == toupper(*s1) ) { s1++; s2++; continue; }
-        return 1;
+    while( *s1 )
+    {
+        if( toupper(*s2) == toupper(*s1) )
+        {
+            s1++;
+            s2++;
+            continue;
         }
-    return 0;
+        return 1;
     }
+    return 0;
+}
 
 #define AIPH() if( always_invoked ) { mwWrite("autocheck: <%ld> %s(%d) ", mwCounter, file, line ); always_invoked = 0; }
 
-static int mwTestNow( const char *file, int line, int always_invoked ) {
+static int mwTestNow( const char *file, int line, int always_invoked )
+{
     int retv = 0;
     mwData *mw;
     char *data;
 
     if( file && !always_invoked )
         mwWrite("check: <%ld> %s(%d), checking %s%s%s\n",
-            mwCounter, file, line,
-			(mwTestFlags & MW_TEST_CHAIN) ? "chain ": "",
-		    (mwTestFlags & MW_TEST_ALLOC) ? "alloc ": "",
-		    (mwTestFlags & MW_TEST_NML) ? "nomansland ": ""
-			);
+                mwCounter, file, line,
+                (mwTestFlags & MW_TEST_CHAIN) ? "chain " : "",
+                (mwTestFlags & MW_TEST_ALLOC) ? "alloc " : "",
+                (mwTestFlags & MW_TEST_NML) ? "nomansland " : ""
+               );
 
-    if( mwTestFlags & MW_TEST_CHAIN ) {
-        for( mw = mwHead; mw; mw=mw->next ) {
-			if( !mwIsSafeAddr(mw, mwDataSize) ) {
-				AIPH();
-				mwWrite("check: heap corruption detected\n");
-				mwIncErr();
-				return retv + 1;
-				}
-			if( mw->prev ) {
-				if( !mwIsSafeAddr(mw->prev, mwDataSize) ) {
-					AIPH();
-					mwWrite("check: heap corruption detected\n");
-					mwIncErr();
-					return retv + 1;
-					}
-				if( mw==mwHead || mw->prev->next != mw ) {
-					AIPH();
-					mwWrite("check: heap chain broken, prev link incorrect\n");
-					mwIncErr();
-					retv ++;
-					}
-				}
-			if( mw->next ) {
-				if( !mwIsSafeAddr(mw->next, mwDataSize) ) {
-					AIPH();
-					mwWrite("check: heap corruption detected\n");
-					mwIncErr();
-					return retv + 1;
-					}
-				if( mw==mwTail || mw->next->prev != mw ) {
-					AIPH();
-					mwWrite("check: heap chain broken, next link incorrect\n");
-					mwIncErr();
-					retv ++;
-					}
-				}
-			else if( mw!=mwTail ) {
-				AIPH();
-				mwWrite("check: heap chain broken, tail incorrect\n");
-				mwIncErr();
-				retv ++;
-				}
+    if( mwTestFlags & MW_TEST_CHAIN )
+    {
+        for( mw = mwHead; mw; mw = mw->next )
+        {
+            if( !mwIsSafeAddr(mw, mwDataSize) )
+            {
+                AIPH();
+                mwWrite("check: heap corruption detected\n");
+                mwIncErr();
+                return retv + 1;
+            }
+            if( mw->prev )
+            {
+                if( !mwIsSafeAddr(mw->prev, mwDataSize) )
+                {
+                    AIPH();
+                    mwWrite("check: heap corruption detected\n");
+                    mwIncErr();
+                    return retv + 1;
+                }
+                if( mw == mwHead || mw->prev->next != mw )
+                {
+                    AIPH();
+                    mwWrite("check: heap chain broken, prev link incorrect\n");
+                    mwIncErr();
+                    retv ++;
+                }
+            }
+            if( mw->next )
+            {
+                if( !mwIsSafeAddr(mw->next, mwDataSize) )
+                {
+                    AIPH();
+                    mwWrite("check: heap corruption detected\n");
+                    mwIncErr();
+                    return retv + 1;
+                }
+                if( mw == mwTail || mw->next->prev != mw )
+                {
+                    AIPH();
+                    mwWrite("check: heap chain broken, next link incorrect\n");
+                    mwIncErr();
+                    retv ++;
+                }
+            }
+            else if( mw != mwTail )
+            {
+                AIPH();
+                mwWrite("check: heap chain broken, tail incorrect\n");
+                mwIncErr();
+                retv ++;
             }
         }
-    if( mwTestFlags & MW_TEST_ALLOC ) {
-        for( mw = mwHead; mw; mw=mw->next ) {
+    }
+    if( mwTestFlags & MW_TEST_ALLOC )
+    {
+        for( mw = mwHead; mw; mw = mw->next )
+        {
             if( mwTestBuf( mw, file, line ) ) retv ++;
-            }
         }
-    if( mwTestFlags & MW_TEST_NML ) {
-        for( mw = mwHead; mw; mw=mw->next ) {
-            if( (mw->flag & MW_NML) ) {
-                data = ((char*)mw)+mwDataSize+mwOverflowZoneSize;
-                if( mwTestMem( data, mw->size, MW_VAL_NML ) ) {
+    }
+    if( mwTestFlags & MW_TEST_NML )
+    {
+        for( mw = mwHead; mw; mw = mw->next )
+        {
+            if( (mw->flag & MW_NML) )
+            {
+                data = ((char *)mw) + mwDataSize + mwOverflowZoneSize;
+                if( mwTestMem( data, mw->size, MW_VAL_NML ) )
+                {
                     mwIncErr();
                     mwWrite( "wild pointer: <%ld> NoMansLand %p alloc'd at %s(%d)\n",
-                        mw->count, data + mwOverflowZoneSize, mw->file, mw->line );
-                    }
+                             mw->count, data + mwOverflowZoneSize, mw->file, mw->line );
                 }
             }
         }
-
-
-	if( file && !always_invoked && !retv )
-        mwWrite("check: <%ld> %s(%d), complete; no errors\n",
-            mwCounter, file, line );
-    return retv;
     }
+
+
+    if( file && !always_invoked && !retv )
+        mwWrite("check: <%ld> %s(%d), complete; no errors\n",
+                mwCounter, file, line );
+    return retv;
+}
 
 /**********************************************************************
 ** Statistics
@@ -2239,7 +2477,7 @@ static int mwTestNow( const char *file, int line, int always_invoked ) {
 
 static void mwStatReport()
 {
-    mwStat* ms, *ms2;
+    mwStat *ms, *ms2;
     const char *modname;
     int modnamelen;
 
@@ -2256,62 +2494,67 @@ static void mwStatReport()
     /* on a per-module basis */
     mwWrite( "\nMemory usage statistics (detailed):\n");
     mwWrite( " Module/Line                                Number   Largest  Total    Unfreed \n");
-    for( ms=mwStatList; ms; ms=ms->next )
+    for( ms = mwStatList; ms; ms = ms->next )
     {
         if( ms->line == -1 )
         {
-			if( ms->file == NULL || !mwIsReadAddr(ms->file,22) ) modname = "<unknown>";
-			else modname = ms->file;
-			modnamelen = strlen(modname);
-			if( modnamelen > 42 )
-			{
-				modname = modname + modnamelen - 42;
-			}
+            if( ms->file == NULL || !mwIsReadAddr(ms->file, 22) ) modname = "<unknown>";
+            else modname = ms->file;
+            modnamelen = strlen(modname);
+            if( modnamelen > 42 )
+            {
+                modname = modname + modnamelen - 42;
+            }
 
             mwWrite(" %-42s %-8ld %-8ld %-8ld %-8ld\n",
-            	modname, ms->num, ms->max, ms->total, ms->curr );
+                    modname, ms->num, ms->max, ms->total, ms->curr );
             if( ms->file && mwStatLevel > 1 )
             {
-                for( ms2=mwStatList; ms2; ms2=ms2->next )
+                for( ms2 = mwStatList; ms2; ms2 = ms2->next )
                 {
-                    if( ms2->line!=-1 && ms2->file!=NULL && !mwStrCmpI( ms2->file, ms->file ) )
-					{
-					mwWrite( "  %-8d                                  %-8ld %-8ld %-8ld %-8ld\n",
-						ms2->line, ms2->num, ms2->max, ms2->total, ms2->curr );
-					}
-				}
-			}
-		}
-	}
+                    if( ms2->line != -1 && ms2->file != NULL && !mwStrCmpI( ms2->file, ms->file ) )
+                    {
+                        mwWrite( "  %-8d                                  %-8ld %-8ld %-8ld %-8ld\n",
+                                 ms2->line, ms2->num, ms2->max, ms2->total, ms2->curr );
+                    }
+                }
+            }
+        }
+    }
 }
 
-static mwStat* mwStatGet( const char *file, int line, int makenew ) {
-    mwStat* ms;
+static mwStat *mwStatGet( const char *file, int line, int makenew )
+{
+    mwStat *ms;
 
     if( mwStatLevel < 2 ) line = -1;
 
-    for( ms=mwStatList; ms!=NULL; ms=ms->next ) {
+    for( ms = mwStatList; ms != NULL; ms = ms->next )
+    {
         if( line != ms->line ) continue;
-        if( file==NULL ) {
+        if( file == NULL )
+        {
             if( ms->file == NULL ) break;
             continue;
-            }
+        }
         if( ms->file == NULL ) continue;
         if( !strcmp( ms->file, file ) ) break;
-        }
+    }
 
     if( ms != NULL ) return ms;
 
     if( !makenew ) return NULL;
 
-    ms = (mwStat*) malloc( sizeof(mwStat) );
-    if( ms == NULL ) {
+    ms = (mwStat *) malloc( sizeof(mwStat) );
+    if( ms == NULL )
+    {
         if( mwFreeUp( sizeof(mwStat), 0 ) < sizeof(mwStat) ||
-            (ms=(mwStat*)malloc(sizeof(mwStat))) == NULL ) {
+                (ms = (mwStat *)malloc(sizeof(mwStat))) == NULL )
+        {
             mwWrite("internal: memory low, statistics incomplete for '%s'\n", file );
             return NULL;
-            }
         }
+    }
     ms->file = file;
     ms->line = line;
     ms->total = 0L;
@@ -2321,46 +2564,52 @@ static mwStat* mwStatGet( const char *file, int line, int makenew ) {
     ms->next = mwStatList;
     mwStatList = ms;
     return ms;
-    }
+}
 
-static void mwStatAlloc( size_t size, const char* file, int line ) {
-    mwStat* ms;
+static void mwStatAlloc( size_t size, const char *file, int line )
+{
+    mwStat *ms;
 
     /* update the module statistics */
     ms = mwStatGet( file, -1, 1 );
-    if( ms != NULL ) {
+    if( ms != NULL )
+    {
         ms->total += (long) size;
         ms->curr += (long) size;
         ms->num ++;
         if( ms->curr > ms->max ) ms->max = ms->curr;
-        }
+    }
 
     /* update the line statistics */
-    if( mwStatLevel > 1 && line != -1 && file ) {
+    if( mwStatLevel > 1 && line != -1 && file )
+    {
         ms = mwStatGet( file, line, 1 );
-        if( ms != NULL ) {
+        if( ms != NULL )
+        {
             ms->total += (long) size;
             ms->curr += (long) size;
             ms->num ++;
             if( ms->curr > ms->max ) ms->max = ms->curr;
-            }
         }
-
     }
 
-static void mwStatFree( size_t size, const char* file, int line ) {
-    mwStat* ms;
+}
+
+static void mwStatFree( size_t size, const char *file, int line )
+{
+    mwStat *ms;
 
     /* update the module statistics */
     ms = mwStatGet( file, -1, 1 );
     if( ms != NULL ) ms->curr -= (long) size;
 
     /* update the line statistics */
-    if( mwStatLevel > 1 && line != -1 && file ) {
+    if( mwStatLevel > 1 && line != -1 && file )
+    {
         ms = mwStatGet( file, line, 1 );
         if( ms != NULL ) ms->curr -= (long) size;
-        }
     }
+}
 
 /***********************************************************************
 ** Safe memory checkers
@@ -2372,7 +2621,7 @@ static void mwStatFree( size_t size, const char* file, int line ) {
 
 static char mwDummy( char c )
 {
-	return c;
+    return c;
 }
 
 #ifndef MW_SAFEADDR
@@ -2383,7 +2632,7 @@ static char mwDummy( char c )
 int mwIsReadAddr( const void *p, unsigned len )
 {
     if( p == NULL ) return 0;
-    if( IsBadReadPtr(p,len) ) return 0;
+    if( IsBadReadPtr(p, len) ) return 0;
     return 1;
 }
 int mwIsSafeAddr( void *p, unsigned len )
@@ -2391,7 +2640,7 @@ int mwIsSafeAddr( void *p, unsigned len )
     /* NOTE: For some reason, under Win95 the IsBad... */
     /* can return false for invalid pointers. */
     if( p == NULL ) return 0;
-    if( IsBadReadPtr(p,len) || IsBadWritePtr(p,len) ) return 0;
+    if( IsBadReadPtr(p, len) || IsBadWritePtr(p, len) ) return 0;
     return 1;
 }
 #endif /* WIN32 */
@@ -2408,79 +2657,81 @@ static void mwSIGSEGV( int n );
 
 static void mwSIGSEGV( int n )
 {
-	n = n;
-	longjmp( mwSIGSEGVjump, 1 );
+    n = n;
+    longjmp( mwSIGSEGVjump, 1 );
 }
 
 int mwIsReadAddr( const void *p, unsigned len )
 {
-	const char *ptr;
+    const char *ptr;
 
     if( p == NULL ) return 0;
-	if( !len ) return 1;
+    if( !len ) return 1;
 
-	/* set up to catch the SIGSEGV signal */
-	mwOldSIGSEGV = signal( SIGSEGV, mwSIGSEGV );
+    /* set up to catch the SIGSEGV signal */
+    mwOldSIGSEGV = signal( SIGSEGV, mwSIGSEGV );
 
-	if( setjmp( mwSIGSEGVjump ) )
-	{
-		signal( SIGSEGV, mwOldSIGSEGV );
-		return 0;
-	}
+    if( setjmp( mwSIGSEGVjump ) )
+    {
+        signal( SIGSEGV, mwOldSIGSEGV );
+        return 0;
+    }
 
-	/* read all the bytes in the range */
-	ptr = (const char *)p;
-	ptr += len;
+    /* read all the bytes in the range */
+    ptr = (const char *)p;
+    ptr += len;
 
-	/* the reason for this rather strange construct is that */
-	/* we want to keep the number of used parameters and locals */
-	/* to a minimum. if we use len for a counter gcc will complain */
-	/* it may get clobbered by longjmp() at high warning levels. */
-	/* it's a harmless warning, but this way we don't have to see it. */
-	do
-	{
-		ptr --;
-		if( *ptr == 0x7C ) (void) mwDummy( (char)0 );
-	} while( (const void*) ptr != p );
+    /* the reason for this rather strange construct is that */
+    /* we want to keep the number of used parameters and locals */
+    /* to a minimum. if we use len for a counter gcc will complain */
+    /* it may get clobbered by longjmp() at high warning levels. */
+    /* it's a harmless warning, but this way we don't have to see it. */
+    do
+    {
+        ptr --;
+        if( *ptr == 0x7C ) (void) mwDummy( (char)0 );
+    }
+    while( (const void *) ptr != p );
 
-	/* remove the handler */
-	signal( SIGSEGV, mwOldSIGSEGV );
+    /* remove the handler */
+    signal( SIGSEGV, mwOldSIGSEGV );
 
     return 1;
 }
 int mwIsSafeAddr( void *p, unsigned len )
 {
-	char *ptr;
+    char *ptr;
 
-	if( p == NULL ) return 0;
-	if( !len ) return 1;
+    if( p == NULL ) return 0;
+    if( !len ) return 1;
 
-	/* set up to catch the SIGSEGV signal */
-	mwOldSIGSEGV = signal( SIGSEGV, mwSIGSEGV );
+    /* set up to catch the SIGSEGV signal */
+    mwOldSIGSEGV = signal( SIGSEGV, mwSIGSEGV );
 
-	if( setjmp( mwSIGSEGVjump ) )
-	{
-		signal( SIGSEGV, mwOldSIGSEGV );
-		return 0;
-	}
+    if( setjmp( mwSIGSEGVjump ) )
+    {
+        signal( SIGSEGV, mwOldSIGSEGV );
+        return 0;
+    }
 
-	/* read and write-back all the bytes in the range */
-	ptr = (char *)p;
-	ptr += len;
+    /* read and write-back all the bytes in the range */
+    ptr = (char *)p;
+    ptr += len;
 
-	/* the reason for this rather strange construct is that */
-	/* we want to keep the number of used parameters and locals */
-	/* to a minimum. if we use len for a counter gcc will complain */
-	/* it may get clobbered by longjmp() at high warning levels. */
-	/* it's a harmless warning, but this way we don't have to see it. */
-	do
-	{
-		ptr --;
-		*ptr = mwDummy( *ptr );
-	} while( (void*) ptr != p );
+    /* the reason for this rather strange construct is that */
+    /* we want to keep the number of used parameters and locals */
+    /* to a minimum. if we use len for a counter gcc will complain */
+    /* it may get clobbered by longjmp() at high warning levels. */
+    /* it's a harmless warning, but this way we don't have to see it. */
+    do
+    {
+        ptr --;
+        *ptr = mwDummy( *ptr );
+    }
+    while( (void *) ptr != p );
 
-	/* remove the handler */
-	signal( SIGSEGV, mwOldSIGSEGV );
+    /* remove the handler */
+    signal( SIGSEGV, mwOldSIGSEGV );
 
     return 1;
 }
@@ -2510,29 +2761,29 @@ int mwIsSafeAddr( void *p, unsigned len )
 
 static void	mwMutexInit( void )
 {
-	mwGlobalMutex = CreateMutex( NULL, FALSE, NULL);
-	return;
+    mwGlobalMutex = CreateMutex( NULL, FALSE, NULL);
+    return;
 }
 
 static void	mwMutexTerm( void )
 {
-	CloseHandle( mwGlobalMutex );
-	return;
+    CloseHandle( mwGlobalMutex );
+    return;
 }
 
 static void	mwMutexLock( void )
 {
-	if( WaitForSingleObject(mwGlobalMutex, 1000 ) == WAIT_TIMEOUT )
-	{
-		mwWrite( "mwMutexLock: timed out, possible deadlock\n" );
-	}
-	return;
+    if( WaitForSingleObject(mwGlobalMutex, 1000 ) == WAIT_TIMEOUT )
+    {
+        mwWrite( "mwMutexLock: timed out, possible deadlock\n" );
+    }
+    return;
 }
 
 static void	mwMutexUnlock( void )
 {
-	ReleaseMutex( mwGlobalMutex );
-	return;
+    ReleaseMutex( mwGlobalMutex );
+    return;
 }
 
 #endif
@@ -2541,26 +2792,26 @@ static void	mwMutexUnlock( void )
 
 static void	mwMutexInit( void )
 {
-	pthread_mutex_init( &mwGlobalMutex, NULL );
-	return;
+    pthread_mutex_init( &mwGlobalMutex, NULL );
+    return;
 }
 
 static void	mwMutexTerm( void )
 {
-	pthread_mutex_destroy( &mwGlobalMutex );
-	return;
+    pthread_mutex_destroy( &mwGlobalMutex );
+    return;
 }
 
 static void	mwMutexLock( void )
 {
-	pthread_mutex_lock(&mwGlobalMutex);
-	return;
+    pthread_mutex_lock(&mwGlobalMutex);
+    return;
 }
 
 static void	mwMutexUnlock( void )
 {
-	pthread_mutex_unlock(&mwGlobalMutex);
-	return;
+    pthread_mutex_unlock(&mwGlobalMutex);
+    return;
 }
 
 #endif
@@ -2578,48 +2829,54 @@ int mwNCur = 0;
 const char *mwNFile = NULL;
 int mwNLine = 0;
 
-class MemWatch {
+class MemWatch
+{
 public:
     MemWatch();
     ~MemWatch();
-    };
+};
 
-MemWatch::MemWatch() {
+MemWatch::MemWatch()
+{
     if( mwInited ) return;
     mwUseAtexit = 0;
     mwInit();
-    }
+}
 
-MemWatch::~MemWatch() {
+MemWatch::~MemWatch()
+{
     if( mwUseAtexit ) return;
     mwTerm();
-    }
+}
 
 /*
 ** This global new will catch all 'new' calls where MEMWATCH is
 ** not active.
 */
-void* operator new( unsigned size ) {
+void *operator new( unsigned size )
+{
     mwNCur = 0;
     return mwMalloc( size, "<unknown>", 0 );
-    }
+}
 
 /*
 ** This is the new operator that's called when a module uses mwNew.
 */
-void* operator new( unsigned size, const char *file, int line ) {
+void *operator new( unsigned size, const char *file, int line )
+{
     mwNCur = 0;
     return mwMalloc( size, file, line );
-    }
+}
 
 /*
 ** This is the new operator that's called when a module uses mwNew[].
 ** -- hjc 07/16/02
 */
-void* operator new[] ( unsigned size, const char *file, int line ) {
+void *operator new[] ( unsigned size, const char *file, int line )
+{
     mwNCur = 0;
     return mwMalloc( size, file, line );
-    }
+}
 
 /*
 ** Since this delete operator will recieve ALL delete's
@@ -2628,33 +2885,39 @@ void* operator new[] ( unsigned size, const char *file, int line ) {
 ** reliably check for wild free's if the mwNCur variable
 ** is not set.
 */
-void operator delete( void *p ) {
+void operator delete( void *p )
+{
     if( p == NULL ) return;
-    if( !mwInited ) {
+    if( !mwInited )
+    {
         free( p );
         return;
-        }
-    if( mwNCur ) {
+    }
+    if( mwNCur )
+    {
         mwFree( p, mwNFile, mwNLine );
         mwNCur = 0;
         return;
-        }
-    mwFree_( p );
     }
+    mwFree_( p );
+}
 
-void operator delete[]( void *p ) {
+void operator delete[]( void *p )
+{
     if( p == NULL ) return;
-    if( !mwInited ) {
+    if( !mwInited )
+    {
         free( p );
         return;
-        }
-    if( mwNCur ) {
+    }
+    if( mwNCur )
+    {
         mwFree( p, mwNFile, mwNLine );
         mwNCur = 0;
         return;
-        }
-    mwFree_( p );
     }
+    mwFree_( p );
+}
 
 #endif /* MEMWATCH_NOCPP */
 #endif /* __cplusplus */

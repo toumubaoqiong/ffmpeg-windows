@@ -73,33 +73,33 @@ static av_always_inline av_const long int lrintf(float x)
 #else
 static av_always_inline av_const long int lrintf(float x)
 {
-	long int tmpInt = (long int)x;
-	if(0.0 == x)
-	{
-		return 0.0;
-	}
-	else if(x > 0.0)
-	{
-		if((long int)x == floor(x + 0.5))
-		{
-			return tmpInt;
-		}
-		else
-		{
-			return tmpInt + 1;
-		}
-	}
-	else
-	{
-		if(tmpInt == ceil(x - 0.5))
-		{
-			return tmpInt;
-		}
-		else
-		{
-			return tmpInt - 1;
-		}
-	}
+    long int tmpInt = (long int)x;
+    if(0.0 == x)
+    {
+        return 0.0;
+    }
+    else if(x > 0.0)
+    {
+        if((long int)x == floor(x + 0.5))
+        {
+            return tmpInt;
+        }
+        else
+        {
+            return tmpInt + 1;
+        }
+    }
+    else
+    {
+        if(tmpInt == ceil(x - 0.5))
+        {
+            return tmpInt;
+        }
+        else
+        {
+            return tmpInt - 1;
+        }
+    }
 }
 #endif /* HAVE_LRINTF */
 

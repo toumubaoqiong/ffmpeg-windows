@@ -27,7 +27,8 @@
 #include <stdint.h>
 #include "libavutil/attributes.h"
 
-typedef struct AVFifoBuffer {
+typedef struct AVFifoBuffer
+{
     uint8_t *buffer;
     uint8_t *rptr, *wptr, *end;
     uint32_t rndx, wndx;
@@ -75,7 +76,7 @@ FFMPEGLIB_API int av_fifo_space(AVFifoBuffer *f);
  * @param *func generic read function
  * @param *dest data destination
  */
-FFMPEGLIB_API int av_fifo_generic_read(AVFifoBuffer *f, void *dest, int buf_size, void (*func)(void*, void*, int));
+FFMPEGLIB_API int av_fifo_generic_read(AVFifoBuffer *f, void *dest, int buf_size, void (*func)(void *, void *, int));
 
 /**
  * Feed data from a user-supplied callback to an AVFifoBuffer.
@@ -90,7 +91,7 @@ FFMPEGLIB_API int av_fifo_generic_read(AVFifoBuffer *f, void *dest, int buf_size
  * If func is NULL, src is interpreted as a simple byte array for source data.
  * @return the number of bytes written to the FIFO
  */
-FFMPEGLIB_API int av_fifo_generic_write(AVFifoBuffer *f, void *src, int size, int (*func)(void*, void*, int));
+FFMPEGLIB_API int av_fifo_generic_write(AVFifoBuffer *f, void *src, int size, int (*func)(void *, void *, int));
 
 /**
  * Resize an AVFifoBuffer.

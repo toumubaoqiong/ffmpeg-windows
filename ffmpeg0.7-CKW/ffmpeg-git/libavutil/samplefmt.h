@@ -24,7 +24,8 @@
 /**
  * all in native-endian format
  */
-enum AVSampleFormat {
+enum AVSampleFormat
+{
     AV_SAMPLE_FMT_NONE = -1,
     AV_SAMPLE_FMT_U8,          ///< unsigned 8 bits
     AV_SAMPLE_FMT_S16,         ///< signed 16 bits
@@ -87,8 +88,8 @@ FFMPEGLIB_API int av_get_bits_per_sample_fmt(enum AVSampleFormat sample_fmt);
  * error code in case of failure
  */
 FFMPEGLIB_API int av_samples_fill_arrays(uint8_t *pointers[8], int linesizes[8],
-                           uint8_t *buf, int nb_channels, int nb_samples,
-                           enum AVSampleFormat sample_fmt, int planar, int align);
+        uint8_t *buf, int nb_channels, int nb_samples,
+        enum AVSampleFormat sample_fmt, int planar, int align);
 
 /**
  * Allocate a samples buffer for nb_samples samples, and
@@ -104,8 +105,8 @@ FFMPEGLIB_API int av_samples_fill_arrays(uint8_t *pointers[8], int linesizes[8],
  * @see av_samples_fill_arrays()
  */
 FFMPEGLIB_API int av_samples_alloc(uint8_t *pointers[8], int linesizes[8],
-                     int nb_samples, int nb_channels,
-                     enum AVSampleFormat sample_fmt, int planar,
-                     int align);
+                                   int nb_samples, int nb_channels,
+                                   enum AVSampleFormat sample_fmt, int planar,
+                                   int align);
 
 #endif /* AVCORE_SAMPLEFMT_H */

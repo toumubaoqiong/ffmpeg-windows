@@ -55,15 +55,15 @@
 //#endif
 
 #if AV_GCC_VERSION_AT_LEAST(3,1)
-    #define av_malloc_attrib __attribute__((__malloc__))
+#define av_malloc_attrib __attribute__((__malloc__))
 #else
-    #define av_malloc_attrib
+#define av_malloc_attrib
 #endif
 
 #if AV_GCC_VERSION_AT_LEAST(4,3)
-    #define av_alloc_size(n) __attribute__((alloc_size(n)))
+#define av_alloc_size(n) __attribute__((alloc_size(n)))
 #else
-    #define av_alloc_size(n)
+#define av_alloc_size(n)
 #endif
 
 #if LIBAVUTIL_VERSION_MAJOR < 51
