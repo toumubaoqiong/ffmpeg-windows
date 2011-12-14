@@ -1,0 +1,23 @@
+libschroedinger_1.0_la-schrolist.lo: schrolist.c ../config.h \
+ ../schroedinger/schrolist.h ../schroedinger/schroutils.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/stdint.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/include/stddef.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/string.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/_mingw.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/stdlib.h
+
+../config.h:
+
+../schroedinger/schrolist.h:
+
+../schroedinger/schroutils.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/stdint.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/include/stddef.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/string.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/_mingw.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/stdlib.h:

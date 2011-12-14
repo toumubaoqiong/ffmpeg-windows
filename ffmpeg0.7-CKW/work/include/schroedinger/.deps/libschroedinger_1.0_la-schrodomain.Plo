@@ -1,0 +1,29 @@
+libschroedinger_1.0_la-schrodomain.lo: schrodomain.c ../config.h \
+ ../schroedinger/schroutils.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/stdint.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/include/stddef.h \
+ ../schroedinger/schrodomain.h ../schroedinger/schroasync.h \
+ ../schroedinger/schrodebug.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/include/stdarg.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/stdlib.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/_mingw.h
+
+../config.h:
+
+../schroedinger/schroutils.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/stdint.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/include/stddef.h:
+
+../schroedinger/schrodomain.h:
+
+../schroedinger/schroasync.h:
+
+../schroedinger/schrodebug.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/include/stdarg.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/stdlib.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/_mingw.h:

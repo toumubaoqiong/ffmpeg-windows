@@ -1,0 +1,109 @@
+libschroedinger_1.0_la-schroparse.lo: schroparse.c ../config.h \
+ ../schroedinger/schroparse.h ../schroedinger/schrovideoformat.h \
+ ../schroedinger/schroutils.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/stdint.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/include/stddef.h \
+ ../schroedinger/schrobitstream.h ../schroedinger/schrobufferlist.h \
+ ../schroedinger/schrobuffer.h ../schroedinger/schrolist.h \
+ ../schroedinger/schrodebug.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/include/stdarg.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/stdlib.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/_mingw.h \
+ ../schroedinger/schrounpack.h ../schroedinger/schrodecoder.h \
+ ../schroedinger/schroparams.h ../schroedinger/schroframe.h \
+ ../schroedinger/schrodomain.h ../schroedinger/schroasync.h \
+ ../schroedinger/schrolimits.h ../schroedinger/schromotion.h \
+ C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orc.h \
+ C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcprogram.h \
+ C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcutils.h \
+ c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/limits.h \
+ C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orc-stdint.h \
+ C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcarm.h \
+ C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcdebug.h \
+ C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcfunctions.h \
+ C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcmmx.h \
+ C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcx86.h \
+ C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcx86insn.h \
+ C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orconce.h \
+ C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcparse.h \
+ C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcsse.h \
+ C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcpowerpc.h \
+ ../schroedinger/schroqueue.h ../schroedinger/schroarith.h
+
+../config.h:
+
+../schroedinger/schroparse.h:
+
+../schroedinger/schrovideoformat.h:
+
+../schroedinger/schroutils.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/stdint.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/include/stddef.h:
+
+../schroedinger/schrobitstream.h:
+
+../schroedinger/schrobufferlist.h:
+
+../schroedinger/schrobuffer.h:
+
+../schroedinger/schrolist.h:
+
+../schroedinger/schrodebug.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/include/stdarg.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/stdlib.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/_mingw.h:
+
+../schroedinger/schrounpack.h:
+
+../schroedinger/schrodecoder.h:
+
+../schroedinger/schroparams.h:
+
+../schroedinger/schroframe.h:
+
+../schroedinger/schrodomain.h:
+
+../schroedinger/schroasync.h:
+
+../schroedinger/schrolimits.h:
+
+../schroedinger/schromotion.h:
+
+C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orc.h:
+
+C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcprogram.h:
+
+C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcutils.h:
+
+c:\mingw\bin\../lib/gcc/mingw32/4.5.2/../../../../include/limits.h:
+
+C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orc-stdint.h:
+
+C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcarm.h:
+
+C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcdebug.h:
+
+C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcfunctions.h:
+
+C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcmmx.h:
+
+C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcx86.h:
+
+C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcx86insn.h:
+
+C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orconce.h:
+
+C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcparse.h:
+
+C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcsse.h:
+
+C:/MinGW/msys/1.0/local/include/orc-0.4/orc/orcpowerpc.h:
+
+../schroedinger/schroqueue.h:
+
+../schroedinger/schroarith.h:

@@ -1,0 +1,17 @@
+
+#ifndef __SCHRO_VERSION_H__
+#define __SCHRO_VERSION_H__
+
+#define SCHRO_VERSION_MAJOR (@PACKAGE_VERSION_MAJOR@)
+#define SCHRO_VERSION_MINOR (@PACKAGE_VERSION_MINOR@)
+#define SCHRO_VERSION_MICRO (@PACKAGE_VERSION_MICRO@)
+
+#define SCHRO_CHECK_VERSION(major,minor,micro) \
+(SCHRO_VERSION_MAJOR > (major) || \
+(SCHRO_VERSION_MAJOR == (major) && SCHRO_VERSION_MINOR > (minor)) || \
+(SCHRO_VERSION_MAJOR == (major) && SCHRO_VERSION_MINOR == (minor) && \
+SCHRO_VERSION_MICRO >= (micro)))
+
+
+#endif
+
