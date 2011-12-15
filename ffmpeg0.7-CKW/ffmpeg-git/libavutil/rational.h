@@ -32,6 +32,21 @@
 #include <limits.h>
 #include "attributes.h"
 #include "_types.h"
+
+
+//****************************************************************************//
+//libavutil\rational.h, libavutil\rational.c:
+//计算AVRational所有相关计算
+//学习的地方：
+//1.两个英文字幕：numerator分子简称num, denominator分母简称den
+//2.两个分数的比较方式：A.num*B.den 与 B.num*A.den的比较
+//3.不同类型的运算的数据转变技巧：int A; double B; double c = A/(double)B;
+//在第二个运算数之前添加结果的类型，第一个不用添加
+//附录：
+//1.扩展知识----C语言位运算详解.txt
+//****************************************************************************//
+
+
 /**
  * rational number numerator/denominator
  */
@@ -50,12 +65,27 @@ typedef struct AVRational
  */
 static inline int av_cmp_q(AVRational a, AVRational b)
 {
-    const int64_t tmp = a.num * (int64_t)b.den - b.num * (int64_t)a.den;
+    const int64_t tmp = 
+		a.num * (int64_t)b.den - b.num * (int64_t)a.den;
 
-    if(tmp) return ((tmp ^ a.den ^ b.den) >> 63) | 1;
-    else if(b.den && a.den) return 0;
-    else if(a.num && b.num) return (a.num >> 31) - (b.num >> 31);
-    else                    return INT_MIN;
+    if(tmp) 
+	{
+		//这里仍然无法弄明白？
+		return ((tmp ^ a.den ^ b.den) >> 63) | 1;
+	}
+    else if(b.den && a.den) 
+	{
+		return 0;
+	}
+    else if(a.num && b.num) 
+	{
+		//避免因为分母都是零导致相等
+		return (a.num >> 31) - (b.num >> 31);
+	}
+    else
+	{
+		return INT_MIN;
+	}
 }
 
 /**
@@ -134,5 +164,7 @@ FFMPEGLIB_API int av_nearer_q(AVRational q, AVRational q1, AVRational q2);
  * @return the index of the nearest value found in the array
  */
 FFMPEGLIB_API int av_find_nearest_q_idx(AVRational q, const AVRational *q_list);
+
+FFMPEGLIB_API int av_rational_test_local(void);
 
 #endif /* AVUTIL_RATIONAL_H */

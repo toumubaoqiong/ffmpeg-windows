@@ -165,6 +165,15 @@ int av_find_nearest_q_idx(AVRational q, const AVRational *q_list)
     return nearest_q_idx;
 }
 
+
+
+int av_rational_test_local(void)
+{
+	AVRational tmpRational1 = {1, 24}, tmpRational2 = {1, 30};
+	int tmpCmpRet = av_cmp_q(tmpRational1, tmpRational2);
+	double tmpDouble = av_q2d(tmpRational1);
+}
+
 #ifdef TEST
 main()
 {

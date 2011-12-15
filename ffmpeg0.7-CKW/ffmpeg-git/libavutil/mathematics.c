@@ -116,8 +116,14 @@ av_always_inline av_const int av_log2_16bit_c(unsigned int v)
 
 int64_t av_gcd(int64_t a, int64_t b)
 {
-    if(b) return av_gcd(b, a % b);
-    else  return a;
+    if(b) 
+	{
+		return av_gcd(b, a % b);
+	}
+    else
+	{
+		return a;
+	}
 }
 
 int64_t av_rescale_rnd(int64_t a, int64_t b, int64_t c, enum AVRounding rnd)
@@ -127,29 +133,46 @@ int64_t av_rescale_rnd(int64_t a, int64_t b, int64_t c, enum AVRounding rnd)
     assert(b >= 0);
     assert((unsigned)rnd <= 5 && rnd != 4);
 
-    if(a < 0 && a != INT64_MIN) return -av_rescale_rnd(-a, b, c, rnd ^ ((rnd >> 1) & 1));
-
-    if(rnd == AV_ROUND_NEAR_INF) r = c / 2;
-    else if(rnd & 1)             r = c - 1;
-
+    if(a < 0 && a != INT64_MIN) 
+	{
+		return -av_rescale_rnd(-a, b, c, rnd ^ ((rnd >> 1) & 1));
+	}
+    if(rnd == AV_ROUND_NEAR_INF) 
+	{
+		r = c / 2;
+	}
+    else if(rnd & 1)
+	{
+		r = c - 1;
+	}
     if(b <= INT_MAX && c <= INT_MAX)
     {
         if(a <= INT_MAX)
+		{
             return (a * b + r) / c;
+		}
         else
+		{
+			//此运算式与return (a * b + r) / c;是一样的，
+			//只是为了避免溢出，将除数与余数分开计算
             return a / c * b + (a % c * b + r) / c;
+		}
     }
     else
     {
 #if 1
+		//高位运算是如何进行的？
+		//a0与a1分别代表a的低高32位值
+		//b0与b1分别代表b的低高32位值
         uint64_t a0 = a & 0xFFFFFFFF;
         uint64_t a1 = a >> 32;
         uint64_t b0 = b & 0xFFFFFFFF;
         uint64_t b1 = b >> 32;
+
         uint64_t t1 = a0 * b1 + a1 * b0;
         uint64_t t1a = t1 << 32;
         int i;
-
+		//显然这是一个没有弄清楚的谜团？疑难点？
         a0 = a0 * b0 + t1a;
         a1 = a1 * b1 + (t1 >> 32) + (a0 < t1a);
         a0 += r;

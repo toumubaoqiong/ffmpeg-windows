@@ -21,6 +21,16 @@
 #ifndef AVUTIL_MATHEMATICS_H
 #define AVUTIL_MATHEMATICS_H
 
+
+//****************************************************************************//
+//libavutil\mathematics.h, libavutil\mathematics.c
+//创造ffmpeg库所需要的数学库
+//学习的地方：
+//1.av_gcd求最大公约数使用的方法是辗转相除法
+//附录：
+//1.扩展知识----求最大公约数和最小公倍数即GCD&LCM.txt
+//****************************************************************************//
+
 #include <stdint.h>
 #include <math.h>
 #include "attributes.h"
@@ -60,11 +70,12 @@
 
 enum AVRounding
 {
-    AV_ROUND_ZERO     = 0, ///< Round toward zero.
-    AV_ROUND_INF      = 1, ///< Round away from zero.
-    AV_ROUND_DOWN     = 2, ///< Round toward -infinity.
-    AV_ROUND_UP       = 3, ///< Round toward +infinity.
+    AV_ROUND_ZERO     = 0, ///< Round toward zero.//取趋近于0的值
+    AV_ROUND_INF      = 1, ///< Round away from zero.//取趋近于整数的值
+    AV_ROUND_DOWN     = 2, ///< Round toward -infinity.//取趋近于最小负整数的值
+    AV_ROUND_UP       = 3, ///< Round toward +infinity.//取趋近于最大整数的值
     AV_ROUND_NEAR_INF = 5, ///< Round to nearest and halfway cases away from zero.
+							//取最接近取半整数的远离零的值
 };
 
 /**
@@ -84,6 +95,7 @@ FFMPEGLIB_API int64_t av_rescale(int64_t a, int64_t b, int64_t c) av_const;
  * Rescale a 64-bit integer with specified rounding.
  * A simple a*b/c isn't possible as it can overflow.
  */
+//别把这个看的太神秘，实际上就是对(a*b/c)求值
 FFMPEGLIB_API int64_t av_rescale_rnd(int64_t a, int64_t b, int64_t c, enum AVRounding) av_const;
 
 /**
