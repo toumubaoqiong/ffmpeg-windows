@@ -23,6 +23,17 @@
  * common internal and external API header
  */
 
+//****************************************************************************//
+//libavutil\common.h
+//	此头文件非常重要，基本上所有重要的公共定义都在此头文件中
+//学习的地方：
+//1.使用了一些特别的宏，比如： RSHIFT， ROUNDED_DIV，FFSIGN等
+//2.在这里要特别注意的是获取UTF值的：GET_UTF8， GET_UTF16， PUT_UTF8， PUT_UTF16，
+//目前还没有深入研究这些获取UTF值的宏是如何定义的
+//附录：
+//1.扩展知识----int64---扩展数据类型.txt
+//****************************************************************************//
+
 #ifndef AVUTIL_COMMON_H
 #define AVUTIL_COMMON_H
 
@@ -42,12 +53,13 @@
 #include "_types.h"
 
 #if AV_HAVE_BIGENDIAN
-#   define AV_NE(be, le) (be)
+#	define AV_NE(be, le)	(be)
 #else
-#   define AV_NE(be, le) (le)
+#	define AV_NE(be, le)	(le)
 #endif
 
 //rounded division & shift
+//right shift即向右移动
 #define RSHIFT(a,b) ((a) > 0 ? ((a) + ((1<<(b))>>1))>>(b) : ((a) + ((1<<(b))>>1)-1)>>(b))
 /* assume b>0 */
 #define ROUNDED_DIV(a,b) (((a)>0 ? (a) + ((b)>>1) : (a) - ((b)>>1))/(b))
@@ -61,6 +73,7 @@
 
 #define FFSWAP(type,a,b) do{type SWAP_tmp= b; b= a; a= SWAP_tmp;}while(0)
 #define FF_ARRAY_ELEMS(a) (sizeof(a) / sizeof((a)[0]))
+//对齐数据段的宏FFALIGN，但是不清楚里面到底是怎么来对齐的
 #define FFALIGN(x, a) (((x)+(a)-1)&~((a)-1))
 
 /* misc math functions */
@@ -91,11 +104,21 @@ FFMPEGLIB_API av_always_inline av_const int av_log2_16bit_c(unsigned int v);
  * @param amax maximum value of the clip range
  * @return clipped value
  */
+//返回一个在amin-amax之间的值
 static av_always_inline av_const int av_clip_c(int a, int amin, int amax)
 {
-    if      (a < amin) return amin;
-    else if (a > amax) return amax;
-    else               return a;
+    if(a < amin) 
+	{
+		return amin;
+	}
+    else if (a > amax) 
+	{
+		return amax;
+	}
+	else
+	{
+		return a;
+	}
 }
 
 /**
@@ -105,8 +128,14 @@ static av_always_inline av_const int av_clip_c(int a, int amin, int amax)
  */
 static av_always_inline av_const uint8_t av_clip_uint8_c(int a)
 {
-    if (a&(~0xFF)) return (-a) >> 31;
-    else           return a;
+    if (a&(~0xFF))
+	{
+		return (-a) >> 31;
+	}
+    else
+	{
+		return a;
+	}
 }
 
 /**
@@ -116,8 +145,14 @@ static av_always_inline av_const uint8_t av_clip_uint8_c(int a)
  */
 static av_always_inline av_const int8_t av_clip_int8_c(int a)
 {
-    if ((a + 0x80) & ~0xFF) return (a >> 31) ^ 0x7F;
-    else                  return a;
+    if ((a + 0x80) & ~0xFF) 
+	{
+		return (a >> 31) ^ 0x7F;
+	}
+	else
+	{
+		return a;
+	}
 }
 
 /**
@@ -127,8 +162,14 @@ static av_always_inline av_const int8_t av_clip_int8_c(int a)
  */
 static av_always_inline av_const uint16_t av_clip_uint16_c(int a)
 {
-    if (a&(~0xFFFF)) return (-a) >> 31;
-    else             return a;
+    if (a&(~0xFFFF)) 
+	{
+		return (-a) >> 31;
+	}
+    else
+	{
+		return a;
+	}
 }
 
 /**
@@ -138,8 +179,14 @@ static av_always_inline av_const uint16_t av_clip_uint16_c(int a)
  */
 static av_always_inline av_const int16_t av_clip_int16_c(int a)
 {
-    if ((a + 0x8000) & ~0xFFFF) return (a >> 31) ^ 0x7FFF;
-    else                      return a;
+    if ((a + 0x8000) & ~0xFFFF) 
+	{
+		return (a >> 31) ^ 0x7FFF;
+	}
+    else
+	{
+		return a;
+	}
 }
 
 /**
@@ -149,8 +196,14 @@ static av_always_inline av_const int16_t av_clip_int16_c(int a)
  */
 static av_always_inline av_const int32_t av_clipl_int32_c(int64_t a)
 {
-    if ((a + 0x80000000u) & ~UINT64_C(0xFFFFFFFF)) return (a >> 63) ^ 0x7FFFFFFF;
-    else                                         return a;
+    if ((a + 0x80000000u) & ~UINT64_C(0xFFFFFFFF)) 
+	{
+		return (a >> 63) ^ 0x7FFFFFFF;
+	}
+    else
+	{
+		return a;
+	}
 }
 
 /**
@@ -162,9 +215,18 @@ static av_always_inline av_const int32_t av_clipl_int32_c(int64_t a)
  */
 static av_always_inline av_const float av_clipf_c(float a, float amin, float amax)
 {
-    if      (a < amin) return amin;
-    else if (a > amax) return amax;
-    else               return a;
+    if(a < amin) 
+	{
+		return amin;
+	}
+    else if (a > amax) 
+	{
+		return amax;
+	}
+    else              
+	{
+		return a;
+	}
 }
 
 /** Compute ceil(log2(x)).

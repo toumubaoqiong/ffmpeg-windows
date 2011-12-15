@@ -217,8 +217,14 @@ int av_compare_ts(int64_t ts_a, AVRational tb_a, int64_t ts_b, AVRational tb_b)
 {
     int64_t a = tb_a.num * (int64_t)tb_b.den;
     int64_t b = tb_b.num * (int64_t)tb_a.den;
-    if (av_rescale_rnd(ts_a, a, b, AV_ROUND_DOWN) < ts_b) return -1;
-    if (av_rescale_rnd(ts_b, b, a, AV_ROUND_DOWN) < ts_a) return  1;
+    if (av_rescale_rnd(ts_a, a, b, AV_ROUND_DOWN) < ts_b) 
+	{
+		return -1;
+	}
+    if (av_rescale_rnd(ts_b, b, a, AV_ROUND_DOWN) < ts_a) 
+	{
+		return  1;
+	}
     return 0;
 }
 
@@ -226,7 +232,9 @@ int64_t av_compare_mod(uint64_t a, uint64_t b, uint64_t mod)
 {
     int64_t c = (a - b) & (mod - 1);
     if(c > (mod >> 1))
+	{
         c -= mod;
+	}
     return c;
 }
 
@@ -263,16 +271,28 @@ int main(void)
 }
 #endif
 
-
+//这个函数内容很简单，但是具体的起到什么作用还需要进一步的确认
 inline av_const unsigned int ff_sqrt(unsigned int a)
 {
     unsigned int b;
 
-    if (a < 255) return (ff_sqrt_tab[a + 1] - 1) >> 4;
-    else if (a < (1 << 12)) b = ff_sqrt_tab[a >> 4] >> 2;
+    if (a < 255) 
+	{
+		return (ff_sqrt_tab[a + 1] - 1) >> 4;
+	}
+    else if (a < (1 << 12)) 
+	{
+		b = ff_sqrt_tab[a >> 4] >> 2;
+	}
 #if !CONFIG_SMALL
-    else if (a < (1 << 14)) b = ff_sqrt_tab[a >> 6] >> 1;
-    else if (a < (1 << 16)) b = ff_sqrt_tab[a >> 8]   ;
+    else if (a < (1 << 14)) 
+	{
+		b = ff_sqrt_tab[a >> 6] >> 1;
+	}
+    else if (a < (1 << 16)) 
+	{
+		b = ff_sqrt_tab[a >> 8]   ;
+	}
 #endif
     else
     {
@@ -281,6 +301,5 @@ inline av_const unsigned int ff_sqrt(unsigned int a)
         b = ff_sqrt_tab[c >> (s + 8)];
         b = FASTDIV(c, b) + (b << s);
     }
-
     return b - (a < b * b);
 }

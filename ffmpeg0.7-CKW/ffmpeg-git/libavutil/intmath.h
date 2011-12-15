@@ -21,6 +21,13 @@
 #ifndef AVUTIL_INTMATH_H
 #define AVUTIL_INTMATH_H
 
+//****************************************************************************//
+//libavutil\intmath.h
+//  定义数学运算最基本的操作宏
+//学习的地方：
+//1.使用宏FASTDIV代表除法，既可以用汇编代替也可以用C语言代码代替  
+//****************************************************************************//
+
 #include <stdint.h>
 #include "config.h"
 #include "attributes.h"
