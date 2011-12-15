@@ -1,0 +1,23 @@
+扩展知识----求最大公约数和最小公倍数即GCD&LCM
+	最一般的求最大公约数GCD和最小公倍数LCM的方法是：辗转相除法
+	如下有一个简单的C语言代码：
+	
+求最大公约数：
+int64_t av_gcd(int64_t a, int64_t b)
+{
+    if(b) 
+	{
+		return av_gcd(b, a % b);
+	}
+    else
+	{
+		return a;
+	}
+}
+
+求最小公倍数
+int64_t av_const av_lcm(int64_t a, int64_t b)
+{
+	int64_t tmpGcd = av_gcd(a, b);
+	return a*b/tmpGcd;
+}
