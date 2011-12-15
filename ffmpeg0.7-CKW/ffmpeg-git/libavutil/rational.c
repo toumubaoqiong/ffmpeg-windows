@@ -33,7 +33,8 @@
 #include "mathematics.h"
 #include "rational.h"
 
-int av_reduce(int *dst_num, int *dst_den, int64_t num, int64_t den, int64_t max)
+int av_reduce(int *dst_num, int *dst_den, 
+			  int64_t num, int64_t den, int64_t max)
 {
     AVRational a0 = {0, 1}, a1 = {1, 0};
     int sign = (num < 0) ^ (den < 0);
@@ -46,43 +47,44 @@ int av_reduce(int *dst_num, int *dst_den, int64_t num, int64_t den, int64_t max)
     }
     if(num <= max && den <= max)
     {
-        a1 = (AVRational)
-        {
-            num, den
-        };
+        a1 = (AVRational){num, den};
         den = 0;
     }
 
-    while(den)
+	//重要的是这段是怎么理解的？
+    //从这里看到，就是在"1/0与0/1"求一个合理的值
+	//看了30分钟，还是没看明白这其中到底有什么规律，
+	//看来道路是漫长而曲折的，但是这个函数的整体意思应该明白一点
+	while(den)
     {
-        uint64_t x      = num / den;
+        uint64_t x = num / den;
         int64_t next_den = num - den * x;
         int64_t a2n = x * a1.num + a0.num;
         int64_t a2d = x * a1.den + a0.den;
 
         if(a2n > max || a2d > max)
         {
-            if(a1.num) x = (max - a0.num) / a1.num;
-            if(a1.den) x = FFMIN(x, (max - a0.den) / a1.den);
-
+            if(a1.num) 
+			{
+				x = (max - a0.num) / a1.num;
+			}
+            if(a1.den) 
+			{
+				x = FFMIN(x, (max - a0.den) / a1.den);
+			}
             if (den*(2 * x * a1.den + a0.den) > num * a1.den)
-                a1 = (AVRational)
-            {
-                x *a1.num + a0.num, x *a1.den + a0.den
-            };
+			{
+                a1 = (AVRational){
+						x *a1.num + a0.num, x *a1.den + a0.den};
+			}
             break;
         }
-
         a0 = a1;
-        a1 = (AVRational)
-        {
-            a2n, a2d
-        };
+        a1 = (AVRational){a2n, a2d};
         num = den;
         den = next_den;
     }
     av_assert2(av_gcd(a1.num, a1.den) <= 1U);
-
     *dst_num = sign ? -a1.num : a1.num;
     *dst_den = a1.den;
 
@@ -117,6 +119,7 @@ AVRational av_sub_q(AVRational b, AVRational c)
     });
 }
 
+//这个函数是有点特别，但是目的还是很明确的将double值转化为AVRational
 AVRational av_d2q(double d, int max)
 {
     AVRational a;
@@ -155,6 +158,7 @@ int av_nearer_q(AVRational q, AVRational q1, AVRational q2)
     return ((x_up > q.num) - (x_down < q.num)) * av_cmp_q(q2, q1);
 }
 
+//这个函数有诸多问题，实际中使用的时候要小心
 int av_find_nearest_q_idx(AVRational q, const AVRational *q_list)
 {
     int i, nearest_q_idx = 0;

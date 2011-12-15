@@ -41,6 +41,8 @@
 //1.两个英文字幕：numerator分子简称num, denominator分母简称den
 //2.两个分数的比较方式：A.num*B.den 与 B.num*A.den的比较
 //3.不同类型的运算的数据转变技巧：int A; double B; double c = A/(double)B;
+//4.从AVRational的所有相关计算函数中可以得到一个信息，
+//大多数计算函数都是在av_reduce基础上得到的
 //在第二个运算数之前添加结果的类型，第一个不用添加
 //附录：
 //1.扩展知识----C语言位运算详解.txt
@@ -108,6 +110,7 @@ static inline double av_q2d(AVRational a)
  * @param max the maximum allowed for dst_num & dst_den
  * @return 1 if exact, 0 otherwise
  */
+//这个函数我看的太神秘了，实际上就是以最大值为限，将*dst_num = num , *dst_den = den
 FFMPEGLIB_API int av_reduce(int *dst_num, int *dst_den, int64_t num, int64_t den, int64_t max);
 
 /**

@@ -381,6 +381,7 @@ static av_always_inline av_const int av_popcount_c(uint32_t x)
  * to ensure they are immediately available in intmath.h.
  */
 
+//宏定义的使用
 #ifndef av_log2
 #   define av_log2       av_log2_c
 #endif
