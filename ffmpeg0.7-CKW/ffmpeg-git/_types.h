@@ -36,6 +36,17 @@
  * $FreeBSD: src/sys/i386/include/_types.h,v 1.12 2005/07/02 23:13:31 thompsa Exp $
  */
 
+//****************************************************************************//
+//ffmpeg-git\_types.h:重定义ffmpeg库常用到的数据类型，
+//			明确常用数据大小，屏蔽32位和64位系统的区别
+//学习的地方：
+//1.使用宏的错误显示方式：“#error outputstring”
+//2.定义常用类型的命名规则：第一层：只有加前缀“__”, 
+//第二层：同时加前缀“__”和加后缀"_t”, 第三层：只有加后缀"_t”  
+//附录：
+//1.扩展知识----int64---扩展数据类型.txt
+//****************************************************************************//
+
 #ifndef _MACHINE__TYPES_H_
 #define	_MACHINE__TYPES_H_
 
@@ -48,55 +59,54 @@
 /*
  * Basic types upon which most other types are built.
  */
-typedef	char		__int8_t;
-typedef	unsigned char		__uint8_t;
-typedef	short			__int16_t;
-typedef	unsigned short		__uint16_t;
-typedef	int			__int32_t;
-typedef	unsigned int		__uint32_t;
+typedef char __int8_t;
+typedef unsigned char __uint8_t;
+typedef short __int16_t;
+typedef unsigned short __uint16_t;
+typedef int __int32_t;
+typedef unsigned int __uint32_t;
 
 #if defined(lint)
-/* LONGLONG */
-typedef	long long		__int64_t;
-/* LONGLONG */
-typedef	unsigned long long	__uint64_t;
+/*LONGLONG*/
+typedef long long __int64_t;
+/*LONGLONG*/
+typedef unsigned long long __uint64_t;
 #elif defined(__GNUCLIKE_ATTRIBUTE_MODE_DI)
-typedef	int __attribute__((__mode__(__DI__)))		__int64_t;
-typedef	unsigned int __attribute__((__mode__(__DI__)))	__uint64_t;
+typedef int __attribute__((__mode__(__DI__))) __int64_t;
+typedef unsigned int __attribute__((__mode__(__DI__))) __uint64_t;
 #else
-/* LONGLONG */
-typedef	__int64		__int64_t;
-/* LONGLONG */
-typedef	unsigned __int64	__uint64_t;
+/*LONGLONG*/
+typedef __int64	__int64_t;
+/*LONGLONG*/
+typedef unsigned __int64 __uint64_t;
 #endif
 
-#define uint8_t  __uint8_t
+#define uint8_t __uint8_t
 #define uint16_t __uint16_t
 #define uint32_t __uint32_t
 #define uint64_t __uint64_t
 
-#define int8_t  __int8_t
+#define int8_t __int8_t
 #define int16_t __int16_t
 #define int32_t __int32_t
 #define int64_t __int64_t
-
 /*
  * Standard type definitions.
  */
-typedef	unsigned long	__clock_t;		/* clock()... */
-typedef	unsigned int	__cpumask_t;
-typedef	__int32_t	__critical_t;
-typedef	double		__double_t;
-typedef	double		__float_t;
-typedef	__int32_t	__intfptr_t;
-typedef	__int64_t	__intmax_t;
-typedef	__int32_t	__intptr_t;
-typedef	__int32_t	__int_fast8_t;
-typedef	__int32_t	__int_fast16_t;
-typedef	__int32_t	__int_fast32_t;
-typedef	__int64_t	__int_fast64_t;
-typedef	__int8_t	__int_least8_t;
-typedef	__int16_t	__int_least16_t;
+typedef unsigned long __clock_t; /* clock()... */
+typedef unsigned int __cpumask_t;
+typedef __int32_t __critical_t;
+typedef double __double_t;
+typedef double __float_t;
+typedef __int32_t __intfptr_t;
+typedef __int64_t __intmax_t;
+typedef __int32_t __intptr_t;
+typedef __int32_t __int_fast8_t;
+typedef __int32_t __int_fast16_t;
+typedef __int32_t __int_fast32_t;
+typedef __int64_t __int_fast64_t;
+typedef __int8_t __int_least8_t;
+typedef __int16_t __int_least16_t;
 typedef	__int32_t	__int_least32_t;
 typedef	__int64_t	__int_least64_t;
 typedef	__int32_t	__ptrdiff_t;		/* ptr1 - ptr2 */
