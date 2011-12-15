@@ -1,0 +1,76 @@
+西卡处女发贴，为了完成大小姐的作业任务，思索了几天几夜，由于时间和精力的原因，最终还是选择拿密码学CrackMe下手来现丑下吧，讲得不好不要怪我啊。嘿嘿，不多说了。动手吧。
+  
+    逆向代码前我们先了解Adler32算法的算法原理.
+
+       Adler-32通过求解两个16位的数值A、B实现，并将结果连结成一个32位整数。其算法描述如下：
+
+    A = 1 + D1 + D2 + ... + Dn (mod 65521)
+       B = (1 + D1) + (1 + D1 + D2) + ... + (1 + D1 + D2 + ... + Dn) (mod 65521)
+          = n×D1 + (n-1)×D2 + (n-2)×D3 + ... + Dn + n (mod 65521)
+       Adler-32(D) = B × 65536 + A
+
+举个例子：
+
+ASCII code           A                                 B
+（10进制）  
+  W :  87           1 +  87 =  88            0 +  88 =   88
+   i   :  105         88 + 105 = 193        88 + 193 =  281
+   k  :  107        193 + 107 = 300       281 + 300 =  581
+   i   :  105         300 + 105 = 405      581 + 405 =  986
+   p  :  112        405 + 112 = 517      986 + 517 = 1503
+   e  :  101        517 + 101 = 618      1503 + 618 = 2121
+   d  :  100        618 + 100 = 718      2121 + 718 = 2839
+   i   :  105        718 + 105 = 823      2839 + 823 = 3662
+   a  :   97         823 +  97 = 920       3662 + 920 = 4582
+
+经过上面的一轮运算：
+A = 920  
+B = 4582
+Adler-32(D)  = B × 65536 + A = 4582× 65536 +920 = 300286872
+
+
+300286872 转化成十六进制 11E60398(此数即是输出的结果）
+
+
+C语言简易实现如下：
+#define MOD_ADLER 65521 /*不大于2^16 的最大质数*/
+
+unsigned long adler32(unsigned char *data, int len) /* where data is the location of the data in physical memory and len is the length of the data in bytes */
+{
+    unsigned long a = 1, b = 0;
+    int index;
+
+    /* Process each byte of the data in order */
+    for (index = 0; index < len; ++index)
+    {
+        a = (a + data[index]) % MOD_ADLER;
+        b = (b + a) % MOD_ADLER;
+    }
+
+    return (b << 16) | a;
+}
+复制代码
+C++代码实现如下：
+#define MOD_ADLER 65521   /*不大于2^16 的最大质数*/
+#define NMAX 5552    /*NMAX:  255n(n+1)/2+(65521-1)(n+1)<=2^32-1  即A和B都不会溢出时内循环最大次数N的最大整数值
+*/
+
+uint32_t adler(uint8_t *data, size_t len) { 
+    uint32_t a = 1, b = 0;
+
+    while (len > 0) {
+        size_t tlen = len > NMAX ? NMAX : len;
+        len -= tlen;
+        do {
+            a += *data++;
+            b += a;
+        } while (--tlen);
+
+        a %= MOD_ADLER;
+        b %= MOD_ADLER;
+    }
+
+    return (b << 16) | a;
+}
+复制代码
+原理讲到这，我相信大家都对Adler-32算法有了大致的了解。下面我开始讲一下逆向这个CM的过程，从逆向角度加深一下对这个算法具体运算过程。（未完待续）
