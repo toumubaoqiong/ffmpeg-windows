@@ -1,0 +1,28 @@
+int64---扩展数据类型
+下面列举了Dev-C++下基本类型所占位数和取值范围：
+符号属性     长度属性     基本型     所占位数     取值范围       输入符举例      输出符举例
+--            --          char         8         -2^7 ~ 2^7-1        %c          %c、%d、%u
+signed        --          char         8         -2^7 ~ 2^7-1        %c          %c、%d、%u
+unsigned      --          char         8         0 ~ 2^8-1           %c          %c、%d、%u
+[signed]      short       [int]        16        -2^15 ~ 2^15-1              %hd
+unsigned      short       [int]        16        0 ~ 2^16-1             %hu、%ho、%hx
+[signed]      --           int         32        -2^31 ~ 2^31-1              %d
+unsigned      --          [int]        32        0 ~ 2^32-1              %u、%o、%x
+[signed]      long        [int]        32        -2^31 ~ 2^31-1              %ld
+unsigned      long        [int]        32        0 ~ 2^32-1             %lu、%lo、%lx
+[signed]      long long   [int]        64        -2^63 ~ 2^63-1             %I64d
+unsigned      long long   [int]        64        0 ~ 2^64-1          %I64u、%I64o、%I64x
+--            --          float        32       +/- 3.40282e+038         %f、%e、%g
+--            --          double       64       +/- 1.79769e+308  %lf、%le、%lg   %f、%e、%g
+--            long        double       96       +/- 1.79769e+308        %Lf、%Le、%Lg
+ 
+关于long long类型的输入输出：
+   "%lld"和"%llu"是linux下gcc/g++用于long long int类型(64 bits)输入输出的格式符。
+   而"%I64d"和"%I64u"则是Microsoft VC++库里用于输入输出__int64类型的格式说明。
+   Dev-C++使用的编译器是Mingw32，Mingw32是x86-win32 gcc子项目之一，编译器核心还是linux下的gcc。
+   进行函数参数类型检查的是在编译阶段，gcc编译器对格式字符串进行检查，显然它不认得"%I64d"，
+   所以将给出警告“unknown conversion type character `I' in format”。对于"%lld"和"%llu"，gcc理
+所当然地接受了。
+   Mingw32在编译期间使用gcc的规则检查语法，在连接和运行时使用的却是Microsoft库。
+   这个库里的printf和scanf函数当然不认识linux gcc下"%lld"和"%llu"，但对"%I64d"和"%I64u"，它则是
+乐意接受，并能正常工作的。
