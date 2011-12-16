@@ -16,7 +16,13 @@ extern "C"
 #include <libavutil/audioconvert.h>
 #include <libavutil/avstring.h>
 #include <libavutil/avutil.h>
-#include <libavutil/base64.c>
+#include <libavutil/base64.h>
+#include <libavutil/crc.h>
+#include <libavutil/des.h>
+#include <libavutil/intreadwrite.h>
+#include <libavutil/error.h>
+#include <libavutil/eval.h>
+#include <libavutil/file.h>
 
 #ifdef __cplusplus
 }
@@ -33,9 +39,19 @@ static int ffmpegTest_libavutil_audioconvert(void);
 static int ffmpegTest_libavutil_avstring(void);
 static int ffmpegTest_libavutil_avutil(void);
 static int ffmpegTest_libavutil_base64(void);
+static int ffmpegTest_libavutil_crc(void);
+static int ffmpegTest_libavutil_des(void);
+static int ffmpegTest_libavutil_error(void);
+static int ffmpegTest_libavutil_eval(void);
+static int ffmpegTest_libavutil_file(void);
 
 int ffmpegTest_libavutil(void)
 {
+	ffmpegTest_libavutil_file();
+	ffmpegTest_libavutil_eval();
+	ffmpegTest_libavutil_error();
+	ffmpegTest_libavutil_des();
+	ffmpegTest_libavutil_crc();
 	ffmpegTest_libavutil_base64();
 	ffmpegTest_libavutil_avutil();
 	ffmpegTest_libavutil_avstring();
@@ -45,6 +61,279 @@ int ffmpegTest_libavutil(void)
 	ffmpegTest_libavutil_adler32();
 	ffmpegTest_libavutil_avrational();
 	ffmpegTest_libavutil_mathematics();
+	return 0;
+}
+
+
+static int ffmpegTest_libavutil_file(void)
+{
+	uint8_t *buf;
+	size_t size;
+	if (av_file_map("d:\\video\\test.avi", &buf, &size, 0, NULL) < 0)
+	{
+		return 1;
+	}
+	//buf[0] = 's';
+	printf("%s", buf);
+	av_file_unmap(buf, size);
+	return 0;
+}
+
+
+static double const_values[] =
+{
+	M_PI,
+	M_E,
+	0
+};
+
+static const char *const_names[] =
+{
+	"PI",
+	"E",
+	0
+};
+
+static int ffmpegTest_libavutil_eval(void)
+{
+	int i;
+	double d;
+	const char **expr, *exprs[] =
+	{
+		"",
+		"1;2",
+		"-20",
+		"-PI",
+		"+PI",
+		"1+(5-2)^(3-1)+1/2+sin(PI)-max(-2.2,-3.1)",
+		"80G/80Gi"
+		"1k",
+		"1Gi",
+		"1gi",
+		"1GiFoo",
+		"1k+1k",
+		"1Gi*3foo",
+		"foo",
+		"foo(",
+		"foo()",
+		"foo)",
+		"sin",
+		"sin(",
+		"sin()",
+		"sin)",
+		"sin 10",
+		"sin(1,2,3)",
+		"sin(1 )",
+		"1",
+		"1foo",
+		"bar + PI + E + 100f*2 + foo",
+		"13k + 12f - foo(1, 2)",
+		"1gi",
+		"1Gi",
+		"st(0, 123)",
+		"st(1, 123); ld(1)",
+		/* compute 1+2+...+N */
+		"st(0, 1); while(lte(ld(0), 100), st(1, ld(1)+ld(0));st(0, ld(0)+1)); ld(1)",
+		/* compute Fib(N) */
+		"st(1, 1); st(2, 2); st(0, 1); while(lte(ld(0),10), st(3, ld(1)+ld(2)); st(1, ld(2)); st(2, ld(3)); st(0, ld(0)+1)); ld(3)",
+		"while(0, 10)",
+		"st(0, 1); while(lte(ld(0),100), st(1, ld(1)+ld(0)); st(0, ld(0)+1))",
+		"isnan(1)",
+		"isnan(NAN)",
+		"floor(NAN)",
+		"floor(123.123)",
+		"floor(-123.123)",
+		"trunc(123.123)",
+		"trunc(-123.123)",
+		"ceil(123.123)",
+		"ceil(-123.123)",
+		NULL
+	};
+
+	for (expr = exprs; *expr; expr++)
+	{
+		printf("Evaluating '%s'\n", *expr);
+		av_expr_parse_and_eval(&d, *expr,
+			const_names, const_values,
+			NULL, NULL, NULL, NULL, NULL, 0, NULL);
+		printf("'%s' -> %f\n\n", *expr, d);
+	}
+
+	av_expr_parse_and_eval(&d, "1+(5-2)^(3-1)+1/2+sin(PI)-max(-2.2,-3.1)",
+		const_names, const_values,
+		NULL, NULL, NULL, NULL, NULL, 0, NULL);
+	printf("%f == 12.7\n", d);
+	av_expr_parse_and_eval(&d, "80G/80Gi",
+		const_names, const_values,
+		NULL, NULL, NULL, NULL, NULL, 0, NULL);
+	printf("%f == 0.931322575\n", d);
+
+	for (i = 0; i < 1050; i++)
+	{
+		START_TIMER
+			av_expr_parse_and_eval(&d, "1+(5-2)^(3-1)+1/2+sin(PI)-max(-2.2,-3.1)",
+			const_names, const_values,
+			NULL, NULL, NULL, NULL, NULL, 0, NULL);
+		STOP_TIMER("av_expr_parse_and_eval")
+	}
+	return 0;
+}
+
+
+#include <winsock2.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+
+static int ffmpegTest_libavutil_error(void)
+{
+	char printStr[256] = {0};
+	av_strerror(AVERROR_EOF, printStr, 250);
+	printf("errorStr %s\n", printStr);
+	av_strerror(AVERROR_IO, printStr, 250);
+	printf("errorStr %s\n", printStr);
+}
+
+static uint64_t ffmpegTest_libavutil_des_rand64(void)
+{
+	uint64_t r = rand();
+	r = (r << 32) | rand();
+	return r;
+}
+
+static const uint8_t test_key[] = {0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0};
+static const DECLARE_ALIGNED(8, uint8_t, plain)[] = {0xfe, 0xdc, 0xba, 0x98, 0x76, 0x54, 0x32, 0x10};
+static const DECLARE_ALIGNED(8, uint8_t, crypt)[] = {0x4a, 0xb6, 0x5b, 0x3d, 0x4b, 0x06, 0x15, 0x18};
+static DECLARE_ALIGNED(8, uint8_t, tmp)[8];
+static DECLARE_ALIGNED(8, uint8_t, large_buffer)[10002][8];
+static const uint8_t cbc_key[] =
+{
+	0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef,
+	0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef, 0x01,
+	0x45, 0x67, 0x89, 0xab, 0xcd, 0xef, 0x01, 0x23
+};
+
+static int ffmpegTest_libavutil_des_run_test(int cbc, int decrypt)
+{
+	AVDES d;
+	int delay = cbc && !decrypt ? 2 : 1;
+	uint64_t res;
+	AV_WB64(large_buffer[0], 0x4e6f772069732074ULL);
+	AV_WB64(large_buffer[1], 0x1234567890abcdefULL);
+	AV_WB64(tmp,             0x1234567890abcdefULL);
+	av_des_init(&d, cbc_key, 192, decrypt);
+	av_des_crypt(&d, large_buffer[delay], large_buffer[0], 10000, cbc ? tmp : NULL, decrypt);
+	res = AV_RB64(large_buffer[9999 + delay]);
+	if (cbc)
+	{
+		if (decrypt)
+			return res == 0xc5cecf63ecec514cULL;
+		else
+			return res == 0xcb191f85d1ed8439ULL;
+	}
+	else
+	{
+		if (decrypt)
+			return res == 0x8325397644091a0aULL;
+		else
+			return res == 0xdd17e8b8b437d232ULL;
+	}
+}
+
+static int ffmpegTest_libavutil_des(void)
+{
+	AVDES d;
+	int i;
+#ifdef GENTABLES
+	int j;
+#endif
+	struct timeval tv;
+	uint64_t key[3];
+	uint64_t data;
+	uint64_t ct;
+	uint64_t roundkeys[16];
+	//gettimeofday(&tv, NULL);
+	srand(tv.tv_sec * 1000 * 1000 + tv.tv_usec);
+	key[0] = AV_RB64(test_key);
+	data = AV_RB64(plain);
+	//gen_roundkeys(roundkeys, key[0]);
+	//if (des_encdec(data, roundkeys, 0) != AV_RB64(crypt))
+	//{
+	//	printf("Test 1 failed\n");
+	//	return 1;
+	//}
+	av_des_init(&d, test_key, 64, 0);
+	av_des_crypt(&d, tmp, plain, 1, NULL, 0);
+	if (memcmp(tmp, crypt, sizeof(crypt)))
+	{
+		printf("Public API decryption failed\n");
+		return 1;
+	}
+	if (!ffmpegTest_libavutil_des_run_test(0, 0) 
+		|| !ffmpegTest_libavutil_des_run_test(0, 1) 
+		|| !ffmpegTest_libavutil_des_run_test(1, 0) 
+		|| !ffmpegTest_libavutil_des_run_test(1, 1))
+	{
+		printf("Partial Monte-Carlo test failed\n");
+		return 1;
+	}
+	for (i = 0; i < 100; i++)
+	{
+		key[0] = ffmpegTest_libavutil_des_rand64();
+		key[1] = ffmpegTest_libavutil_des_rand64();
+		key[2] = ffmpegTest_libavutil_des_rand64();
+		data = ffmpegTest_libavutil_des_rand64();
+		av_des_init(&d, (const uint8_t *)key, 192, 0);
+		av_des_crypt(&d, (uint8_t *)&ct, (const uint8_t *)&data, 1, NULL, 0);
+		av_des_init(&d, (const uint8_t *)key, 192, 1);
+		av_des_crypt(&d, (uint8_t *)&ct, (const uint8_t *)&ct, 1, NULL, 1);
+		if (ct != data)
+		{
+			printf("Test 2 failed\n");
+			return 1;
+		}
+	}
+#ifdef GENTABLES
+	printf("static const uint32_t S_boxes_P_shuffle[8][64] = {\n");
+	for (i = 0; i < 8; i++)
+	{
+		printf("    {");
+		for (j = 0; j < 64; j++)
+		{
+			uint32_t v = S_boxes[i][j >> 1];
+			v = j & 1 ? v >> 4 : v & 0xf;
+			v <<= 28 - 4 * i;
+			v = shuffle(v, P_shuffle, sizeof(P_shuffle));
+			printf((j & 7) == 0 ? "\n    " : " ");
+			printf("0x%08X,", v);
+		}
+		printf("\n    },\n");
+	}
+	printf("};\n");
+#endif
+	return 0;
+}
+
+static int ffmpegTest_libavutil_crc(void)
+{
+	uint8_t buf[1999];
+	int i;
+	int p[4][3] = {{AV_CRC_32_IEEE_LE, 0xEDB88320, 0x3D5CDD04},
+	{AV_CRC_32_IEEE   , 0x04C11DB7, 0xC0F5BAE0},
+	{AV_CRC_16_ANSI   , 0x8005,     0x1FBB    },
+	{AV_CRC_8_ATM     , 0x07,       0xE3      },
+	};
+	const AVCRC *ctx;
+
+	for(i = 0; i < sizeof(buf); i++)
+		buf[i] = i + i * i;
+
+	for(i = 0; i < 4; i++)
+	{
+		ctx = av_crc_get_table((AVCRCId)p[i][0]);
+		printf("crc %08X =%X\n", p[i][1], 
+			av_crc(ctx, 0, buf, sizeof(buf)));
+	}
 	return 0;
 }
 
