@@ -42,6 +42,7 @@ static const uint8_t map2[] =
     0x2c, 0x2d, 0x2e, 0x2f, 0x30, 0x31, 0x32, 0x33
 };
 
+//这是一个疑问，里面具体是怎么运作的，我不太清楚？
 int av_base64_decode(uint8_t *out, const char *in, int out_size)
 {
     int i, v;

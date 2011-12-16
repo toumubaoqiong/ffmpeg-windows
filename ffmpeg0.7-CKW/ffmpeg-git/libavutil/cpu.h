@@ -17,6 +17,17 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
+//****************************************************************************//
+//libavutil\cpu.h
+//	定义不同CPU的相关信息
+//学习的地方：
+//1.不同的CPU指令是如何在具体的运算中起到特别的作用的？
+//2.之前有介绍ffmpeg将无论是PC的Intel， AMD的CPU还是ARM7， ARM9的CPU
+//都是当作一个泛型的DSP来看待，但是这里没有感觉的这种设计
+//这是一个疑问，需要以后弄明白
+//附录：
+//
+//****************************************************************************//
 
 #ifndef AVUTIL_CPU_H
 #define AVUTIL_CPU_H
