@@ -23,6 +23,8 @@ extern "C"
 #include <libavutil/error.h>
 #include <libavutil/eval.h>
 #include <libavutil/file.h>
+#include <libavutil/pixdesc.h>
+#include <libavutil/imgutils.h>
 
 #ifdef __cplusplus
 }
@@ -44,9 +46,13 @@ static int ffmpegTest_libavutil_des(void);
 static int ffmpegTest_libavutil_error(void);
 static int ffmpegTest_libavutil_eval(void);
 static int ffmpegTest_libavutil_file(void);
+static int ffmpegTest_libavutil_pixdesc(void);
+static int ffmpegTest_libavutil_imgutils(void);
 
 int ffmpegTest_libavutil(void)
 {
+	ffmpegTest_libavutil_imgutils();
+	ffmpegTest_libavutil_pixdesc();
 	ffmpegTest_libavutil_file();
 	ffmpegTest_libavutil_eval();
 	ffmpegTest_libavutil_error();
@@ -64,6 +70,79 @@ int ffmpegTest_libavutil(void)
 	return 0;
 }
 
+
+static int ffmpegTest_libavutil_imgutils(void)
+{
+	const AVPixFmtDescriptor *tmpPixFmts = 
+		av_getav_pix_fmt_descriptors();
+	int max_pixsteps[4] = {0};
+	int max_pixstep_comps[4] = {0};
+	av_image_fill_max_pixsteps(max_pixsteps, 
+		max_pixstep_comps,
+		&tmpPixFmts[0]);
+	int tmpLineSize = av_image_get_linesize(PIX_FMT_YUV444P, 176, 1);
+	int linesizes[4] = {0};
+	tmpLineSize = 
+		av_image_fill_linesizes(linesizes, PIX_FMT_YUV444P, 176);
+	uint8_t *data[4] =
+	{
+		(uint8_t *)"wangjingisgood1",
+		(uint8_t *)"wangjingisgood2",
+		(uint8_t *)"wangjingisgood3",
+		(uint8_t *)"wangjingisgood4"
+	};
+	uint8_t ptr[1024] = {0};
+	tmpLineSize = av_image_fill_pointers(data, 
+		PIX_FMT_YUV444P, 176, ptr, linesizes);
+	tmpLineSize = av_image_alloc(data, linesizes, 
+		176, 144, PIX_FMT_YUV444P, 4);
+	uint8_t dst[1024] = {0};
+	av_image_copy_plane(dst, 1, ptr, 1, 1, 186);
+	uint8_t dataDst[4][1024] = {0};
+	uint8_t dataSrc[4][1024] = {0};
+	uint8_t *tmpDataDst[4] = 
+	{&dataDst[0][0], &dataDst[1][0], &dataDst[2][0], &dataDst[3][0]};
+	uint8_t *tmpDataSrc[4] = 
+	{&dataSrc[0][0], &dataSrc[1][0], &dataSrc[2][0], &dataSrc[3][0]};
+	int linesizesDst[4] = {0},
+		linesizesSrc[4] = {0};
+	typedef uint8_t* IMGDATA_TYPE_UNTILE[4];
+	av_image_copy(tmpDataDst, linesizesDst, 
+		tmpDataSrc, linesizesSrc, PIX_FMT_YUV444P, 176, 144);
+}
+
+static int ffmpegTest_libavutil_pixdesc(void)
+{
+	const AVPixFmtDescriptor *tmpPixFmts = 
+		av_getav_pix_fmt_descriptors();
+	//FFMPEGLIB_API void av_read_image_line(uint16_t *dst, const uint8_t *data[4], 
+	//const int linesize[4], const AVPixFmtDescriptor *desc, 
+	//int x, int y, int c, int w, int read_pal_component)
+	uint16_t dst[] = 
+	{
+		12, 13, 14, 15, 16, 18, 18, 19, 20, 283,
+		12, 13, 14, 15, 16, 18, 18, 19, 20, 283,
+	};
+	uint8_t *data[4] =
+	{
+		(uint8_t *)"wangjingisgood1",
+		(uint8_t *)"wangjingisgood2",
+		(uint8_t *)"wangjingisgood3",
+		(uint8_t *)"wangjingisgood4"
+	};
+	int linesize[4] = {10, 10, 10, 10};
+	AVPixFmtDescriptor desc = {0};
+	PixelFormat tmpPixelFmt = av_get_pix_fmt("dxva2_vld");
+	int tmpBit = av_get_bits_per_pixel(&tmpPixFmts[1]);
+	char tmpStrTmp[256] = {0};
+	char *tmpPixelStr = 
+		av_get_pix_fmt_string(tmpStrTmp, 250, PIX_FMT_YUV444P);
+	//av_write_image_line(dst, data, 
+	//	linesize, &tmpPixFmts[1], 1, 1, 1, 144);
+	//av_read_image_line(dst, data, 
+	//	linesize, &tmpPixFmts[1], 1, 1, 1, 144, 0);
+	return 0;
+}
 
 static int ffmpegTest_libavutil_file(void)
 {
