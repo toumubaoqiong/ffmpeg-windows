@@ -14,6 +14,9 @@ extern "C"
 #include <libavutil/lfg.h>
 #include <libavutil/md5.h>
 #include <libavutil/audioconvert.h>
+#include <libavutil/avstring.h>
+#include <libavutil/avutil.h>
+#include <libavutil/base64.c>
 
 #ifdef __cplusplus
 }
@@ -27,9 +30,15 @@ static int ffmpegTest_libavutil_adler32(void);
 static int ffmpegTest_libavutil_aes(void);
 static int ffmpegTest_libavutil_md5(void);
 static int ffmpegTest_libavutil_audioconvert(void);
+static int ffmpegTest_libavutil_avstring(void);
+static int ffmpegTest_libavutil_avutil(void);
+static int ffmpegTest_libavutil_base64(void);
 
 int ffmpegTest_libavutil(void)
 {
+	ffmpegTest_libavutil_base64();
+	ffmpegTest_libavutil_avutil();
+	ffmpegTest_libavutil_avstring();
 	ffmpegTest_libavutil_audioconvert();
 	ffmpegTest_libavutil_md5();
 	ffmpegTest_libavutil_aes();
@@ -37,6 +46,111 @@ int ffmpegTest_libavutil(void)
 	ffmpegTest_libavutil_avrational();
 	ffmpegTest_libavutil_mathematics();
 	return 0;
+}
+
+
+static int ffmpegTest_libavutil_base64_test_encode_decode(
+			const uint8_t *data, 
+			unsigned int data_size,
+			const char *encoded_ref)
+{
+#define MAX_DATA_SIZE    1024
+#define MAX_ENCODED_SIZE 2048
+	char  encoded[MAX_ENCODED_SIZE];
+	uint8_t data2[MAX_DATA_SIZE];
+	int data2_size, max_data2_size = MAX_DATA_SIZE;
+
+	if (!av_base64_encode(encoded, MAX_ENCODED_SIZE, data, data_size))
+	{
+		printf("Failed: cannot encode the input data\n");
+		return 1;
+	}
+	if (encoded_ref && strcmp(encoded, encoded_ref))
+	{
+		printf("Failed: encoded string differs from reference\n"
+			"Encoded:\n%s\nReference:\n%s\n", encoded, encoded_ref);
+		return 1;
+	}
+
+	if ((data2_size = av_base64_decode(data2, encoded, max_data2_size)) < 0)
+	{
+		printf("Failed: cannot decode the encoded string\n"
+			"Encoded:\n%s\n", encoded);
+		return 1;
+	}
+	if (memcmp(data2, data, data_size))
+	{
+		printf("Failed: encoded/decoded data differs from original data\n");
+		return 1;
+	}
+
+	printf("Passed!\n");
+	return 0;
+}
+
+static int ffmpegTest_libavutil_base64(void)
+{
+	int i, error_count = 0;
+	struct test
+	{
+		const uint8_t *data;
+		const char *encoded_ref;
+	} tests[] =
+	{
+		{ "",        ""},
+		{ "1",       "MQ=="},
+		{ "22",      "MjI="},
+		{ "333",     "MzMz"},
+		{ "4444",    "NDQ0NA=="},
+		{ "55555",   "NTU1NTU="},
+		{ "666666",  "NjY2NjY2"},
+		{ "abc:def", "YWJjOmRlZg=="},
+	};
+
+	printf("Encoding/decoding tests\n");
+	for (i = 0; i < FF_ARRAY_ELEMS(tests); i++)
+		error_count += 
+		ffmpegTest_libavutil_base64_test_encode_decode(
+			tests[i].data, 
+			strlen((const char *)tests[i].data), 
+			tests[i].encoded_ref);
+
+	return error_count;
+}
+
+
+static int ffmpegTest_libavutil_avutil(void)
+{
+#define AV_STRINGIFY111_1111(s)		AV_TOSTRING111_1111(s)
+#define AV_TOSTRING111_1111(s)		#s
+	printf("wangjing printf %s\n", 
+		AV_STRINGIFY111_1111(11231432143124323214));
+	printf("version: %f, config: %s, licese: %d",
+		avutil_version(), 
+		avutil_configuration(),
+		avutil_license());
+	return 0;
+}
+
+static int ffmpegTest_libavutil_avstring(void)
+{
+	char *tmpStr = NULL;
+	int tmpbl = av_strstart(
+		"wangjingisgood", "wangjing", (const char**)&tmpStr);
+	tmpbl = av_stristart(
+		"wangjingisgood", "WANGJING", (const char**)&tmpStr);
+	tmpStr = av_stristr("wangjingisgood", "IS");
+	tmpStr = av_stristr("wangjingisgood", "IS");
+	char tmpStrsA[256] = {0};
+	char tmpStrsB[256] = {0};
+	char tmpStrsC[256] = {0};
+	tmpbl = av_strlcpy(tmpStrsA, "wangjingisgood", 200);
+	tmpbl = av_strlcat(tmpStrsA, "wangjingisgood", 200);
+	tmpbl = av_strlcatf(tmpStrsB, 250, "wangjing %s is %d\n", 
+		"wangjingisgood", 1111111);
+	char *tmpStrDouble = av_d2str(2.33339913314564566445654648841156);
+	char *tmpStrStrA = "wangjing is good is ok is very niceis ok is good";
+	av_get_token(&tmpStrStrA, "is");
 }
 
 static int ffmpegTest_libavutil_audioconvert(void)
