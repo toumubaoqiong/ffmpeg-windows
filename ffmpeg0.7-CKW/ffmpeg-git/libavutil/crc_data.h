@@ -17,6 +17,7 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
+//这个头文件仅仅是为crc的数据生成提供一个数据表
 
 #ifndef AVUTIL_CRC_DATA_H
 #define AVUTIL_CRC_DATA_H

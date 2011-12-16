@@ -18,6 +18,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+//****************************************************************************//
+//libavutil\pixfmt.h
+//	定义所有的PixelFormat（像素格式）
+//学习的地方：
+//1.怎样屏蔽大端和小端CPU的数据存储的区别：使用宏定义AV_HAVE_BIGENDIAN
+//2.定义了所有的PixelFormat, 同时这些描述PixelFormat的信息却在libavutil\pixdesc.c
+//中定义
+//附录：
+//****************************************************************************//
+
 #ifndef AVUTIL_PIXFMT_H
 #define AVUTIL_PIXFMT_H
 
@@ -146,12 +156,17 @@ enum PixelFormat
     PIX_FMT_NB,        ///< number of pixel formats, DO NOT USE THIS if you want to link with shared libav* because the number of formats might differ between versions
 };
 
+
+//非常值得学习的地方：屏蔽大端和小端CPU的数据存储的区别
 #if AV_HAVE_BIGENDIAN
 #   define PIX_FMT_NE(be, le) PIX_FMT_##be
 #else
 #   define PIX_FMT_NE(be, le) PIX_FMT_##le
 #endif
 
+
+//定义RGB的数据存储格式, 比如：RGB5-6-5, RGB5-5-5等
+//定义YUV的数据存储格式, 比如：YUV420P9， YUV420P10等
 #define PIX_FMT_RGB32   PIX_FMT_NE(ARGB, BGRA)
 #define PIX_FMT_RGB32_1 PIX_FMT_NE(RGBA, ABGR)
 #define PIX_FMT_BGR32   PIX_FMT_NE(ABGR, RGBA)

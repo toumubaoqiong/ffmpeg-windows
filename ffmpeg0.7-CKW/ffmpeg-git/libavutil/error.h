@@ -21,6 +21,17 @@
  * error code definitions
  */
 
+//****************************************************************************//
+//libavutil\error.h, libavutil\error.c
+//	错误信息的宏定义
+//学习的地方：
+//1.之前在使用过程中，总是出现AVERROR(EINVAL)=-22，搞不懂这到底是什么类型的错误，
+//现在通过这里可以明白，通过这里可以查到Invalid data found when processing input，
+//而且为什么结果总是负数呢，因为AVERROR(e) (-(e))
+//2.通过宏定义，分别区别了不同的错误类型
+//附录：
+//****************************************************************************//
+
 #ifndef AVUTIL_ERROR_H
 #define AVUTIL_ERROR_H
 

@@ -18,6 +18,17 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
+//****************************************************************************//
+//libavutil\des.h， libavutil\des.c
+//	生成DES加密的一切信息
+//学习的地方：
+//1.
+//附录：
+//1.扩展知识----数据加密算法简介.doc
+//2.扩展知识----DES加密算法.doc
+//3.扩展知识----DES加密算法的一个实现.txt
+//****************************************************************************//
+
 
 #ifndef AVUTIL_DES_H
 #define AVUTIL_DES_H

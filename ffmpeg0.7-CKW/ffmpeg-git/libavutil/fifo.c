@@ -26,12 +26,16 @@ AVFifoBuffer *av_fifo_alloc(unsigned int size)
 {
     AVFifoBuffer *f = av_mallocz(sizeof(AVFifoBuffer));
     if(!f)
+	{
         return NULL;
+	}
     f->buffer = av_malloc(size);
     f->end = f->buffer + size;
     av_fifo_reset(f);
     if (!f->buffer)
+	{
         av_freep(&f);
+	}
     return f;
 }
 
@@ -68,9 +72,10 @@ int av_fifo_realloc2(AVFifoBuffer *f, unsigned int new_size)
     {
         int len = av_fifo_size(f);
         AVFifoBuffer *f2 = av_fifo_alloc(new_size);
-
         if (!f2)
-            return -1;
+		{
+			return -1;
+		}
         av_fifo_generic_read(f, f2->buffer, len, NULL);
         f2->wptr += len;
         f2->wndx += len;
@@ -116,7 +121,10 @@ int av_fifo_generic_read(AVFifoBuffer *f, void *dest, int buf_size, void (*func)
     do
     {
         int len = FFMIN(f->end - f->rptr, buf_size);
-        if(func) func(dest, f->rptr, len);
+        if(func) 
+		{
+			func(dest, f->rptr, len);
+		}
         else
         {
             memcpy(dest, f->rptr, len);
@@ -130,11 +138,15 @@ int av_fifo_generic_read(AVFifoBuffer *f, void *dest, int buf_size, void (*func)
     return 0;
 }
 
+//这个函数做得不地道，很可能出现问题，
+//因为它是直接将数据指针拔回到前面
 /** Discard data from the FIFO. */
 void av_fifo_drain(AVFifoBuffer *f, int size)
 {
     f->rptr += size;
     if (f->rptr >= f->end)
+	{
         f->rptr -= f->end - f->buffer;
+	}
     f->rndx += size;
 }

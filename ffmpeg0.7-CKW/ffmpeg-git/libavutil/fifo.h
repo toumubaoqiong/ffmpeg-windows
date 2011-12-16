@@ -20,6 +20,14 @@
  * @file
  * a very simple circular buffer FIFO implementation
  */
+//****************************************************************************//
+//libavutil\fifo.h， libavutil\fifo.c
+//	一个简单的FIFO(先进先出)的缓冲器
+//学习的地方：
+//1.总体上这个FIFO函数写得还是很容易理解，要是都这样就好了，呵呵
+//附录：
+//1.
+//****************************************************************************//
 
 #ifndef AVUTIL_FIFO_H
 #define AVUTIL_FIFO_H
@@ -30,8 +38,11 @@
 typedef struct AVFifoBuffer
 {
     uint8_t *buffer;
-    uint8_t *rptr, *wptr, *end;
-    uint32_t rndx, wndx;
+    uint8_t *rptr; //Ptr First
+	uint8_t	*wptr; //Ptr Last
+	uint8_t	*end;
+    uint32_t rndx; //Pos First
+	uint32_t wndx;//Pos Last
 } AVFifoBuffer;
 
 /**
