@@ -1,0 +1,527 @@
+MD5算法
+
+
+
+MD5的全称是Message-Digest Algorithm 5（信息-摘要算法），在90年代初由MIT Laboratory for Computer Science和RSA Data Security Inc的Ronald L. Rivest开发出来，经MD2、MD3和MD4发展而来。它的作用是让大容量信息在用数字签名软件签署私人密匙前被"压缩"成一种保密的格式（就是把一个任意长度的字节串变换成一定长的大整数）。
+
+目录
+
+一、MD5算法
+二、算法描述
+三、MD5的安全性
+四、C++算法展开
+编辑本段
+一、MD5算法
+
+1、简介
+　　不管是MD2、MD4还是MD5，它们都需要获得一个随机长度的信息并产生一个128位的信息摘要。虽然这些算法的结构或多或少有些相似，但MD2的设计与MD4和MD5完全不同，那是因为MD2是为8位机器做过设计优化的，而MD4和MD5却是面向32位的电脑。这三个算法的描述和C语言源代码在Internet RFCs 1321中有详细的描述（http://www.ietf.org/rfc/rfc1321.txt），这是一份最权威的文档，由Ronald L. Rivest在1992年8月向IETF提交。
+　　Van Oorschot和Wiener曾经考虑过一个在散列中暴力搜寻冲突的函数（Brute-Force Hash Function），而且他们猜测一个被设计专门用来搜索MD5冲突的机器（这台机器在1994年的制造成本大约是一百万美元）可以平均每24天就找到一个冲突。但单从1991年到2001年这10年间，竟没有出现替代MD5算法的MD6或被叫做其他什么名字的新算法这一点，我们就可以看出这个瑕疵并没有太多的影响MD5的安全性。上面所有这些都不足以成为MD5的在实际应用中的问题。并且，由于MD5算法的使用不需要支付任何版权费用的，所以在一般的情况下（非绝密应用领域。但即便是应用在绝密领域内，MD5也不失为一种非常优秀的中间技术），MD5怎么都应该算得上是非常安全的了。
+2、算法的应用
+　　MD5的典型应用是对一段信息（Message）产生信息摘要（Message-Digest），以防止被篡改。比如，在UNIX下有很多软件在下载的时候都有一个文件名相同，文件扩展名为.md5的文件，在这个文件中通常只有一行文本，大致结构如：
+　　MD5 (tanajiya.tar.gz) = 0ca175b9c0f726a831d895e269332461
+　　这就是tanajiya.tar.gz文件的数字签名。MD5将整个文件当作一个大文本信息，通过其不可逆的字符串变换算法，产生了这个唯一的MD5信息摘要。如果在以后传播这个文件的过程中，无论文件的内容发生了任何形式的改变（包括人为修改或者下载过程中线路不稳定引起的传输错误等），只要你对这个文件重新计算MD5时就会发现信息摘要不相同，由此可以确定你得到的只是一个不正确的文件。如果再有一个第三方的认证机构，用MD5还可以防止文件作者的"抵赖"，这就是所谓的数字签名应用。
+3、MD5还广泛用于加密和解密技术上
+　　比如在UNIX系统中用户的密码就是以MD5（或其它类似的算法）经加密后存储在文件系统中。当用户登录的时候，系统把用户输入的密码计算成MD5值，然后再去和保存在文件系统中的MD5值进行比较，进而确定输入的密码是否正确。通过这样的步骤，系统在并不知道用户密码的明码的情况下就可以确定用户登录系统的合法性。这不但可以避免用户的密码被具有系统管理员权限的用户知道，而且还在一定程度上增加了密码被破解的难度。
+　　正是因为这个原因，现在被黑客使用最多的一种破译密码的方法就是一种被称为"跑字典"的方法。有两种方法得到字典，一种是日常搜集的用做密码的字符串表，另一种是用排列组合方法生成的，先用MD5程序计算出这些字典项的MD5值，然后再用目标的MD5值在这个字典中检索。我们假设密码的最大长度为8位字节（8 Bytes），同时密码只能是字母和数字，共26+26+10=62个字符，排列组合出的字典的项数则是P(62,1)+P(62,2)….+P(62,8)，那也已经是一个很天文的数字了，存储这个字典就需要TB级的磁盘阵列，而且这种方法还有一个前提，就是能获得目标账户的密码MD5值的情况下才可以。这种加密技术被广泛的应用于UNIX系统中，这也是为什么UNIX系统比一般操作系统更为坚固一个重要原因。
+编辑本段
+二、算法描述
+
+1、简介
+　　对MD5算法简要的叙述可以为：MD5以512位分组来处理输入的信息，且每一分组又被划分为16个32位子分组，经过了一系列的处理后，算法的输出由四个32位分组组成，将这四个32位分组级联后将生成一个128位散列值。
+　　在MD5算法中，首先需要对信息进行填充，使其位长度对512求余的结果等于448。因此，信息的位长度（Bits Length）将被扩展至N*512+448，即N*64+56个字节（Bytes），N为一个非负整数。填充的方法如下，在信息的后面填充一个1和无数个0，直到满足上面的条件时才停止用0对信息的填充。然后，再在这个结果后面附加一个以64位二进制表示的填充前信息长度。经过这两步的处理，现在的信息字节长度=N*512+448+64=(N+1)*512，即长度恰好是512的整数倍。这样做的原因是为满足后面处理中对信息长度的要求。
+　　MD5中有四个32位被称作链接变量（Chaining Variable）的整数参数，他们分别为：A=0x01234567，B=0x89abcdef，C=0xfedcba98，D=0x76543210。
+　　当设置好这四个链接变量后，就开始进入算法的四轮循环运算。循环的次数是信息中512位信息分组的数目。
+　　将上面四个链接变量复制到另外四个变量中：A到a，B到b，C到c，D到d。
+　　主循环有四轮（MD4只有三轮），每轮循环都很相似。第一轮进行16次操作。每次操作对a、b、c和d中的其中三个作一次非线性函数运算，然后将所得结果加上第四个变量，文本的一个子分组和一个常数。再将所得结果向右环移一个不定的数，并加上a、b、c或d中之一。最后用该结果取代a、b、c或d中之一。
+　　以一下是每次操作中用到的四个非线性函数（每轮一个）。
+　　F(X,Y,Z) =(X&Y)|((~X)&Z)
+　　G(X,Y,Z) =(X&Z)|(Y&(~Z))
+　　H(X,Y,Z) =X^Y^Z
+　　I(X,Y,Z)=Y^(X|(~Z))
+　　（&是与，|是或，~是非，^是异或）
+　　这四个函数的说明：如果X、Y和Z的对应位是独立和均匀的，那么结果的每一位也应是独立和均匀的。F是一个逐位运算的函数。即，如果X，那么Y，否则Z。函数H是逐位奇偶操作符。
+　　假设Mj表示消息的第j个子分组（从0到15），
+　　（x）<< （n）表示把x循环左移n位
+　　FF(a,b,c,d,Mj,s,ti)表示a=b+((a+(F(b,c,d)+Mj+ti))<<s)
+　　GG(a,b,c,d,Mj,s,ti)表示a=b+((a+(G(b,c,d)+Mj+ti))<<s)
+　　HH(a,b,c,d,Mj,s,ti)表示a=b+((a+(H(b,c,d)+Mj+ti))<<s)
+　　II(a,b,c,d,Mj,s,ti)表示a=b+((a+(I(b,c,d)+Mj+ti))<<s)
+　　这四轮（64步）是：
+2、第一轮
+　　FF(a,b,c,d,M0,7,0xd76aa478)
+　　FF(d,a,b,c,M1,12,0xe8c7b756)
+　　FF(c,d,a,b,M2,17,0x242070db)
+　　FF(b,c,d,a,M3,22,0xc1bdceee)
+　　FF(a,b,c,d,M4,7,0xf57c0faf)
+　　FF(d,a,b,c,M5,12,0x4787c62a)
+　　FF(c,d,a,b,M6,17,0xa8304613)
+　　FF(b,c,d,a,M7,22,0xfd469501)
+　　FF(a,b,c,d,M8,7,0x698098d8)
+　　FF(d,a,b,c,M9,12,0x8b44f7af)
+　　FF(c,d,a,b,M10,17,0xffff5bb1)
+　　FF(b,c,d,a,M11,22,0x895cd7be)
+　　FF(a,b,c,d,M12,7,0x6b901122)
+　　FF(d,a,b,c,M13,12,0xfd987193)
+　　FF(c,d,a,b,M14,17,0xa679438e)
+　　FF(b,c,d,a,M15,22,0x49b40821)
+3、第二轮
+　　GG(a,b,c,d,M1,5,0xf61e2562)
+　　GG(d,a,b,c,M6,9,0xc040b340)
+　　GG(c,d,a,b,M11,14,0x265e5a51)
+　　GG(b,c,d,a,M0,20,0xe9b6c7aa)
+　　GG(a,b,c,d,M5,5,0xd62f105d)
+　　GG(d,a,b,c,M10,9,0x02441453)
+　　GG(c,d,a,b,M15,14,0xd8a1e681)
+　　GG(b,c,d,a,M4,20,0xe7d3fbc8)
+　　GG(a,b,c,d,M9,5,0x21e1cde6)
+　　GG(d,a,b,c,M14,9,0xc33707d6)
+　　GG(c,d,a,b,M3,14,0xf4d50d87)
+　　GG(b,c,d,a,M8,20,0x455a14ed)
+　　GG(a,b,c,d,M13,5,0xa9e3e905)
+　　GG(d,a,b,c,M2,9,0xfcefa3f8)
+　　GG(c,d,a,b,M7,14,0x676f02d9)
+　　GG(b,c,d,a,M12,20,0x8d2a4c8a)
+4、第三轮
+　　HH(a,b,c,d,M5,4,0xfffa3942)
+　　HH(d,a,b,c,M8,11,0x8771f681)
+　　HH(c,d,a,b,M11,16,0x6d9d6122)
+　　HH(b,c,d,a,M14,23,0xfde5380c)
+　　HH(a,b,c,d,M1,4,0xa4beea44)
+　　HH(d,a,b,c,M4,11,0x4bdecfa9)
+　　HH(c,d,a,b,M7,16,0xf6bb4b60)
+　　HH(b,c,d,a,M10,23,0xbebfbc70)
+　　HH(a,b,c,d,M13,4,0x289b7ec6)
+　　HH(d,a,b,c,M0,11,0xeaa127fa)
+　　HH(c,d,a,b,M3,16,0xd4ef3085)
+　　HH(b,c,d,a,M6,23,0x04881d05)
+　　HH(a,b,c,d,M9,4,0xd9d4d039)
+　　HH(d,a,b,c,M12,11,0xe6db99e5)
+　　HH(c,d,a,b,M15,16,0x1fa27cf8)
+　　HH(b,c,d,a,M2,23,0xc4ac5665)
+5、第四轮
+　　II(a,b,c,d,M0,6,0xf4292244)
+　　II(d,a,b,c,M7,10,0x432aff97)
+　　II(c,d,a,b,M14,15,0xab9423a7)
+　　II(b,c,d,a,M5,21,0xfc93a039)
+　　II(a,b,c,d,M12,6,0x655b59c3)
+　　II(d,a,b,c,M3,10,0x8f0ccc92)
+　　II(c,d,a,b,M10,15,0xffeff47d)
+　　II(b,c,d,a,M1,21,0x85845dd1)
+　　II(a,b,c,d,M8,6,0x6fa87e4f)
+　　II(d,a,b,c,M15,10,0xfe2ce6e0)
+　　II(c,d,a,b,M6,15,0xa3014314)
+　　II(b,c,d,a,M13,21,0x4e0811a1)
+　　II(a,b,c,d,M4,6,0xf7537e82)
+　　II(d,a,b,c,M11,10,0xbd3af235)
+　　II(c,d,a,b,M2,15,0x2ad7d2bb)
+　　II(b,c,d,a,M9,21,0xeb86d391)
+6、常数ti的选择
+　　在第i步中，ti是4294967296*abs(sin(i))的整数部分，i的单位是弧度。(4294967296等于2的32次方)
+　　所有这些完成之后，将A、B、C、D分别加上a、b、c、d。然后用下一分组数据继续运行算法，最后的输出是A、B、C和D的级联。
+　　当你按照我上面所说的方法实现MD5算法以后，你可以用以下几个信息对你做出来的程序作一个简单的测试，看看程序有没有错误。
+　　MD5 ("") = d41d8cd98f00b204e9800998ecf8427e
+　　MD5 ("a") = 0cc175b9c0f1b6a831c399e269772661
+　　MD5 ("abc") = 900150983cd24fb0d6963f7d28e17f72
+　　MD5 ("message digest") = f96b697d7cb7938d525a2f31aaf161d0
+　　MD5 ("abcdefghijklmnopqrstuvwxyz") = c3fcd3d76192e4007dfb496cca67e13b
+　　MD5 ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789") =
+　　d174ab98d277d9f5a5611c2c9f419d9f
+　　MD5 ("123456789012345678901234567890123456789012345678901234567890123456789
+　　01234567890") = 57edf4a22be3c955ac49da2e2107b67a
+编辑本段
+三、MD5的安全性
+
+　　MD5相对MD4所作的改进：
+1、增加了第四轮
+2、每一步均有唯一的加法常数
+3、第三
+　　为减弱第二轮中函数G的对称性从(X&Y)|(X&Z)|(Y&Z)变为(X&Z)|(Y&(~Z))；
+4、第四
+　　第一步加上了上一步的结果，这将引起更快的雪崩效应；
+5、第五
+　　改变了第二轮和第三轮中访问消息子分组的次序，使其更不相似；
+6、第六
+　　近似优化了每一轮中的循环左移位移量以实现更快的雪崩效应。各轮的位移量互不相同。
+编辑本段
+四、C++算法
+
+1、头文件
+　　#ifndef MD5_H
+　　#define MD5_H
+　　#include <string>
+　　#include <fstream>
+　　/* Type define */
+　　typedef unsigned char byte;
+　　typedef unsigned int uint32;
+　　using std::string;
+　　using std::ifstream;
+　　/* MD5 declaration. */
+　　class MD5 {
+　　public:
+　　MD5();
+　　MD5(const void* input, size_t length);
+　　MD5(const string& str);
+　　MD5(ifstream& in);
+　　void update(const void* input, size_t length);
+　　void update(const string& str);
+　　void update(ifstream& in);
+　　const byte* digest();
+　　string toString();
+　　void reset();
+　　private:
+　　void update(const byte* input, size_t length);
+　　void final();
+　　void transform(const byte block[64]);
+　　void encode(const uint32* input, byte* output, size_t length);
+　　void decode(const byte* input, uint32* output, size_t length);
+　　string bytesToHexString(const byte* input, size_t length);
+　　/* class uncopyable */
+　　MD5(const MD5&);
+　　MD5& operator=(const MD5&);
+　　private:
+　　uint32 _state[4]; /* state (ABCD) */
+　　uint32 _count[2]; /* number of bits, modulo 2^64 (low-order word first) */
+　　byte _buffer[64]; /* input buffer */
+　　byte _digest[16]; /* message digest */
+　　bool _finished; /* calculate finished ? */
+　　static const byte PADDING[64]; /* padding for calculate */
+　　static const char HEX[16];
+　　enum { BUFFER_SIZE = 1024 };
+　　};
+　　#endif /*MD5_H*/
+2、CPP文件
+　　#include "md5.h"
+　　using namespace std;
+　　/* Constants for MD5Transform routine. */
+　　#define S11 7
+　　#define S12 12
+　　#define S13 17
+　　#define S14 22
+　　#define S21 5
+　　#define S22 9
+　　#define S23 14
+　　#define S24 20
+　　#define S31 4
+　　#define S32 11
+　　#define S33 16
+　　#define S34 23
+　　#define S41 6
+　　#define S42 10
+　　#define S43 15
+　　#define S44 21
+　　/* F, G, H and I are basic MD5 functions.
+　　*/
+　　#define F(x, y, z) (((x) & (y)) | ((~x) & (z)))
+　　#define G(x, y, z) (((x) & (z)) | ((y) & (~z)))
+　　#define H(x, y, z) ((x) ^ (y) ^ (z))
+　　#define I(x, y, z) ((y) ^ ((x) | (~z)))
+　　/* ROTATE_LEFT rotates x left n bits.
+　　*/
+　　#define ROTATE_LEFT(x, n) (((x) << (n)) | ((x) >> (32-(n))))
+　　/* FF, GG, HH, and II transformations for rounds 1, 2, 3, and 4.
+　　Rotation is separate from addition to prevent recomputation.
+　　*/
+　　#define FF(a, b, c, d, x, s, ac) { \
+　　(a) += F ((b), (c), (d)) + (x) + ac; \
+　　(a) = ROTATE_LEFT ((a), (s)); \
+　　(a) += (b); \
+　　}
+　　#define GG(a, b, c, d, x, s, ac) { \
+　　(a) += G ((b), (c), (d)) + (x) + ac; \
+　　(a) = ROTATE_LEFT ((a), (s)); \
+　　(a) += (b); \
+　　}
+　　#define HH(a, b, c, d, x, s, ac) { \
+　　(a) += H ((b), (c), (d)) + (x) + ac; \
+　　(a) = ROTATE_LEFT ((a), (s)); \
+　　(a) += (b); \
+　　}
+　　#define II(a, b, c, d, x, s, ac) { \
+　　(a) += I ((b), (c), (d)) + (x) + ac; \
+　　(a) = ROTATE_LEFT ((a), (s)); \
+　　(a) += (b); \
+　　}
+　　const byte MD5::PADDING[64] = { 0x80 };
+　　const char MD5::HEX[16] = {
+　　'0', '1', '2', '3',
+　　'4', '5', '6', '7',
+　　'8', '9', 'a', 'b',
+　　'c', 'd', 'e', 'f'
+　　};
+　　/* Default construct. */
+　　MD5::MD5() {
+　　reset();
+　　}
+　　/* Construct a MD5 object with a input buffer. */
+　　MD5::MD5(const void* input, size_t length) {
+　　reset();
+　　update(input, length);
+　　}
+　　/* Construct a MD5 object with a string. */
+　　MD5::MD5(const string& str) {
+　　reset();
+　　update(str);
+　　}
+　　/* Construct a MD5 object with a file. */
+　　MD5::MD5(ifstream& in) {
+　　reset();
+　　update(in);
+　　}
+　　/* Return the message-digest */
+　　const byte* MD5::digest() {
+　　if (!_finished) {
+　　_finished = true;
+　　final();
+　　}
+　　return _digest;
+　　}
+　　/* Reset the calculate state */
+　　void MD5::reset() {
+　　_finished = false;
+　　/* reset number of bits. */
+　　_count[0] = _count[1] = 0;
+　　/* Load magic initialization constants. */
+　　_state[0] = 0x67452301;
+　　_state[1] = 0xefcdab89;
+　　_state[2] = 0x98badcfe;
+　　_state[3] = 0x10325476;
+　　}
+　　/* Updating the context with a input buffer. */
+　　void MD5::update(const void* input, size_t length) {
+　　update((const byte*)input, length);
+　　}
+　　/* Updating the context with a string. */
+　　void MD5::update(const string& str) {
+　　update((const byte*)str.c_str(), str.length());
+　　}
+　　/* Updating the context with a file. */
+　　void MD5::update(ifstream& in) {
+　　if (!in) {
+　　return;
+　　}
+　　std::streamsize length;
+　　char buffer[BUFFER_SIZE];
+　　while (!in.eof()) {
+　　in.read(buffer, BUFFER_SIZE);
+　　length = in.gcount();
+　　if (length > 0) {
+　　update(buffer, length);
+　　}
+　　}
+　　in.close();
+　　}
+　　/* MD5 block update operation. Continues an MD5 message-digest
+　　operation, processing another message block, and updating the
+　　context.
+　　*/
+　　void MD5::update(const byte* input, size_t length) {
+　　uint32 i, index, partLen;
+　　_finished = false;
+　　/* Compute number of bytes mod 64 */
+　　index = (uint32)((_count[0] >> 3) & 0x3f);
+　　/* update number of bits */
+　　if ((_count[0] += ((uint32)length << 3)) < ((uint32)length << 3)) {
+　　++_count[1];
+　　}
+　　_count[1] += ((uint32)length >> 29);
+　　partLen = 64 - index;
+　　/* transform as many times as possible. */
+　　if (length >= partLen) {
+　　memcpy(&_buffer[index], input, partLen);
+　　transform(_buffer);
+　　for (i = partLen; i + 63 < length; i += 64) {
+　　transform(&input[i]);
+　　}
+　　index = 0;
+　　} else {
+　　i = 0;
+　　}
+　　/* Buffer remaining input */
+　　memcpy(&_buffer[index], &input[i], length - i);
+　　}
+　　/* MD5 finalization. Ends an MD5 message-_digest operation, writing the
+　　the message _digest and zeroizing the context.
+　　*/
+　　void MD5::final() {
+　　byte bits[8];
+　　uint32 oldState[4];
+　　uint32 oldCount[2];
+　　uint32 index, padLen;
+　　/* Save current state and count. */
+　　memcpy(oldState, _state, 16);
+　　memcpy(oldCount, _count, 8);
+　　/* Save number of bits */
+　　encode(_count, bits, 8);
+　　/* Pad out to 56 mod 64. */
+　　index = (uint32)((_count[0] >> 3) & 0x3f);
+　　padLen = (index < 56) ? (56 - index) : (120 - index);
+　　update(PADDING, padLen);
+　　/* Append length (before padding) */
+　　update(bits, 8);
+　　/* Store state in digest */
+　　encode(_state, _digest, 16);
+　　/* Restore current state and count. */
+　　memcpy(_state, oldState, 16);
+　　memcpy(_count, oldCount, 8);
+　　}
+　　/* MD5 basic transformation. Transforms _state based on block. */
+　　void MD5::transform(const byte block[64]) {
+　　uint32 a = _state[0], b = _state[1], c = _state[2], d = _state[3], x[16];
+　　decode(block, x, 64);
+　　/* Round 1 */
+　　FF (a, b, c, d, x[ 0], S11, 0xd76aa478); /* 1 */
+　　FF (d, a, b, c, x[ 1], S12, 0xe8c7b756); /* 2 */
+　　FF (c, d, a, b, x[ 2], S13, 0x242070db); /* 3 */
+　　FF (b, c, d, a, x[ 3], S14, 0xc1bdceee); /* 4 */
+　　FF (a, b, c, d, x[ 4], S11, 0xf57c0faf); /* 5 */
+　　FF (d, a, b, c, x[ 5], S12, 0x4787c62a); /* 6 */
+　　FF (c, d, a, b, x[ 6], S13, 0xa8304613); /* 7 */
+　　FF (b, c, d, a, x[ 7], S14, 0xfd469501); /* 8 */
+　　FF (a, b, c, d, x[ 8], S11, 0x698098d8); /* 9 */
+　　FF (d, a, b, c, x[ 9], S12, 0x8b44f7af); /* 10 */
+　　FF (c, d, a, b, x[10], S13, 0xffff5bb1); /* 11 */
+　　FF (b, c, d, a, x[11], S14, 0x895cd7be); /* 12 */
+　　FF (a, b, c, d, x[12], S11, 0x6b901122); /* 13 */
+　　FF (d, a, b, c, x[13], S12, 0xfd987193); /* 14 */
+　　FF (c, d, a, b, x[14], S13, 0xa679438e); /* 15 */
+　　FF (b, c, d, a, x[15], S14, 0x49b40821); /* 16 */
+　　/* Round 2 */
+　　GG (a, b, c, d, x[ 1], S21, 0xf61e2562); /* 17 */
+　　GG (d, a, b, c, x[ 6], S22, 0xc040b340); /* 18 */
+　　GG (c, d, a, b, x[11], S23, 0x265e5a51); /* 19 */
+　　GG (b, c, d, a, x[ 0], S24, 0xe9b6c7aa); /* 20 */
+　　GG (a, b, c, d, x[ 5], S21, 0xd62f105d); /* 21 */
+　　GG (d, a, b, c, x[10], S22, 0x2441453); /* 22 */
+　　GG (c, d, a, b, x[15], S23, 0xd8a1e681); /* 23 */
+　　GG (b, c, d, a, x[ 4], S24, 0xe7d3fbc8); /* 24 */
+　　GG (a, b, c, d, x[ 9], S21, 0x21e1cde6); /* 25 */
+　　GG (d, a, b, c, x[14], S22, 0xc33707d6); /* 26 */
+　　GG (c, d, a, b, x[ 3], S23, 0xf4d50d87); /* 27 */
+　　GG (b, c, d, a, x[ 8], S24, 0x455a14ed); /* 28 */
+　　GG (a, b, c, d, x[13], S21, 0xa9e3e905); /* 29 */
+　　GG (d, a, b, c, x[ 2], S22, 0xfcefa3f8); /* 30 */
+　　GG (c, d, a, b, x[ 7], S23, 0x676f02d9); /* 31 */
+　　GG (b, c, d, a, x[12], S24, 0x8d2a4c8a); /* 32 */
+　　/* Round 3 */
+　　HH (a, b, c, d, x[ 5], S31, 0xfffa3942); /* 33 */
+　　HH (d, a, b, c, x[ 8], S32, 0x8771f681); /* 34 */
+　　HH (c, d, a, b, x[11], S33, 0x6d9d6122); /* 35 */
+　　HH (b, c, d, a, x[14], S34, 0xfde5380c); /* 36 */
+　　HH (a, b, c, d, x[ 1], S31, 0xa4beea44); /* 37 */
+　　HH (d, a, b, c, x[ 4], S32, 0x4bdecfa9); /* 38 */
+　　HH (c, d, a, b, x[ 7], S33, 0xf6bb4b60); /* 39 */
+　　HH (b, c, d, a, x[10], S34, 0xbebfbc70); /* 40 */
+　　HH (a, b, c, d, x[13], S31, 0x289b7ec6); /* 41 */
+　　HH (d, a, b, c, x[ 0], S32, 0xeaa127fa); /* 42 */
+　　HH (c, d, a, b, x[ 3], S33, 0xd4ef3085); /* 43 */
+　　HH (b, c, d, a, x[ 6], S34, 0x4881d05); /* 44 */
+　　HH (a, b, c, d, x[ 9], S31, 0xd9d4d039); /* 45 */
+　　HH (d, a, b, c, x[12], S32, 0xe6db99e5); /* 46 */
+　　HH (c, d, a, b, x[15], S33, 0x1fa27cf8); /* 47 */
+　　HH (b, c, d, a, x[ 2], S34, 0xc4ac5665); /* 48 */
+　　/* Round 4 */
+　　II (a, b, c, d, x[ 0], S41, 0xf4292244); /* 49 */
+　　II (d, a, b, c, x[ 7], S42, 0x432aff97); /* 50 */
+　　II (c, d, a, b, x[14], S43, 0xab9423a7); /* 51 */
+　　II (b, c, d, a, x[ 5], S44, 0xfc93a039); /* 52 */
+　　II (a, b, c, d, x[12], S41, 0x655b59c3); /* 53 */
+　　II (d, a, b, c, x[ 3], S42, 0x8f0ccc92); /* 54 */
+　　II (c, d, a, b, x[10], S43, 0xffeff47d); /* 55 */
+　　II (b, c, d, a, x[ 1], S44, 0x85845dd1); /* 56 */
+　　II (a, b, c, d, x[ 8], S41, 0x6fa87e4f); /* 57 */
+　　II (d, a, b, c, x[15], S42, 0xfe2ce6e0); /* 58 */
+　　II (c, d, a, b, x[ 6], S43, 0xa3014314); /* 59 */
+　　II (b, c, d, a, x[13], S44, 0x4e0811a1); /* 60 */
+　　II (a, b, c, d, x[ 4], S41, 0xf7537e82); /* 61 */
+　　II (d, a, b, c, x[11], S42, 0xbd3af235); /* 62 */
+　　II (c, d, a, b, x[ 2], S43, 0x2ad7d2bb); /* 63 */
+　　II (b, c, d, a, x[ 9], S44, 0xeb86d391); /* 64 */
+　　_state[0] += a;
+　　_state[1] += b;
+　　_state[2] += c;
+　　_state[3] += d;
+　　}
+　　/* Encodes input (ulong) into output (byte). Assumes length is
+　　a multiple of 4.
+　　*/
+　　void MD5::encode(const uint32* input, byte* output, size_t length) {
+　　for (size_t i = 0, j = 0; j < length; ++i, j += 4) {
+　　output[j]= (byte)(input[i] & 0xff);
+　　output[j + 1] = (byte)((input[i] >> 8) & 0xff);
+　　output[j + 2] = (byte)((input[i] >> 16) & 0xff);
+　　output[j + 3] = (byte)((input[i] >> 24) & 0xff);
+　　}
+　　}
+　　/* Decodes input (byte) into output (ulong). Assumes length is
+　　a multiple of 4.
+　　*/
+　　void MD5::decode(const byte* input, uint32* output, size_t length) {
+　　for (size_t i = 0, j = 0; j < length; ++i, j += 4) {
+　　output[i] = ((uint32)input[j]) | (((uint32)input[j + 1]) << 8) |
+　　(((uint32)input[j + 2]) << 16) | (((uint32)input[j + 3]) << 24);
+　　}
+　　}
+　　/* Convert byte array to hex string. */
+　　string MD5::bytesToHexString(const byte* input, size_t length) {
+　　string str;
+　　str.reserve(length << 1);
+　　for (size_t i = 0; i < length; ++i) {
+　　int t = input[i];
+　　int a = t / 16;
+　　int b = t % 16;
+　　str.append(1, HEX[a]);
+　　str.append(1, HEX[b]);
+　　}
+　　return str;
+　　}
+　　/* Convert digest to string value */
+　　string MD5::toString() {
+　　return bytesToHexString(digest(), 16);
+　　}
+　　#include <iostream>
+　　using namespace std;
+　　void PrintMD5(const string& str, MD5& md5) {
+　　cout << "MD5(\"" << str << "\") = " << md5.toString() << endl;
+　　}
+　　string FileDigest(const string& file) {
+　　ifstream in(file.c_str(), ios::binary);
+　　if (!in) {
+　　return "";
+　　}
+　　MD5 md5;
+　　std::streamsize length;
+　　char buffer[1024];
+　　while (!in.eof()) {
+　　in.read(buffer, 1024);
+　　length = in.gcount();
+　　if (length > 0) {
+　　md5.update(buffer, length);
+　　}
+　　}
+　　in.close();
+　　return md5.toString();
+　　}
+3、测试文件
+　　#include "md5.h"
+　　int main(int argc, _TCHAR* argv[]) {
+　　//cout << MD5("abc").toString() << endl;
+　　//cout << MD5(ifstream("D:\\test.txt")).toString() << endl;
+　　//cout << MD5(ifstream("D:\\test.exe", ios::binary)).toString() << endl;
+　　//cout << FileDigest("D:\\test.exe") << endl;
+　　MD5 md5;
+　　md5.update("");
+　　PrintMD5("", md5);
+　　md5.update("a");
+　　PrintMD5("a", md5);
+　　md5.update("bc");
+　　PrintMD5("abc", md5);
+　　md5.update("defghijklmnopqrstuvwxyz");
+　　PrintMD5("abcdefghijklmnopqrstuvwxyz", md5);
+　　md5.reset();
+　　md5.update("message digest");
+　　PrintMD5("message digest", md5);
+　　//md5.reset();
+　　//md5.update(ifstream("D:\\test.txt"));
+　　//PrintMD5("D:\\test.txt", md5);
+　　return 0;
+　　}
