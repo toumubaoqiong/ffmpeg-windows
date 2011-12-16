@@ -18,6 +18,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+//****************************************************************************//
+//libavutil\md5.h,libavutil\md5.c 
+//	获取md5的相关信息
+//学习的地方：
+//附录：
+//1.扩展知识----MD5算法.txt
+//****************************************************************************//
+
 #ifndef AVUTIL_MD5_H
 #define AVUTIL_MD5_H
 
@@ -25,7 +33,12 @@
 #include "libavutil/attributes.h"
 extern const int av_md5_size;
 
-struct AVMD5;
+typedef struct AVMD5
+{
+	uint64_t len;
+	uint8_t  block[64];
+	uint32_t ABCD[4];
+} AVMD5;
 
 FFMPEGLIB_API int av_getav_md5_size(void);
 FFMPEGLIB_API void av_md5_init(struct AVMD5 *ctx);

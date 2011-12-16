@@ -18,6 +18,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+//****************************************************************************//
+//libavutil\avstring.h, libavutil\avstring.c
+//	就是将字符操作的函数自己封装了一下，增加了安全性
+//学习的地方：
+//1.
+//附录：
+//1.
+//****************************************************************************//
+
 #ifndef AVUTIL_AVSTRING_H
 #define AVUTIL_AVSTRING_H
 

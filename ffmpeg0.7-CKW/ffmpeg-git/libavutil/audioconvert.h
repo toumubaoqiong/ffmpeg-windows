@@ -19,6 +19,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+//****************************************************************************//
+//libavutil\audioconvert.h， libavutil\audioconvert.c
+//	查询声音通道相关的内容，例如我们平常所说的2.1声道，5.1声道的音箱设备等
+//学习的地方：
+//附录：
+//1.扩展知识----多声道的基本常识.txt
+//2.扩展知识----多声道音频标准全解析.doc
+//****************************************************************************//
+
 #ifndef AVUTIL_AUDIOCONVERT_H
 #define AVUTIL_AUDIOCONVERT_H
 

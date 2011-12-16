@@ -19,6 +19,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+//****************************************************************************//
+//libavutil\lfg.h, libavutil\lfg.c
+//	不太清楚这个具体用在什么地方，只是猜测用于生成随机数
+//****************************************************************************//
+
 #ifndef AVUTIL_LFG_H
 #define AVUTIL_LFG_H
 

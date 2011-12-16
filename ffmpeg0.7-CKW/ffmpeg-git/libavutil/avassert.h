@@ -23,6 +23,15 @@
  * simple assert() macros that are a bit more flexible than ISO C assert().
  * @author Michael Niedermayer <michaelni@gmx.at>
  */
+//****************************************************************************//
+//libavutil\avassert.h
+//	主要处理异常
+//学习的地方：
+//1.do{}while(0)的运用很有意思，以后要注意学习
+//2.打印源代码的位置的记录信息“__FILE__, __LINE__” 
+//附录：
+//1.扩展知识----int64---扩展数据类型.txt
+//****************************************************************************//
 
 #ifndef AVUTIL_AVASSERT_H
 #define AVUTIL_AVASSERT_H
