@@ -18,6 +18,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+//****************************************************************************//
+//libavutil\avutil.h
+//	libavutil.h的入口头文件，所有外部调用的第一站
+//学习的地方：
+//1.整体的版本宏定义是非常有趣的，值得好好学习：
+//附录：
+//****************************************************************************//
+
 #ifndef AVUTIL_AVUTIL_H
 #define AVUTIL_AVUTIL_H
 
@@ -28,7 +36,8 @@
  * external API header
  */
 
-
+//需要解决的疑问？
+//"#"与"##"到底是什么样的问题所在？
 #define AV_STRINGIFY(s)         AV_TOSTRING(s)
 #define AV_TOSTRING(s) #s
 

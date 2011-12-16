@@ -18,6 +18,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+//****************************************************************************//
+//libavutil\base64.h, libavutil\base64.c
+//	对base64数据的编解码
+//学习的地方：
+//1.base64的数据用处与编解码方法
+//附录：
+//1.扩展知识----base64简介.doc
+//2.扩展知识----Base64编解码(C++版).txt
+//****************************************************************************//
+
 #ifndef AVUTIL_BASE64_H
 #define AVUTIL_BASE64_H
 
