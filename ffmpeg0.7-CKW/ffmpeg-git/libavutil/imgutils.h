@@ -15,6 +15,14 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
+//****************************************************************************//
+//libavutil\imgutils.h
+//	有关Image的相关运算
+//学习的地方：
+//1.
+//附录：
+//1.
+//****************************************************************************//
 
 #ifndef AVUTIL_IMGUTILS_H
 #define AVUTIL_IMGUTILS_H

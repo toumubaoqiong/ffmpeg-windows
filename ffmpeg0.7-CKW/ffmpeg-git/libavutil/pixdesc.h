@@ -19,6 +19,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+//****************************************************************************//
+//libavutil\pixdesc.h, libavutil\pixdesc.c
+//	根据数据读写像素格式信息（AVPixFmtDescriptor）
+//学习的地方：
+//1.这里有一个疑问？以后要搞清楚，av_read_image_line和av_write_image_line
+//到底对数据的出来产生了什么效果，输入的原始数据又是什么？
+//附录：
+//1.
+//****************************************************************************//
+
 #ifndef AVUTIL_PIXDESC_H
 #define AVUTIL_PIXDESC_H
 
