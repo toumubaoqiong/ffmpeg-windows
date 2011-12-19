@@ -1,0 +1,76 @@
+RC4
+
+
+目录
+
+RC4加密算法
+原理
+漏洞
+编辑本段
+RC4加密算法
+
+　　RC4加密算法是大名鼎鼎的RSA三人组中的头号人物Ron Rivest在1987年设计的密钥长度可变的流加密算法簇。之所以称其为簇，是由于其核心部分的S-box长度可为任意，但一般为256字节。该算法的速度可以达到DES加密的10倍左右，且具有很高级别的非线性。RC4起初是用于保护商业机密的。但是在1994年9月，它的算法被发布在互联网上，也就不再有什么商业机密了。RC4也被叫做ARC4（Alleged RC4——所谓的RC4），因为RSA从来就没有正式发布过这个算法。
+编辑本段
+原理
+
+　　RC4算法的原理很简单，包括初始化算法（KSA）和伪随机子密码生成算法（PRGA)两大部分。假设S-box的长度为256，密钥长度为Len。先来看看算法的初始化部分（用C代码表示）：
+　　其中，参数1是一个256长度的char型数组，定义为: unsigned char sBox[256];
+　　参数2是密钥，其内容可以随便定义：char key[256];
+　　参数3是密钥的长度，Len = strlen(key);
+　　void rc4_init(unsigned char *s, unsigned char *key, unsigned long Len)
+　　{
+　　int i =0, j = 0, k[256] = {0};
+　　unsigned char tmp = 0;
+　　for(i=0;i<256;i++)
+　　{
+　　s[i]=i;
+　　k[i]=key[i%Len];
+　　}
+　　for (i=0; i<256; i++)
+　　{
+　　j=(j+s[i]+k[i])%256;
+　　tmp = s[i];
+　　s[i] = s[j]; //交换s[i]和s[j]
+　　s[j] = tmp;
+　　}
+　　}
+　　在初始化的过程中，密钥的主要功能是将S-box搅乱，i确保S-box的每个元素都得到处理，j保证S-box的搅乱是随机的。而不同的S-box在经过伪随机子密码生成算法的处理后可以得到不同的子密钥序列，将S-box和明文进行xor运算，得到密文，解密过程也完全相同。
+　　再来看看算法的加密部分（用C代码表示）：
+　　其中，参数1是上边rc4_init函数中，被搅乱的S-box;
+　　参数2是需要加密的数据data;
+　　参数3是data的长度.
+　　void rc4_crypt(unsigned char *s, unsigned char *Data, unsigned long Len)
+　　{
+　　int x = 0, y = 0, t = 0, i = 0;
+　　unsigned char tmp;
+　　for(i=0;i<Len;i++)
+　　{
+　　x=(x+1)%256;
+　　y=(y+s[x])%256;
+　　tmp = s[x];
+　　s[x] = s[y]; //交换s[x]和s[y]
+　　s[y] = tmp;
+　　t=(s[x]+s[y])%256;
+　　Data[i] ^= s[t];
+　　}
+　　}
+　　最后，在main函数中，调用顺序如下：
+　　void main()
+　　{
+　　unsigned char s[256] = {0};//S-box
+　　char key[256] = {"just for test"};
+　　char pData[512] = "这是一个用来加密的数据Data";
+　　ULONG len = strlen(pData);
+　　printf("pData = %s\n",pData);
+　　printf("key = %s, length = %d\n",key,strlen(key));
+　　rc4_init(s,(unsigned char *)key,strlen(key));//初始化
+　　rc4_crypt(s,(unsigned char *)pData,len);//加密
+　　printf("pData = %s\n\n",pData);
+　　rc4_crypt(s,(unsigned char *)pData,len);//解密
+　　printf("pData = %s\n\n",pData);
+　　}
+编辑本段
+漏洞
+
+　　由于RC4算法加密是采用的xor，所以，一旦子密钥序列出现了重复，密文就有可能被破解。关于如何破解xor加密，请参看Bruce Schneier的Applied Cryptography一书的1.4节Simple XOR，在此我就不细说了。那么，RC4算法生成的子密钥序列是否会出现重复呢？由于存在部分弱密钥，使得子密钥序列在不到100万字节内就发生了完全的重复，如果是部分重复，则可能在不到10万字节内就能发生重复，因此，推荐在使用RC4算法时，必须对加密密钥进行测试，判断其是否为弱密钥。其不足主要体现于，在无线网络中IV（初始化向量）不变性漏洞。
+　　而且，根据目前的分析结果，没有任何的分析对于密钥长度达到128位的RC4有效，所以，RC4是目前最安全的加密算法之一，大家可以放心使用！
