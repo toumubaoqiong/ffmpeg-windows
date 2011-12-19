@@ -1,0 +1,251 @@
+SHA
+
+求助编辑百科名片
+
+SHA是一种数据加密算法，该算法经过加密专家多年来的发展和改进已日益完善，现在已成为公认的最安全的散列算法之一，并被广泛使用。该算法的思想是接收一段明文，然后以一种不可逆的方式将它转换成一段（通常更小）密文，也可以简单的理解为取一串输入码（称为预映射或信息），并把它们转化为长度较短、位数固定的输出序列即散列值（也称为信息摘要或信息认证代码）的过程。散列函数值可以说时对明文的一种“指纹”或是“摘要”所以对散列值的数字签名就可以视为对此明文的数字签名。
+
+目录
+
+简介
+SHA-1 Java 实现源码
+摘要计算函数
+单元摘要计算函数
+测试
+汇款费用承担
+编辑本段
+简介
+
+　　安全散列算法SHA
+　　(Secure Hash Algorithm，SHA)
+　　是美国国家标准和技术局发布的国家标准FIPS PUB 180，最新的标准已经于2008年更新到FIPS PUB 180-3。其中规定了SHA-1，SHA-224，SHA-256，SHA-384，和SHA-512这几种单向散列算法。SHA-1，SHA-224和SHA-256适用于长度不超过2^64二进制位的消息。SHA-384和SHA-512适用于长度不超过2^128二进制位的消息。　
+　　散列算法
+　　散列是信息的提炼，通常其长度要比信息小得多，且为一个固定长度。加密性强的散列一定是不可逆的，这就意味着通过散列结果，无法推出任何部分的原始信息。任何输入信息的变化，哪怕仅一位，都将导致散列结果的明显变化，这称之为雪崩效应。散列还应该是防冲突的，即找不出具有相同散列结果的两条信息。具有这些特性的散列结果就可以用于验证信息是否被修改。
+　　单向散列函数一般用于产生消息摘要，密钥加密等，常见的有：
+　　l MD5（Message Digest Algorithm 5）：是RSA数据安全公司开发的一种单向散列算法。
+　　l SHA（Secure Hash Algorithm）：可以对任意长度的数据运算生成一个160位的数值；
+　　SHA-1
+　　在1993年，安全散列算法（SHA）由美国国家标准和技术协会(NIST)提出，并作为联邦信息处理标准（FIPS PUB 180）公布；1995年又发布了一个修订版FIPS PUB 180-1，通常称之为SHA-1。SHA-1是基于MD4算法的，并且它的设计在很大程度上是模仿MD4的。现在已成为公认的最安全的散列算法之一，并被广泛使用。
+　　原理
+　　SHA-1是一种数据加密算法，该算法的思想是接收一段明文，然后以一种不可逆的方式将它转换成一段（通常更小）密文，也可以简单的理解为取一串输入码（称为预映射或信息），并把它们转化为长度较短、位数固定的输出序列即散列值（也称为信息摘要或信息认证代码）的过程。
+　　单向散列函数的安全性在于其产生散列值的操作过程具有较强的单向性。如果在输入序列中嵌入密码，那么任何人在不知道密码的情况下都不能产生正确的散列值，从而保证了其安全性。SHA将输入流按照每块512位（64个字节）进行分块，并产生20个字节的被称为信息认证代码或信息摘要的输出。
+　　该算法输入报文的长度不限，产生的输出是一个160位的报文摘要。输入是按512 位的分组进行处理的。SHA-1是不可逆的、防冲突，并具有良好的雪崩效应。
+　　通过散列算法可实现数字签名实现，数字签名的原理是将要传送的明文通过一种函数运算（Hash）转换成报文摘要（不同的明文对应不同的报文摘要），报文摘要加密后与明文一起传送给接受方，接受方将接受的明文产生新的报文摘要与发送方的发来报文摘要解密比较，比较结果一致表示明文未被改动，如果不一致表示明文已被篡改。
+　　MAC (信息认证代码)就是一个散列结果，其中部分输入信息是密码，只有知道这个密码的参与者才能再次计算和验证MAC码的合法性。
+　　SHA-1与MD5的比较
+　　因为二者均由MD4导出，SHA-1和MD5彼此很相似。相应的，他们的强度和其他特性也是相似，但还有以下几点不同：
+　　l 对强行攻击的安全性：最显著和最重要的区别是SHA-1摘要比MD5摘要长32 位。使用强行技术，产生任何一个报文使其摘要等于给定报摘要的难度对MD5是2^128数量级的操作，而对SHA-1则是2^160数量级的操作。这样，SHA-1对强行攻击有更大的强度。
+　　l 对密码分析的安全性：由于MD5的设计，易受密码分析的攻击，SHA-1显得不易受这样的攻击。
+　　l 速度：在相同的硬件上，SHA-1的运行速度比MD5慢。
+编辑本段
+SHA-1 Java 实现源码
+
+　　----------------------------------------------------------------------------------------------------
+　　/* 安全散列算法SHA (Secure Hash Algorithm，SHA) */
+　　public class SHA1 {
+　　private final int[] abcde = { 0x67452301, 0xefcdab89, 0x98badcfe,
+　　0x10325476, 0xc3d2e1f0 };
+　　// 摘要数据存储数组
+　　private int[] digestInt = new int[5];
+　　// 计算过程中的临时数据存储数组
+　　private int[] tmpData = new int[80];
+　　// 计算sha-1摘要
+　　private int process_input_bytes(byte[] bytedata) {
+　　// 初试化常量
+　　System.arraycopy(abcde, 0, digestInt, 0, abcde.length);
+　　// 格式化输入字节数组，补10及长度数据
+　　byte[] newbyte = byteArrayFormatData(bytedata);
+　　// 获取数据摘要计算的数据单元个数
+　　int MCount = newbyte.length / 64;
+　　// 循环对每个数据单元进行摘要计算
+　　for (int pos = 0; pos < MCount; pos++) {
+　　// 将每个单元的数据转换成16个整型数据，并保存到tmpData的前16个数组元素中
+　　for (int j = 0; j < 16; j++) {
+　　tmpData[j] = byteArrayToInt(newbyte, (pos * 64) + (j * 4));
+　　}
+　　//
+编辑本段
+摘要计算函数
+
+　　encrypt();
+　　}
+　　return 20;
+　　}
+　　// 格式化输入字节数组格式
+　　private byte[] byteArrayFormatData(byte[] bytedata) {
+　　// 补0数量
+　　int zeros = 0;
+　　// 补位后总位数
+　　int size = 0;
+　　// 原始数据长度
+　　int n = bytedata.length;
+　　// 模64后的剩余位数
+　　int m = n % 64;
+　　// 计算添加0的个数以及添加10后的总长度
+　　if (m < 56) {
+　　zeros = 55 - m;
+　　size = n - m + 64;
+　　} else if (m == 56) {
+　　zeros = 63;
+　　size = n + 8 + 64;
+　　} else {
+　　zeros = 63 - m + 56;
+　　size = (n + 64) - m + 64;
+　　}
+　　// 补位后生成的新数组内容
+　　byte[] newbyte = new byte[size];
+　　// 复制数组的前面部分
+　　System.arraycopy(bytedata, 0, newbyte, 0, n);
+　　// 获得数组Append数据元素的位置
+　　int l = n;
+　　// 补1操作
+　　newbyte[l++] = (byte) 0x80;
+　　// 补0操作
+　　for (int i = 0; i < zeros; i++) {
+　　newbyte[l++] = (byte) 0x00;
+　　}
+　　// 计算数据长度，补数据长度位共8字节，长整型
+　　long N = (long) n * 8;
+　　byte h8 = (byte) (N & 0xFF);
+　　byte h7 = (byte) ((N >> 8) & 0xFF);
+　　byte h6 = (byte) ((N >> 16) & 0xFF);
+　　byte h5 = (byte) ((N >> 24) & 0xFF);
+　　byte h4 = (byte) ((N >> 32) & 0xFF);
+　　byte h3 = (byte) ((N >> 40) & 0xFF);
+　　byte h2 = (byte) ((N >> 48) & 0xFF);
+　　byte h1 = (byte) (N >> 56);
+　　newbyte[l++] = h1;
+　　newbyte[l++] = h2;
+　　newbyte[l++] = h3;
+　　newbyte[l++] = h4;
+　　newbyte[l++] = h5;
+　　newbyte[l++] = h6;
+　　newbyte[l++] = h7;
+　　newbyte[l++] = h8;
+　　return newbyte;
+　　}
+　　private int f1(int x, int y, int z) {
+　　return (x & y) | (~x & z);
+　　}
+　　private int f2(int x, int y, int z) {
+　　return x ^ y ^ z;
+　　}
+　　private int f3(int x, int y, int z) {
+　　return (x & y) | (x & z) | (y & z);
+　　}
+　　private int f4(int x, int y) {
+　　return (x << y) | x >>> (32 - y);
+　　}
+　　//
+编辑本段
+单元摘要计算函数
+
+　　private void encrypt() {
+　　for (int i = 16; i <= 79; i++) {
+　　tmpData[i] = f4(tmpData[i - 3] ^ tmpData[i - 8] ^ tmpData[i - 14]
+　　^ tmpData[i - 16], 1);
+　　}
+　　int[] tmpabcde = new int[5];
+　　for (int i1 = 0; i1 < tmpabcde.length; i1++) {
+　　tmpabcde[i1] = digestInt[i1];
+　　}
+　　for (int j = 0; j <= 19; j++) {
+　　int tmp = f4(tmpabcde[0], 5)
+　　+ f1(tmpabcde[1], tmpabcde[2], tmpabcde[3]) + tmpabcde[4]
+　　+ tmpData[j] + 0x5a827999;
+　　tmpabcde[4] = tmpabcde[3];
+　　tmpabcde[3] = tmpabcde[2];
+　　tmpabcde[2] = f4(tmpabcde[1], 30);
+　　tmpabcde[1] = tmpabcde[0];
+　　tmpabcde[0] = tmp;
+　　}
+　　for (int k = 20; k <= 39; k++) {
+　　int tmp = f4(tmpabcde[0], 5)
+　　+ f2(tmpabcde[1], tmpabcde[2], tmpabcde[3]) + tmpabcde[4]
+　　+ tmpData[k] + 0x6ed9eba1;
+　　tmpabcde[4] = tmpabcde[3];
+　　tmpabcde[3] = tmpabcde[2];
+　　tmpabcde[2] = f4(tmpabcde[1], 30);
+　　tmpabcde[1] = tmpabcde[0];
+　　tmpabcde[0] = tmp;
+　　}
+　　for (int l = 40; l <= 59; l++) {
+　　int tmp = f4(tmpabcde[0], 5)
+　　+ f3(tmpabcde[1], tmpabcde[2], tmpabcde[3]) + tmpabcde[4]
+　　+ tmpData[l] + 0x8f1bbcdc;
+　　tmpabcde[4] = tmpabcde[3];
+　　tmpabcde[3] = tmpabcde[2];
+　　tmpabcde[2] = f4(tmpabcde[1], 30);
+　　tmpabcde[1] = tmpabcde[0];
+　　tmpabcde[0] = tmp;
+　　}
+　　for (int m = 60; m <= 79; m++) {
+　　int tmp = f4(tmpabcde[0], 5)
+　　+ f2(tmpabcde[1], tmpabcde[2], tmpabcde[3]) + tmpabcde[4]
+　　+ tmpData[m] + 0xca62c1d6;
+　　tmpabcde[4] = tmpabcde[3];
+　　tmpabcde[3] = tmpabcde[2];
+　　tmpabcde[2] = f4(tmpabcde[1], 30);
+　　tmpabcde[1] = tmpabcde[0];
+　　tmpabcde[0] = tmp;
+　　}
+　　for (int i2 = 0; i2 < tmpabcde.length; i2++) {
+　　digestInt[i2] = digestInt[i2] + tmpabcde[i2];
+　　}
+　　for (int n = 0; n < tmpData.length; n++) {
+　　tmpData[n] = 0;
+　　}
+　　}
+　　// 4字节数组转换为整数
+　　private int byteArrayToInt(byte[] bytedata, int i) {
+　　return ((bytedata[i] & 0xff) << 24) | ((bytedata[i + 1] & 0xff) << 16)
+　　| ((bytedata[i + 2] & 0xff) << 8) | (bytedata[i + 3] & 0xff);
+　　}
+　　// 整数转换为4字节数组
+　　private void intToByteArray(int intValue, byte[] byteData, int i) {
+　　byteData[i] = (byte) (intValue >>> 24);
+　　byteData[i + 1] = (byte) (intValue >>> 16);
+　　byteData[i + 2] = (byte) (intValue >>> 8);
+　　byteData[i + 3] = (byte) intValue;
+　　}
+　　// 将字节转换为十六进制字符串
+　　private static String byteToHexString(byte ib) {
+　　char[] Digit = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A',
+　　'B', 'C', 'D', 'E', 'F' };
+　　char[] ob = new char[2];
+　　ob[0] = Digit[(ib >>> 4) & 0X0F];
+　　ob[1] = Digit[ib & 0X0F];
+　　String s = new String(ob);
+　　return s;
+　　}
+　　// 将字节数组转换为十六进制字符串
+　　private static String byteArrayToHexString(byte[] bytearray) {
+　　String strDigest = "";
+　　for (int i = 0; i < bytearray.length; i++) {
+　　strDigest += byteToHexString(bytearray[i]);
+　　}
+　　return strDigest;
+　　}
+　　// 计算sha-1摘要，返回相应的字节数组
+　　public byte[] getDigestOfBytes(byte[] byteData) {
+　　process_input_bytes(byteData);
+　　byte[] digest = new byte[20];
+　　for (int i = 0; i < digestInt.length; i++) {
+　　intToByteArray(digestInt[i], digest, i * 4);
+　　}
+　　return digest;
+　　}
+　　// 计算sha-1摘要，返回相应的十六进制字符串
+　　public String getDigestOfString(byte[] byteData) {
+　　return byteArrayToHexString(getDigestOfBytes(byteData));
+　　}
+　　//
+编辑本段
+测试
+
+　　public static void main(String[] args) {
+　　String param = "wxzzs";
+　　System.out.println("加密前：" + param);
+　　String digest = new SHA1().getDigestOfString(param.getBytes());
+　　System.out.println("加密后：" + digest);
+　　}
+　　}

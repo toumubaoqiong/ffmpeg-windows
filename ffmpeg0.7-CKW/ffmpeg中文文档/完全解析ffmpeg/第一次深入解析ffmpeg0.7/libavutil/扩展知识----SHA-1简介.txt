@@ -1,0 +1,82 @@
+SHA-1
+
+
+目录
+
+简介
+SHA-0 和 SHA-1
+SHA-0 的密码分析
+更长的变种
+应用
+编辑本段
+简介
+
+　　SHA 家族
+　　SHA (Secure Hash Algorithm，译作安全散列算法) 是美国国家安全局 (NSA) 设计，美国国家标准与技术研究院 (NIST) 发布的一系列密码散列函数。正式名称为 SHA 的家族第一个成员发布于 1993年。然而现在的人们给它取了一个非正式的名称 SHA-0 以避免与它的后继者混淆。两年之后， SHA-1，第一个 SHA 的后继者发布了。 另外还有四种变体，曾经发布以提升输出的范围和变更一些细微设计: SHA-224, SHA-256, SHA-384 和 SHA-512 (这些有时候也被称做 SHA-2)。
+编辑本段
+SHA-0 和 SHA-1
+
+　　最初载明的算法于 1993年发布，称做安全散列标准 (Secure Hash Standard)，FIPS PUB 180。这个版本现在常被称为 "SHA-0"。它在发布之后很快就被 NSA 撤回，并且以 1995年发布的修订版本 FIPS PUB 180-1 (通常称为 "SHA-1") 取代。根据 NSA 的说法，它修正了一个在原始算法中会降低密码安全性的错误。然而 NSA 并没有提供任何进一步的解释或证明该错误已被修正。1998年，在一次对 SHA-0 的攻击中发现这次攻击并不能适用于 SHA-1 — 我们不知道这是否就是 NSA 所发现的错误，但这或许暗示我们这次修正已经提升了安全性。SHA-1 已经被公众密码社群做了非常严密的检验而还没发现到有不安全的地方，它现在被认为是安全的。
+　　SHA-0 和 SHA-1 会从一个最大 2^64 位元的讯息中产生一串 160 位元的摘要然后以设计 MD4 及 MD5 讯息摘要算法的 MIT 教授 Ronald L. Rivest 类似的原理为基础来加密。
+编辑本段
+SHA-0 的密码分析
+
+　　在 CRYPTO 98 上，两位法国研究者展示了一次对 SHA-0 的攻击 (Chabaud and Joux, 1998): 散列碰撞可以复杂到 2^61 时被发现；小于 2^80 是理想的相同大小散列函数。
+　　2004年时，Biham 和 Chen 发现了 SHA-0 的近似碰撞 — 两个讯息可以散列出相同的数值；在这种情况之下，142 和 160 位元是一样的。他们也发现了 SHA-0 在 80 次之后减少到 62 位元的完整碰撞。
+　　2004年8月12日，Joux, Carribault, Lemuet 和 Jalby 宣布了完整 SHA-0 算法的散列碰撞。这是归纳 Chabaud 和 Joux 的攻击所完成的结果。发现这个碰撞要复杂到 2^51， 并且用一台有 256 颗 Itanium2 处理器的超级电脑耗时大约 80,000 CPU 工作时 。
+　　2004年8月17日，在 CRYPTO 2004 的 Rump 会议上，Wang, Feng, Lai, 和 Yu 宣布了攻击 MD5、SHA-0 和其他散列函数的初步结果。他们对 SHA-0 攻击复杂到 2^40，这意味着他们攻击的成果比 Joux 还有其他人所做的更好。该次 Rump 会议的简短摘要可以在 这里找到，而他们在 sci.crypt 的讨论，例如： 这些结果建议计划使用 SHA-1 作为新的密码系统的人需要重新考虑。
+编辑本段
+更长的变种
+
+　　NIST 发布了三个额外的 SHA 变体，每个都有更长的讯息摘要。以它们的摘要长度 (以位元计算) 加在原名后面来命名："SHA-256", "SHA-384" 和 "SHA-512"。它们发布于 2001年的 FIPS PUB 180-2 草稿中，随即通过审查和评论。包含 SHA-1 的 FIPS PUB 180-2，于 2002年以官方标准发布。这些新的散列函数并没有接受像 SHA-1 一样的公众密码社群做详细的检验，所以它们的密码安全性还不被大家广泛的信任。2004年2月，发布了一次 FIPS PUB 180-2 的变更通知，加入了一个额外的变种 "SHA-224"，定义了符合双金钥 3DES 所需的金钥长度。
+　　Gilbert 和 Handschuh (2003) 研究了新的变种并且没有发现弱点。
+　　SHAd
+　　SHAd 函数是一个简单的相同 SHA 函数的重述：
+　　SHAd-256(m)=SHA-256(SHA-256(m))。它会克服有关延伸长度攻击的问题。
+编辑本段
+应用
+
+　　SHA-1, SHA-224, SHA-256, SHA-384 和 SHA-512 都被需要安全散列算法的美国联邦政府所应用，他们也使用其他的密码算法和协定来保护敏感的未保密资料。FIPS PUB 180-1 也鼓励私人或商业组织使用 SHA-1 加密。Fritz-chip 将很可能使用 SHA-1 散列函数来实现个人电脑上的数位版权管理。
+　　首先推动安全散列算法出版的是已合并的数位签章标准。
+　　SHA 散列函数已被做为 SHACAL 分组密码算法的基础。
+　　SHA-1 的描述
+　　以下是 SHA-1 算法的伪代码：
+　　(Initialize variables:)
+　　a = h0 = 0x67452301
+　　b = h1 = 0xEFCDAB89
+　　c = h2 = 0x98BADCFE
+　　d = h3 = 0x10325476
+　　e = h4 = 0xC3D2E1F0
+　　(Pre-processing:)
+　　paddedmessage = (message) append 1
+　　while length(paddedmessage) mod 512 <> 448:
+　　paddedmessage = paddedmessage append 0
+　　paddedmessage = paddedmessage append (length(message) in 64-bit format)
+　　(Process the message in successive 512-bit chunks:)
+　　while 512-bit chunk(s) remain(s):
+　　break the current chunk into sixteen 32-bit words w(i), 0 <= i <= 15
+　　(Extend the sixteen 32-bit words into eighty 32-bit words:)
+　　for i from 16 to 79:
+　　w(i) = (w(i-3) xor w(i-8) xor w(i-14) xor w(i-16)) leftrotate 1
+　　(Main loop:)
+　　for i from 0 to 79:
+　　temp = (a leftrotate 5) + f(b,c,d) + e + k + w(i) (note: all addition is mod 2^32)
+　　where:
+　　(0 <= i <= 19): f(b,c,d) = (b and c) or ((not b) and d), k = 0x5A827999
+　　(20 <= i <= 39): f(b,c,d) = (b xor c xor d), k = 0x6ED9EBA1
+　　(40 <= i <= 59): f(b,c,d) = (b and c) or (b and d) or (c and d), k = 0x8F1BBCDC
+　　(60 <= i <= 79): f(b,c,d) = (b xor c xor d), k = 0xCA62C1D6
+　　e = d
+　　d = c
+　　c = b leftrotate 30
+　　b = a
+　　a = temp
+　　h0 = h0 + a
+　　h1 = h1 + b
+　　h2 = h2 + c
+　　h3 = h3 + d
+　　h4 = h4 + e
+　　digest = hash = h0 append h1 append h2 append h3 append h4
+　　注意：FIPS PUB 180-1 展示的构想，用以下的公式替代可以增进效能：
+　　(0 <= i <= 19): f(b,c,d) = (d xor (b and (c xor d)))
+　　(40 <= i <= 59): f(b,c,d) = (b and c) or (d and (b or c)))
