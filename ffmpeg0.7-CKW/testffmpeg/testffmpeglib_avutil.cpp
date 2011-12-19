@@ -25,12 +25,25 @@ extern "C"
 #include <libavutil/file.h>
 #include <libavutil/pixdesc.h>
 #include <libavutil/imgutils.h>
+#include <libavutil/integer.h>
+#include <libavutil/lls.h>
+#include <libavutil/log.h>
+#include <libavformat/avformat.h>
+#include <libavutil/lzo.h>
+#include <libavutil/opt.h>
+#include <libavutil/parseutils.h>
+#include <libavutil/pca.h>
+#include <libavutil/sha.h>
+#include <libavutil/sha1.h>
+#include <libavutil/softfloat.h>
+#include <libavutil/tree.h>
 
 #ifdef __cplusplus
 }
 #endif
 
 #pragma comment(lib, "libavutil.lib")
+#pragma comment(lib, "libavformat.lib")
 
 static int ffmpegTest_libavutil_avrational(void);
 static int ffmpegTest_libavutil_mathematics(void);
@@ -48,9 +61,27 @@ static int ffmpegTest_libavutil_eval(void);
 static int ffmpegTest_libavutil_file(void);
 static int ffmpegTest_libavutil_pixdesc(void);
 static int ffmpegTest_libavutil_imgutils(void);
+static int ffmpegTest_libavutil_integer(void);
+static int ffmpegTest_libavutil_lls(void);
+static int ffmpegTest_libavutil_log(void);
+static int ffmpegTest_libavutil_lzo(void);
+static int ffmpegTest_libavutil_parseutils(void);
+static int ffmpegTest_libavutil_pca(void);
+static int ffmpegTest_libavutil_sha(void);
+static int ffmpegTest_libavutil_softfloat(void);
+static int ffmpegTest_libavutil_tree(void);
 
 int ffmpegTest_libavutil(void)
 {
+	ffmpegTest_libavutil_tree();
+	ffmpegTest_libavutil_softfloat();
+	ffmpegTest_libavutil_sha();
+	ffmpegTest_libavutil_pca();
+	ffmpegTest_libavutil_parseutils();
+	ffmpegTest_libavutil_lzo();
+	ffmpegTest_libavutil_log();
+	ffmpegTest_libavutil_lls();
+	ffmpegTest_libavutil_integer();
 	ffmpegTest_libavutil_imgutils();
 	ffmpegTest_libavutil_pixdesc();
 	ffmpegTest_libavutil_file();
@@ -71,6 +102,487 @@ int ffmpegTest_libavutil(void)
 }
 
 
+
+static int ffmpegTest_libavutil_tree_check(AVTreeNode *t)
+{
+	if(t)
+	{
+		int left = ffmpegTest_libavutil_tree_check(t->child[0]);
+		int right = ffmpegTest_libavutil_tree_check(t->child[1]);
+
+		if(left > 999 || right > 999)
+			return 1000;
+		if(right - left != t->state)
+			return 1000;
+		if(t->state > 1 || t->state < -1)
+			return 1000;
+		return FFMAX(left, right) + 1;
+	}
+	return 0;
+}
+
+static void ffmpegTest_libavutil_tree_print(AVTreeNode *t, int depth)
+{
+	int i;
+	for(i = 0; i < depth * 4; i++) av_log(NULL, AV_LOG_ERROR, " ");
+	if(t)
+	{
+		av_log(NULL, AV_LOG_ERROR, "Node %p %2d %p\n", t, t->state, t->elem);
+		ffmpegTest_libavutil_tree_print(t->child[0], depth + 1);
+		ffmpegTest_libavutil_tree_print(t->child[1], depth + 1);
+	}
+	else
+		av_log(NULL, AV_LOG_ERROR, "NULL\n");
+}
+
+static int ffmpegTest_libavutil_tree_cmp(void *a, const void *b)
+{
+	return (uint8_t *)a - (const uint8_t *)b;
+}
+
+static int ffmpegTest_libavutil_tree(void)
+{
+	int i;
+	void *k;
+	AVTreeNode *root = NULL, *node = NULL;
+	AVLFG prng;
+
+	av_lfg_init(&prng, 1);
+
+	for(i = 0; i < 100; i++)
+	{
+		int j = av_lfg_get(&prng) % 86294;
+		if(ffmpegTest_libavutil_tree_check(root) > 999)
+		{
+			av_log(NULL, AV_LOG_ERROR, "FATAL error %d\n", i);
+			ffmpegTest_libavutil_tree_print(root, 0);
+			return -1;
+		}
+		av_log(NULL, AV_LOG_ERROR, "inserting %4d\n", j);
+		if(!node)
+			node = (AVTreeNode *)av_mallocz(av_getav_tree_node_size());
+		av_tree_insert(&root, (void *)(j + 1), ffmpegTest_libavutil_tree_cmp, &node);
+
+		j = av_lfg_get(&prng) % 86294;
+		{
+			AVTreeNode *node2 = NULL;
+			av_log(NULL, AV_LOG_ERROR, "removing %4d\n", j);
+			av_tree_insert(&root, (void *)(j + 1), ffmpegTest_libavutil_tree_cmp, &node2);
+			k = av_tree_find(root, (void *)(j + 1), ffmpegTest_libavutil_tree_cmp, NULL);
+			if(k)
+				av_log(NULL, AV_LOG_ERROR, "removal failure %d\n", i);
+		}
+	}
+	return 0;
+}
+
+
+
+static int ffmpegTest_libavutil_softfloat(void)
+{
+    SoftFloat one= av_int2sf(1, 0);
+    SoftFloat sf1, sf2;
+    double d1, d2;
+    int i, j;
+    av_log_set_level(AV_LOG_DEBUG);
+
+    d1= 1;
+    for(i= 0; i<10; i++){
+        d1= 1/(d1+1);
+    }
+    printf("test1 double=%d\n", (int)(d1 * (1<<24)));
+
+    sf1= one;
+    for(i= 0; i<10; i++){
+        sf1= av_div_sf(one, av_normalize_sf(av_add_sf(one, sf1)));
+    }
+    printf("test1 sf    =%d\n", av_sf2int(sf1, 24));
+
+
+    for(i= 0; i<100; i++){
+        START_TIMER
+        d1= i;
+        d2= i/100.0;
+        for(j= 0; j<1000; j++){
+            d1= (d1+1)*d2;
+        }
+        STOP_TIMER("float add mul")
+    }
+    printf("test2 double=%d\n", (int)(d1 * (1<<24)));
+
+    for(i= 0; i<100; i++){
+        START_TIMER
+        sf1= av_int2sf(i, 0);
+        sf2= av_div_sf(av_int2sf(i, 2), av_int2sf(200, 3));
+        for(j= 0; j<1000; j++){
+            sf1= av_mul_sf(av_add_sf(sf1, one),sf2);
+        }
+        STOP_TIMER("softfloat add mul")
+    }
+    printf("test2 sf    =%d (%d %d)\n", av_sf2int(sf1, 24), sf1.exp, sf1.mant);
+    return 0;
+}
+
+
+static int ffmpegTest_libavutil_sha(void)
+{
+	int i, j, k;
+	AVSHA ctx;
+	unsigned char digest[32];
+	const int lengths[3] = { 160, 224, 256 };
+
+	for (j = 0; j < 3; j++)
+	{
+		printf("Testing SHA-%d\n", lengths[j]);
+		for (k = 0; k < 3; k++)
+		{
+			av_sha_init(&ctx, lengths[j]);
+			if (k == 0)
+				av_sha_update(&ctx, "abc", 3);
+			else if (k == 1)
+				av_sha_update(&ctx, "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq", 56);
+			else
+				for (i = 0; i < 1000 * 1000; i++)
+					av_sha_update(&ctx, "a", 1);
+			av_sha_final(&ctx, digest);
+			for (i = 0; i < lengths[j] >> 3; i++)
+				printf("%02X", digest[i]);
+			putchar('\n');
+		}
+		switch (j)
+		{
+		case 0:
+			//test vectors (from FIPS PUB 180-1)
+			printf("A9993E36 4706816A BA3E2571 7850C26C 9CD0D89D\n"
+				"84983E44 1C3BD26E BAAE4AA1 F95129E5 E54670F1\n"
+				"34AA973C D4C4DAA4 F61EEB2B DBAD2731 6534016F\n");
+			break;
+		case 1:
+			//test vectors (from FIPS PUB 180-2 Appendix A)
+			printf("23097d22 3405d822 8642a477 bda255b3 2aadbce4 bda0b3f7 e36c9da7\n"
+				"75388b16 512776cc 5dba5da1 fd890150 b0c6455c b4f58b19 52522525\n"
+				"20794655 980c91d8 bbb4c1ea 97618a4b f03f4258 1948b2ee 4ee7ad67\n");
+			break;
+		case 2:
+			//test vectors (from FIPS PUB 180-2)
+			printf("ba7816bf 8f01cfea 414140de 5dae2223 b00361a3 96177a9c b410ff61 f20015ad\n"
+				"248d6a61 d20638b8 e5c02693 0c3e6039 a33ce459 64ff2167 f6ecedd4 19db06c1\n"
+				"cdc76e5c 9914fb92 81a1c7e2 84d73e67 f1809a48 a497200e 046d39cc c7112cd0\n");
+			break;
+		}
+	}
+
+	return 0;
+}
+
+
+
+
+static int ffmpegTest_libavutil_pca(void)
+{
+    PCA *pca;
+    int i, j, k;
+#define LEN 8
+    double eigenvector[LEN*LEN];
+    double eigenvalue[LEN];
+    AVLFG prng;
+
+    av_lfg_init(&prng, 1);
+
+    pca = ff_pca_init(LEN);
+
+    for(i = 0; i < 900; i++)
+    {
+        double v[2*LEN+100];
+        double sum = 0;
+        int pos = av_lfg_get(&prng) % LEN;
+        int v2  = av_lfg_get(&prng) % 101 - 50;
+        v[0]    = av_lfg_get(&prng) % 101 - 50;
+        for(j = 1; j < 8; j++)
+        {
+            if(j <= pos) v[j] = v[0];
+            else       v[j] = v2;
+            sum += v[j];
+        }
+        /*        for(j=0; j<LEN; j++){
+                    v[j] -= v[pos];
+                }*/
+        //        sum += av_lfg_get(&prng) % 10;
+        /*        for(j=0; j<LEN; j++){
+                    v[j] -= sum/LEN;
+                }*/
+        //        lbt1(v+100,v+100,LEN);
+        ff_pca_add(pca, v);
+    }
+
+
+    ff_pca(pca, eigenvector, eigenvalue);
+    for(i = 0; i < LEN; i++)
+    {
+        pca->count = 1;
+        pca->mean[i] = 0;
+
+        //        (0.5^|x|)^2 = 0.5^2|x| = 0.25^|x|
+
+
+        //        pca.covariance[i + i*LEN]= pow(0.5, fabs
+        for(j = i; j < LEN; j++)
+        {
+            printf("%f ", pca->covariance[i + j*LEN]);
+        }
+        printf("\n");
+    }
+
+#if 1
+    for(i = 0; i < LEN; i++)
+    {
+        double v[LEN];
+        double error = 0;
+        memset(v, 0, sizeof(v));
+        for(j = 0; j < LEN; j++)
+        {
+            for(k = 0; k < LEN; k++)
+            {
+                v[j] += pca->covariance[FFMIN(k, j) + FFMAX(k, j)*LEN] * eigenvector[i + k*LEN];
+            }
+            v[j] /= eigenvalue[i];
+            error += fabs(v[j] - eigenvector[i + j*LEN]);
+        }
+        printf("%f ", error);
+    }
+    printf("\n");
+#endif
+    for(i = 0; i < LEN; i++)
+    {
+        for(j = 0; j < LEN; j++)
+        {
+            printf("%9.6f ", eigenvector[i + j*LEN]);
+        }
+        printf("  %9.1f %f\n", eigenvalue[i], eigenvalue[i] / eigenvalue[0]);
+    }
+
+    return 0;
+}
+
+
+
+static int ffmpegTest_libavutil_parseutils(void)
+{
+	printf("Testing av_parse_video_rate()\n");
+	{
+		int i;
+		const char *rates[] =
+		{
+			"-inf",
+			"inf",
+			"nan",
+			"123/0",
+			"-123 / 0",
+			"",
+			"/",
+			" 123  /  321",
+			"foo/foo",
+			"foo/1",
+			"1/foo",
+			"0/0",
+			"/0",
+			"1/",
+			"1",
+			"0",
+			"-123/123",
+			"-foo",
+			"123.23",
+			".23",
+			"-.23",
+			"-0.234",
+			"-0.0000001",
+			"  21332.2324   ",
+			" -21332.2324   ",
+		};
+
+		for (i = 0; i < FF_ARRAY_ELEMS(rates); i++)
+		{
+			int ret;
+			AVRational q = {0, 0};
+			ret = av_parse_video_rate(&q, rates[i]),
+				printf("'%s' -> %d/%d ret:%d\n",
+				rates[i], q.num, q.den, ret);
+		}
+	}
+
+	printf("\nTesting av_parse_color()\n");
+	{
+		int i;
+		uint8_t rgba[4];
+		const char *color_names[] =
+		{
+			"bikeshed",
+			"RaNdOm",
+			"foo",
+			"red",
+			"Red ",
+			"RED",
+			"Violet",
+			"Yellow",
+			"Red",
+			"0x000000",
+			"0x0000000",
+			"0xff000000",
+			"0x3e34ff",
+			"0x3e34ffaa",
+			"0xffXXee",
+			"0xfoobar",
+			"0xffffeeeeeeee",
+			"#ff0000",
+			"#ffXX00",
+			"ff0000",
+			"ffXX00",
+			"red@foo",
+			"random@10",
+			"0xff0000@1.0",
+			"red@",
+			"red@0xfff",
+			"red@0xf",
+			"red@2",
+			"red@0.1",
+			"red@-1",
+			"red@0.5",
+			"red@1.0",
+			"red@256",
+			"red@10foo",
+			"red@-1.0",
+			"red@-0.0",
+		};
+
+		av_log_set_level(AV_LOG_DEBUG);
+
+		for (i = 0;  i < FF_ARRAY_ELEMS(color_names); i++)
+		{
+			if (av_parse_color(rgba, color_names[i], -1, NULL) >= 0)
+				printf("%s -> R(%d) G(%d) B(%d) A(%d)\n", color_names[i], rgba[0], rgba[1], rgba[2], rgba[3]);
+		}
+	}
+
+	return 0;
+}
+
+
+#define MAXSZ (10*1024*1024)
+#define BENCHMARK_LIBLZO_SAFE   0
+#define BENCHMARK_LIBLZO_UNSAFE 0
+
+static int ffmpegTest_libavutil_lzo(void)
+{
+	FILE *in = fopen("d:\\video\\test.avi", "rb");
+    uint8_t *orig = (uint8_t *)av_malloc(MAXSZ + 16);
+    uint8_t *comp = (uint8_t *)av_malloc(2 * MAXSZ + 16);
+    uint8_t *decomp = (uint8_t *)av_malloc(MAXSZ + 16);
+    size_t s = fread(orig, 1, MAXSZ, in);
+    //lzo_uint clen = 0;
+    //long tmp[LZO1X_MEM_COMPRESS];
+    int inlen, outlen;
+    int i;
+    av_log_set_level(AV_LOG_DEBUG);
+    //lzo1x_999_compress(orig, s, comp, &clen, tmp);
+    for (i = 0; i < 300; i++)
+    {
+        START_TIMER
+        inlen = 0;
+        outlen = MAXSZ;
+#if BENCHMARK_LIBLZO_SAFE
+        if (lzo1x_decompress_safe(comp, inlen, decomp, &outlen, NULL))
+#elif BENCHMARK_LIBLZO_UNSAFE
+        if (lzo1x_decompress(comp, inlen, decomp, &outlen, NULL))
+#else
+        if (av_lzo1x_decode(decomp, &outlen, comp, &inlen))
+#endif
+            av_log(NULL, AV_LOG_ERROR, "decompression error\n");
+        STOP_TIMER("lzod")
+    }
+    if (memcmp(orig, decomp, s))
+        av_log(NULL, AV_LOG_ERROR, "decompression incorrect\n");
+    else
+        av_log(NULL, AV_LOG_ERROR, "decompression OK\n");
+    return 0;
+}
+
+static int ffmpegTest_libavutil_log(void)
+{
+	av_log(NULL, AV_LOG_ERROR, "wangjing is good\n");
+	AVFormatContext *pFmt = avformat_alloc_context();;
+	av_log(pFmt, AV_LOG_ERROR, "pFmt is good\n");
+	return 0;
+}
+
+
+static int ffmpegTest_libavutil_lls(void)
+{
+	LLSModel m;
+	int i, order;
+
+	av_init_lls(&m, 3);
+
+	for(i = 0; i < 100; i++)
+	{
+		double var[4];
+		double eval;
+		var[0] = (rand() / (double)RAND_MAX - 0.5) * 2;
+		var[1] = var[0] + rand() / (double)RAND_MAX - 0.5;
+		var[2] = var[1] + rand() / (double)RAND_MAX - 0.5;
+		var[3] = var[2] + rand() / (double)RAND_MAX - 0.5;
+		av_update_lls(&m, var, 0.99);
+		av_solve_lls(&m, 0.001, 0);
+		for(order = 0; order < 3; order++)
+		{
+			eval = av_evaluate_lls(&m, var + 1, order);
+			printf("real:%9f order:%d pred:%9f var:%f coeffs:%f %9f %9f\n",
+				var[0], order, eval, sqrt(m.variance[order] / (i + 1)),
+				m.coeff[order][0], m.coeff[order][1], m.coeff[order][2]);
+		}
+	}
+	return 0;
+}
+
+const uint8_t ff_log2_tab[256] =
+{
+	0, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+	5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
+	6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+	6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+	7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+	7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+	7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+	7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7
+};
+
+static int ffmpegTest_libavutil_integer(void)
+{
+	int64_t a, b;
+
+	for(a = 7; a < 256 * 256 * 256; a += 13215)
+	{
+		for(b = 3; b < 256 * 256 * 256; b += 27118)
+		{
+			AVInteger ai = av_int2i(a);
+			AVInteger bi = av_int2i(b);
+
+			assert(av_i2int(ai) == a);
+			assert(av_i2int(bi) == b);
+			assert(av_i2int(av_add_i(ai, bi)) == a + b);
+			assert(av_i2int(av_sub_i(ai, bi)) == a - b);
+			assert(av_i2int(av_mul_i(ai, bi)) == a * b);
+			assert(av_i2int(av_shr_i(ai, 9)) == a >> 9);
+			assert(av_i2int(av_shr_i(ai, -9)) == a << 9);
+			assert(av_i2int(av_shr_i(ai, 17)) == a >> 17);
+			assert(av_i2int(av_shr_i(ai, -17)) == a << 17);
+			assert(av_log2_i(ai) == av_log2(a));
+			assert(av_i2int(av_div_i(ai, bi)) == a / b);
+		}
+	}
+	return 0;
+}
+
+
 static int ffmpegTest_libavutil_imgutils(void)
 {
 	const AVPixFmtDescriptor *tmpPixFmts = 
@@ -78,6 +590,9 @@ static int ffmpegTest_libavutil_imgutils(void)
 	int max_pixsteps[4] = {0};
 	int max_pixstep_comps[4] = {0};
 	av_image_fill_max_pixsteps(max_pixsteps, 
+		max_pixstep_comps,
+		&tmpPixFmts[0]);
+	av_fill_image_max_pixsteps(max_pixsteps, 
 		max_pixstep_comps,
 		&tmpPixFmts[0]);
 	int tmpLineSize = av_image_get_linesize(PIX_FMT_YUV444P, 176, 1);
@@ -109,6 +624,9 @@ static int ffmpegTest_libavutil_imgutils(void)
 	typedef uint8_t* IMGDATA_TYPE_UNTILE[4];
 	av_image_copy(tmpDataDst, linesizesDst, 
 		tmpDataSrc, linesizesSrc, PIX_FMT_YUV444P, 176, 144);
+	int tmpBl = av_image_check_size(176, 144, 10283, NULL);
+	uint32_t tmpPal[256] = {1, 2, 3, 4, 5, };
+	tmpBl = ff_set_systematic_pal2(tmpPal, PIX_FMT_YUV444P);
 }
 
 static int ffmpegTest_libavutil_pixdesc(void)
