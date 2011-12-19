@@ -21,12 +21,7 @@
 #include "log.h"
 #include "tree.h"
 
-typedef struct AVTreeNode
-{
-    struct AVTreeNode *child[2];
-    void *elem;
-    int state;
-} AVTreeNode;
+
 
 const int av_tree_node_size = sizeof(AVTreeNode);
 

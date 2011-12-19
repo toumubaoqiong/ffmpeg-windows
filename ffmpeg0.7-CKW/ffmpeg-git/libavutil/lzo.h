@@ -18,6 +18,18 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
+//****************************************************************************//
+//libavutil\lzo.h,libavutil\lzo.c
+//	LZO是一种压缩算法
+//学习的地方：
+//1.LZO的压缩和解压缩的算法是如何实现的，有那些重要的开源库？
+//  这是一个疑问？
+//附录：
+//1.扩展知识----LZO简介.txt
+//2.扩展知识----LZO压缩算法.txt
+//****************************************************************************//
+
+
 
 #ifndef AVUTIL_LZO_H
 #define AVUTIL_LZO_H

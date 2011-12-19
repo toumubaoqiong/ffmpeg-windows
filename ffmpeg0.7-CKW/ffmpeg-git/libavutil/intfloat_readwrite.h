@@ -18,6 +18,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+//****************************************************************************//
+//libavutil\intfloat_readwrite.h,libavutil\intfloat_readwrite.c
+//	有关IEEE 80位扩展浮动的相关信息，主要是浮点数和整数的转换函数
+//学习的地方：
+//1.计算value乘以2的exp次幂，例如：ldexp(4, 3)= 4*(2*2*2)即4乘以2的3次幂
+//2.里面有很多数据计算没有详细去理解，这是一个疑问？
+//附录：
+//1.
+//****************************************************************************//
+
+
 #ifndef AVUTIL_INTFLOAT_READWRITE_H
 #define AVUTIL_INTFLOAT_READWRITE_H
 

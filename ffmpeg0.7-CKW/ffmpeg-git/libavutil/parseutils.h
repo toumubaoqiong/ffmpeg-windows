@@ -16,6 +16,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+//****************************************************************************//
+//libavutil\parseutils.h,libavutil\parseutils.c
+//	通过字符串获取图像大小，帧率，像素格式，颜色，时间，格式等
+//学习的地方：
+//1.包含的对应字符的数据数组是如何定义的？
+//附录：
+//1.
+//****************************************************************************//
+
 #ifndef AVUTIL_PARSEUTILS_H
 #define AVUTIL_PARSEUTILS_H
 

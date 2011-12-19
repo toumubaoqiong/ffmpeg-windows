@@ -24,12 +24,30 @@
  * principal component analysis (PCA)
  */
 
+
+//****************************************************************************//
+//libavutil\pca.h,libavutil\pca.c
+//	主成分分析
+//学习的地方：
+//1.这是个疑问？不懂
+//附录：
+//1.扩展知识----主成分分析.txt
+//****************************************************************************//
+
 #ifndef AVUTIL_PCA_H
 #define AVUTIL_PCA_H
 
-struct PCA *ff_pca_init(int n);
-void ff_pca_free(struct PCA *pca);
-void ff_pca_add(struct PCA *pca, double *v);
-int ff_pca(struct PCA *pca, double *eigenvector, double *eigenvalue);
+FFMPEGLIB_API typedef struct PCA
+{
+	int count;
+	int n;
+	double *covariance;
+	double *mean;
+} PCA;
+
+FFMPEGLIB_API struct PCA *ff_pca_init(int n);
+FFMPEGLIB_API void ff_pca_free(struct PCA *pca);
+FFMPEGLIB_API void ff_pca_add(struct PCA *pca, double *v);
+FFMPEGLIB_API int ff_pca(struct PCA *pca, double *eigenvector, double *eigenvalue);
 
 #endif /* AVUTIL_PCA_H */

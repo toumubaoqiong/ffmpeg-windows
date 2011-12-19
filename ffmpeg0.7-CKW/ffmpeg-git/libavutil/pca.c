@@ -27,13 +27,7 @@
 #include "common.h"
 #include "pca.h"
 
-typedef struct PCA
-{
-    int count;
-    int n;
-    double *covariance;
-    double *mean;
-} PCA;
+
 
 PCA *ff_pca_init(int n)
 {

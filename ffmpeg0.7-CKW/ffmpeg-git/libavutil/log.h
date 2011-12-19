@@ -18,6 +18,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+//****************************************************************************//
+//libavutil\log.h,libavutil\log.c
+//	有关生成日志的相关信息
+//学习的地方：
+//1.通过log.h/.c这两个文件，ffmpeg可以正确的定位到具体的类别，这是一个巧妙的设计
+//有什么巧妙的地方呢？巧妙的地方如下：
+//1.1通过将每个数据成员的第一个成员定义为AVClass，所以每个数据结构都可以
+//默认的从AVClass获取相应的类别的消息
+//1.2改变输入文字的颜色的方式值得学习，有两种：一种是CMD， 一种是HANDLE
+//附录：
+//1.扩展知识----printf 改变输出颜色.txt
+//****************************************************************************//
+
+
+
 #ifndef AVUTIL_LOG_H
 #define AVUTIL_LOG_H
 
@@ -29,7 +44,7 @@
  * arbitrary struct of which the first field is a pointer to an
  * AVClass struct (e.g. AVCodecContext, AVFormatContext etc.).
  */
-typedef struct
+FFMPEGLIB_API typedef struct
 {
     /**
      * The name of the class; usually it is the same name as the

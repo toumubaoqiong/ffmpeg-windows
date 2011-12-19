@@ -16,6 +16,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+//****************************************************************************//
+//libavutil\intreadwrite.h
+//	主要是基本数据类型的字节位操作宏
+//学习的地方：
+//1.
+//附录：
+//1.
+//****************************************************************************//
+
 #ifndef AVUTIL_INTREADWRITE_H
 #define AVUTIL_INTREADWRITE_H
 

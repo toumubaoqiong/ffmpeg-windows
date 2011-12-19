@@ -26,12 +26,27 @@
  * @author Michael Niedermayer <michaelni@gmx.at>
  */
 
+//****************************************************************************//
+//libavutil\tree.h,libavutil\tree.c
+//	一个典型的二叉树的实现
+//学习的地方：
+//1.因为没有足够的时间去仔细研究里面到底是如何实现的？
+//附录：
+//1.
+//****************************************************************************//
+
 #ifndef AVUTIL_TREE_H
 #define AVUTIL_TREE_H
 
 #include "libavutil/attributes.h"
 
-struct AVTreeNode;
+FFMPEGLIB_API typedef struct AVTreeNode
+{
+	struct AVTreeNode *child[2];
+	void *elem;
+	int state;
+} AVTreeNode;
+
 extern const int av_tree_node_size;
 FFMPEGLIB_API const int av_getav_tree_node_size(void);
 

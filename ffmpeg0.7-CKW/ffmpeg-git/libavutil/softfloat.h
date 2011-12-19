@@ -18,6 +18,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+//****************************************************************************//
+//libavutil\softfloat.h
+//	主要是一个用整数实现的浮点数四则运算
+//学习的地方：
+//1.如何用整数模拟浮点数的四则运算，这个以前我也见到过，那就仔细分析一下这里的实现
+//附录：
+//1.
+//****************************************************************************//
+
+
 #ifndef AVUTIL_SOFTFLOAT_H
 #define AVUTIL_SOFTFLOAT_H
 
@@ -119,32 +129,30 @@ static inline av_const int av_cmp_sf(SoftFloat a, SoftFloat b)
 static inline av_const SoftFloat av_add_sf(SoftFloat a, SoftFloat b)
 {
     int t = a.exp - b.exp;
-    if(t < 0) return av_normalize1_sf((SoftFloat)
-    {
-        b.exp, b.mant + (a.mant >> (-t))
-    });
-    else    return av_normalize1_sf((SoftFloat)
-    {
-        a.exp, a.mant + (b.mant >>   t )
-    });
+    if(t < 0) 
+	{
+		SoftFloat tmpSF = {b.exp, b.mant + (a.mant >> (-t))};
+		return av_normalize1_sf(tmpSF);
+	}
+    else    
+	{
+		SoftFloat tmpSF = {a.exp, a.mant + (b.mant >>   t )};
+		return av_normalize1_sf(tmpSF);
+	}
 }
 
 static inline av_const SoftFloat av_sub_sf(SoftFloat a, SoftFloat b)
 {
-    return av_add_sf(a, (SoftFloat)
-    {
-        b.exp, -b.mant
-    });
+	SoftFloat tmpSF = {b.exp, -b.mant};
+    return av_add_sf(a, tmpSF);
 }
 
 //FIXME sqrt, log, exp, pow, sin, cos
 
 static inline av_const SoftFloat av_int2sf(int v, int frac_bits)
 {
-    return av_normalize_sf((SoftFloat)
-    {
-        ONE_BITS - frac_bits, v
-    });
+	SoftFloat tmpSF = {ONE_BITS - frac_bits, v};
+    return av_normalize_sf(tmpSF);
 }
 
 /**

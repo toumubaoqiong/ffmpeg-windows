@@ -17,6 +17,15 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
+//****************************************************************************//
+//libavutil\random_seed.h, libavutil\random_seed.c
+//	生成随机数
+//学习的地方：
+//1.大多数随机数都是假随机，如何做到真正的随机，这是一个需要考虑的问题
+//附录：
+//1.
+//****************************************************************************//
+
 
 #ifndef AVUTIL_RANDOM_SEED_H
 #define AVUTIL_RANDOM_SEED_H

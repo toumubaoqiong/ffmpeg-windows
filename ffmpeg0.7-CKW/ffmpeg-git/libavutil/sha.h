@@ -18,6 +18,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+//****************************************************************************//
+//libavutil\sha.h, libavutil\sha1.h, libavutil\sha.h
+//	生成AES加密的一切信息
+//学习的地方：
+//1.
+//附录：
+//1.扩展知识----SHA-1简介.txt
+//2.扩展知识----SHA简介.txt
+//****************************************************************************//
+
+
 #ifndef AVUTIL_SHA_H
 #define AVUTIL_SHA_H
 
@@ -26,7 +37,16 @@
 extern const int av_sha_size;
 FFMPEGLIB_API const int av_getav_sha_size(void);
 
-struct AVSHA;
+/** hash context */
+FFMPEGLIB_API typedef struct AVSHA
+{
+	uint8_t  digest_len;  ///< digest length in 32-bit words
+	uint64_t count;       ///< number of bytes in buffer
+	uint8_t  buffer[64];  ///< 512-bit buffer of input values used in hash updating
+	uint32_t state[8];    ///< current hash value
+	/** function used to update hash for 512-bit input block */
+	void     (*transform)(uint32_t *state, const uint8_t buffer[64]);
+} AVSHA;
 
 /**
  * Initialize SHA-1 or SHA-2 hashing.

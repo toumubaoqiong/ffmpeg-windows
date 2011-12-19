@@ -17,6 +17,15 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
+//****************************************************************************//
+//libavutil\rc4.h,libavutil\rc4.c
+//	生成RC4加密的一切信息
+//学习的地方：
+//1.RC4加密和解密是如何进行的，算法是怎样的？
+//附录：
+//1.扩展知识----RC4简介.txt
+//2.扩展知识----RC4算法.txt
+//****************************************************************************//
 
 #ifndef AVUTIL_RC4_H
 #define AVUTIL_RC4_H

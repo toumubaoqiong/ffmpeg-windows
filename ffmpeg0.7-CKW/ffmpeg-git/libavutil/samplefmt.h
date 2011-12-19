@@ -15,6 +15,15 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
+//****************************************************************************//
+//libavutil\samplefmt.h,libavutil\samplefmt.c
+//	有关采样率的相关信息
+//学习的地方：
+//1.采样率是如何计算和如何存储数据的？
+//附录：
+//1.扩展知识----采样率简介.txt
+//****************************************************************************//
+
 
 #ifndef AVUTIL_SAMPLEFMT_H
 #define AVUTIL_SAMPLEFMT_H
@@ -24,7 +33,7 @@
 /**
  * all in native-endian format
  */
-enum AVSampleFormat
+FFMPEGLIB_API enum AVSampleFormat
 {
     AV_SAMPLE_FMT_NONE = -1,
     AV_SAMPLE_FMT_U8,          ///< unsigned 8 bits
