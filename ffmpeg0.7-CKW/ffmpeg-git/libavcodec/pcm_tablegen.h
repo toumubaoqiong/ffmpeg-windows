@@ -42,34 +42,34 @@
  */
 static av_cold int alaw2linear(unsigned char a_val)
 {
-        int t;
-        int seg;
+    int t;
+    int seg;
 
-        a_val ^= 0x55;
+    a_val ^= 0x55;
 
-        t = a_val & QUANT_MASK;
-        seg = ((unsigned)a_val & SEG_MASK) >> SEG_SHIFT;
-        if(seg) t= (t + t + 1 + 32) << (seg + 2);
-        else    t= (t + t + 1     ) << 3;
+    t = a_val & QUANT_MASK;
+    seg = ((unsigned)a_val & SEG_MASK) >> SEG_SHIFT;
+    if(seg) t = (t + t + 1 + 32) << (seg + 2);
+    else    t = (t + t + 1     ) << 3;
 
-        return (a_val & SIGN_BIT) ? t : -t;
+    return (a_val & SIGN_BIT) ? t : -t;
 }
 
 static av_cold int ulaw2linear(unsigned char u_val)
 {
-        int t;
+    int t;
 
-        /* Complement to obtain normal u-law value. */
-        u_val = ~u_val;
+    /* Complement to obtain normal u-law value. */
+    u_val = ~u_val;
 
-        /*
-         * Extract and bias the quantization bits. Then
-         * shift up by the segment number and subtract out the bias.
-         */
-        t = ((u_val & QUANT_MASK) << 3) + BIAS;
-        t <<= ((unsigned)u_val & SEG_MASK) >> SEG_SHIFT;
+    /*
+     * Extract and bias the quantization bits. Then
+     * shift up by the segment number and subtract out the bias.
+     */
+    t = ((u_val & QUANT_MASK) << 3) + BIAS;
+    t <<= ((unsigned)u_val & SEG_MASK) >> SEG_SHIFT;
 
-        return (u_val & SIGN_BIT) ? (BIAS - t) : (t - BIAS);
+    return (u_val & SIGN_BIT) ? (BIAS - t) : (t - BIAS);
 }
 
 #if CONFIG_HARDCODED_TABLES
@@ -82,21 +82,26 @@ static uint8_t linear_to_alaw[16384];
 static uint8_t linear_to_ulaw[16384];
 
 static av_cold void build_xlaw_table(uint8_t *linear_to_xlaw,
-                             int (*xlaw2linear)(unsigned char),
-                             int mask)
+                                     int (*xlaw2linear)(unsigned char),
+                                     int mask)
 {
     int i, j, v, v1, v2;
 
     j = 0;
-    for(i=0;i<128;i++) {
-        if (i != 127) {
+    for(i = 0; i < 128; i++)
+    {
+        if (i != 127)
+        {
             v1 = xlaw2linear(i ^ mask);
             v2 = xlaw2linear((i + 1) ^ mask);
             v = (v1 + v2 + 4) >> 3;
-        } else {
+        }
+        else
+        {
             v = 8192;
         }
-        for(;j<v;j++) {
+        for(; j < v; j++)
+        {
             linear_to_xlaw[8192 + j] = (i ^ mask);
             if (j > 0)
                 linear_to_xlaw[8192 - j] = (i ^ (mask ^ 0x80));

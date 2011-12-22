@@ -27,7 +27,8 @@
 int ff_flac_write_header(AVIOContext *pb, AVCodecContext *codec,
                          int last_block)
 {
-    uint8_t header[8] = {
+    uint8_t header[8] =
+    {
         0x66, 0x4C, 0x61, 0x43, 0x00, 0x00, 0x00, 0x22
     };
     uint8_t *streaminfo;
@@ -38,7 +39,8 @@ int ff_flac_write_header(AVIOContext *pb, AVCodecContext *codec,
         return -1;
 
     /* write "fLaC" stream marker and first metadata block header if needed */
-    if (format == FLAC_EXTRADATA_FORMAT_STREAMINFO) {
+    if (format == FLAC_EXTRADATA_FORMAT_STREAMINFO)
+    {
         avio_write(pb, header, 8);
     }
 

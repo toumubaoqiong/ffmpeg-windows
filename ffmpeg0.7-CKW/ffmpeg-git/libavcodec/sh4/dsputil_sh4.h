@@ -23,6 +23,6 @@
 #include "libavcodec/dsputil.h"
 
 void idct_sh4(DCTELEM *block);
-void dsputil_init_align(DSPContext* c, AVCodecContext *avctx);
+void dsputil_init_align(DSPContext *c, AVCodecContext *avctx);
 
 #endif

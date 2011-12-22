@@ -32,7 +32,8 @@ static int flac_write_block_padding(AVIOContext *pb, unsigned int n_padding_byte
 {
     avio_w8(pb, last_block ? 0x81 : 0x01);
     avio_wb24(pb, n_padding_bytes);
-    while (n_padding_bytes > 0) {
+    while (n_padding_bytes > 0)
+    {
         avio_w8(pb, 0);
         n_padding_bytes--;
     }
@@ -49,7 +50,7 @@ static int flac_write_block_comment(AVIOContext *pb, AVMetadata **m,
     ff_metadata_conv(m, ff_vorbiscomment_metadata_conv, NULL);
 
     len = ff_vorbiscomment_length(*m, vendor, &count);
-    p0 = av_malloc(len+4);
+    p0 = av_malloc(len + 4);
     if (!p0)
         return AVERROR(ENOMEM);
     p = p0;
@@ -58,7 +59,7 @@ static int flac_write_block_comment(AVIOContext *pb, AVMetadata **m,
     bytestream_put_be24(&p, len);
     ff_vorbiscomment_write(&p, m, vendor, count);
 
-    avio_write(pb, p0, len+4);
+    avio_write(pb, p0, len + 4);
     av_freep(&p0);
     p = NULL;
 
@@ -98,14 +99,17 @@ static int flac_write_trailer(struct AVFormatContext *s)
     if (!ff_flac_is_extradata_valid(s->streams[0]->codec, &format, &streaminfo))
         return -1;
 
-    if (pb->seekable) {
+    if (pb->seekable)
+    {
         /* rewrite the STREAMINFO header block data */
         file_size = avio_tell(pb);
         avio_seek(pb, 8, SEEK_SET);
         avio_write(pb, streaminfo, FLAC_STREAMINFO_SIZE);
         avio_seek(pb, file_size, SEEK_SET);
         avio_flush(pb);
-    } else {
+    }
+    else
+    {
         av_log(s, AV_LOG_WARNING, "unable to rewrite FLAC header.\n");
     }
     return 0;
@@ -118,7 +122,8 @@ static int flac_write_packet(struct AVFormatContext *s, AVPacket *pkt)
     return 0;
 }
 
-AVOutputFormat ff_flac_muxer = {
+AVOutputFormat ff_flac_muxer =
+{
     "flac",
     NULL_IF_CONFIG_SMALL("raw FLAC"),
     "audio/x-flac",
@@ -129,5 +134,5 @@ AVOutputFormat ff_flac_muxer = {
     flac_write_header,
     flac_write_packet,
     flac_write_trailer,
-    .flags= AVFMT_NOTIMESTAMPS,
+    .flags = AVFMT_NOTIMESTAMPS,
 };

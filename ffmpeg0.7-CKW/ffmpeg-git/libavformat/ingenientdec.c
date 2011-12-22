@@ -42,7 +42,7 @@ static int ingenient_read_packet(AVFormatContext *s, AVPacket *pkt)
     avio_skip(s->pb, 22); // ASCII timestamp
 
     av_log(s, AV_LOG_DEBUG, "Ingenient packet: size=%d, width=%d, height=%d, unk1=%d unk2=%d\n",
-        size, w, h, unk1, unk2);
+           size, w, h, unk1, unk2);
 
     if (av_new_packet(pkt, size) < 0)
         return AVERROR(ENOMEM);
@@ -50,7 +50,8 @@ static int ingenient_read_packet(AVFormatContext *s, AVPacket *pkt)
     pkt->pos = avio_tell(s->pb);
     pkt->stream_index = 0;
     ret = avio_read(s->pb, pkt->data, size);
-    if (ret < 0) {
+    if (ret < 0)
+    {
         av_free_packet(pkt);
         return ret;
     }
@@ -58,14 +59,15 @@ static int ingenient_read_packet(AVFormatContext *s, AVPacket *pkt)
     return ret;
 }
 
-AVInputFormat ff_ingenient_demuxer = {
+AVInputFormat ff_ingenient_demuxer =
+{
     "ingenient",
     NULL_IF_CONFIG_SMALL("raw Ingenient MJPEG"),
     0,
     NULL,
     ff_raw_video_read_header,
     ingenient_read_packet,
-    .flags= AVFMT_GENERIC_INDEX,
+    .flags = AVFMT_GENERIC_INDEX,
     .extensions = "cgi", // FIXME
     .value = CODEC_ID_MJPEG,
 };

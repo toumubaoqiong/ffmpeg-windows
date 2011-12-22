@@ -31,7 +31,8 @@
 #include "dsputil.h"
 #include "lagarithrac.h"
 
-enum LagarithFrameType {
+enum LagarithFrameType
+{
     FRAME_RAW           = 1,    /*!< uncompressed */
     FRAME_U_RGB24       = 2,    /*!< unaligned RGB24 */
     FRAME_ARITH_YUY2    = 3,    /*!< arithmetic coded YUY2 */
@@ -45,7 +46,8 @@ enum LagarithFrameType {
     FRAME_REDUCED_RES   = 11,   /*!< reduced resolution YV12 frame */
 };
 
-typedef struct LagarithContext {
+typedef struct LagarithContext
+{
     AVCodecContext *avctx;
     AVFrame picture;
     DSPContext dsp;
@@ -105,7 +107,8 @@ static int lag_decode_prob(GetBitContext *gb, uint32_t *value)
     int prevbit = 0;
     unsigned val;
 
-    for (i = 0; i < 7; i++) {
+    for (i = 0; i < 7; i++)
+    {
         if (prevbit && bit)
             break;
         prevbit = bit;
@@ -114,10 +117,13 @@ static int lag_decode_prob(GetBitContext *gb, uint32_t *value)
             bits += series[i];
     }
     bits--;
-    if (bits < 0 || bits > 31) {
+    if (bits < 0 || bits > 31)
+    {
         *value = 0;
         return -1;
-    } else if (bits == 0) {
+    }
+    else if (bits == 0)
+    {
         *value = 0;
         return 0;
     }
@@ -140,18 +146,23 @@ static int lag_read_prob_header(lag_rac *rac, GetBitContext *gb)
     rac->prob[0] = 0;
     rac->prob[257] = UINT_MAX;
     /* Read probabilities from bitstream */
-    for (i = 1; i < 257; i++) {
-        if (lag_decode_prob(gb, &rac->prob[i]) < 0) {
+    for (i = 1; i < 257; i++)
+    {
+        if (lag_decode_prob(gb, &rac->prob[i]) < 0)
+        {
             av_log(rac->avctx, AV_LOG_ERROR, "Invalid probability encountered.\n");
             return -1;
         }
-        if ((uint64_t)cumul_prob + rac->prob[i] > UINT_MAX) {
+        if ((uint64_t)cumul_prob + rac->prob[i] > UINT_MAX)
+        {
             av_log(rac->avctx, AV_LOG_ERROR, "Integer overflow encountered in cumulative probability calculation.\n");
             return -1;
         }
         cumul_prob += rac->prob[i];
-        if (!rac->prob[i]) {
-            if (lag_decode_prob(gb, &prob)) {
+        if (!rac->prob[i])
+        {
+            if (lag_decode_prob(gb, &prob))
+            {
                 av_log(rac->avctx, AV_LOG_ERROR, "Invalid probability run encountered.\n");
                 return -1;
             }
@@ -162,7 +173,8 @@ static int lag_read_prob_header(lag_rac *rac, GetBitContext *gb)
         }
     }
 
-    if (!cumul_prob) {
+    if (!cumul_prob)
+    {
         av_log(rac->avctx, AV_LOG_ERROR, "All probabilities are 0!\n");
         return -1;
     }
@@ -170,9 +182,11 @@ static int lag_read_prob_header(lag_rac *rac, GetBitContext *gb)
     /* Scale probabilities so cumulative probability is an even power of 2. */
     scale_factor = av_log2(cumul_prob);
 
-    if (cumul_prob & (cumul_prob - 1)) {
+    if (cumul_prob & (cumul_prob - 1))
+    {
         uint64_t mul = softfloat_reciprocal(cumul_prob);
-        for (i = 1; i < 257; i++) {
+        for (i = 1; i < 257; i++)
+        {
             rac->prob[i] = softfloat_mul(rac->prob[i], mul);
             scaled_cumul_prob += rac->prob[i];
         }
@@ -180,7 +194,8 @@ static int lag_read_prob_header(lag_rac *rac, GetBitContext *gb)
         scale_factor++;
         cumulative_target = 1 << scale_factor;
 
-        if (scaled_cumul_prob > cumulative_target) {
+        if (scaled_cumul_prob > cumulative_target)
+        {
             av_log(rac->avctx, AV_LOG_ERROR,
                    "Scaled probabilities are larger than target!\n");
             return -1;
@@ -188,8 +203,10 @@ static int lag_read_prob_header(lag_rac *rac, GetBitContext *gb)
 
         scaled_cumul_prob = cumulative_target - scaled_cumul_prob;
 
-        for (i = 1; scaled_cumul_prob; i = (i & 0x7f) + 1) {
-            if (rac->prob[i]) {
+        for (i = 1; scaled_cumul_prob; i = (i & 0x7f) + 1)
+        {
+            if (rac->prob[i])
+            {
                 rac->prob[i]++;
                 scaled_cumul_prob--;
             }
@@ -230,7 +247,8 @@ static void add_lag_median_prediction(uint8_t *dst, uint8_t *src1,
     l  = *left;
     lt = *left_top;
 
-    for (i = 0; i < w; i++) {
+    for (i = 0; i < w; i++)
+    {
         l = mid_pred(l, src1[i], l + src1[i] - lt) + diff[i];
         lt = src1[i];
         dst[i] = l;
@@ -245,16 +263,21 @@ static void lag_pred_line(LagarithContext *l, uint8_t *buf,
 {
     int L, TL;
 
-    if (!line) {
+    if (!line)
+    {
         /* Left prediction only for first line */
         L = l->dsp.add_hfyu_left_prediction(buf + 1, buf + 1,
                                             width - 1, buf[0]);
         return;
-    } else if (line == 1) {
+    }
+    else if (line == 1)
+    {
         /* Second line, left predict first pixel, the rest of the line is median predicted */
         /* FIXME: In the case of RGB this pixel is top predicted */
         TL = buf[-stride];
-    } else {
+    }
+    else
+    {
         /* Top left is 2 rows back, last pixel */
         TL = buf[width - (2 * stride) - 1];
     }
@@ -277,14 +300,16 @@ static int lag_decode_line(LagarithContext *l, lag_rac *rac,
 
     /* Output any zeros remaining from the previous run */
 handle_zeros:
-    if (l->zeros_rem) {
+    if (l->zeros_rem)
+    {
         int count = FFMIN(l->zeros_rem, width - i);
         memset(dst + i, 0, count);
         i += count;
         l->zeros_rem -= count;
     }
 
-    while (i < width) {
+    while (i < width)
+    {
         dst[i] = lag_get_rac(rac);
         ret++;
 
@@ -294,7 +319,8 @@ handle_zeros:
             l->zeros++;
 
         i++;
-        if (l->zeros == esc_count) {
+        if (l->zeros == esc_count)
+        {
             int index = lag_get_rac(rac);
             ret++;
 
@@ -320,21 +346,25 @@ static int lag_decode_zero_run_line(LagarithContext *l, uint8_t *dst,
     uint8_t *end = dst + (width - 2);
 
 output_zeros:
-    if (l->zeros_rem) {
+    if (l->zeros_rem)
+    {
         count = FFMIN(l->zeros_rem, width - i);
         memset(dst, 0, count);
         l->zeros_rem -= count;
         dst += count;
     }
 
-    while (dst < end) {
+    while (dst < end)
+    {
         i = 0;
-        while (!zero_run && dst + i < end) {
+        while (!zero_run && dst + i < end)
+        {
             i++;
             zero_run =
                 !(src[i] | (src[i + 1] & mask1) | (src[i + 2] & mask2));
         }
-        if (zero_run) {
+        if (zero_run)
+        {
             zero_run = 0;
             i += esc_count;
             memcpy(dst, src, i);
@@ -343,7 +373,9 @@ output_zeros:
 
             src += i + 1;
             goto output_zeros;
-        } else {
+        }
+        else
+        {
             memcpy(dst, src, i);
             src += i;
         }
@@ -368,9 +400,11 @@ static int lag_decode_arith_plane(LagarithContext *l, uint8_t *dst,
     rac.avctx = l->avctx;
     l->zeros = 0;
 
-    if (esc_count < 4) {
+    if (esc_count < 4)
+    {
         length = width * height;
-        if (esc_count && AV_RL32(src + 1) < length) {
+        if (esc_count && AV_RL32(src + 1) < length)
+        {
             length = AV_RL32(src + 1);
             offset += 4;
         }
@@ -390,21 +424,29 @@ static int lag_decode_arith_plane(LagarithContext *l, uint8_t *dst,
             av_log(l->avctx, AV_LOG_WARNING,
                    "Output more bytes than length (%d of %d)\n", read,
                    length);
-    } else if (esc_count < 8) {
+    }
+    else if (esc_count < 8)
+    {
         esc_count -= 4;
-        if (esc_count > 0) {
+        if (esc_count > 0)
+        {
             /* Zero run coding only, no range coding. */
             for (i = 0; i < height; i++)
                 src += lag_decode_zero_run_line(l, dst + (i * stride), src,
                                                 width, esc_count);
-        } else {
+        }
+        else
+        {
             /* Plane is stored uncompressed */
-            for (i = 0; i < height; i++) {
+            for (i = 0; i < height; i++)
+            {
                 memcpy(dst + (i * stride), src, width);
                 src += width;
             }
         }
-    } else if (esc_count == 0xff) {
+    }
+    else if (esc_count == 0xff)
+    {
         /* Plane is a solid run of given value */
         for (i = 0; i < height; i++)
             memset(dst + i * stride, src[1], width);
@@ -412,13 +454,16 @@ static int lag_decode_arith_plane(LagarithContext *l, uint8_t *dst,
            Note: memset to 0 above, setting first value to src[1]
            and applying prediction gives the same result. */
         return 0;
-    } else {
+    }
+    else
+    {
         av_log(l->avctx, AV_LOG_ERROR,
                "Invalid zero run escape code! (%#x)\n", esc_count);
         return -1;
     }
 
-    for (i = 0; i < height; i++) {
+    for (i = 0; i < height; i++)
+    {
         lag_pred_line(l, dst, width, stride, i);
         dst += stride;
     }
@@ -457,11 +502,13 @@ static int lag_decode_frame(AVCodecContext *avctx,
     offset_gu = AV_RL32(buf + 1);
     offset_bv = AV_RL32(buf + 5);
 
-    switch (frametype) {
+    switch (frametype)
+    {
     case FRAME_ARITH_YV12:
         avctx->pix_fmt = PIX_FMT_YUV420P;
 
-        if (avctx->get_buffer(avctx, p) < 0) {
+        if (avctx->get_buffer(avctx, p) < 0)
+        {
             av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
             return -1;
         }
@@ -508,7 +555,8 @@ static av_cold int lag_decode_end(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec ff_lagarith_decoder = {
+AVCodec ff_lagarith_decoder =
+{
     "lagarith",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_LAGARITH,

@@ -34,7 +34,8 @@
 #include "avio_internal.h"
 #include "sox.h"
 
-typedef struct {
+typedef struct
+{
     int64_t header_size;
 } SoXContext;
 
@@ -53,21 +54,26 @@ static int sox_write_header(AVFormatContext *s)
 
     sox->header_size = SOX_FIXED_HDR + comment_size;
 
-    if (enc->codec_id == CODEC_ID_PCM_S32LE) {
+    if (enc->codec_id == CODEC_ID_PCM_S32LE)
+    {
         ffio_wfourcc(pb, ".SoX");
         avio_wl32(pb, sox->header_size);
         avio_wl64(pb, 0); /* number of samples */
         avio_wl64(pb, av_dbl2int(enc->sample_rate));
         avio_wl32(pb, enc->channels);
         avio_wl32(pb, comment_size);
-    } else if (enc->codec_id == CODEC_ID_PCM_S32BE) {
+    }
+    else if (enc->codec_id == CODEC_ID_PCM_S32BE)
+    {
         ffio_wfourcc(pb, "XoS.");
         avio_wb32(pb, sox->header_size);
         avio_wb64(pb, 0); /* number of samples */
         avio_wb64(pb, av_dbl2int(enc->sample_rate));
         avio_wb32(pb, enc->channels);
         avio_wb32(pb, comment_size);
-    } else {
+    }
+    else
+    {
         av_log(s, AV_LOG_ERROR, "invalid codec; use pcm_s32le or pcm_s32be\n");
         return -1;
     }
@@ -96,14 +102,17 @@ static int sox_write_trailer(AVFormatContext *s)
     AVIOContext *pb = s->pb;
     AVCodecContext *enc = s->streams[0]->codec;
 
-    if (s->pb->seekable) {
+    if (s->pb->seekable)
+    {
         /* update number of samples */
         int64_t file_size = avio_tell(pb);
         int64_t num_samples = (file_size - sox->header_size - 4LL) >> 2LL;
         avio_seek(pb, 8, SEEK_SET);
-        if (enc->codec_id == CODEC_ID_PCM_S32LE) {
+        if (enc->codec_id == CODEC_ID_PCM_S32LE)
+        {
             avio_wl64(pb, num_samples);
-        } else
+        }
+        else
             avio_wb64(pb, num_samples);
         avio_seek(pb, file_size, SEEK_SET);
 
@@ -113,7 +122,8 @@ static int sox_write_trailer(AVFormatContext *s)
     return 0;
 }
 
-AVOutputFormat ff_sox_muxer = {
+AVOutputFormat ff_sox_muxer =
+{
     "sox",
     NULL_IF_CONFIG_SMALL("SoX native format"),
     NULL,

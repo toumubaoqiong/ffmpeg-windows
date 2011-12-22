@@ -22,33 +22,38 @@
 
 
 static int remove_extradata(AVBitStreamFilterContext *bsfc, AVCodecContext *avctx, const char *args,
-                     uint8_t **poutbuf, int *poutbuf_size,
-                     const uint8_t *buf, int buf_size, int keyframe){
-    int cmd= args ? *args : 0;
+                            uint8_t **poutbuf, int *poutbuf_size,
+                            const uint8_t *buf, int buf_size, int keyframe)
+{
+    int cmd = args ? *args : 0;
     AVCodecParserContext *s;
 
-    if(!bsfc->parser){
-        bsfc->parser= av_parser_init(avctx->codec_id);
+    if(!bsfc->parser)
+    {
+        bsfc->parser = av_parser_init(avctx->codec_id);
     }
-    s= bsfc->parser;
+    s = bsfc->parser;
 
-    if(s && s->parser->split){
-        if(  (((avctx->flags & CODEC_FLAG_GLOBAL_HEADER) || (avctx->flags2 & CODEC_FLAG2_LOCAL_HEADER)) && cmd=='a')
-           ||(!keyframe && cmd=='k')
-           ||(cmd=='e' || !cmd)
-          ){
-            int i= s->parser->split(avctx, buf, buf_size);
+    if(s && s->parser->split)
+    {
+        if(  (((avctx->flags & CODEC_FLAG_GLOBAL_HEADER) || (avctx->flags2 & CODEC_FLAG2_LOCAL_HEADER)) && cmd == 'a')
+                || (!keyframe && cmd == 'k')
+                || (cmd == 'e' || !cmd)
+          )
+        {
+            int i = s->parser->split(avctx, buf, buf_size);
             buf += i;
             buf_size -= i;
         }
     }
-    *poutbuf= (uint8_t *) buf;
-    *poutbuf_size= buf_size;
+    *poutbuf = (uint8_t *) buf;
+    *poutbuf_size = buf_size;
 
     return 0;
 }
 
-AVBitStreamFilter ff_remove_extradata_bsf={
+AVBitStreamFilter ff_remove_extradata_bsf =
+{
     "remove_extra",
     0,
     remove_extradata,

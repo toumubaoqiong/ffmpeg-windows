@@ -30,12 +30,14 @@
 
 #include "avformat.h"
 
-struct AVMetadata{
+struct AVMetadata
+{
     int count;
     AVMetadataTag *elems;
 };
 
-struct AVMetadataConv{
+struct AVMetadataConv
+{
     const char *native;
     const char *generic;
 };
@@ -49,8 +51,8 @@ void ff_metadata_mux_compat(AVFormatContext *s);
 #endif
 
 void ff_metadata_conv(AVMetadata **pm, const AVMetadataConv *d_conv,
-                                       const AVMetadataConv *s_conv);
+                      const AVMetadataConv *s_conv);
 void ff_metadata_conv_ctx(AVFormatContext *ctx, const AVMetadataConv *d_conv,
-                                                const AVMetadataConv *s_conv);
+                          const AVMetadataConv *s_conv);
 
 #endif /* AVFORMAT_METADATA_H */

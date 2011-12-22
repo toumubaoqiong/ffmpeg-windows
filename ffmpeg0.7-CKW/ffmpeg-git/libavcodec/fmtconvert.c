@@ -23,36 +23,42 @@
 #include "avcodec.h"
 #include "fmtconvert.h"
 
-static void int32_to_float_fmul_scalar_c(float *dst, const int *src, float mul, int len){
+static void int32_to_float_fmul_scalar_c(float *dst, const int *src, float mul, int len)
+{
     int i;
-    for(i=0; i<len; i++)
+    for(i = 0; i < len; i++)
         dst[i] = src[i] * mul;
 }
 
-static av_always_inline int float_to_int16_one(const float *src){
+static av_always_inline int float_to_int16_one(const float *src)
+{
     return av_clip_int16(lrintf(*src));
 }
 
 static void float_to_int16_c(int16_t *dst, const float *src, long len)
 {
     int i;
-    for(i=0; i<len; i++)
-        dst[i] = float_to_int16_one(src+i);
+    for(i = 0; i < len; i++)
+        dst[i] = float_to_int16_one(src + i);
 }
 
 static void float_to_int16_interleave_c(int16_t *dst, const float **src,
                                         long len, int channels)
 {
-    int i,j,c;
-    if(channels==2){
-        for(i=0; i<len; i++){
-            dst[2*i]   = float_to_int16_one(src[0]+i);
-            dst[2*i+1] = float_to_int16_one(src[1]+i);
+    int i, j, c;
+    if(channels == 2)
+    {
+        for(i = 0; i < len; i++)
+        {
+            dst[2*i]   = float_to_int16_one(src[0] + i);
+            dst[2*i+1] = float_to_int16_one(src[1] + i);
         }
-    }else{
-        for(c=0; c<channels; c++)
-            for(i=0, j=c; i<len; i++, j+=channels)
-                dst[j] = float_to_int16_one(src[c]+i);
+    }
+    else
+    {
+        for(c = 0; c < channels; c++)
+            for(i = 0, j = c; i < len; i++, j += channels)
+                dst[j] = float_to_int16_one(src[c] + i);
     }
 }
 
@@ -70,30 +76,38 @@ av_cold void ff_fmt_convert_init(FmtConvertContext *c, AVCodecContext *avctx)
 /* ffdshow custom code */
 void float_interleave(float *dst, const float **src, long len, int channels)
 {
-    int i,j,c;
-    if(channels==2){
-        for(i=0; i<len; i++){
+    int i, j, c;
+    if(channels == 2)
+    {
+        for(i = 0; i < len; i++)
+        {
             dst[2*i]   = src[0][i] / 32768.0f;
             dst[2*i+1] = src[1][i] / 32768.0f;
         }
-    }else{
-        for(c=0; c<channels; c++)
-            for(i=0, j=c; i<len; i++, j+=channels)
+    }
+    else
+    {
+        for(c = 0; c < channels; c++)
+            for(i = 0, j = c; i < len; i++, j += channels)
                 dst[j] = src[c][i] / 32768.0f;
     }
 }
 
 void float_interleave_noscale(float *dst, const float **src, long len, int channels)
 {
-    int i,j,c;
-    if(channels==2){
-        for(i=0; i<len; i++){
+    int i, j, c;
+    if(channels == 2)
+    {
+        for(i = 0; i < len; i++)
+        {
             dst[2*i]   = src[0][i];
             dst[2*i+1] = src[1][i];
         }
-    }else{
-        for(c=0; c<channels; c++)
-            for(i=0, j=c; i<len; i++, j+=channels)
+    }
+    else
+    {
+        for(c = 0; c < channels; c++)
+            for(i = 0, j = c; i < len; i++, j += channels)
                 dst[j] = src[c][i];
     }
 }

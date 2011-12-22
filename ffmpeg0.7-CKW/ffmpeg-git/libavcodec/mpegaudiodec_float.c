@@ -42,23 +42,27 @@ void ff_mpa_synth_filter_float(MPADecodeContext *s, float *synth_buf_ptr,
 }
 
 static void compute_antialias_float(MPADecodeContext *s,
-                              GranuleDef *g)
+                                    GranuleDef *g)
 {
     float *ptr;
     int n, i;
 
     /* we antialias only "long" bands */
-    if (g->block_type == 2) {
+    if (g->block_type == 2)
+    {
         if (!g->switch_point)
             return;
         /* XXX: check this for 8000Hz case */
         n = 1;
-    } else {
+    }
+    else
+    {
         n = SBLIMIT - 1;
     }
 
     ptr = g->sb_hybrid + 18;
-    for(i = n;i > 0;i--) {
+    for(i = n; i > 0; i--)
+    {
         float tmp0, tmp1;
         float *csa = &csa_table_float[0][0];
 #define FLOAT_AA(j)\
@@ -80,7 +84,7 @@ static void compute_antialias_float(MPADecodeContext *s,
     }
 }
 
-static av_cold int decode_end(AVCodecContext * avctx)
+static av_cold int decode_end(AVCodecContext *avctx)
 {
     MPADecodeContext *s = avctx->priv_data;
     ff_dct_end(&s->dct);
@@ -99,8 +103,8 @@ AVCodec ff_mp1float_decoder =
     decode_end,
     decode_frame,
     CODEC_CAP_PARSE_ONLY,
-    .flush= flush,
-    .long_name= NULL_IF_CONFIG_SMALL("MP1 (MPEG audio layer 1)"),
+    .flush = flush,
+    .long_name = NULL_IF_CONFIG_SMALL("MP1 (MPEG audio layer 1)"),
 };
 #endif
 #if CONFIG_MP2FLOAT_DECODER
@@ -115,8 +119,8 @@ AVCodec ff_mp2float_decoder =
     decode_end,
     decode_frame,
     CODEC_CAP_PARSE_ONLY,
-    .flush= flush,
-    .long_name= NULL_IF_CONFIG_SMALL("MP2 (MPEG audio layer 2)"),
+    .flush = flush,
+    .long_name = NULL_IF_CONFIG_SMALL("MP2 (MPEG audio layer 2)"),
 };
 #endif
 #if CONFIG_MP3FLOAT_DECODER
@@ -131,8 +135,8 @@ AVCodec ff_mp3float_decoder =
     decode_end,
     decode_frame,
     CODEC_CAP_PARSE_ONLY,
-    .flush= flush,
-    .long_name= NULL_IF_CONFIG_SMALL("MP3 (MPEG audio layer 3)"),
+    .flush = flush,
+    .long_name = NULL_IF_CONFIG_SMALL("MP3 (MPEG audio layer 3)"),
 };
 #endif
 #if CONFIG_MP3ADUFLOAT_DECODER
@@ -147,8 +151,8 @@ AVCodec ff_mp3adufloat_decoder =
     decode_end,
     decode_frame_adu,
     CODEC_CAP_PARSE_ONLY,
-    .flush= flush,
-    .long_name= NULL_IF_CONFIG_SMALL("ADU (Application Data Unit) MP3 (MPEG audio layer 3)"),
+    .flush = flush,
+    .long_name = NULL_IF_CONFIG_SMALL("ADU (Application Data Unit) MP3 (MPEG audio layer 3)"),
 };
 #endif
 #if CONFIG_MP3ON4FLOAT_DECODER
@@ -162,7 +166,7 @@ AVCodec ff_mp3on4float_decoder =
     NULL,
     decode_close_mp3on4,
     decode_frame_mp3on4,
-    .flush= flush,
-    .long_name= NULL_IF_CONFIG_SMALL("MP3onMP4"),
+    .flush = flush,
+    .long_name = NULL_IF_CONFIG_SMALL("MP3onMP4"),
 };
 #endif

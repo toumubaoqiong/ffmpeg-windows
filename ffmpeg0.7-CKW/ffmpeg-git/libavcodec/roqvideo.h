@@ -26,22 +26,26 @@
 #include "avcodec.h"
 #include "dsputil.h"
 
-typedef struct {
+typedef struct
+{
     unsigned char y[4];
     unsigned char u, v;
 } roq_cell;
 
-typedef struct {
+typedef struct
+{
     int idx[4];
 } roq_qcell;
 
-typedef struct {
+typedef struct
+{
     int d[2];
 } motion_vect;
 
 struct RoqTempData;
 
-typedef struct RoqContext {
+typedef struct RoqContext
+{
 
     AVCodecContext *avctx;
     DSPContext dsp;

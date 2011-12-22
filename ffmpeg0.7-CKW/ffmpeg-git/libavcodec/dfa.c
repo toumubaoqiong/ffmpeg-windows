@@ -25,7 +25,8 @@
 #include "bytestream.h"
 #include "libavutil/lzo.h" // for av_memcpy_backptr
 
-typedef struct DfaContext {
+typedef struct DfaContext
+{
     AVFrame pic;
 
     uint32_t pal[256];
@@ -70,8 +71,10 @@ static int decode_tsw1(uint8_t *frame, int width, int height,
     if (frame_end - frame <= offset)
         return -1;
     frame += offset;
-    while (segments--) {
-        if (mask == 0x10000) {
+    while (segments--)
+    {
+        if (mask == 0x10000)
+        {
             if (src >= src_end)
                 return -1;
             bitbuf = bytestream_get_le16(&src);
@@ -79,7 +82,8 @@ static int decode_tsw1(uint8_t *frame, int width, int height,
         }
         if (src_end - src < 2 || frame_end - frame < 2)
             return -1;
-        if (bitbuf & mask) {
+        if (bitbuf & mask)
+        {
             v = bytestream_get_le16(&src);
             offset = (v & 0x1FFF) << 1;
             count = ((v >> 13) + 2) << 1;
@@ -87,7 +91,9 @@ static int decode_tsw1(uint8_t *frame, int width, int height,
                 return -1;
             av_memcpy_backptr(frame, offset, count);
             frame += count;
-        } else {
+        }
+        else
+        {
             *frame++ = *src++;
             *frame++ = *src++;
         }
@@ -106,8 +112,10 @@ static int decode_dsw1(uint8_t *frame, int width, int height,
     int v, offset, count, segments;
 
     segments = bytestream_get_le16(&src);
-    while (segments--) {
-        if (mask == 0x10000) {
+    while (segments--)
+    {
+        if (mask == 0x10000)
+        {
             if (src >= src_end)
                 return -1;
             bitbuf = bytestream_get_le16(&src);
@@ -115,7 +123,8 @@ static int decode_dsw1(uint8_t *frame, int width, int height,
         }
         if (src_end - src < 2 || frame_end - frame < 2)
             return -1;
-        if (bitbuf & mask) {
+        if (bitbuf & mask)
+        {
             v = bytestream_get_le16(&src);
             offset = (v & 0x1FFF) << 1;
             count = ((v >> 13) + 2) << 1;
@@ -125,9 +134,13 @@ static int decode_dsw1(uint8_t *frame, int width, int height,
             for (v = 0; v < count; v++)
                 frame[v] = frame[v - offset];
             frame += count;
-        } else if (bitbuf & (mask << 1)) {
+        }
+        else if (bitbuf & (mask << 1))
+        {
             frame += bytestream_get_le16(&src);
-        } else {
+        }
+        else
+        {
             *frame++ = *src++;
             *frame++ = *src++;
         }
@@ -146,8 +159,10 @@ static int decode_dds1(uint8_t *frame, int width, int height,
     int i, v, offset, count, segments;
 
     segments = bytestream_get_le16(&src);
-    while (segments--) {
-        if (mask == 0x10000) {
+    while (segments--)
+    {
+        if (mask == 0x10000)
+        {
             if (src >= src_end)
                 return -1;
             bitbuf = bytestream_get_le16(&src);
@@ -155,26 +170,32 @@ static int decode_dds1(uint8_t *frame, int width, int height,
         }
         if (src_end - src < 2 || frame_end - frame < 2)
             return -1;
-        if (bitbuf & mask) {
+        if (bitbuf & mask)
+        {
             v = bytestream_get_le16(&src);
             offset = (v & 0x1FFF) << 2;
             count = ((v >> 13) + 2) << 1;
-            if (frame - frame_start < offset || frame_end - frame < count*2 + width)
+            if (frame - frame_start < offset || frame_end - frame < count * 2 + width)
                 return -1;
-            for (i = 0; i < count; i++) {
+            for (i = 0; i < count; i++)
+            {
                 frame[0] = frame[1] =
-                frame[width] = frame[width + 1] = frame[-offset];
+                               frame[width] = frame[width + 1] = frame[-offset];
 
                 frame += 2;
             }
-        } else if (bitbuf & (mask << 1)) {
+        }
+        else if (bitbuf & (mask << 1))
+        {
             frame += bytestream_get_le16(&src) * 2;
-        } else {
+        }
+        else
+        {
             frame[0] = frame[1] =
-            frame[width] = frame[width + 1] =  *src++;
+                           frame[width] = frame[width + 1] =  *src++;
             frame += 2;
             frame[0] = frame[1] =
-            frame[width] = frame[width + 1] =  *src++;
+                           frame[width] = frame[width + 1] =  *src++;
             frame += 2;
         }
         mask <<= 2;
@@ -198,22 +219,27 @@ static int decode_bdlt(uint8_t *frame, int width, int height,
     if (count + lines > height || src >= src_end)
         return -1;
 
-    while (lines--) {
+    while (lines--)
+    {
         line_ptr = frame;
         frame += width;
         segments = *src++;
-        while (segments--) {
+        while (segments--)
+        {
             if (src_end - src < 3)
                 return -1;
             if (frame - line_ptr <= *src)
                 return -1;
             line_ptr += *src++;
-            count = (int8_t)*src++;
-            if (count >= 0) {
+            count = (int8_t) * src++;
+            if (count >= 0)
+            {
                 if (frame - line_ptr < count || src_end - src < count)
                     return -1;
                 bytestream_get_buffer(&src, line_ptr, count);
-            } else {
+            }
+            else
+            {
                 count = -count;
                 if (frame - line_ptr < count || src >= src_end)
                     return -1;
@@ -237,36 +263,43 @@ static int decode_wdlt(uint8_t *frame, int width, int height,
     if (lines > height || src >= src_end)
         return -1;
 
-    while (lines--) {
+    while (lines--)
+    {
         segments = bytestream_get_le16(&src);
-        while ((segments & 0xC000) == 0xC000) {
+        while ((segments & 0xC000) == 0xC000)
+        {
             unsigned delta = -((int16_t)segments * width);
             if (frame_end - frame <= delta)
                 return -1;
             frame    += delta;
             segments = bytestream_get_le16(&src);
         }
-        if (segments & 0x8000) {
+        if (segments & 0x8000)
+        {
             frame[width - 1] = segments & 0xFF;
             segments = bytestream_get_le16(&src);
         }
         line_ptr = frame;
         frame += width;
-        while (segments--) {
+        while (segments--)
+        {
             if (src_end - src < 2)
                 return -1;
             if (frame - line_ptr <= *src)
                 return -1;
             line_ptr += *src++;
-            count = (int8_t)*src++;
-            if (count >= 0) {
-                if (frame - line_ptr < count*2 || src_end - src < count*2)
+            count = (int8_t) * src++;
+            if (count >= 0)
+            {
+                if (frame - line_ptr < count * 2 || src_end - src < count * 2)
                     return -1;
-                bytestream_get_buffer(&src, line_ptr, count*2);
+                bytestream_get_buffer(&src, line_ptr, count * 2);
                 line_ptr += count * 2;
-            } else {
+            }
+            else
+            {
                 count = -count;
-                if (frame - line_ptr < count*2 || src_end - src < 2)
+                if (frame - line_ptr < count * 2 || src_end - src < 2)
                     return -1;
                 v = bytestream_get_le16(&src);
                 for (i = 0; i < count; i++)
@@ -295,12 +328,14 @@ static int decode_blck(uint8_t *frame, int width, int height,
 typedef int (*chunk_decoder)(uint8_t *frame, int width, int height,
                              const uint8_t *src, const uint8_t *src_end);
 
-static const chunk_decoder decoder[8] = {
+static const chunk_decoder decoder[8] =
+{
     decode_copy, decode_tsw1, decode_bdlt, decode_wdlt,
     decode_unk6, decode_dsw1, decode_blck, decode_dds1,
 };
 
-static const char* chunk_name[8] = {
+static const char *chunk_name[8] =
+{
     "COPY", "TSW1", "BDLT", "WDLT", "????", "DSW1", "BLCK", "DDS1"
 };
 
@@ -320,37 +355,47 @@ static int dfa_decode_frame(AVCodecContext *avctx,
     if (s->pic.data[0])
         avctx->release_buffer(avctx, &s->pic);
 
-    if ((ret = avctx->get_buffer(avctx, &s->pic))) {
+    if ((ret = avctx->get_buffer(avctx, &s->pic)))
+    {
         av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
         return ret;
     }
 
-    while (buf < buf_end) {
+    while (buf < buf_end)
+    {
         chunk_size = AV_RL32(buf + 4);
         chunk_type = AV_RL32(buf + 8);
         buf += 12;
-        if (buf_end - buf < chunk_size) {
+        if (buf_end - buf < chunk_size)
+        {
             av_log(avctx, AV_LOG_ERROR, "Chunk size is too big (%d bytes)\n", chunk_size);
             return -1;
         }
         if (!chunk_type)
             break;
-        if (chunk_type == 1) {
+        if (chunk_type == 1)
+        {
             pal_elems = FFMIN(chunk_size / 3, 256);
             tmp_buf = buf;
-            for (i = 0; i < pal_elems; i++) {
+            for (i = 0; i < pal_elems; i++)
+            {
                 s->pal[i] = bytestream_get_be24(&tmp_buf) << 2;
                 s->pal[i] |= (s->pal[i] >> 6) & 0x333;
             }
             s->pic.palette_has_changed = 1;
-        } else if (chunk_type <= 9) {
+        }
+        else if (chunk_type <= 9)
+        {
             if (decoder[chunk_type - 2](s->frame_buf, avctx->width, avctx->height,
-                                        buf, buf + chunk_size)) {
+                                        buf, buf + chunk_size))
+            {
                 av_log(avctx, AV_LOG_ERROR, "Error decoding %s chunk\n",
                        chunk_name[chunk_type - 2]);
                 return -1;
             }
-        } else {
+        }
+        else
+        {
             av_log(avctx, AV_LOG_WARNING, "Ignoring unknown chunk type %d\n",
                    chunk_type);
         }
@@ -359,7 +404,8 @@ static int dfa_decode_frame(AVCodecContext *avctx,
 
     buf = s->frame_buf;
     dst = s->pic.data[0];
-    for (i = 0; i < avctx->height; i++) {
+    for (i = 0; i < avctx->height; i++)
+    {
         memcpy(dst, buf, avctx->width);
         dst += s->pic.linesize[0];
         buf += avctx->width;
@@ -367,7 +413,7 @@ static int dfa_decode_frame(AVCodecContext *avctx,
     memcpy(s->pic.data[1], s->pal, sizeof(s->pal));
 
     *data_size = sizeof(AVFrame);
-    *(AVFrame*)data = s->pic;
+    *(AVFrame *)data = s->pic;
 
     return avpkt->size;
 }
@@ -384,7 +430,8 @@ static av_cold int dfa_decode_end(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec ff_dfa_decoder = {
+AVCodec ff_dfa_decoder =
+{
     "dfa",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_DFA,

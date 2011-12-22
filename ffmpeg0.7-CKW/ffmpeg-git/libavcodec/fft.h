@@ -45,7 +45,8 @@ typedef float FFTDouble;
 typedef int16_t FFTSample;
 typedef int     FFTDouble;
 
-typedef struct FFTComplex {
+typedef struct FFTComplex
+{
     int16_t re, im;
 } FFTComplex;
 
@@ -53,13 +54,15 @@ typedef struct FFTContext FFTContext;
 
 #endif /* CONFIG_FFT_FLOAT */
 
-typedef struct FFTDComplex {
+typedef struct FFTDComplex
+{
     FFTDouble re, im;
 } FFTDComplex;
 
 /* FFT computation */
 
-struct FFTContext {
+struct FFTContext
+{
     int nbits;
     int inverse;
     uint16_t *revtab;
@@ -112,7 +115,7 @@ extern COSTABLE(8192);
 extern COSTABLE(16384);
 extern COSTABLE(32768);
 extern COSTABLE(65536);
-extern COSTABLE_CONST FFTSample* const FFT_NAME(ff_cos_tabs)[17];
+extern COSTABLE_CONST FFTSample *const FFT_NAME(ff_cos_tabs)[17];
 
 #define ff_init_ff_cos_tabs FFT_NAME(ff_init_ff_cos_tabs)
 

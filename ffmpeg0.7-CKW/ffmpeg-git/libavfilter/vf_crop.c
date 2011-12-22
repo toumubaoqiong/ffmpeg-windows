@@ -31,7 +31,8 @@
 #include "libavutil/libm.h"
 #include "libavutil/imgutils.h"
 
-static const char *var_names[] = {
+static const char *var_names[] =
+{
     "E",
     "PHI",
     "PI",
@@ -47,7 +48,8 @@ static const char *var_names[] = {
     NULL
 };
 
-enum var_name {
+enum var_name
+{
     VAR_E,
     VAR_PHI,
     VAR_PI,
@@ -63,7 +65,8 @@ enum var_name {
     VAR_VARS_NB
 };
 
-typedef struct {
+typedef struct
+{
     int  x;             ///< x offset of the non-cropped area with respect to the input area
     int  y;             ///< y offset of the non-cropped area with respect to the input area
     int  w;             ///< width of the cropped area
@@ -78,7 +81,8 @@ typedef struct {
 
 static int query_formats(AVFilterContext *ctx)
 {
-    static const enum PixelFormat pix_fmts[] = {
+    static const enum PixelFormat pix_fmts[] =
+    {
         PIX_FMT_RGB48BE,      PIX_FMT_RGB48LE,
         PIX_FMT_BGR48BE,      PIX_FMT_BGR48LE,
         PIX_FMT_ARGB,         PIX_FMT_RGBA,
@@ -128,20 +132,26 @@ static av_cold void uninit(AVFilterContext *ctx)
 {
     CropContext *crop = ctx->priv;
 
-    av_expr_free(crop->x_pexpr); crop->x_pexpr = NULL;
-    av_expr_free(crop->y_pexpr); crop->y_pexpr = NULL;
+    av_expr_free(crop->x_pexpr);
+    crop->x_pexpr = NULL;
+    av_expr_free(crop->y_pexpr);
+    crop->y_pexpr = NULL;
 }
 
 static inline int normalize_double(int *n, double d)
 {
     int ret = 0;
 
-    if (isnan(d)) {
+    if (isnan(d))
+    {
         ret = AVERROR(EINVAL);
-    } else if (d > INT_MAX || d < INT_MIN) {
+    }
+    else if (d > INT_MAX || d < INT_MIN)
+    {
         *n = d > INT_MAX ? INT_MAX : INT_MIN;
         ret = AVERROR(EINVAL);
-    } else
+    }
+    else
         *n = round(d);
 
     return ret;
@@ -187,7 +197,8 @@ static int config_input(AVFilterLink *link)
                                       NULL, NULL, NULL, NULL, NULL, 0, ctx)) < 0) goto fail_expr;
     crop->var_values[VAR_OUT_W] = crop->var_values[VAR_OW] = res;
     if (normalize_double(&crop->w, crop->var_values[VAR_OUT_W]) < 0 ||
-        normalize_double(&crop->h, crop->var_values[VAR_OUT_H]) < 0) {
+            normalize_double(&crop->h, crop->var_values[VAR_OUT_H]) < 0)
+    {
         av_log(ctx, AV_LOG_ERROR,
                "Too big value or invalid expression for out_w/ow or out_h/oh. "
                "Maybe the expression for out_w:'%s' or for out_h:'%s' is self-referencing.\n",
@@ -199,15 +210,16 @@ static int config_input(AVFilterLink *link)
 
     if ((ret = av_expr_parse(&crop->x_pexpr, crop->x_expr, var_names,
                              NULL, NULL, NULL, NULL, 0, ctx)) < 0 ||
-        (ret = av_expr_parse(&crop->y_pexpr, crop->y_expr, var_names,
-                             NULL, NULL, NULL, NULL, 0, ctx)) < 0)
+            (ret = av_expr_parse(&crop->y_pexpr, crop->y_expr, var_names,
+                                 NULL, NULL, NULL, NULL, 0, ctx)) < 0)
         return AVERROR(EINVAL);
 
     av_log(ctx, AV_LOG_INFO, "w:%d h:%d -> w:%d h:%d\n",
            link->w, link->h, crop->w, crop->h);
 
     if (crop->w <= 0 || crop->h <= 0 ||
-        crop->w > link->w || crop->h > link->h) {
+            crop->w > link->w || crop->h > link->h)
+    {
         av_log(ctx, AV_LOG_ERROR,
                "Invalid too big or non positive size for width '%d' or height '%d'\n",
                crop->w, crop->h);
@@ -248,7 +260,7 @@ static void start_frame(AVFilterLink *link, AVFilterBufferRef *picref)
     ref2->video->h = crop->h;
 
     crop->var_values[VAR_T] = picref->pts == AV_NOPTS_VALUE ?
-        NAN : picref->pts * av_q2d(link->time_base);
+                              NAN : picref->pts * av_q2d(link->time_base);
     crop->var_values[VAR_POS] = picref->pos == -1 ? NAN : picref->pos;
     crop->var_values[VAR_X] = av_expr_eval(crop->x_pexpr, crop->var_values, NULL);
     crop->var_values[VAR_Y] = av_expr_eval(crop->y_pexpr, crop->var_values, NULL);
@@ -267,15 +279,18 @@ static void start_frame(AVFilterLink *link, AVFilterBufferRef *picref)
 #ifdef DEBUG
     av_log(ctx, AV_LOG_DEBUG,
            "n:%d t:%f x:%d y:%d x+w:%d y+h:%d\n",
-           (int)crop->var_values[VAR_N], crop->var_values[VAR_T], crop->x, crop->y, crop->x+crop->w, crop->y+crop->h);
+           (int)crop->var_values[VAR_N], crop->var_values[VAR_T], crop->x, crop->y, crop->x + crop->w, crop->y + crop->h);
 #endif
 
     ref2->data[0] += crop->y * ref2->linesize[0];
     ref2->data[0] += crop->x * crop->max_step[0];
 
-    if (!((av_getav_pix_fmt_descriptors())[link->format].flags & PIX_FMT_PAL)) {
-        for (i = 1; i < 3; i ++) {
-            if (ref2->data[i]) {
+    if (!((av_getav_pix_fmt_descriptors())[link->format].flags & PIX_FMT_PAL))
+    {
+        for (i = 1; i < 3; i ++)
+        {
+            if (ref2->data[i])
+            {
                 ref2->data[i] += (crop->y >> crop->vsub) * ref2->linesize[i];
                 ref2->data[i] += (crop->x * crop->max_step[i]) >> crop->hsub;
             }
@@ -283,7 +298,8 @@ static void start_frame(AVFilterLink *link, AVFilterBufferRef *picref)
     }
 
     /* alpha plane */
-    if (ref2->data[3]) {
+    if (ref2->data[3])
+    {
         ref2->data[3] += crop->y * ref2->linesize[3];
         ref2->data[3] += crop->x * crop->max_step[3];
     }
@@ -299,7 +315,8 @@ static void draw_slice(AVFilterLink *link, int y, int h, int slice_dir)
     if (y >= crop->y + crop->h || y + h <= crop->y)
         return;
 
-    if (y < crop->y) {
+    if (y < crop->y)
+    {
         h -= crop->y - y;
         y  = crop->y;
     }
@@ -318,7 +335,8 @@ static void end_frame(AVFilterLink *link)
     avfilter_end_frame(link->dst->outputs[0]);
 }
 
-AVFilter avfilter_vf_crop = {
+AVFilter avfilter_vf_crop =
+{
     .name      = "crop",
     .description = NULL_IF_CONFIG_SMALL("Crop the input video to width:height:x:y."),
 
@@ -328,16 +346,26 @@ AVFilter avfilter_vf_crop = {
     .init          = init,
     .uninit        = uninit,
 
-    .inputs    = (AVFilterPad[]) {{ .name             = "default",
-                                    .type             = AVMEDIA_TYPE_VIDEO,
-                                    .start_frame      = start_frame,
-                                    .draw_slice       = draw_slice,
-                                    .end_frame        = end_frame,
-                                    .get_video_buffer = avfilter_null_get_video_buffer,
-                                    .config_props     = config_input, },
-                                  { .name = NULL}},
-    .outputs   = (AVFilterPad[]) {{ .name             = "default",
-                                    .type             = AVMEDIA_TYPE_VIDEO,
-                                    .config_props     = config_output, },
-                                  { .name = NULL}},
+    .inputs    = (AVFilterPad[])
+    {
+        {
+            .name             = "default",
+            .type             = AVMEDIA_TYPE_VIDEO,
+            .start_frame      = start_frame,
+            .draw_slice       = draw_slice,
+            .end_frame        = end_frame,
+            .get_video_buffer = avfilter_null_get_video_buffer,
+            .config_props     = config_input,
+        },
+        { .name = NULL}
+    },
+    .outputs   = (AVFilterPad[])
+    {
+        {
+            .name             = "default",
+            .type             = AVMEDIA_TYPE_VIDEO,
+            .config_props     = config_output,
+        },
+        { .name = NULL}
+    },
 };

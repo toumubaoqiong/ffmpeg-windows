@@ -26,25 +26,25 @@
 #include "metadata.h"
 #include "avio_internal.h"
 
-int ff_id3v2_match(const uint8_t *buf, const char * magic)
+int ff_id3v2_match(const uint8_t *buf, const char *magic)
 {
     return  buf[0]         == magic[0] &&
             buf[1]         == magic[1] &&
             buf[2]         == magic[2] &&
             buf[3]         != 0xff &&
             buf[4]         != 0xff &&
-           (buf[6] & 0x80) ==    0 &&
-           (buf[7] & 0x80) ==    0 &&
-           (buf[8] & 0x80) ==    0 &&
-           (buf[9] & 0x80) ==    0;
+            (buf[6] & 0x80) ==    0 &&
+            (buf[7] & 0x80) ==    0 &&
+            (buf[8] & 0x80) ==    0 &&
+            (buf[9] & 0x80) ==    0;
 }
 
-int ff_id3v2_tag_len(const uint8_t * buf)
+int ff_id3v2_tag_len(const uint8_t *buf)
 {
     int len = ((buf[6] & 0x7f) << 21) +
               ((buf[7] & 0x7f) << 14) +
               ((buf[8] & 0x7f) << 7) +
-               (buf[9] & 0x7f) +
+              (buf[9] & 0x7f) +
               ID3v2_HEADER_SIZE;
     if (buf[5] & 0x10)
         len += ID3v2_HEADER_SIZE;
@@ -65,7 +65,7 @@ static void read_ttag(AVFormatContext *s, AVIOContext *pb, int taglen, const cha
     const char *val = NULL;
     int len, dstlen = sizeof(dst) - 1;
     unsigned genre;
-    unsigned int (*get)(AVIOContext*) = avio_rb16;
+    unsigned int (*get)(AVIOContext *) = avio_rb16;
 
     dst[0] = 0;
     if (taglen < 1)
@@ -73,11 +73,13 @@ static void read_ttag(AVFormatContext *s, AVIOContext *pb, int taglen, const cha
 
     taglen--; /* account for encoding type byte */
 
-    switch (avio_r8(pb)) { /* encoding type */
+    switch (avio_r8(pb))   /* encoding type */
+    {
 
     case ID3v2_ENCODING_ISO8859:
         q = dst;
-        while (taglen-- && q - dst < dstlen - 7) {
+        while (taglen-- && q - dst < dstlen - 7)
+        {
             uint8_t tmp;
             PUT_UTF8(avio_r8(pb), tmp, *q++ = tmp;)
         }
@@ -86,7 +88,8 @@ static void read_ttag(AVFormatContext *s, AVIOContext *pb, int taglen, const cha
 
     case ID3v2_ENCODING_UTF16BOM:
         taglen -= 2;
-        switch (avio_rb16(pb)) {
+        switch (avio_rb16(pb))
+        {
         case 0xfffe:
             get = avio_rl16;
         case 0xfeff:
@@ -99,7 +102,8 @@ static void read_ttag(AVFormatContext *s, AVIOContext *pb, int taglen, const cha
 
     case ID3v2_ENCODING_UTF16BE:
         q = dst;
-        while (taglen > 1 && q - dst < dstlen - 7) {
+        while (taglen > 1 && q - dst < dstlen - 7)
+        {
             uint32_t ch;
             uint8_t tmp;
 
@@ -119,10 +123,11 @@ static void read_ttag(AVFormatContext *s, AVIOContext *pb, int taglen, const cha
     }
 
     if (!(strcmp(key, "TCON") && strcmp(key, "TCO"))
-        && (sscanf(dst, "(%d)", &genre) == 1 || sscanf(dst, "%d", &genre) == 1)
-        && genre <= ID3v1_GENRE_MAX)
+            && (sscanf(dst, "(%d)", &genre) == 1 || sscanf(dst, "%d", &genre) == 1)
+            && genre <= ID3v1_GENRE_MAX)
         val = ff_id3v1_genre_str[genre];
-    else if (!(strcmp(key, "TXXX") && strcmp(key, "TXX"))) {
+    else if (!(strcmp(key, "TXXX") && strcmp(key, "TXX")))
+    {
         /* dst now contains two 0-terminated strings */
         dst[dstlen] = 0;
         len = strlen(dst);
@@ -142,11 +147,11 @@ static int is_number(const char *str)
     return !*str;
 }
 
-static AVMetadataTag* get_date_tag(AVMetadata *m, const char *tag)
+static AVMetadataTag *get_date_tag(AVMetadata *m, const char *tag)
 {
     AVMetadataTag *t;
     if ((t = av_metadata_get(m, tag, NULL, AV_METADATA_MATCH_CASE)) &&
-        strlen(t->value) == 4 && is_number(t->value))
+            strlen(t->value) == 4 && is_number(t->value))
         return t;
     return NULL;
 }
@@ -157,21 +162,21 @@ static void merge_date(AVMetadata **m)
     char date[17] = {0};      // YYYY-MM-DD hh:mm
 
     if (!(t = get_date_tag(*m, "TYER")) &&
-        !(t = get_date_tag(*m, "TYE")))
+            !(t = get_date_tag(*m, "TYE")))
         return;
     av_strlcpy(date, t->value, 5);
     av_metadata_set2(m, "TYER", NULL, 0);
     av_metadata_set2(m, "TYE",  NULL, 0);
 
     if (!(t = get_date_tag(*m, "TDAT")) &&
-        !(t = get_date_tag(*m, "TDA")))
+            !(t = get_date_tag(*m, "TDA")))
         goto finish;
     snprintf(date + 4, sizeof(date) - 4, "-%.2s-%.2s", t->value + 2, t->value);
     av_metadata_set2(m, "TDAT", NULL, 0);
     av_metadata_set2(m, "TDA",  NULL, 0);
 
     if (!(t = get_date_tag(*m, "TIME")) &&
-        !(t = get_date_tag(*m, "TIM")))
+            !(t = get_date_tag(*m, "TIM")))
         goto finish;
     snprintf(date + 10, sizeof(date) - 10, " %.2s:%.2s", t->value, t->value + 2);
     av_metadata_set2(m, "TIME", NULL, 0);
@@ -194,9 +199,11 @@ static void ff_id3v2_parse(AVFormatContext *s, int len, uint8_t version, uint8_t
     unsigned char *buffer = NULL;
     int buffer_size = 0;
 
-    switch (version) {
+    switch (version)
+    {
     case 2:
-        if (flags & 0x40) {
+        if (flags & 0x40)
+        {
             reason = "compression";
             goto error;
         }
@@ -220,25 +227,31 @@ static void ff_id3v2_parse(AVFormatContext *s, int len, uint8_t version, uint8_t
     if (isv34 && flags & 0x40) /* Extended header present, just skip over it */
         avio_skip(s->pb, get_size(s->pb, 4));
 
-    while (len >= taghdrlen) {
+    while (len >= taghdrlen)
+    {
         unsigned int tflags;
         int tunsync = 0;
 
-        if (isv34) {
+        if (isv34)
+        {
             avio_read(s->pb, tag, 4);
             tag[4] = 0;
-            if(version==3){
+            if(version == 3)
+            {
                 tlen = avio_rb32(s->pb);
-            }else
+            }
+            else
                 tlen = get_size(s->pb, 4);
             tflags = avio_rb16(s->pb);
             tunsync = tflags & ID3v2_FLAG_UNSYNCH;
-        } else {
+        }
+        else
+        {
             avio_read(s->pb, tag, 3);
             tag[3] = 0;
             tlen = avio_rb24(s->pb);
         }
-        if (tlen > (1<<28))
+        if (tlen > (1 << 28))
             break;
         len -= taghdrlen + tlen;
 
@@ -247,32 +260,42 @@ static void ff_id3v2_parse(AVFormatContext *s, int len, uint8_t version, uint8_t
 
         next = avio_tell(s->pb) + tlen;
 
-        if (tflags & ID3v2_FLAG_DATALEN) {
+        if (tflags & ID3v2_FLAG_DATALEN)
+        {
             avio_rb32(s->pb);
             tlen -= 4;
         }
 
-        if (tflags & (ID3v2_FLAG_ENCRYPTION | ID3v2_FLAG_COMPRESSION)) {
+        if (tflags & (ID3v2_FLAG_ENCRYPTION | ID3v2_FLAG_COMPRESSION))
+        {
             av_log(s, AV_LOG_WARNING, "Skipping encrypted/compressed ID3v2 frame %s.\n", tag);
             avio_skip(s->pb, tlen);
-        } else if (tag[0] == 'T') {
-            if (unsync || tunsync) {
+        }
+        else if (tag[0] == 'T')
+        {
+            if (unsync || tunsync)
+            {
                 int i, j;
                 av_fast_malloc(&buffer, &buffer_size, tlen);
-                for (i = 0, j = 0; i < tlen; i++, j++) {
+                for (i = 0, j = 0; i < tlen; i++, j++)
+                {
                     buffer[j] = avio_r8(s->pb);
-                    if (j > 0 && !buffer[j] && buffer[j - 1] == 0xff) {
+                    if (j > 0 && !buffer[j] && buffer[j - 1] == 0xff)
+                    {
                         /* Unsynchronised byte, skip it */
                         j--;
                     }
                 }
                 ffio_init_context(&pb, buffer, j, 0, NULL, NULL, NULL, NULL);
                 read_ttag(s, &pb, j, tag);
-            } else {
+            }
+            else
+            {
                 read_ttag(s, s->pb, tlen, tag);
             }
         }
-        else if (!tag[0]) {
+        else if (!tag[0])
+        {
             if (tag[1])
                 av_log(s, AV_LOG_WARNING, "invalid frame id, assuming padding");
             avio_skip(s->pb, tlen);
@@ -285,7 +308,7 @@ static void ff_id3v2_parse(AVFormatContext *s, int len, uint8_t version, uint8_t
     if (version == 4 && flags & 0x10) /* Footer preset, always 10 bytes, skip over it */
         end += 10;
 
-  error:
+error:
     if (reason)
         av_log(s, AV_LOG_INFO, "ID3v2.%d tag skipped, cannot handle %s\n", version, reason);
     avio_seek(s->pb, end, SEEK_SET);
@@ -300,31 +323,37 @@ void ff_id3v2_read(AVFormatContext *s, const char *magic)
     int     found_header;
     int64_t off;
 
-    do {
+    do
+    {
         /* save the current offset in case there's nothing to read/skip */
         off = avio_tell(s->pb);
         ret = avio_read(s->pb, buf, ID3v2_HEADER_SIZE);
         if (ret != ID3v2_HEADER_SIZE)
             break;
-            found_header = ff_id3v2_match(buf, magic);
-            if (found_header) {
+        found_header = ff_id3v2_match(buf, magic);
+        if (found_header)
+        {
             /* parse ID3v2 header */
             len = ((buf[6] & 0x7f) << 21) |
                   ((buf[7] & 0x7f) << 14) |
                   ((buf[8] & 0x7f) << 7) |
-                   (buf[9] & 0x7f);
+                  (buf[9] & 0x7f);
             ff_id3v2_parse(s, len, buf[3], buf[5]);
-        } else {
+        }
+        else
+        {
             avio_seek(s->pb, off, SEEK_SET);
         }
-    } while (found_header);
+    }
+    while (found_header);
     ff_metadata_conv(&s->metadata, NULL, ff_id3v2_34_metadata_conv);
     ff_metadata_conv(&s->metadata, NULL, ff_id3v2_2_metadata_conv);
     ff_metadata_conv(&s->metadata, NULL, ff_id3v2_4_metadata_conv);
     merge_date(&s->metadata);
 }
 
-const AVMetadataConv ff_id3v2_34_metadata_conv[] = {
+const AVMetadataConv ff_id3v2_34_metadata_conv[] =
+{
     { "TALB", "album"},
     { "TCOM", "composer"},
     { "TCON", "genre"},
@@ -342,7 +371,8 @@ const AVMetadataConv ff_id3v2_34_metadata_conv[] = {
     { 0 }
 };
 
-const AVMetadataConv ff_id3v2_4_metadata_conv[] = {
+const AVMetadataConv ff_id3v2_4_metadata_conv[] =
+{
     { "TDRL", "date"},
     { "TDRC", "date"},
     { "TDEN", "creation_time"},
@@ -352,7 +382,8 @@ const AVMetadataConv ff_id3v2_4_metadata_conv[] = {
     { 0 }
 };
 
-const AVMetadataConv ff_id3v2_2_metadata_conv[] = {
+const AVMetadataConv ff_id3v2_2_metadata_conv[] =
+{
     { "TAL",  "album"},
     { "TCO",  "genre"},
     { "TT2",  "title"},
@@ -365,21 +396,24 @@ const AVMetadataConv ff_id3v2_2_metadata_conv[] = {
 };
 
 
-const char ff_id3v2_tags[][4] = {
-   "TALB", "TBPM", "TCOM", "TCON", "TCOP", "TDLY", "TENC", "TEXT",
-   "TFLT", "TIT1", "TIT2", "TIT3", "TKEY", "TLAN", "TLEN", "TMED",
-   "TOAL", "TOFN", "TOLY", "TOPE", "TOWN", "TPE1", "TPE2", "TPE3",
-   "TPE4", "TPOS", "TPUB", "TRCK", "TRSN", "TRSO", "TSRC", "TSSE",
-   { 0 },
+const char ff_id3v2_tags[][4] =
+{
+    "TALB", "TBPM", "TCOM", "TCON", "TCOP", "TDLY", "TENC", "TEXT",
+    "TFLT", "TIT1", "TIT2", "TIT3", "TKEY", "TLAN", "TLEN", "TMED",
+    "TOAL", "TOFN", "TOLY", "TOPE", "TOWN", "TPE1", "TPE2", "TPE3",
+    "TPE4", "TPOS", "TPUB", "TRCK", "TRSN", "TRSO", "TSRC", "TSSE",
+    { 0 },
 };
 
-const char ff_id3v2_4_tags[][4] = {
-   "TDEN", "TDOR", "TDRC", "TDRL", "TDTG", "TIPL", "TMCL", "TMOO",
-   "TPRO", "TSOA", "TSOP", "TSOT", "TSST",
-   { 0 },
+const char ff_id3v2_4_tags[][4] =
+{
+    "TDEN", "TDOR", "TDRC", "TDRL", "TDTG", "TIPL", "TMCL", "TMOO",
+    "TPRO", "TSOA", "TSOP", "TSOT", "TSST",
+    { 0 },
 };
 
-const char ff_id3v2_3_tags[][4] = {
-   "TDAT", "TIME", "TORY", "TRDA", "TSIZ", "TYER",
-   { 0 },
+const char ff_id3v2_3_tags[][4] =
+{
+    "TDAT", "TIME", "TORY", "TRDA", "TSIZ", "TYER",
+    { 0 },
 };

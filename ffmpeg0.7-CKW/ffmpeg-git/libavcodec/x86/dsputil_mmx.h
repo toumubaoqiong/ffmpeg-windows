@@ -26,7 +26,10 @@
 #include "libavcodec/dsputil.h"
 #include "libavutil/x86_cpu.h"
 
-typedef struct { uint64_t a, b; } xmm_reg;
+typedef struct
+{
+    uint64_t a, b;
+} xmm_reg;
 
 extern const uint64_t ff_bone;
 extern const uint64_t ff_wtwo;
@@ -88,14 +91,15 @@ extern const double ff_pd_2[2];
     "mov" #m " " #a ", " #t "         \n\t" /* abcd */\
     "punpckl" #n " " #b ", " #a "     \n\t" /* aebf */\
     "punpckh" #n " " #b ", " #t "     \n\t" /* cgdh */\
-
+ 
 #define TRANSPOSE4(a,b,c,d,t)\
     SBUTTERFLY(a,b,t,wd,q) /* a=aebf t=cgdh */\
     SBUTTERFLY(c,d,b,wd,q) /* c=imjn b=kolp */\
     SBUTTERFLY(a,c,d,dq,q) /* a=aeim d=bfjn */\
     SBUTTERFLY(t,b,c,dq,q) /* t=cgko c=dhlp */
 
-static inline void transpose4x4(uint8_t *dst, uint8_t *src, x86_reg dst_stride, x86_reg src_stride){
+static inline void transpose4x4(uint8_t *dst, uint8_t *src, x86_reg dst_stride, x86_reg src_stride)
+{
     __asm__ volatile( //FIXME could save 1 instruction if done as 8x4 ...
         "movd  (%1), %%mm0              \n\t"
         "add   %3, %1                   \n\t"
@@ -116,9 +120,9 @@ static inline void transpose4x4(uint8_t *dst, uint8_t *src, x86_reg dst_stride, 
         "movd  %%mm1, (%0,%2,2)         \n\t"
 
         :  "+&r" (dst),
-           "+&r" (src)
+        "+&r" (src)
         :  "r" (dst_stride),
-           "r" (src_stride)
+        "r" (src_stride)
         :  "memory"
     );
 }
@@ -184,8 +188,8 @@ static inline void transpose4x4(uint8_t *dst, uint8_t *src, x86_reg dst_stride, 
     "pcmpeqd %%" #regd ", %%" #regd " \n\t" \
     "psrlw $15, %%" #regd ::)
 
-void dsputilenc_init_mmx(DSPContext* c, AVCodecContext *avctx);
-void dsputil_init_pix_mmx(DSPContext* c, AVCodecContext *avctx);
+void dsputilenc_init_mmx(DSPContext *c, AVCodecContext *avctx);
+void dsputil_init_pix_mmx(DSPContext *c, AVCodecContext *avctx);
 
 void ff_add_pixels_clamped_mmx(const DCTELEM *block, uint8_t *pixels, int line_size);
 void ff_put_pixels_clamped_mmx(const DCTELEM *block, uint8_t *pixels, int line_size);

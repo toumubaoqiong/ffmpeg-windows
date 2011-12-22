@@ -26,7 +26,8 @@
 #include "libavutil/pixdesc.h"
 #include "avfilter.h"
 
-typedef struct {
+typedef struct
+{
     const AVPixFmtDescriptor *pix_desc;
     uint16_t *line;
 } PixdescTestContext;
@@ -57,23 +58,25 @@ static void start_frame(AVFilterLink *inlink, AVFilterBufferRef *picref)
     int i;
 
     outlink->out_buf = avfilter_get_video_buffer(outlink, AV_PERM_WRITE,
-                                                outlink->w, outlink->h);
+                       outlink->w, outlink->h);
     outpicref = outlink->out_buf;
     avfilter_copy_buffer_ref_props(outpicref, picref);
 
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < 4; i++)
+    {
         int h = outlink->h;
-        h = i == 1 || i == 2 ? h>>priv->pix_desc->log2_chroma_h : h;
-        if (outpicref->data[i]) {
+        h = i == 1 || i == 2 ? h >> priv->pix_desc->log2_chroma_h : h;
+        if (outpicref->data[i])
+        {
             uint8_t *data = outpicref->data[i] +
-                (outpicref->linesize[i] > 0 ? 0 : outpicref->linesize[i] * (h-1));
+                            (outpicref->linesize[i] > 0 ? 0 : outpicref->linesize[i] * (h - 1));
             memset(data, 0, FFABS(outpicref->linesize[i]) * h);
         }
     }
 
     /* copy palette */
     if (priv->pix_desc->flags & PIX_FMT_PAL)
-        memcpy(outpicref->data[1], outpicref->data[1], 256*4);
+        memcpy(outpicref->data[1], outpicref->data[1], 256 * 4);
 
     avfilter_start_frame(outlink, avfilter_ref_buffer(outpicref, ~0));
 }
@@ -85,12 +88,14 @@ static void draw_slice(AVFilterLink *inlink, int y, int h, int slice_dir)
     AVFilterBufferRef *outpic   = inlink->dst->outputs[0]->out_buf;
     int i, c, w = inlink->w;
 
-    for (c = 0; c < priv->pix_desc->nb_components; c++) {
-        int w1 = c == 1 || c == 2 ? w>>priv->pix_desc->log2_chroma_w : w;
-        int h1 = c == 1 || c == 2 ? h>>priv->pix_desc->log2_chroma_h : h;
-        int y1 = c == 1 || c == 2 ? y>>priv->pix_desc->log2_chroma_h : y;
+    for (c = 0; c < priv->pix_desc->nb_components; c++)
+    {
+        int w1 = c == 1 || c == 2 ? w >> priv->pix_desc->log2_chroma_w : w;
+        int h1 = c == 1 || c == 2 ? h >> priv->pix_desc->log2_chroma_h : h;
+        int y1 = c == 1 || c == 2 ? y >> priv->pix_desc->log2_chroma_h : y;
 
-        for (i = y1; i < y1 + h1; i++) {
+        for (i = y1; i < y1 + h1; i++)
+        {
             av_read_image_line(priv->line,
                                inpic->data,
                                inpic->linesize,
@@ -108,22 +113,33 @@ static void draw_slice(AVFilterLink *inlink, int y, int h, int slice_dir)
     avfilter_draw_slice(inlink->dst->outputs[0], y, h, slice_dir);
 }
 
-AVFilter avfilter_vf_pixdesctest = {
+AVFilter avfilter_vf_pixdesctest =
+{
     .name        = "pixdesctest",
     .description = NULL_IF_CONFIG_SMALL("Test pixel format definitions."),
 
     .priv_size = sizeof(PixdescTestContext),
     .uninit    = uninit,
 
-    .inputs    = (AVFilterPad[]) {{ .name            = "default",
-                                    .type            = AVMEDIA_TYPE_VIDEO,
-                                    .start_frame     = start_frame,
-                                    .draw_slice      = draw_slice,
-                                    .config_props    = config_props,
-                                    .min_perms       = AV_PERM_READ, },
-                                  { .name = NULL}},
+    .inputs    = (AVFilterPad[])
+    {
+        {
+            .name            = "default",
+            .type            = AVMEDIA_TYPE_VIDEO,
+            .start_frame     = start_frame,
+            .draw_slice      = draw_slice,
+            .config_props    = config_props,
+            .min_perms       = AV_PERM_READ,
+        },
+        { .name = NULL}
+    },
 
-    .outputs   = (AVFilterPad[]) {{ .name            = "default",
-                                    .type            = AVMEDIA_TYPE_VIDEO, },
-                                  { .name = NULL}},
+    .outputs   = (AVFilterPad[])
+    {
+        {
+            .name            = "default",
+            .type            = AVMEDIA_TYPE_VIDEO,
+        },
+        { .name = NULL}
+    },
 };

@@ -29,11 +29,12 @@
 
 static int aea_read_probe(AVProbeData *p)
 {
-    if (p->buf_size <= 2048+212)
+    if (p->buf_size <= 2048 + 212)
         return 0;
 
     /* Magic is '00 08 00 00' in Little Endian*/
-    if (AV_RL32(p->buf)==0x800) {
+    if (AV_RL32(p->buf) == 0x800)
+    {
         int bsm_s, bsm_e, inb_s, inb_e, ch;
         ch    = p->buf[264];
         bsm_s = p->buf[2048];
@@ -72,8 +73,9 @@ static int aea_read_header(AVFormatContext *s,
     st->codec->sample_rate    = 44100;
     st->codec->bit_rate       = 292000;
 
-    if (st->codec->channels != 1 && st->codec->channels != 2) {
-        av_log(s,AV_LOG_ERROR,"Channels %d not supported!\n",st->codec->channels);
+    if (st->codec->channels != 1 && st->codec->channels != 2)
+    {
+        av_log(s, AV_LOG_ERROR, "Channels %d not supported!\n", st->codec->channels);
         return -1;
     }
 
@@ -94,7 +96,8 @@ static int aea_read_packet(AVFormatContext *s, AVPacket *pkt)
     return ret;
 }
 
-AVInputFormat ff_aea_demuxer = {
+AVInputFormat ff_aea_demuxer =
+{
     "aea",
     NULL_IF_CONFIG_SMALL("MD STUDIO audio"),
     0,
@@ -103,7 +106,7 @@ AVInputFormat ff_aea_demuxer = {
     aea_read_packet,
     0,
     pcm_read_seek,
-    .flags= AVFMT_GENERIC_INDEX,
+    .flags = AVFMT_GENERIC_INDEX,
     .extensions = "aea",
 };
 

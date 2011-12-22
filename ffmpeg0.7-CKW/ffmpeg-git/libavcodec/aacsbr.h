@@ -44,6 +44,6 @@ int ff_decode_sbr_extension(AACContext *ac, SpectralBandReplication *sbr,
                             GetBitContext *gb, int crc, int cnt, int id_aac);
 /** Apply one SBR element to one AAC element. */
 void ff_sbr_apply(AACContext *ac, SpectralBandReplication *sbr, int id_aac,
-                  float* L, float *R);
+                  float *L, float *R);
 
 #endif /* AVCODEC_AACSBR_H */

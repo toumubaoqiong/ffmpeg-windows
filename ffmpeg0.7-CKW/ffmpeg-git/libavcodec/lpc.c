@@ -35,15 +35,16 @@ static void lpc_apply_welch_window_c(const int32_t *data, int len,
     double w;
     double c;
 
-    assert(!(len&1)); //the optimization in r11881 does not support odd len
-                      //if someone wants odd len extend the change in r11881
+    assert(!(len & 1)); //the optimization in r11881 does not support odd len
+    //if someone wants odd len extend the change in r11881
 
     n2 = (len >> 1);
     c = 2.0 / (len - 1.0);
 
-    w_data+=n2;
-      data+=n2;
-    for(i=0; i<n2; i++) {
+    w_data += n2;
+    data += n2;
+    for(i = 0; i < n2; i++)
+    {
         w = c - n2 + i;
         w = 1.0 - (w * w);
         w_data[-i-1] = data[-i-1] * w;
@@ -60,9 +61,11 @@ static void lpc_compute_autocorr_c(const double *data, int len, int lag,
 {
     int i, j;
 
-    for(j=0; j<lag; j+=2){
+    for(j = 0; j < lag; j += 2)
+    {
         double sum0 = 1.0, sum1 = 1.0;
-        for(i=j; i<len; i++){
+        for(i = j; i < len; i++)
+        {
             sum0 += data[i] * data[i-j];
             sum1 += data[i] * data[i-j-1];
         }
@@ -70,11 +73,13 @@ static void lpc_compute_autocorr_c(const double *data, int len, int lag,
         autoc[j+1] = sum1;
     }
 
-    if(j==lag){
+    if(j == lag)
+    {
         double sum = 1.0;
-        for(i=j-1; i<len; i+=2){
+        for(i = j - 1; i < len; i += 2)
+        {
             sum += data[i  ] * data[i-j  ]
-                 + data[i+1] * data[i-j+1];
+                   + data[i+1] * data[i-j+1];
         }
         autoc[j] = sum;
     }
@@ -96,12 +101,14 @@ static void quantize_lpc_coefs(double *lpc_in, int order, int precision,
 
     /* find maximum coefficient value */
     cmax = 0.0;
-    for(i=0; i<order; i++) {
-        cmax= FFMAX(cmax, fabs(lpc_in[i]));
+    for(i = 0; i < order; i++)
+    {
+        cmax = FFMAX(cmax, fabs(lpc_in[i]));
     }
 
     /* if maximum value quantizes to zero, return all zeros */
-    if(cmax * (1 << max_shift) < 1.0) {
+    if(cmax * (1 << max_shift) < 1.0)
+    {
         *shift = zero_shift;
         memset(lpc_out, 0, sizeof(int32_t) * order);
         return;
@@ -109,22 +116,26 @@ static void quantize_lpc_coefs(double *lpc_in, int order, int precision,
 
     /* calculate level shift which scales max coeff to available bits */
     sh = max_shift;
-    while((cmax * (1 << sh) > qmax) && (sh > 0)) {
+    while((cmax * (1 << sh) > qmax) && (sh > 0))
+    {
         sh--;
     }
 
     /* since negative shift values are unsupported in decoder, scale down
        coefficients instead */
-    if(sh == 0 && cmax > qmax) {
+    if(sh == 0 && cmax > qmax)
+    {
         double scale = ((double)qmax) / cmax;
-        for(i=0; i<order; i++) {
+        for(i = 0; i < order; i++)
+        {
             lpc_in[i] *= scale;
         }
     }
 
     /* output quantized coefficients and level shift */
-    error=0;
-    for(i=0; i<order; i++) {
+    error = 0;
+    for(i = 0; i < order; i++)
+    {
         error -= lpc_in[i] * (1 << sh);
         lpc_out[i] = av_clip(lrintf(error), -qmax, qmax);
         error -= lpc_out[i];
@@ -137,9 +148,11 @@ static int estimate_best_order(double *ref, int min_order, int max_order)
     int i, est;
 
     est = min_order;
-    for(i=max_order-1; i>=min_order-1; i--) {
-        if(ref[i] > 0.10) {
-            est = i+1;
+    for(i = max_order - 1; i >= min_order - 1; i--)
+    {
+        if(ref[i] > 0.10)
+        {
+            est = i + 1;
             break;
         }
     }
@@ -172,12 +185,14 @@ int ff_lpc_calc_coefs(LPCContext *s,
 
     /* reinit LPC context if parameters have changed */
     if (blocksize != s->blocksize || max_order != s->max_order ||
-        lpc_type  != s->lpc_type) {
+            lpc_type  != s->lpc_type)
+    {
         ff_lpc_end(s);
         ff_lpc_init(s, blocksize, max_order, lpc_type);
     }
 
-    if (lpc_type == AV_LPC_TYPE_LEVINSON) {
+    if (lpc_type == AV_LPC_TYPE_LEVINSON)
+    {
         double *windowed_samples = s->windowed_samples + max_order;
 
         s->lpc_apply_welch_window(samples, blocksize, windowed_samples);
@@ -186,30 +201,36 @@ int ff_lpc_calc_coefs(LPCContext *s,
 
         compute_lpc_coefs(autoc, max_order, &lpc[0][0], MAX_LPC_ORDER, 0, 1);
 
-        for(i=0; i<max_order; i++)
+        for(i = 0; i < max_order; i++)
             ref[i] = fabs(lpc[i][i]);
-    } else if (lpc_type == AV_LPC_TYPE_CHOLESKY) {
+    }
+    else if (lpc_type == AV_LPC_TYPE_CHOLESKY)
+    {
         LLSModel m[2];
         double var[MAX_LPC_ORDER+1], av_uninit(weight);
 
-        for(pass=0; pass<lpc_passes; pass++){
+        for(pass = 0; pass < lpc_passes; pass++)
+        {
             av_init_lls(&m[pass&1], max_order);
 
-            weight=0;
-            for(i=max_order; i<blocksize; i++){
-                for(j=0; j<=max_order; j++)
-                    var[j]= samples[i-j];
+            weight = 0;
+            for(i = max_order; i < blocksize; i++)
+            {
+                for(j = 0; j <= max_order; j++)
+                    var[j] = samples[i-j];
 
-                if(pass){
+                if(pass)
+                {
                     double eval, inv, rinv;
-                    eval= av_evaluate_lls(&m[(pass-1)&1], var+1, max_order-1);
-                    eval= (512>>pass) + fabs(eval - var[0]);
-                    inv = 1/eval;
+                    eval = av_evaluate_lls(&m[(pass-1)&1], var + 1, max_order - 1);
+                    eval = (512 >> pass) + fabs(eval - var[0]);
+                    inv = 1 / eval;
                     rinv = sqrt(inv);
-                    for(j=0; j<=max_order; j++)
+                    for(j = 0; j <= max_order; j++)
                         var[j] *= rinv;
                     weight += inv;
-                }else
+                }
+                else
                     weight++;
 
                 av_update_lls(&m[pass&1], var, 1.0);
@@ -217,23 +238,28 @@ int ff_lpc_calc_coefs(LPCContext *s,
             av_solve_lls(&m[pass&1], 0.001, 0);
         }
 
-        for(i=0; i<max_order; i++){
-            for(j=0; j<max_order; j++)
-                lpc[i][j]=-m[(pass-1)&1].coeff[i][j];
-            ref[i]= sqrt(m[(pass-1)&1].variance[i] / weight) * (blocksize - max_order) / 4000;
+        for(i = 0; i < max_order; i++)
+        {
+            for(j = 0; j < max_order; j++)
+                lpc[i][j] = -m[(pass-1)&1].coeff[i][j];
+            ref[i] = sqrt(m[(pass-1)&1].variance[i] / weight) * (blocksize - max_order) / 4000;
         }
-        for(i=max_order-1; i>0; i--)
+        for(i = max_order - 1; i > 0; i--)
             ref[i] = ref[i-1] - ref[i];
     }
     opt_order = max_order;
 
-    if(omethod == ORDER_METHOD_EST) {
+    if(omethod == ORDER_METHOD_EST)
+    {
         opt_order = estimate_best_order(ref, min_order, max_order);
-        i = opt_order-1;
-        quantize_lpc_coefs(lpc[i], i+1, precision, coefs[i], &shift[i], max_shift, zero_shift);
-    } else {
-        for(i=min_order-1; i<max_order; i++) {
-            quantize_lpc_coefs(lpc[i], i+1, precision, coefs[i], &shift[i], max_shift, zero_shift);
+        i = opt_order - 1;
+        quantize_lpc_coefs(lpc[i], i + 1, precision, coefs[i], &shift[i], max_shift, zero_shift);
+    }
+    else
+    {
+        for(i = min_order - 1; i < max_order; i++)
+        {
+            quantize_lpc_coefs(lpc[i], i + 1, precision, coefs[i], &shift[i], max_shift, zero_shift);
         }
     }
 
@@ -247,12 +273,15 @@ av_cold int ff_lpc_init(LPCContext *s, int blocksize, int max_order,
     s->max_order = max_order;
     s->lpc_type  = lpc_type;
 
-    if (lpc_type == AV_LPC_TYPE_LEVINSON) {
+    if (lpc_type == AV_LPC_TYPE_LEVINSON)
+    {
         s->windowed_samples = av_mallocz((blocksize + max_order + 2) *
                                          sizeof(*s->windowed_samples));
         if (!s->windowed_samples)
             return AVERROR(ENOMEM);
-    } else {
+    }
+    else
+    {
         s->windowed_samples = NULL;
     }
 

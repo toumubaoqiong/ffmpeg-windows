@@ -25,7 +25,8 @@
 
 #include "avcodec.h"
 
-typedef struct AuraDecodeContext {
+typedef struct AuraDecodeContext
+{
     AVCodecContext *avctx;
     AVFrame frame;
 } AuraDecodeContext;
@@ -47,7 +48,7 @@ static int aura_decode_frame(AVCodecContext *avctx,
                              void *data, int *data_size,
                              AVPacket *pkt)
 {
-    AuraDecodeContext *s=avctx->priv_data;
+    AuraDecodeContext *s = avctx->priv_data;
 
     uint8_t *Y, *U, *V;
     uint8_t val;
@@ -55,9 +56,10 @@ static int aura_decode_frame(AVCodecContext *avctx,
     const uint8_t *buf = pkt->data;
 
     /* prediction error tables (make it clear that they are signed values) */
-    const int8_t *delta_table = (const int8_t*)buf + 16;
+    const int8_t *delta_table = (const int8_t *)buf + 16;
 
-    if (pkt->size != 48 + avctx->height * avctx->width) {
+    if (pkt->size != 48 + avctx->height * avctx->width)
+    {
         av_log(avctx, AV_LOG_ERROR, "got a buffer with %d bytes when %d were expected\n",
                pkt->size, 48 + avctx->height * avctx->width);
         return -1;
@@ -71,7 +73,8 @@ static int aura_decode_frame(AVCodecContext *avctx,
 
     s->frame.buffer_hints = FF_BUFFER_HINTS_VALID;
     s->frame.reference = 0;
-    if(avctx->get_buffer(avctx, &s->frame) < 0) {
+    if(avctx->get_buffer(avctx, &s->frame) < 0)
+    {
         av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
         return -1;
     }
@@ -81,7 +84,8 @@ static int aura_decode_frame(AVCodecContext *avctx,
     V = s->frame.data[2];
 
     /* iterate through each line in the height */
-    for (y = 0; y < avctx->height; y++) {
+    for (y = 0; y < avctx->height; y++)
+    {
         /* reset predictors */
         val = *buf++;
         U[0] = val & 0xF0;
@@ -89,25 +93,30 @@ static int aura_decode_frame(AVCodecContext *avctx,
         val = *buf++;
         V[0] = val & 0xF0;
         Y[1] = Y[0] + delta_table[val & 0xF];
-        Y += 2; U++; V++;
+        Y += 2;
+        U++;
+        V++;
 
         /* iterate through the remaining pixel groups (4 pixels/group) */
-        for (x = 1; x < (avctx->width >> 1); x++) {
+        for (x = 1; x < (avctx->width >> 1); x++)
+        {
             val = *buf++;
             U[0] = U[-1] + delta_table[val >> 4];
             Y[0] = Y[-1] + delta_table[val & 0xF];
             val = *buf++;
             V[0] = V[-1] + delta_table[val >> 4];
             Y[1] = Y[ 0] + delta_table[val & 0xF];
-            Y += 2; U++; V++;
+            Y += 2;
+            U++;
+            V++;
         }
         Y += s->frame.linesize[0] -  avctx->width;
         U += s->frame.linesize[1] - (avctx->width >> 1);
         V += s->frame.linesize[2] - (avctx->width >> 1);
     }
 
-    *data_size=sizeof(AVFrame);
-    *(AVFrame*)data= s->frame;
+    *data_size = sizeof(AVFrame);
+    *(AVFrame *)data = s->frame;
 
     return pkt->size;
 }
@@ -122,7 +131,8 @@ static av_cold int aura_decode_end(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec ff_aura2_decoder = {
+AVCodec ff_aura2_decoder =
+{
     "aura2",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_AURA2,

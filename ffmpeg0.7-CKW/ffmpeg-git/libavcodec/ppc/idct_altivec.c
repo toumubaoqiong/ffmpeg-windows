@@ -150,7 +150,8 @@
     vx7 = vec_sra (vy7, shift);
 
 
-static const vec_s16 constants[5] = {
+static const vec_s16 constants[5] =
+{
     {23170, 13573,  6518, 21895, -23170, -21895,    32,    31},
     {16384, 22725, 21407, 19266,  16384,  19266, 21407, 22725},
     {22725, 31521, 29692, 26722,  22725,  26722, 29692, 31521},
@@ -158,9 +159,9 @@ static const vec_s16 constants[5] = {
     {19266, 26722, 25172, 22654,  19266,  22654, 25172, 26722}
 };
 
-void idct_put_altivec(uint8_t* dest, int stride, int16_t *blk)
+void idct_put_altivec(uint8_t *dest, int stride, int16_t *blk)
 {
-    vec_s16 *block = (vec_s16*)blk;
+    vec_s16 *block = (vec_s16 *)blk;
     vec_u8 tmp;
 
     IDCT
@@ -180,9 +181,9 @@ void idct_put_altivec(uint8_t* dest, int stride, int16_t *blk)
     COPY (dest, vx7)
 }
 
-void idct_add_altivec(uint8_t* dest, int stride, int16_t *blk)
+void idct_add_altivec(uint8_t *dest, int stride, int16_t *blk)
 {
-    vec_s16 *block = (vec_s16*)blk;
+    vec_s16 *block = (vec_s16 *)blk;
     vec_u8 tmp;
     vec_s16 tmp2, tmp3;
     vec_u8 perm0;

@@ -25,12 +25,14 @@ static int ivf_write_header(AVFormatContext *s)
     AVCodecContext *ctx;
     AVIOContext *pb = s->pb;
 
-    if (s->nb_streams != 1) {
+    if (s->nb_streams != 1)
+    {
         av_log(s, AV_LOG_ERROR, "Format supports only exactly one video stream\n");
         return AVERROR(EINVAL);
     }
     ctx = s->streams[0]->codec;
-    if (ctx->codec_type != AVMEDIA_TYPE_VIDEO || ctx->codec_id != CODEC_ID_VP8) {
+    if (ctx->codec_type != AVMEDIA_TYPE_VIDEO || ctx->codec_id != CODEC_ID_VP8)
+    {
         av_log(s, AV_LOG_ERROR, "Currently only VP8 is supported!\n");
         return AVERROR(EINVAL);
     }
@@ -58,7 +60,8 @@ static int ivf_write_packet(AVFormatContext *s, AVPacket *pkt)
     return 0;
 }
 
-AVOutputFormat ff_ivf_muxer = {
+AVOutputFormat ff_ivf_muxer =
+{
     .name = "ivf",
     .long_name = NULL_IF_CONFIG_SMALL("On2 IVF"),
     .extensions = "ivf",

@@ -76,13 +76,16 @@
 #define add28(a) vec_add(v28ss, a)
 
 #ifdef PREFIX_h264_chroma_mc8_altivec
-static void PREFIX_h264_chroma_mc8_altivec(uint8_t * dst, uint8_t * src,
-                                    int stride, int h, int x, int y) {
+static void PREFIX_h264_chroma_mc8_altivec(uint8_t *dst, uint8_t *src,
+        int stride, int h, int x, int y)
+{
     DECLARE_ALIGNED(16, signed int, ABCD)[4] =
-                        {((8 - x) * (8 - y)),
-                         ((    x) * (8 - y)),
-                         ((8 - x) * (    y)),
-                         ((    x) * (    y))};
+    {
+        ((8 - x) * (8 - y)),
+        ((    x) * (8 - y)),
+        ((8 - x) * (    y)),
+        ((    x) * (    y))
+    };
     register int i;
     vec_u8 fperm;
     const vec_s32 vABCD = vec_ld(0, ABCD);
@@ -91,7 +94,7 @@ static void PREFIX_h264_chroma_mc8_altivec(uint8_t * dst, uint8_t * src,
     const vec_s16 vC = vec_splat((vec_s16)vABCD, 5);
     const vec_s16 vD = vec_splat((vec_s16)vABCD, 7);
     LOAD_ZERO;
-    const vec_s16 v32ss = vec_sl(vec_splat_s16(1),vec_splat_u16(5));
+    const vec_s16 v32ss = vec_sl(vec_splat_s16(1), vec_splat_u16(5));
     const vec_u16 v6us = vec_splat_u16(6);
     register int loadSecond = (((unsigned long)src) % 16) <= 7 ? 0 : 1;
     register int reallyBadAlign = (((unsigned long)src) % 16) == 15 ? 1 : 0;
@@ -103,145 +106,25 @@ static void PREFIX_h264_chroma_mc8_altivec(uint8_t * dst, uint8_t * src,
     vec_s16 vsrc2ssH, vsrc3ssH, psum;
     vec_u8 vdst, ppsum, vfdst, fsum;
 
-    if (((unsigned long)dst) % 16 == 0) {
-        fperm = (vec_u8){0x10, 0x11, 0x12, 0x13,
-                         0x14, 0x15, 0x16, 0x17,
-                         0x08, 0x09, 0x0A, 0x0B,
-                         0x0C, 0x0D, 0x0E, 0x0F};
-    } else {
-        fperm = (vec_u8){0x00, 0x01, 0x02, 0x03,
-                         0x04, 0x05, 0x06, 0x07,
-                         0x18, 0x19, 0x1A, 0x1B,
-                         0x1C, 0x1D, 0x1E, 0x1F};
+    if (((unsigned long)dst) % 16 == 0)
+    {
+        fperm = (vec_u8)
+        {
+            0x10, 0x11, 0x12, 0x13,
+                0x14, 0x15, 0x16, 0x17,
+                0x08, 0x09, 0x0A, 0x0B,
+                0x0C, 0x0D, 0x0E, 0x0F
+            };
     }
-
-    vsrcAuc = vec_ld(0, src);
-
-    if (loadSecond)
-        vsrcBuc = vec_ld(16, src);
-    vsrcperm0 = vec_lvsl(0, src);
-    vsrcperm1 = vec_lvsl(1, src);
-
-    vsrc0uc = vec_perm(vsrcAuc, vsrcBuc, vsrcperm0);
-    if (reallyBadAlign)
-        vsrc1uc = vsrcBuc;
     else
-        vsrc1uc = vec_perm(vsrcAuc, vsrcBuc, vsrcperm1);
-
-    vsrc0ssH = (vec_s16)vec_mergeh(zero_u8v,(vec_u8)vsrc0uc);
-    vsrc1ssH = (vec_s16)vec_mergeh(zero_u8v,(vec_u8)vsrc1uc);
-
-    if (ABCD[3]) {
-        if (!loadSecond) {// -> !reallyBadAlign
-            for (i = 0 ; i < h ; i++) {
-                vsrcCuc = vec_ld(stride + 0, src);
-                vsrc2uc = vec_perm(vsrcCuc, vsrcCuc, vsrcperm0);
-                vsrc3uc = vec_perm(vsrcCuc, vsrcCuc, vsrcperm1);
-
-                CHROMA_MC8_ALTIVEC_CORE(v32ss, noop)
-            }
-        } else {
-            vec_u8 vsrcDuc;
-            for (i = 0 ; i < h ; i++) {
-                vsrcCuc = vec_ld(stride + 0, src);
-                vsrcDuc = vec_ld(stride + 16, src);
-                vsrc2uc = vec_perm(vsrcCuc, vsrcDuc, vsrcperm0);
-                if (reallyBadAlign)
-                    vsrc3uc = vsrcDuc;
-                else
-                    vsrc3uc = vec_perm(vsrcCuc, vsrcDuc, vsrcperm1);
-
-                CHROMA_MC8_ALTIVEC_CORE(v32ss, noop)
-            }
-        }
-    } else {
-        const vec_s16 vE = vec_add(vB, vC);
-        if (ABCD[2]) { // x == 0 B == 0
-            if (!loadSecond) {// -> !reallyBadAlign
-                for (i = 0 ; i < h ; i++) {
-                    vsrcCuc = vec_ld(stride + 0, src);
-                    vsrc1uc = vec_perm(vsrcCuc, vsrcCuc, vsrcperm0);
-                    CHROMA_MC8_ALTIVEC_CORE_SIMPLE
-
-                    vsrc0uc = vsrc1uc;
-                }
-            } else {
-                vec_u8 vsrcDuc;
-                for (i = 0 ; i < h ; i++) {
-                    vsrcCuc = vec_ld(stride + 0, src);
-                    vsrcDuc = vec_ld(stride + 15, src);
-                    vsrc1uc = vec_perm(vsrcCuc, vsrcDuc, vsrcperm0);
-                    CHROMA_MC8_ALTIVEC_CORE_SIMPLE
-
-                    vsrc0uc = vsrc1uc;
-                }
-            }
-        } else { // y == 0 C == 0
-            if (!loadSecond) {// -> !reallyBadAlign
-                for (i = 0 ; i < h ; i++) {
-                    vsrcCuc = vec_ld(0, src);
-                    vsrc0uc = vec_perm(vsrcCuc, vsrcCuc, vsrcperm0);
-                    vsrc1uc = vec_perm(vsrcCuc, vsrcCuc, vsrcperm1);
-
-                    CHROMA_MC8_ALTIVEC_CORE_SIMPLE
-                }
-            } else {
-                vec_u8 vsrcDuc;
-                for (i = 0 ; i < h ; i++) {
-                    vsrcCuc = vec_ld(0, src);
-                    vsrcDuc = vec_ld(15, src);
-                    vsrc0uc = vec_perm(vsrcCuc, vsrcDuc, vsrcperm0);
-                    if (reallyBadAlign)
-                        vsrc1uc = vsrcDuc;
-                    else
-                        vsrc1uc = vec_perm(vsrcCuc, vsrcDuc, vsrcperm1);
-
-                    CHROMA_MC8_ALTIVEC_CORE_SIMPLE
-                }
-            }
-        }
-    }
-}
-#endif
-
-/* this code assume that stride % 16 == 0 */
-#ifdef PREFIX_no_rnd_vc1_chroma_mc8_altivec
-static void PREFIX_no_rnd_vc1_chroma_mc8_altivec(uint8_t * dst, uint8_t * src, int stride, int h, int x, int y) {
-   DECLARE_ALIGNED(16, signed int, ABCD)[4] =
-                        {((8 - x) * (8 - y)),
-                         ((    x) * (8 - y)),
-                         ((8 - x) * (    y)),
-                         ((    x) * (    y))};
-    register int i;
-    vec_u8 fperm;
-    const vec_s32 vABCD = vec_ld(0, ABCD);
-    const vec_s16 vA = vec_splat((vec_s16)vABCD, 1);
-    const vec_s16 vB = vec_splat((vec_s16)vABCD, 3);
-    const vec_s16 vC = vec_splat((vec_s16)vABCD, 5);
-    const vec_s16 vD = vec_splat((vec_s16)vABCD, 7);
-    LOAD_ZERO;
-    const vec_s16 v28ss = vec_sub(vec_sl(vec_splat_s16(1),vec_splat_u16(5)),vec_splat_s16(4));
-    const vec_u16 v6us  = vec_splat_u16(6);
-    register int loadSecond     = (((unsigned long)src) % 16) <= 7 ? 0 : 1;
-    register int reallyBadAlign = (((unsigned long)src) % 16) == 15 ? 1 : 0;
-
-    vec_u8 vsrcAuc, av_uninit(vsrcBuc), vsrcperm0, vsrcperm1;
-    vec_u8 vsrc0uc, vsrc1uc;
-    vec_s16 vsrc0ssH, vsrc1ssH;
-    vec_u8 vsrcCuc, vsrc2uc, vsrc3uc;
-    vec_s16 vsrc2ssH, vsrc3ssH, psum;
-    vec_u8 vdst, ppsum, vfdst, fsum;
-
-    if (((unsigned long)dst) % 16 == 0) {
-        fperm = (vec_u8){0x10, 0x11, 0x12, 0x13,
-                         0x14, 0x15, 0x16, 0x17,
-                         0x08, 0x09, 0x0A, 0x0B,
-                         0x0C, 0x0D, 0x0E, 0x0F};
-    } else {
-        fperm = (vec_u8){0x00, 0x01, 0x02, 0x03,
-                         0x04, 0x05, 0x06, 0x07,
-                         0x18, 0x19, 0x1A, 0x1B,
-                         0x1C, 0x1D, 0x1E, 0x1F};
+    {
+        fperm = (vec_u8)
+        {
+            0x00, 0x01, 0x02, 0x03,
+                0x04, 0x05, 0x06, 0x07,
+                0x18, 0x19, 0x1A, 0x1B,
+                0x1C, 0x1D, 0x1E, 0x1F
+            };
     }
 
     vsrcAuc = vec_ld(0, src);
@@ -260,8 +143,172 @@ static void PREFIX_no_rnd_vc1_chroma_mc8_altivec(uint8_t * dst, uint8_t * src, i
     vsrc0ssH = (vec_s16)vec_mergeh(zero_u8v, (vec_u8)vsrc0uc);
     vsrc1ssH = (vec_s16)vec_mergeh(zero_u8v, (vec_u8)vsrc1uc);
 
-    if (!loadSecond) {// -> !reallyBadAlign
-        for (i = 0 ; i < h ; i++) {
+    if (ABCD[3])
+    {
+        if (!loadSecond)  // -> !reallyBadAlign
+        {
+            for (i = 0 ; i < h ; i++)
+            {
+                vsrcCuc = vec_ld(stride + 0, src);
+                vsrc2uc = vec_perm(vsrcCuc, vsrcCuc, vsrcperm0);
+                vsrc3uc = vec_perm(vsrcCuc, vsrcCuc, vsrcperm1);
+
+                CHROMA_MC8_ALTIVEC_CORE(v32ss, noop)
+            }
+        }
+        else
+        {
+            vec_u8 vsrcDuc;
+            for (i = 0 ; i < h ; i++)
+            {
+                vsrcCuc = vec_ld(stride + 0, src);
+                vsrcDuc = vec_ld(stride + 16, src);
+                vsrc2uc = vec_perm(vsrcCuc, vsrcDuc, vsrcperm0);
+                if (reallyBadAlign)
+                    vsrc3uc = vsrcDuc;
+                else
+                    vsrc3uc = vec_perm(vsrcCuc, vsrcDuc, vsrcperm1);
+
+                CHROMA_MC8_ALTIVEC_CORE(v32ss, noop)
+            }
+        }
+    }
+    else
+    {
+        const vec_s16 vE = vec_add(vB, vC);
+        if (ABCD[2])   // x == 0 B == 0
+        {
+            if (!loadSecond)  // -> !reallyBadAlign
+            {
+                for (i = 0 ; i < h ; i++)
+                {
+                    vsrcCuc = vec_ld(stride + 0, src);
+                    vsrc1uc = vec_perm(vsrcCuc, vsrcCuc, vsrcperm0);
+                    CHROMA_MC8_ALTIVEC_CORE_SIMPLE
+
+                    vsrc0uc = vsrc1uc;
+                }
+            }
+            else
+            {
+                vec_u8 vsrcDuc;
+                for (i = 0 ; i < h ; i++)
+                {
+                    vsrcCuc = vec_ld(stride + 0, src);
+                    vsrcDuc = vec_ld(stride + 15, src);
+                    vsrc1uc = vec_perm(vsrcCuc, vsrcDuc, vsrcperm0);
+                    CHROMA_MC8_ALTIVEC_CORE_SIMPLE
+
+                    vsrc0uc = vsrc1uc;
+                }
+            }
+        }
+        else     // y == 0 C == 0
+        {
+            if (!loadSecond)  // -> !reallyBadAlign
+            {
+                for (i = 0 ; i < h ; i++)
+                {
+                    vsrcCuc = vec_ld(0, src);
+                    vsrc0uc = vec_perm(vsrcCuc, vsrcCuc, vsrcperm0);
+                    vsrc1uc = vec_perm(vsrcCuc, vsrcCuc, vsrcperm1);
+
+                    CHROMA_MC8_ALTIVEC_CORE_SIMPLE
+                }
+            }
+            else
+            {
+                vec_u8 vsrcDuc;
+                for (i = 0 ; i < h ; i++)
+                {
+                    vsrcCuc = vec_ld(0, src);
+                    vsrcDuc = vec_ld(15, src);
+                    vsrc0uc = vec_perm(vsrcCuc, vsrcDuc, vsrcperm0);
+                    if (reallyBadAlign)
+                        vsrc1uc = vsrcDuc;
+                    else
+                        vsrc1uc = vec_perm(vsrcCuc, vsrcDuc, vsrcperm1);
+
+                    CHROMA_MC8_ALTIVEC_CORE_SIMPLE
+                }
+            }
+        }
+    }
+}
+#endif
+
+/* this code assume that stride % 16 == 0 */
+#ifdef PREFIX_no_rnd_vc1_chroma_mc8_altivec
+static void PREFIX_no_rnd_vc1_chroma_mc8_altivec(uint8_t *dst, uint8_t *src, int stride, int h, int x, int y)
+{
+    DECLARE_ALIGNED(16, signed int, ABCD)[4] =
+    {
+        ((8 - x) * (8 - y)),
+        ((    x) * (8 - y)),
+        ((8 - x) * (    y)),
+        ((    x) * (    y))
+    };
+    register int i;
+    vec_u8 fperm;
+    const vec_s32 vABCD = vec_ld(0, ABCD);
+    const vec_s16 vA = vec_splat((vec_s16)vABCD, 1);
+    const vec_s16 vB = vec_splat((vec_s16)vABCD, 3);
+    const vec_s16 vC = vec_splat((vec_s16)vABCD, 5);
+    const vec_s16 vD = vec_splat((vec_s16)vABCD, 7);
+    LOAD_ZERO;
+    const vec_s16 v28ss = vec_sub(vec_sl(vec_splat_s16(1), vec_splat_u16(5)), vec_splat_s16(4));
+    const vec_u16 v6us  = vec_splat_u16(6);
+    register int loadSecond     = (((unsigned long)src) % 16) <= 7 ? 0 : 1;
+    register int reallyBadAlign = (((unsigned long)src) % 16) == 15 ? 1 : 0;
+
+    vec_u8 vsrcAuc, av_uninit(vsrcBuc), vsrcperm0, vsrcperm1;
+    vec_u8 vsrc0uc, vsrc1uc;
+    vec_s16 vsrc0ssH, vsrc1ssH;
+    vec_u8 vsrcCuc, vsrc2uc, vsrc3uc;
+    vec_s16 vsrc2ssH, vsrc3ssH, psum;
+    vec_u8 vdst, ppsum, vfdst, fsum;
+
+    if (((unsigned long)dst) % 16 == 0)
+    {
+        fperm = (vec_u8)
+        {
+            0x10, 0x11, 0x12, 0x13,
+                0x14, 0x15, 0x16, 0x17,
+                0x08, 0x09, 0x0A, 0x0B,
+                0x0C, 0x0D, 0x0E, 0x0F
+            };
+    }
+    else
+    {
+        fperm = (vec_u8)
+        {
+            0x00, 0x01, 0x02, 0x03,
+                0x04, 0x05, 0x06, 0x07,
+                0x18, 0x19, 0x1A, 0x1B,
+                0x1C, 0x1D, 0x1E, 0x1F
+            };
+    }
+
+    vsrcAuc = vec_ld(0, src);
+
+    if (loadSecond)
+        vsrcBuc = vec_ld(16, src);
+    vsrcperm0 = vec_lvsl(0, src);
+    vsrcperm1 = vec_lvsl(1, src);
+
+    vsrc0uc = vec_perm(vsrcAuc, vsrcBuc, vsrcperm0);
+    if (reallyBadAlign)
+        vsrc1uc = vsrcBuc;
+    else
+        vsrc1uc = vec_perm(vsrcAuc, vsrcBuc, vsrcperm1);
+
+    vsrc0ssH = (vec_s16)vec_mergeh(zero_u8v, (vec_u8)vsrc0uc);
+    vsrc1ssH = (vec_s16)vec_mergeh(zero_u8v, (vec_u8)vsrc1uc);
+
+    if (!loadSecond)  // -> !reallyBadAlign
+    {
+        for (i = 0 ; i < h ; i++)
+        {
 
 
             vsrcCuc = vec_ld(stride + 0, src);
@@ -271,9 +318,12 @@ static void PREFIX_no_rnd_vc1_chroma_mc8_altivec(uint8_t * dst, uint8_t * src, i
 
             CHROMA_MC8_ALTIVEC_CORE(vec_splat_s16(0), add28)
         }
-    } else {
+    }
+    else
+    {
         vec_u8 vsrcDuc;
-        for (i = 0 ; i < h ; i++) {
+        for (i = 0 ; i < h ; i++)
+        {
             vsrcCuc = vec_ld(stride + 0, src);
             vsrcDuc = vec_ld(stride + 16, src);
 
@@ -295,7 +345,8 @@ static void PREFIX_no_rnd_vc1_chroma_mc8_altivec(uint8_t * dst, uint8_t * src, i
 
 /* this code assume stride % 16 == 0 */
 #ifdef PREFIX_h264_qpel16_h_lowpass_altivec
-static void PREFIX_h264_qpel16_h_lowpass_altivec(uint8_t * dst, uint8_t * src, int dstStride, int srcStride) {
+static void PREFIX_h264_qpel16_h_lowpass_altivec(uint8_t *dst, uint8_t *src, int dstStride, int srcStride)
+{
     register int i;
 
     LOAD_ZERO;
@@ -307,44 +358,51 @@ static void PREFIX_h264_qpel16_h_lowpass_altivec(uint8_t * dst, uint8_t * src, i
     const vec_u8 permP3 = vec_lvsl(+3, src);
     const vec_s16 v5ss = vec_splat_s16(5);
     const vec_u16 v5us = vec_splat_u16(5);
-    const vec_s16 v20ss = vec_sl(vec_splat_s16(5),vec_splat_u16(2));
-    const vec_s16 v16ss = vec_sl(vec_splat_s16(1),vec_splat_u16(4));
+    const vec_s16 v20ss = vec_sl(vec_splat_s16(5), vec_splat_u16(2));
+    const vec_s16 v16ss = vec_sl(vec_splat_s16(1), vec_splat_u16(4));
 
     vec_u8 srcM2, srcM1, srcP0, srcP1, srcP2, srcP3;
 
     register int align = ((((unsigned long)src) - 2) % 16);
 
     vec_s16 srcP0A, srcP0B, srcP1A, srcP1B,
-              srcP2A, srcP2B, srcP3A, srcP3B,
-              srcM1A, srcM1B, srcM2A, srcM2B,
-              sum1A, sum1B, sum2A, sum2B, sum3A, sum3B,
-              pp1A, pp1B, pp2A, pp2B, pp3A, pp3B,
-              psumA, psumB, sumA, sumB;
+            srcP2A, srcP2B, srcP3A, srcP3B,
+            srcM1A, srcM1B, srcM2A, srcM2B,
+            sum1A, sum1B, sum2A, sum2B, sum3A, sum3B,
+            pp1A, pp1B, pp2A, pp2B, pp3A, pp3B,
+            psumA, psumB, sumA, sumB;
 
     vec_u8 sum, vdst, fsum;
 
-    for (i = 0 ; i < 16 ; i ++) {
+    for (i = 0 ; i < 16 ; i ++)
+    {
         vec_u8 srcR1 = vec_ld(-2, src);
         vec_u8 srcR2 = vec_ld(14, src);
 
-        switch (align) {
-        default: {
+        switch (align)
+        {
+        default:
+        {
             srcM2 = vec_perm(srcR1, srcR2, permM2);
             srcM1 = vec_perm(srcR1, srcR2, permM1);
             srcP0 = vec_perm(srcR1, srcR2, permP0);
             srcP1 = vec_perm(srcR1, srcR2, permP1);
             srcP2 = vec_perm(srcR1, srcR2, permP2);
             srcP3 = vec_perm(srcR1, srcR2, permP3);
-        } break;
-        case 11: {
+        }
+        break;
+        case 11:
+        {
             srcM2 = vec_perm(srcR1, srcR2, permM2);
             srcM1 = vec_perm(srcR1, srcR2, permM1);
             srcP0 = vec_perm(srcR1, srcR2, permP0);
             srcP1 = vec_perm(srcR1, srcR2, permP1);
             srcP2 = vec_perm(srcR1, srcR2, permP2);
             srcP3 = srcR2;
-        } break;
-        case 12: {
+        }
+        break;
+        case 12:
+        {
             vec_u8 srcR3 = vec_ld(30, src);
             srcM2 = vec_perm(srcR1, srcR2, permM2);
             srcM1 = vec_perm(srcR1, srcR2, permM1);
@@ -352,8 +410,10 @@ static void PREFIX_h264_qpel16_h_lowpass_altivec(uint8_t * dst, uint8_t * src, i
             srcP1 = vec_perm(srcR1, srcR2, permP1);
             srcP2 = srcR2;
             srcP3 = vec_perm(srcR2, srcR3, permP3);
-        } break;
-        case 13: {
+        }
+        break;
+        case 13:
+        {
             vec_u8 srcR3 = vec_ld(30, src);
             srcM2 = vec_perm(srcR1, srcR2, permM2);
             srcM1 = vec_perm(srcR1, srcR2, permM1);
@@ -361,8 +421,10 @@ static void PREFIX_h264_qpel16_h_lowpass_altivec(uint8_t * dst, uint8_t * src, i
             srcP1 = srcR2;
             srcP2 = vec_perm(srcR2, srcR3, permP2);
             srcP3 = vec_perm(srcR2, srcR3, permP3);
-        } break;
-        case 14: {
+        }
+        break;
+        case 14:
+        {
             vec_u8 srcR3 = vec_ld(30, src);
             srcM2 = vec_perm(srcR1, srcR2, permM2);
             srcM1 = vec_perm(srcR1, srcR2, permM1);
@@ -370,8 +432,10 @@ static void PREFIX_h264_qpel16_h_lowpass_altivec(uint8_t * dst, uint8_t * src, i
             srcP1 = vec_perm(srcR2, srcR3, permP1);
             srcP2 = vec_perm(srcR2, srcR3, permP2);
             srcP3 = vec_perm(srcR2, srcR3, permP3);
-        } break;
-        case 15: {
+        }
+        break;
+        case 15:
+        {
             vec_u8 srcR3 = vec_ld(30, src);
             srcM2 = vec_perm(srcR1, srcR2, permM2);
             srcM1 = srcR2;
@@ -379,7 +443,8 @@ static void PREFIX_h264_qpel16_h_lowpass_altivec(uint8_t * dst, uint8_t * src, i
             srcP1 = vec_perm(srcR2, srcR3, permP1);
             srcP2 = vec_perm(srcR2, srcR3, permP2);
             srcP3 = vec_perm(srcR2, srcR3, permP3);
-        } break;
+        }
+        break;
         }
 
         srcP0A = (vec_s16) vec_mergeh(zero_u8v, srcP0);
@@ -436,15 +501,16 @@ static void PREFIX_h264_qpel16_h_lowpass_altivec(uint8_t * dst, uint8_t * src, i
 
 /* this code assume stride % 16 == 0 */
 #ifdef PREFIX_h264_qpel16_v_lowpass_altivec
-static void PREFIX_h264_qpel16_v_lowpass_altivec(uint8_t * dst, uint8_t * src, int dstStride, int srcStride) {
+static void PREFIX_h264_qpel16_v_lowpass_altivec(uint8_t *dst, uint8_t *src, int dstStride, int srcStride)
+{
     register int i;
 
     LOAD_ZERO;
     const vec_u8 perm = vec_lvsl(0, src);
-    const vec_s16 v20ss = vec_sl(vec_splat_s16(5),vec_splat_u16(2));
+    const vec_s16 v20ss = vec_sl(vec_splat_s16(5), vec_splat_u16(2));
     const vec_u16 v5us = vec_splat_u16(5);
     const vec_s16 v5ss = vec_splat_s16(5);
-    const vec_s16 v16ss = vec_sl(vec_splat_s16(1),vec_splat_u16(4));
+    const vec_s16 v16ss = vec_sl(vec_splat_s16(1), vec_splat_u16(4));
 
     uint8_t *srcbis = src - (srcStride * 2);
 
@@ -481,13 +547,14 @@ static void PREFIX_h264_qpel16_v_lowpass_altivec(uint8_t * dst, uint8_t * src, i
     vec_s16 srcP2ssB = (vec_s16) vec_mergel(zero_u8v, srcP2);
 
     vec_s16 pp1A, pp1B, pp2A, pp2B, pp3A, pp3B,
-              psumA, psumB, sumA, sumB,
-              srcP3ssA, srcP3ssB,
-              sum1A, sum1B, sum2A, sum2B, sum3A, sum3B;
+            psumA, psumB, sumA, sumB,
+            srcP3ssA, srcP3ssB,
+            sum1A, sum1B, sum2A, sum2B, sum3A, sum3B;
 
     vec_u8 sum, vdst, fsum, srcP3a, srcP3b, srcP3;
 
-    for (i = 0 ; i < 16 ; i++) {
+    for (i = 0 ; i < 16 ; i++)
+    {
         srcP3a = vec_ld(0, srcbis += srcStride);
         srcP3b = vec_ld(16, srcbis);
         srcP3 = vec_perm(srcP3a, srcP3b, perm);
@@ -544,7 +611,8 @@ static void PREFIX_h264_qpel16_v_lowpass_altivec(uint8_t * dst, uint8_t * src, i
 
 /* this code assume stride % 16 == 0 *and* tmp is properly aligned */
 #ifdef PREFIX_h264_qpel16_hv_lowpass_altivec
-static void PREFIX_h264_qpel16_hv_lowpass_altivec(uint8_t * dst, int16_t * tmp, uint8_t * src, int dstStride, int tmpStride, int srcStride) {
+static void PREFIX_h264_qpel16_hv_lowpass_altivec(uint8_t *dst, int16_t *tmp, uint8_t *src, int dstStride, int tmpStride, int srcStride)
+{
     register int i;
     LOAD_ZERO;
     const vec_u8 permM2 = vec_lvsl(-2, src);
@@ -553,61 +621,70 @@ static void PREFIX_h264_qpel16_hv_lowpass_altivec(uint8_t * dst, int16_t * tmp, 
     const vec_u8 permP1 = vec_lvsl(+1, src);
     const vec_u8 permP2 = vec_lvsl(+2, src);
     const vec_u8 permP3 = vec_lvsl(+3, src);
-    const vec_s16 v20ss = vec_sl(vec_splat_s16(5),vec_splat_u16(2));
+    const vec_s16 v20ss = vec_sl(vec_splat_s16(5), vec_splat_u16(2));
     const vec_u32 v10ui = vec_splat_u32(10);
     const vec_s16 v5ss = vec_splat_s16(5);
     const vec_s16 v1ss = vec_splat_s16(1);
-    const vec_s32 v512si = vec_sl(vec_splat_s32(1),vec_splat_u32(9));
-    const vec_u32 v16ui = vec_sl(vec_splat_u32(1),vec_splat_u32(4));
+    const vec_s32 v512si = vec_sl(vec_splat_s32(1), vec_splat_u32(9));
+    const vec_u32 v16ui = vec_sl(vec_splat_u32(1), vec_splat_u32(4));
 
     register int align = ((((unsigned long)src) - 2) % 16);
 
     vec_s16 srcP0A, srcP0B, srcP1A, srcP1B,
-              srcP2A, srcP2B, srcP3A, srcP3B,
-              srcM1A, srcM1B, srcM2A, srcM2B,
-              sum1A, sum1B, sum2A, sum2B, sum3A, sum3B,
-              pp1A, pp1B, pp2A, pp2B, psumA, psumB;
+            srcP2A, srcP2B, srcP3A, srcP3B,
+            srcM1A, srcM1B, srcM2A, srcM2B,
+            sum1A, sum1B, sum2A, sum2B, sum3A, sum3B,
+            pp1A, pp1B, pp2A, pp2B, psumA, psumB;
 
     const vec_u8 mperm = (const vec_u8)
-        {0x00, 0x08, 0x01, 0x09, 0x02, 0x0A, 0x03, 0x0B,
-         0x04, 0x0C, 0x05, 0x0D, 0x06, 0x0E, 0x07, 0x0F};
+    {
+        0x00, 0x08, 0x01, 0x09, 0x02, 0x0A, 0x03, 0x0B,
+            0x04, 0x0C, 0x05, 0x0D, 0x06, 0x0E, 0x07, 0x0F
+        };
     int16_t *tmpbis = tmp;
 
     vec_s16 tmpM1ssA, tmpM1ssB, tmpM2ssA, tmpM2ssB,
-              tmpP0ssA, tmpP0ssB, tmpP1ssA, tmpP1ssB,
-              tmpP2ssA, tmpP2ssB;
+            tmpP0ssA, tmpP0ssB, tmpP1ssA, tmpP1ssB,
+            tmpP2ssA, tmpP2ssB;
 
     vec_s32 pp1Ae, pp1Ao, pp1Be, pp1Bo, pp2Ae, pp2Ao, pp2Be, pp2Bo,
-              pp3Ae, pp3Ao, pp3Be, pp3Bo, pp1cAe, pp1cAo, pp1cBe, pp1cBo,
-              pp32Ae, pp32Ao, pp32Be, pp32Bo, sumAe, sumAo, sumBe, sumBo,
-              ssumAe, ssumAo, ssumBe, ssumBo;
+            pp3Ae, pp3Ao, pp3Be, pp3Bo, pp1cAe, pp1cAo, pp1cBe, pp1cBo,
+            pp32Ae, pp32Ao, pp32Be, pp32Bo, sumAe, sumAo, sumBe, sumBo,
+            ssumAe, ssumAo, ssumBe, ssumBo;
     vec_u8 fsum, sumv, sum, vdst;
     vec_s16 ssume, ssumo;
 
     src -= (2 * srcStride);
-    for (i = 0 ; i < 21 ; i ++) {
+    for (i = 0 ; i < 21 ; i ++)
+    {
         vec_u8 srcM2, srcM1, srcP0, srcP1, srcP2, srcP3;
         vec_u8 srcR1 = vec_ld(-2, src);
         vec_u8 srcR2 = vec_ld(14, src);
 
-        switch (align) {
-        default: {
+        switch (align)
+        {
+        default:
+        {
             srcM2 = vec_perm(srcR1, srcR2, permM2);
             srcM1 = vec_perm(srcR1, srcR2, permM1);
             srcP0 = vec_perm(srcR1, srcR2, permP0);
             srcP1 = vec_perm(srcR1, srcR2, permP1);
             srcP2 = vec_perm(srcR1, srcR2, permP2);
             srcP3 = vec_perm(srcR1, srcR2, permP3);
-        } break;
-        case 11: {
+        }
+        break;
+        case 11:
+        {
             srcM2 = vec_perm(srcR1, srcR2, permM2);
             srcM1 = vec_perm(srcR1, srcR2, permM1);
             srcP0 = vec_perm(srcR1, srcR2, permP0);
             srcP1 = vec_perm(srcR1, srcR2, permP1);
             srcP2 = vec_perm(srcR1, srcR2, permP2);
             srcP3 = srcR2;
-        } break;
-        case 12: {
+        }
+        break;
+        case 12:
+        {
             vec_u8 srcR3 = vec_ld(30, src);
             srcM2 = vec_perm(srcR1, srcR2, permM2);
             srcM1 = vec_perm(srcR1, srcR2, permM1);
@@ -615,8 +692,10 @@ static void PREFIX_h264_qpel16_hv_lowpass_altivec(uint8_t * dst, int16_t * tmp, 
             srcP1 = vec_perm(srcR1, srcR2, permP1);
             srcP2 = srcR2;
             srcP3 = vec_perm(srcR2, srcR3, permP3);
-        } break;
-        case 13: {
+        }
+        break;
+        case 13:
+        {
             vec_u8 srcR3 = vec_ld(30, src);
             srcM2 = vec_perm(srcR1, srcR2, permM2);
             srcM1 = vec_perm(srcR1, srcR2, permM1);
@@ -624,8 +703,10 @@ static void PREFIX_h264_qpel16_hv_lowpass_altivec(uint8_t * dst, int16_t * tmp, 
             srcP1 = srcR2;
             srcP2 = vec_perm(srcR2, srcR3, permP2);
             srcP3 = vec_perm(srcR2, srcR3, permP3);
-        } break;
-        case 14: {
+        }
+        break;
+        case 14:
+        {
             vec_u8 srcR3 = vec_ld(30, src);
             srcM2 = vec_perm(srcR1, srcR2, permM2);
             srcM1 = vec_perm(srcR1, srcR2, permM1);
@@ -633,8 +714,10 @@ static void PREFIX_h264_qpel16_hv_lowpass_altivec(uint8_t * dst, int16_t * tmp, 
             srcP1 = vec_perm(srcR2, srcR3, permP1);
             srcP2 = vec_perm(srcR2, srcR3, permP2);
             srcP3 = vec_perm(srcR2, srcR3, permP3);
-        } break;
-        case 15: {
+        }
+        break;
+        case 15:
+        {
             vec_u8 srcR3 = vec_ld(30, src);
             srcM2 = vec_perm(srcR1, srcR2, permM2);
             srcM1 = srcR2;
@@ -642,7 +725,8 @@ static void PREFIX_h264_qpel16_hv_lowpass_altivec(uint8_t * dst, int16_t * tmp, 
             srcP1 = vec_perm(srcR2, srcR3, permP1);
             srcP2 = vec_perm(srcR2, srcR3, permP2);
             srcP3 = vec_perm(srcR2, srcR3, permP3);
-        } break;
+        }
+        break;
         }
 
         srcP0A = (vec_s16) vec_mergeh(zero_u8v, srcP0);
@@ -699,7 +783,8 @@ static void PREFIX_h264_qpel16_hv_lowpass_altivec(uint8_t * dst, int16_t * tmp, 
     tmpP2ssB = vec_ld(16, tmpbis);
     tmpbis += tmpStride;
 
-    for (i = 0 ; i < 16 ; i++) {
+    for (i = 0 ; i < 16 ; i++)
+    {
         const vec_s16 tmpP3ssA = vec_ld(0, tmpbis);
         const vec_s16 tmpP3ssB = vec_ld(16, tmpbis);
 

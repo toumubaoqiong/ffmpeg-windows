@@ -32,7 +32,8 @@
 #define FRAMESIZE       20      ///< size of encoded frame
 #define LPC_ORDER       10      ///< order of LPC filter
 
-typedef struct {
+typedef struct
+{
     AVCodecContext *avctx;
     LPCContext lpc_ctx;
 
@@ -46,7 +47,7 @@ typedef struct {
 
     unsigned int     lpc_refl_rms[2];
 
-    int16_t curr_block[NBLOCKS * BLOCKSIZE];
+    int16_t curr_block[NBLOCKS *BLOCKSIZE];
 
     /** The current subblock padded by the last 10 values of the previous one. */
     int16_t curr_sblock[50];
@@ -77,6 +78,6 @@ extern const int8_t ff_cb2_vects[128][40];
 extern const uint16_t ff_cb1_base[128];
 extern const uint16_t ff_cb2_base[128];
 extern const int16_t ff_energy_tab[32];
-extern const int16_t * const ff_lpc_refl_cb[10];
+extern const int16_t *const ff_lpc_refl_cb[10];
 
 #endif /* AVCODEC_RA144_H */

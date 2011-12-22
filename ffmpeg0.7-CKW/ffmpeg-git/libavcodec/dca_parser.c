@@ -25,7 +25,8 @@
 #include "parser.h"
 #include "dca.h"
 
-typedef struct DCAParseContext {
+typedef struct DCAParseContext
+{
     ParseContext pc;
     uint32_t lastmarker;
     int size;
@@ -42,7 +43,7 @@ typedef struct DCAParseContext {
  * finds the end of the current frame in the bitstream.
  * @return the position of the first byte of the next frame, or -1
  */
-static int dca_find_frame_end(DCAParseContext * pc1, const uint8_t * buf,
+static int dca_find_frame_end(DCAParseContext *pc1, const uint8_t *buf,
                               int buf_size)
 {
     int start_found, i;
@@ -53,14 +54,20 @@ static int dca_find_frame_end(DCAParseContext * pc1, const uint8_t * buf,
     state = pc->state;
 
     i = 0;
-    if (!start_found) {
-        for (i = 0; i < buf_size; i++) {
+    if (!start_found)
+    {
+        for (i = 0; i < buf_size; i++)
+        {
             state = (state << 8) | buf[i];
-            if (IS_MARKER(state, i, buf, buf_size)) {
-                if (pc1->lastmarker && state == pc1->lastmarker) {
+            if (IS_MARKER(state, i, buf, buf_size))
+            {
+                if (pc1->lastmarker && state == pc1->lastmarker)
+                {
                     start_found = 1;
                     break;
-                } else if (!pc1->lastmarker) {
+                }
+                else if (!pc1->lastmarker)
+                {
                     start_found = 1;
                     pc1->lastmarker = state;
                     break;
@@ -68,16 +75,20 @@ static int dca_find_frame_end(DCAParseContext * pc1, const uint8_t * buf,
             }
         }
     }
-    if (start_found) {
-        for (; i < buf_size; i++) {
+    if (start_found)
+    {
+        for (; i < buf_size; i++)
+        {
             pc1->size++;
             state = (state << 8) | buf[i];
             if (state == DCA_HD_MARKER && !pc1->hd_pos)
                 pc1->hd_pos = pc1->size;
-            if (state == pc1->lastmarker && IS_MARKER(state, i, buf, buf_size)) {
+            if (state == pc1->lastmarker && IS_MARKER(state, i, buf, buf_size))
+            {
                 if(pc1->framesize > pc1->size)
                     continue;
-                if(!pc1->framesize){
+                if(!pc1->framesize)
+                {
                     pc1->framesize = pc1->hd_pos ? pc1->hd_pos : pc1->size;
                 }
                 pc->frame_start_found = 0;
@@ -92,7 +103,7 @@ static int dca_find_frame_end(DCAParseContext * pc1, const uint8_t * buf,
     return END_NOT_FOUND;
 }
 
-static av_cold int dca_parse_init(AVCodecParserContext * s)
+static av_cold int dca_parse_init(AVCodecParserContext *s)
 {
     DCAParseContext *pc1 = s->priv_data;
 
@@ -100,21 +111,25 @@ static av_cold int dca_parse_init(AVCodecParserContext * s)
     return 0;
 }
 
-static int dca_parse(AVCodecParserContext * s,
-                     AVCodecContext * avctx,
-                     const uint8_t ** poutbuf, int *poutbuf_size,
-                     const uint8_t * buf, int buf_size)
+static int dca_parse(AVCodecParserContext *s,
+                     AVCodecContext *avctx,
+                     const uint8_t **poutbuf, int *poutbuf_size,
+                     const uint8_t *buf, int buf_size)
 {
     DCAParseContext *pc1 = s->priv_data;
     ParseContext *pc = &pc1->pc;
     int next;
 
-    if (s->flags & PARSER_FLAG_COMPLETE_FRAMES) {
+    if (s->flags & PARSER_FLAG_COMPLETE_FRAMES)
+    {
         next = buf_size;
-    } else {
+    }
+    else
+    {
         next = dca_find_frame_end(pc1, buf, buf_size);
 
-        if (ff_combine_frame(pc, next, &buf, &buf_size) < 0) {
+        if (ff_combine_frame(pc, next, &buf, &buf_size) < 0)
+        {
             *poutbuf = NULL;
             *poutbuf_size = 0;
             return buf_size;
@@ -125,7 +140,8 @@ static int dca_parse(AVCodecParserContext * s,
     return next;
 }
 
-AVCodecParser ff_dca_parser = {
+AVCodecParser ff_dca_parser =
+{
     {CODEC_ID_DTS},
     sizeof(DCAParseContext),
     dca_parse_init,

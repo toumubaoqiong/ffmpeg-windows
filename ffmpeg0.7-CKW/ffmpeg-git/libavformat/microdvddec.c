@@ -26,7 +26,8 @@
 #define MAX_LINESIZE 2048
 
 
-typedef struct {
+typedef struct
+{
     uint8_t lines[3][MAX_LINESIZE];
     int64_t pos[3];
 } MicroDVDContext;
@@ -40,10 +41,11 @@ static int microdvd_probe(AVProbeData *p)
     if (AV_RB24(ptr) == 0xEFBBBF)
         ptr += 3;  /* skip UTF-8 BOM */
 
-    for (i=0; i<3; i++) {
+    for (i = 0; i < 3; i++)
+    {
         if (sscanf(ptr, "{%*d}{}%c",     &c) != 1 &&
-            sscanf(ptr, "{%*d}{%*d}%c",  &c) != 1 &&
-            sscanf(ptr, "{DEFAULT}{}%c", &c) != 1)
+                sscanf(ptr, "{%*d}{%*d}%c",  &c) != 1 &&
+                sscanf(ptr, "{DEFAULT}{}%c", &c) != 1)
             return 0;
         ptr += strcspn(ptr, "\n") + 1;
     }
@@ -52,7 +54,10 @@ static int microdvd_probe(AVProbeData *p)
 
 static int microdvd_read_header(AVFormatContext *s, AVFormatParameters *ap)
 {
-    AVRational pts_info = (AVRational){ 2997, 125 };  /* default: 23.976 fps */
+    AVRational pts_info = (AVRational)
+    {
+        2997, 125
+    };  /* default: 23.976 fps */
     MicroDVDContext *microdvd = s->priv_data;
     AVStream *st = av_new_stream(s, 0);
     int i, frame;
@@ -61,14 +66,16 @@ static int microdvd_read_header(AVFormatContext *s, AVFormatParameters *ap)
 
     if (!st)
         return -1;
-    for (i=0; i<FF_ARRAY_ELEMS(microdvd->lines); i++) {
+    for (i = 0; i < FF_ARRAY_ELEMS(microdvd->lines); i++)
+    {
         microdvd->pos[i] = avio_tell(s->pb);
         ff_get_line(s->pb, microdvd->lines[i], sizeof(microdvd->lines[i]));
         if ((sscanf(microdvd->lines[i], "{%d}{}%6lf",    &frame, &fps) == 2 ||
-             sscanf(microdvd->lines[i], "{%d}{%*d}%6lf", &frame, &fps) == 2)
-            && frame <= 1 && fps > 3 && fps < 100)
+                sscanf(microdvd->lines[i], "{%d}{%*d}%6lf", &frame, &fps) == 2)
+                && frame <= 1 && fps > 3 && fps < 100)
             pts_info = av_d2q(fps, 100000);
-        if (sscanf(microdvd->lines[i], "{DEFAULT}{}%c", &c) == 1) {
+        if (sscanf(microdvd->lines[i], "{DEFAULT}{}%c", &c) == 1)
+        {
             st->codec->extradata = av_strdup(microdvd->lines[i] + 11);
             st->codec->extradata_size = strlen(st->codec->extradata);
             i--;
@@ -97,8 +104,10 @@ static int microdvd_read_packet(AVFormatContext *s, AVPacket *pkt)
     int64_t pos = avio_tell(s->pb);
     int i, len = 0, res = AVERROR_EOF;
 
-    for (i=0; i<FF_ARRAY_ELEMS(microdvd->lines); i++) {
-        if (microdvd->lines[i][0]) {
+    for (i = 0; i < FF_ARRAY_ELEMS(microdvd->lines); i++)
+    {
+        if (microdvd->lines[i][0])
+        {
             strcpy(buffer, microdvd->lines[i]);
             pos = microdvd->pos[i];
             len = strlen(buffer);
@@ -109,7 +118,8 @@ static int microdvd_read_packet(AVFormatContext *s, AVPacket *pkt)
     if (!len)
         len = ff_get_line(s->pb, buffer, sizeof(buffer));
 
-    if (buffer[0] && !(res = av_new_packet(pkt, len))) {
+    if (buffer[0] && !(res = av_new_packet(pkt, len)))
+    {
         memcpy(pkt->data, buffer, len);
         pkt->flags |= AV_PKT_FLAG_KEY;
         pkt->pos = pos;
@@ -118,7 +128,8 @@ static int microdvd_read_packet(AVFormatContext *s, AVPacket *pkt)
     return res;
 }
 
-AVInputFormat ff_microdvd_demuxer = {
+AVInputFormat ff_microdvd_demuxer =
+{
     .name           = "microdvd",
     .long_name      = NULL_IF_CONFIG_SMALL("MicroDVD subtitle format"),
     .priv_data_size = sizeof(MicroDVDContext),

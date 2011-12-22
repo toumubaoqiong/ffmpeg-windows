@@ -62,14 +62,14 @@
         const uint8_t *pu = src[1] +        (y >> 1) * srcStride[1]; \
         const uint8_t *pv = src[2] +        (y >> 1) * srcStride[2]; \
         x86_reg index = -h_size / 2;                                 \
-
+ 
 #define YUV2RGB_INITIAL_LOAD          \
     __asm__ volatile (                \
         "movq (%5, %0, 2), %%mm6\n\t" \
         "movd    (%2, %0), %%mm0\n\t" \
         "movd    (%3, %0), %%mm1\n\t" \
         "1: \n\t"                     \
-
+ 
 /* YUV2RGB core
  * Conversion is performed in usual way:
  * R = Y' * Ycoef + Vred * V'
@@ -124,7 +124,7 @@
     "paddsw    %%mm6, %%mm0\n\t"                 \
     "paddsw    %%mm6, %%mm1\n\t"                 \
     "paddsw    %%mm6, %%mm2\n\t"                 \
-
+ 
 #define RGB_PACK_INTERLEAVE                  \
     /* pack and interleave even/odd pixels */    \
     "packuswb  %%mm1, %%mm0\n\t"                 \
@@ -135,7 +135,7 @@
     "punpcklbw %%mm3, %%mm0\n\t"                 \
     "punpckhbw %%mm3, %%mm1\n\t"                 \
     "punpcklbw %%mm7, %%mm2\n\t"                 \
-
+ 
 #define YUV2RGB_ENDLOOP(depth)                   \
     "movq 8 (%5, %0, 2), %%mm6\n\t"              \
     "movd 4 (%3, %0),    %%mm1\n\t"              \
@@ -143,25 +143,25 @@
     "add $"AV_STRINGIFY(depth * 8)", %1\n\t"     \
     "add  $4, %0\n\t"                            \
     "js   1b\n\t"                                \
-
+ 
 #define YUV2RGB_OPERANDS                                          \
         : "+r" (index), "+r" (image)                              \
         : "r" (pu - index), "r" (pv - index), "r"(&c->redDither), \
           "r" (py - 2*index)                                      \
         );                                                        \
     }                                                             \
-
+ 
 #define YUV2RGB_OPERANDS_ALPHA                                    \
         : "+r" (index), "+r" (image)                              \
         : "r" (pu - index), "r" (pv - index), "r"(&c->redDither), \
           "r" (py - 2*index), "r" (pa - 2*index)                  \
         );                                                        \
     }                                                             \
-
+ 
 #define YUV2RGB_ENDFUNC                          \
     __asm__ volatile (SFENCE"\n\t"EMMS);         \
     return srcSliceH;                            \
-
+ 
 #define IF0(x)
 #define IF1(x) x
 
@@ -182,12 +182,12 @@
     "punpckhbw %%mm1,     %%mm2\n\t"             \
     MOVNTQ "   %%mm0,      (%1)\n\t"             \
     MOVNTQ "   %%mm2,     8(%1)\n\t"             \
-
+ 
 #define DITHER_RGB                               \
     "paddusb "BLUE_DITHER"(%4),  %%mm0\n\t"      \
     "paddusb "GREEN_DITHER"(%4), %%mm2\n\t"      \
     "paddusb "RED_DITHER"(%4),   %%mm1\n\t"      \
-
+ 
 static inline int RENAME(yuv420_rgb15)(SwsContext *c, const uint8_t *src[],
                                        int srcStride[],
                                        int srcSliceY, int srcSliceH,
@@ -198,18 +198,18 @@ static inline int RENAME(yuv420_rgb15)(SwsContext *c, const uint8_t *src[],
     YUV2RGB_LOOP(2)
 
 #ifdef DITHER1XBPP
-        c->blueDither  = ff_dither8[y       & 1];
-        c->greenDither = ff_dither8[y       & 1];
-        c->redDither   = ff_dither8[(y + 1) & 1];
+    c->blueDither  = ff_dither8[y       & 1];
+    c->greenDither = ff_dither8[y       & 1];
+    c->redDither   = ff_dither8[(y + 1) & 1];
 #endif
 
-        YUV2RGB_INITIAL_LOAD
-        YUV2RGB
-        RGB_PACK_INTERLEAVE
+    YUV2RGB_INITIAL_LOAD
+    YUV2RGB
+    RGB_PACK_INTERLEAVE
 #ifdef DITHER1XBPP
-        DITHER_RGB
+    DITHER_RGB
 #endif
-        RGB_PACK16(pb_03, 1)
+    RGB_PACK16(pb_03, 1)
 
     YUV2RGB_ENDLOOP(2)
     YUV2RGB_OPERANDS
@@ -226,18 +226,18 @@ static inline int RENAME(yuv420_rgb16)(SwsContext *c, const uint8_t *src[],
     YUV2RGB_LOOP(2)
 
 #ifdef DITHER1XBPP
-        c->blueDither  = ff_dither8[y       & 1];
-        c->greenDither = ff_dither4[y       & 1];
-        c->redDither   = ff_dither8[(y + 1) & 1];
+    c->blueDither  = ff_dither8[y       & 1];
+    c->greenDither = ff_dither4[y       & 1];
+    c->redDither   = ff_dither8[(y + 1) & 1];
 #endif
 
-        YUV2RGB_INITIAL_LOAD
-        YUV2RGB
-        RGB_PACK_INTERLEAVE
+    YUV2RGB_INITIAL_LOAD
+    YUV2RGB
+    RGB_PACK_INTERLEAVE
 #ifdef DITHER1XBPP
-        DITHER_RGB
+    DITHER_RGB
 #endif
-        RGB_PACK16(pb_07, 0)
+    RGB_PACK16(pb_07, 0)
 
     YUV2RGB_ENDLOOP(2)
     YUV2RGB_OPERANDS
@@ -260,11 +260,11 @@ static inline int RENAME(yuv420_rgb16)(SwsContext *c, const uint8_t *src[],
     RGB_PACK24_B
 
 #if HAVE_MMX2
-DECLARE_ASM_CONST(8, int16_t, mask1101[4]) = {-1,-1, 0,-1};
-DECLARE_ASM_CONST(8, int16_t, mask0010[4]) = { 0, 0,-1, 0};
-DECLARE_ASM_CONST(8, int16_t, mask0110[4]) = { 0,-1,-1, 0};
-DECLARE_ASM_CONST(8, int16_t, mask1001[4]) = {-1, 0, 0,-1};
-DECLARE_ASM_CONST(8, int16_t, mask0100[4]) = { 0,-1, 0, 0};
+DECLARE_ASM_CONST(8, int16_t, mask1101[4]) = { -1, -1, 0, -1};
+DECLARE_ASM_CONST(8, int16_t, mask0010[4]) = { 0, 0, -1, 0};
+DECLARE_ASM_CONST(8, int16_t, mask0110[4]) = { 0, -1, -1, 0};
+DECLARE_ASM_CONST(8, int16_t, mask1001[4]) = { -1, 0, 0, -1};
+DECLARE_ASM_CONST(8, int16_t, mask0100[4]) = { 0, -1, 0, 0};
 #undef RGB_PACK24_B
 #define RGB_PACK24_B\
     "pshufw    $0xc6,  %%mm2, %%mm1 \n"\
@@ -286,7 +286,7 @@ DECLARE_ASM_CONST(8, int16_t, mask0100[4]) = { 0,-1, 0, 0};
     MOVNTQ"    %%mm0,          (%1) \n"\
     MOVNTQ"    %%mm1,         8(%1) \n"\
     MOVNTQ"    %%mm2,        16(%1) \n"\
-
+ 
 #else
 #undef RGB_PACK24_B
 #define RGB_PACK24_B\
@@ -302,7 +302,7 @@ DECLARE_ASM_CONST(8, int16_t, mask0100[4]) = { 0,-1, 0, 0};
     "psrlq     $32,        %%mm5 \n"\
     "movd      %%mm2,     20(%1) \n" /* -- -- G7 B7 */\
     "movd      %%mm5,     18(%1) \n" /* R6 G6 B6 R7 */\
-
+ 
 #endif
 
 static inline int RENAME(yuv420_rgb24)(SwsContext *c, const uint8_t *src[],
@@ -314,9 +314,9 @@ static inline int RENAME(yuv420_rgb24)(SwsContext *c, const uint8_t *src[],
 
     YUV2RGB_LOOP(3)
 
-        YUV2RGB_INITIAL_LOAD
-        YUV2RGB
-        RGB_PACK24(REG_BLUE, REG_RED)
+    YUV2RGB_INITIAL_LOAD
+    YUV2RGB
+    RGB_PACK24(REG_BLUE, REG_RED)
 
     YUV2RGB_ENDLOOP(3)
     YUV2RGB_OPERANDS
@@ -332,9 +332,9 @@ static inline int RENAME(yuv420_bgr24)(SwsContext *c, const uint8_t *src[],
 
     YUV2RGB_LOOP(3)
 
-        YUV2RGB_INITIAL_LOAD
-        YUV2RGB
-        RGB_PACK24(REG_RED, REG_BLUE)
+    YUV2RGB_INITIAL_LOAD
+    YUV2RGB
+    RGB_PACK24(REG_RED, REG_BLUE)
 
     YUV2RGB_ENDLOOP(3)
     YUV2RGB_OPERANDS
@@ -344,10 +344,10 @@ static inline int RENAME(yuv420_bgr24)(SwsContext *c, const uint8_t *src[],
 
 #define SET_EMPTY_ALPHA                                                      \
     "pcmpeqd   %%mm"REG_ALPHA", %%mm"REG_ALPHA"\n\t" /* set alpha to 0xFF */ \
-
+ 
 #define LOAD_ALPHA                                   \
     "movq      (%6, %0, 2),     %%mm"REG_ALPHA"\n\t" \
-
+ 
 #define RGB_PACK32(red, green, blue, alpha)  \
     "movq      %%mm"blue",  %%mm5\n\t"       \
     "movq      %%mm"red",   %%mm6\n\t"       \
@@ -365,7 +365,7 @@ static inline int RENAME(yuv420_bgr24)(SwsContext *c, const uint8_t *src[],
     MOVNTQ "   %%mm"green",  8(%1)\n\t"      \
     MOVNTQ "   %%mm5,       16(%1)\n\t"      \
     MOVNTQ "   %%mm"alpha", 24(%1)\n\t"      \
-
+ 
 static inline int RENAME(yuv420_rgb32)(SwsContext *c, const uint8_t *src[],
                                        int srcStride[],
                                        int srcSliceY, int srcSliceH,
@@ -375,11 +375,11 @@ static inline int RENAME(yuv420_rgb32)(SwsContext *c, const uint8_t *src[],
 
     YUV2RGB_LOOP(4)
 
-        YUV2RGB_INITIAL_LOAD
-        YUV2RGB
-        RGB_PACK_INTERLEAVE
-        SET_EMPTY_ALPHA
-        RGB_PACK32(REG_RED, REG_GREEN, REG_BLUE, REG_ALPHA)
+    YUV2RGB_INITIAL_LOAD
+    YUV2RGB
+    RGB_PACK_INTERLEAVE
+    SET_EMPTY_ALPHA
+    RGB_PACK32(REG_RED, REG_GREEN, REG_BLUE, REG_ALPHA)
 
     YUV2RGB_ENDLOOP(4)
     YUV2RGB_OPERANDS
@@ -396,12 +396,12 @@ static inline int RENAME(yuva420_rgb32)(SwsContext *c, const uint8_t *src[],
 
     YUV2RGB_LOOP(4)
 
-        const uint8_t *pa = src[3] + y * srcStride[3];
-        YUV2RGB_INITIAL_LOAD
-        YUV2RGB
-        RGB_PACK_INTERLEAVE
-        LOAD_ALPHA
-        RGB_PACK32(REG_RED, REG_GREEN, REG_BLUE, REG_ALPHA)
+    const uint8_t *pa = src[3] + y * srcStride[3];
+    YUV2RGB_INITIAL_LOAD
+    YUV2RGB
+    RGB_PACK_INTERLEAVE
+    LOAD_ALPHA
+    RGB_PACK32(REG_RED, REG_GREEN, REG_BLUE, REG_ALPHA)
 
     YUV2RGB_ENDLOOP(4)
     YUV2RGB_OPERANDS_ALPHA
@@ -418,11 +418,11 @@ static inline int RENAME(yuv420_bgr32)(SwsContext *c, const uint8_t *src[],
 
     YUV2RGB_LOOP(4)
 
-        YUV2RGB_INITIAL_LOAD
-        YUV2RGB
-        RGB_PACK_INTERLEAVE
-        SET_EMPTY_ALPHA
-        RGB_PACK32(REG_BLUE, REG_GREEN, REG_RED, REG_ALPHA)
+    YUV2RGB_INITIAL_LOAD
+    YUV2RGB
+    RGB_PACK_INTERLEAVE
+    SET_EMPTY_ALPHA
+    RGB_PACK32(REG_BLUE, REG_GREEN, REG_RED, REG_ALPHA)
 
     YUV2RGB_ENDLOOP(4)
     YUV2RGB_OPERANDS
@@ -439,12 +439,12 @@ static inline int RENAME(yuva420_bgr32)(SwsContext *c, const uint8_t *src[],
 
     YUV2RGB_LOOP(4)
 
-        const uint8_t *pa = src[3] + y * srcStride[3];
-        YUV2RGB_INITIAL_LOAD
-        YUV2RGB
-        RGB_PACK_INTERLEAVE
-        LOAD_ALPHA
-        RGB_PACK32(REG_BLUE, REG_GREEN, REG_RED, REG_ALPHA)
+    const uint8_t *pa = src[3] + y * srcStride[3];
+    YUV2RGB_INITIAL_LOAD
+    YUV2RGB
+    RGB_PACK_INTERLEAVE
+    LOAD_ALPHA
+    RGB_PACK32(REG_BLUE, REG_GREEN, REG_RED, REG_ALPHA)
 
     YUV2RGB_ENDLOOP(4)
     YUV2RGB_OPERANDS_ALPHA

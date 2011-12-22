@@ -65,7 +65,8 @@
 #include "libvo/fastmemcpy.h"
 
 /* private data */
-struct vf_priv_s {
+struct vf_priv_s
+{
     /* configuration data */
     /* Number on hor/ver tiles */
     int  xtile;
@@ -76,8 +77,8 @@ struct vf_priv_s {
     int  start;
     /* pixel between image (default = 2) */
     int  delta;
-//    /* Background color, in destination format */
-//    int  bkgSet;
+    //    /* Background color, in destination format */
+    //    int  bkgSet;
 
     /* Work data */
     int  frame_cur;
@@ -86,7 +87,8 @@ struct vf_priv_s {
 
 static int config(struct vf_instance *vf,
                   int width, int height, int d_width, int d_height,
-              unsigned int flags, unsigned int outfmt){
+                  unsigned int flags, unsigned int outfmt)
+{
 
     struct vf_priv_s  *priv;
     int               xw;
@@ -95,13 +97,13 @@ static int config(struct vf_instance *vf,
     /* Calculate new destination size */
     priv = vf->priv;
     xw = priv->start * 2 +
-        priv->xtile * width +
-        (priv->xtile - 1) * priv->delta;
+         priv->xtile * width +
+         (priv->xtile - 1) * priv->delta;
     yh = priv->start * 2 +
-        priv->ytile * height +
-        (priv->ytile - 1) * priv->delta;
+         priv->ytile * height +
+         (priv->ytile - 1) * priv->delta;
 
-    mp_msg(MSGT_VFILTER,MSGL_V,"vf_tile:config size set to %d * %d\n", xw, yh);
+    mp_msg(MSGT_VFILTER, MSGL_V, "vf_tile:config size set to %d * %d\n", xw, yh);
 
     return vf_next_config(vf, xw, yh, xw, yh, flags, outfmt);
 }
@@ -122,32 +124,34 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
     /* Calculate new size */
     priv = vf->priv;
     xw = priv->start * 2 +
-        priv->xtile * mpi->w +
-        (priv->xtile - 1) * priv->delta;
+         priv->xtile * mpi->w +
+         (priv->xtile - 1) * priv->delta;
     yh = priv->start * 2 +
-        priv->ytile * mpi->h+
-        (priv->ytile - 1) * priv->delta;
+         priv->ytile * mpi->h +
+         (priv->ytile - 1) * priv->delta;
 
     /* Get the big image! */
-    dmpi=vf_get_image(vf->next, mpi->imgfmt,
-                      MP_IMGTYPE_STATIC, MP_IMGFLAG_ACCEPT_STRIDE,
-                      xw, yh);
+    dmpi = vf_get_image(vf->next, mpi->imgfmt,
+                        MP_IMGTYPE_STATIC, MP_IMGFLAG_ACCEPT_STRIDE,
+                        xw, yh);
 
     /* bytes x pixel & bytes x line */
-    if (mpi->flags & MP_IMGFLAG_PLANAR) {
+    if (mpi->flags & MP_IMGFLAG_PLANAR)
+    {
         by = 1;
         dw = mpi->w;
     }
-    else {
+    else
+    {
         by = (mpi->bpp + 7) / 8;
         dw = mpi->w * by;
     }
     /* Index position */
     t = priv->frame_cur % priv->xytile;
-//    if ((t == 0) && (bkg != 0)) {
-//        /* First frame, delete the background */
-//
-//    }
+    //    if ((t == 0) && (bkg != 0)) {
+    //        /* First frame, delete the background */
+    //
+    //    }
 
     /* Position of image */
     xi = priv->start + (mpi->w + priv->delta) * (t % priv->xtile);
@@ -161,7 +165,8 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
                 dmpi->stride[0],
                 mpi->stride[0]);
 
-    if (mpi->flags & MP_IMGFLAG_PLANAR) {
+    if (mpi->flags & MP_IMGFLAG_PLANAR)
+    {
         /* Copy the other 2 planes */
         memcpy_pic( dmpi->planes[1] + (xi >> mpi->chroma_x_shift) + (yi >> mpi->chroma_y_shift) * dmpi->stride[1],
                     mpi->planes[1],
@@ -169,7 +174,7 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
                     mpi->chroma_height,
                     dmpi->stride[1],
                     mpi->stride[1]);
-         memcpy_pic( dmpi->planes[2] + (xi >> mpi->chroma_x_shift) + (yi >> mpi->chroma_y_shift) * dmpi->stride[2],
+        memcpy_pic( dmpi->planes[2] + (xi >> mpi->chroma_x_shift) + (yi >> mpi->chroma_y_shift) * dmpi->stride[2],
                     mpi->planes[2],
                     mpi->chroma_width,
                     mpi->chroma_height,
@@ -180,13 +185,15 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
     /* Increment current frame */
     ++priv->frame_cur;
 
-    if (t == priv->xytile - 1)  {
+    if (t == priv->xytile - 1)
+    {
         /* Display the composition */
         dmpi->width  = xw;
         dmpi->height = yh;
         return vf_next_put_image(vf, dmpi, MP_NOPTS_VALUE);
     }
-    else {
+    else
+    {
         /* Skip the frame */
         return 0;
     }
@@ -201,29 +208,30 @@ static void uninit(struct vf_instance *vf)
 /* rgb/bgr 12...32 supported & some Yxxx */
 static int query_format(struct vf_instance *vf, unsigned int fmt)
 {
-    switch (fmt) {
+    switch (fmt)
+    {
         /* rgb 12...32 bit */
-        case IMGFMT_RGB12:
-        case IMGFMT_RGB15:
-        case IMGFMT_RGB16:
-        case IMGFMT_RGB24:
-        case IMGFMT_RGB32:
+    case IMGFMT_RGB12:
+    case IMGFMT_RGB15:
+    case IMGFMT_RGB16:
+    case IMGFMT_RGB24:
+    case IMGFMT_RGB32:
         /* bgr 12...32 bit */
-        case IMGFMT_BGR12:
-        case IMGFMT_BGR15:
-        case IMGFMT_BGR16:
-        case IMGFMT_BGR24:
-        case IMGFMT_BGR32:
+    case IMGFMT_BGR12:
+    case IMGFMT_BGR15:
+    case IMGFMT_BGR16:
+    case IMGFMT_BGR24:
+    case IMGFMT_BGR32:
         /* Various Yxxx Formats */
-        case IMGFMT_444P:
-        case IMGFMT_422P:
-        case IMGFMT_411P:
-        case IMGFMT_YUY2:
-        case IMGFMT_YV12:
-        case IMGFMT_I420:
-        case IMGFMT_YVU9:
-        case IMGFMT_IF09:
-        case IMGFMT_IYUV:
+    case IMGFMT_444P:
+    case IMGFMT_422P:
+    case IMGFMT_411P:
+    case IMGFMT_YUY2:
+    case IMGFMT_YV12:
+    case IMGFMT_I420:
+    case IMGFMT_YVU9:
+    case IMGFMT_IF09:
+    case IMGFMT_IYUV:
         return vf_next_query_format(vf, fmt);
     }
     return 0;
@@ -240,25 +248,30 @@ static int parse_int(char **s, int *rt, int def_val)
 
     int     t = 0;
 
-    if (**s) {
+    if (**s)
+    {
         /* Get value (dec, hex or octal) */
         t = strtol( *s, s, 0 );
 
         /* Use default */
-        if (t < 0) {
+        if (t < 0)
+        {
             t = def_val;
         }
 
-        if (**s == ':') {
+        if (**s == ':')
+        {
             /* Point to next character (problably a digit) */
             ++(*s);
         }
-        else if (**s != '\0') {
+        else if (**s != '\0')
+        {
             /* Error, we got some wrong char */
             return 1;
         }
     }
-    else {
+    else
+    {
         t = def_val;
     }
 
@@ -280,11 +293,13 @@ static int vf_open(vf_instance_t *vf, char *args)
     vf->default_reqs = VFCAP_ACCEPT_STRIDE;
     /* Private data */
     vf->priv = p = calloc(1, sizeof(struct vf_priv_s));
-    if (p == NULL) {
+    if (p == NULL)
+    {
         return 0;
     }
 
-    if (args == NULL) {
+    if (args == NULL)
+    {
         /* Use the default */
         args = "";
     }
@@ -294,19 +309,22 @@ static int vf_open(vf_instance_t *vf, char *args)
     er |= parse_int( &args, &p->xytile, 0 );
     er |= parse_int( &args, &p->start,  2 );
     er |= parse_int( &args, &p->delta,  4 );
-//    er |= parse_int( &args, &p->bkgSet, 0 );
+    //    er |= parse_int( &args, &p->bkgSet, 0 );
 
-    if (er) {
+    if (er)
+    {
         mp_msg(MSGT_VFILTER, MSGL_ERR, MSGTR_MPCODECS_ErrorParsingArgument);
         return 0;
     }
     /* Load some default */
-    if ((p->xytile <= 0) || (p->xytile > p->xtile * p->ytile)) {
+    if ((p->xytile <= 0) || (p->xytile > p->xtile * p->ytile))
+    {
         p->xytile = p->xtile * p->ytile;
     }
 
     /* Say what happen: use mp_msg(...)? */
-    if ( mp_msg_test(MSGT_VFILTER,MSGL_V) ) {
+    if ( mp_msg_test(MSGT_VFILTER, MSGL_V) )
+    {
         printf("vf_tile: tiling %d * %d, output every %d frames\n",
                p->xtile,
                p->ytile,
@@ -314,13 +332,14 @@ static int vf_open(vf_instance_t *vf, char *args)
         printf("vf_tile: start pixel %d, delta pixel %d\n",
                p->start,
                p->delta);
-//      printf("vf_tile: background 0x%x\n",
-//             p->bkgSet);
+        //      printf("vf_tile: background 0x%x\n",
+        //             p->bkgSet);
     }
     return 1;
 }
 
-const vf_info_t vf_info_tile = {
+const vf_info_t vf_info_tile =
+{
     "Make a single image tiling x/y images",
     "tile",
     "Daniele Forghieri",

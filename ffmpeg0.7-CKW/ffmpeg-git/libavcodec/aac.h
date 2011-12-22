@@ -45,7 +45,8 @@
 #define TNS_MAX_ORDER 20
 #define MAX_LTP_LONG_SFB 40
 
-enum RawDataBlockType {
+enum RawDataBlockType
+{
     TYPE_SCE,
     TYPE_CPE,
     TYPE_CCE,
@@ -56,7 +57,8 @@ enum RawDataBlockType {
     TYPE_END,
 };
 
-enum ExtensionPayloadID {
+enum ExtensionPayloadID
+{
     EXT_FILL,
     EXT_FILL_DATA,
     EXT_DATA_ELEMENT,
@@ -65,14 +67,16 @@ enum ExtensionPayloadID {
     EXT_SBR_DATA_CRC  = 0xe,
 };
 
-enum WindowSequence {
+enum WindowSequence
+{
     ONLY_LONG_SEQUENCE,
     LONG_START_SEQUENCE,
     EIGHT_SHORT_SEQUENCE,
     LONG_STOP_SEQUENCE,
 };
 
-enum BandType {
+enum BandType
+{
     ZERO_BT        = 0,     ///< Scalefactors and spectral data are all zero.
     FIRST_PAIR_BT  = 5,     ///< This and later band types encode two values (rather than four) with one code word.
     ESC_BT         = 11,    ///< Spectral data are coded with an escape sequence.
@@ -83,7 +87,8 @@ enum BandType {
 
 #define IS_CODEBOOK_UNSIGNED(x) ((x - 1) & 10)
 
-enum ChannelPosition {
+enum ChannelPosition
+{
     AAC_CHANNEL_FRONT = 1,
     AAC_CHANNEL_SIDE  = 2,
     AAC_CHANNEL_BACK  = 3,
@@ -94,7 +99,8 @@ enum ChannelPosition {
 /**
  * The point during decoding at which channel coupling is applied.
  */
-enum CouplingPoint {
+enum CouplingPoint
+{
     BEFORE_TNS,
     BETWEEN_TNS_AND_IMDCT,
     AFTER_IMDCT = 3,
@@ -103,7 +109,8 @@ enum CouplingPoint {
 /**
  * Output configuration status
  */
-enum OCStatus {
+enum OCStatus
+{
     OC_NONE,        //< Output unconfigured
     OC_TRIAL_PCE,   //< Output configuration under trial specified by an inband PCE
     OC_TRIAL_FRAME, //< Output configuration under trial specified by a frame header
@@ -114,7 +121,8 @@ enum OCStatus {
 /**
  * Predictor State
  */
-typedef struct {
+typedef struct
+{
     float cor0;
     float cor1;
     float var0;
@@ -134,7 +142,8 @@ typedef struct {
 /**
  * Long Term Prediction
  */
-typedef struct {
+typedef struct
+{
     int8_t present;
     int16_t lag;
     float coef;
@@ -144,7 +153,8 @@ typedef struct {
 /**
  * Individual Channel Stream
  */
-typedef struct {
+typedef struct
+{
     uint8_t max_sfb;            ///< number of scalefactor bands per group
     enum WindowSequence window_sequence[2];
     uint8_t use_kb_window[2];   ///< If set, use Kaiser-Bessel window, otherwise use a sinus window.
@@ -165,7 +175,8 @@ typedef struct {
 /**
  * Temporal Noise Shaping
  */
-typedef struct {
+typedef struct
+{
     int present;
     int n_filt[8];
     int length[8][4];
@@ -177,7 +188,8 @@ typedef struct {
 /**
  * Dynamic Range Control - decoded from the bitstream but not processed further.
  */
-typedef struct {
+typedef struct
+{
     int pce_instance_tag;                           ///< Indicates with which program the DRC info is associated.
     int dyn_rng_sgn[17];                            ///< DRC sign information; 0 - positive, 1 - negative
     int dyn_rng_ctl[17];                            ///< DRC magnitude information
@@ -190,7 +202,8 @@ typedef struct {
                                                      */
 } DynamicRangeControl;
 
-typedef struct {
+typedef struct
+{
     int num_pulse;
     int start;
     int pos[4];
@@ -200,7 +213,8 @@ typedef struct {
 /**
  * coupling parameters
  */
-typedef struct {
+typedef struct
+{
     enum CouplingPoint coupling_point;  ///< The point during decoding at which coupling is applied.
     int num_coupled;       ///< number of target elements
     enum RawDataBlockType type[8];   ///< Type of channel element to be coupled - SCE or CPE.
@@ -214,7 +228,8 @@ typedef struct {
 /**
  * Single Channel Element - used for both SCE and LFE elements.
  */
-typedef struct {
+typedef struct
+{
     IndividualChannelStream ics;
     TemporalNoiseShaping tns;
     Pulse pulse;
@@ -233,7 +248,8 @@ typedef struct {
 /**
  * channel element - generic struct for SCE/CPE/CCE/LFE
  */
-typedef struct {
+typedef struct
+{
     // CPE specific
     int common_window;        ///< Set if channels share a common 'IndividualChannelStream' in bitstream.
     int     ms_mode;          ///< Signals mid/side stereo flags coding mode (used by encoder)
@@ -248,7 +264,8 @@ typedef struct {
 /**
  * main AAC context
  */
-typedef struct {
+typedef struct
+{
     AVCodecContext *avctx;
 
     MPEG4AudioConfig m4ac;

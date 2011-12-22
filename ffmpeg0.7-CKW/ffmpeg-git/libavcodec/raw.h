@@ -29,13 +29,14 @@
 
 #include "avcodec.h"
 
-typedef struct PixelFormatTag {
+typedef struct PixelFormatTag
+{
     enum PixelFormat pix_fmt;
     unsigned int fourcc;
 } PixelFormatTag;
 
 extern const PixelFormatTag ff_raw_pix_fmt_tags[];
-FFMPEGLIB_API const PixelFormatTag* av_getff_raw_pix_fmt_tags(void);
+FFMPEGLIB_API const PixelFormatTag *av_getff_raw_pix_fmt_tags(void);
 FFMPEGLIB_API enum PixelFormat ff_find_pix_fmt(const PixelFormatTag *tags, unsigned int fourcc);
 
 #endif /* AVCODEC_RAW_H */

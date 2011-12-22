@@ -33,14 +33,27 @@
 
 static void rtmp_log(int level, const char *fmt, va_list args)
 {
-    switch (level) {
+    switch (level)
+    {
     default:
-    case RTMP_LOGCRIT:    level = AV_LOG_FATAL;   break;
-    case RTMP_LOGERROR:   level = AV_LOG_ERROR;   break;
-    case RTMP_LOGWARNING: level = AV_LOG_WARNING; break;
-    case RTMP_LOGINFO:    level = AV_LOG_INFO;    break;
-    case RTMP_LOGDEBUG:   level = AV_LOG_VERBOSE; break;
-    case RTMP_LOGDEBUG2:  level = AV_LOG_DEBUG;   break;
+    case RTMP_LOGCRIT:
+        level = AV_LOG_FATAL;
+        break;
+    case RTMP_LOGERROR:
+        level = AV_LOG_ERROR;
+        break;
+    case RTMP_LOGWARNING:
+        level = AV_LOG_WARNING;
+        break;
+    case RTMP_LOGINFO:
+        level = AV_LOG_INFO;
+        break;
+    case RTMP_LOGDEBUG:
+        level = AV_LOG_VERBOSE;
+        break;
+    case RTMP_LOGDEBUG2:
+        level = AV_LOG_DEBUG;
+        break;
     }
 
     av_vlog(NULL, level, fmt, args);
@@ -77,20 +90,34 @@ static int rtmp_open(URLContext *s, const char *uri, int flags)
     if (!r)
         return AVERROR(ENOMEM);
 
-    switch (av_log_get_level()) {
+    switch (av_log_get_level())
+    {
     default:
-    case AV_LOG_FATAL:   rc = RTMP_LOGCRIT;    break;
-    case AV_LOG_ERROR:   rc = RTMP_LOGERROR;   break;
-    case AV_LOG_WARNING: rc = RTMP_LOGWARNING; break;
-    case AV_LOG_INFO:    rc = RTMP_LOGINFO;    break;
-    case AV_LOG_VERBOSE: rc = RTMP_LOGDEBUG;   break;
-    case AV_LOG_DEBUG:   rc = RTMP_LOGDEBUG2;  break;
+    case AV_LOG_FATAL:
+        rc = RTMP_LOGCRIT;
+        break;
+    case AV_LOG_ERROR:
+        rc = RTMP_LOGERROR;
+        break;
+    case AV_LOG_WARNING:
+        rc = RTMP_LOGWARNING;
+        break;
+    case AV_LOG_INFO:
+        rc = RTMP_LOGINFO;
+        break;
+    case AV_LOG_VERBOSE:
+        rc = RTMP_LOGDEBUG;
+        break;
+    case AV_LOG_DEBUG:
+        rc = RTMP_LOGDEBUG2;
+        break;
     }
     RTMP_LogSetLevel(rc);
     RTMP_LogSetCallback(rtmp_log);
 
     RTMP_Init(r);
-    if (!RTMP_SetupURL(r, s->filename)) {
+    if (!RTMP_SetupURL(r, s->filename))
+    {
         rc = -1;
         goto fail;
     }
@@ -98,7 +125,8 @@ static int rtmp_open(URLContext *s, const char *uri, int flags)
     if (flags & AVIO_WRONLY)
         RTMP_EnableWrite(r);
 
-    if (!RTMP_Connect(r, NULL) || !RTMP_ConnectStream(r, 0)) {
+    if (!RTMP_Connect(r, NULL) || !RTMP_ConnectStream(r, 0))
+    {
         rc = -1;
         goto fail;
     }
@@ -145,7 +173,7 @@ static int64_t rtmp_read_seek(URLContext *s, int stream_index,
     /* seeks are in milliseconds */
     if (stream_index < 0)
         timestamp = av_rescale_rnd(timestamp, 1000, AV_TIME_BASE,
-            flags & AVSEEK_FLAG_BACKWARD ? AV_ROUND_DOWN : AV_ROUND_UP);
+                                   flags & AVSEEK_FLAG_BACKWARD ? AV_ROUND_DOWN : AV_ROUND_UP);
 
     if (!RTMP_SendSeek(r, timestamp))
         return -1;
@@ -159,7 +187,8 @@ static int rtmp_get_file_handle(URLContext *s)
     return RTMP_Socket(r);
 }
 
-static URLProtocol ff_rtmp_protocol = {
+static URLProtocol ff_rtmp_protocol =
+{
     .name                = "rtmp",
     .url_open            = rtmp_open,
     .url_read            = rtmp_read,
@@ -170,7 +199,8 @@ static URLProtocol ff_rtmp_protocol = {
     .url_get_file_handle = rtmp_get_file_handle
 };
 
-URLProtocol ff_rtmpt_protocol = {
+URLProtocol ff_rtmpt_protocol =
+{
     .name                = "rtmpt",
     .url_open            = rtmp_open,
     .url_read            = rtmp_read,
@@ -181,7 +211,8 @@ URLProtocol ff_rtmpt_protocol = {
     .url_get_file_handle = rtmp_get_file_handle
 };
 
-URLProtocol ff_rtmpe_protocol = {
+URLProtocol ff_rtmpe_protocol =
+{
     .name                = "rtmpe",
     .url_open            = rtmp_open,
     .url_read            = rtmp_read,
@@ -192,7 +223,8 @@ URLProtocol ff_rtmpe_protocol = {
     .url_get_file_handle = rtmp_get_file_handle
 };
 
-URLProtocol ff_rtmpte_protocol = {
+URLProtocol ff_rtmpte_protocol =
+{
     .name                = "rtmpte",
     .url_open            = rtmp_open,
     .url_read            = rtmp_read,
@@ -203,7 +235,8 @@ URLProtocol ff_rtmpte_protocol = {
     .url_get_file_handle = rtmp_get_file_handle
 };
 
-URLProtocol ff_rtmps_protocol = {
+URLProtocol ff_rtmps_protocol =
+{
     .name                = "rtmps",
     .url_open            = rtmp_open,
     .url_read            = rtmp_read,

@@ -36,12 +36,14 @@
 #define FLAG_KEY_FRAME       0x01
 #define FLAG_DTS             0x02
 
-enum {
+enum
+{
     READ_HEADER,
     READ_DATA,
 };
 
-typedef struct FFMContext {
+typedef struct FFMContext
+{
     /* only reading mode */
     int64_t write_index, file_size;
     int read_state;

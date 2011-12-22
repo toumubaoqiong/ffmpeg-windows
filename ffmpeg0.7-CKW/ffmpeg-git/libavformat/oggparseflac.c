@@ -27,7 +27,7 @@
 #define OGG_FLAC_METADATA_TYPE_STREAMINFO 0x7F
 
 static int
-flac_header (AVFormatContext * s, int idx)
+flac_header (AVFormatContext *s, int idx)
 {
     struct ogg *ogg = s->priv_data;
     struct ogg_stream *os = ogg->streams + idx;
@@ -39,17 +39,18 @@ flac_header (AVFormatContext * s, int idx)
     if (os->buf[os->pstart] == 0xff)
         return 0;
 
-    init_get_bits(&gb, os->buf + os->pstart, os->psize*8);
+    init_get_bits(&gb, os->buf + os->pstart, os->psize * 8);
     skip_bits1(&gb); /* metadata_last */
     mdt = get_bits(&gb, 7);
 
-    if (mdt == OGG_FLAC_METADATA_TYPE_STREAMINFO) {
+    if (mdt == OGG_FLAC_METADATA_TYPE_STREAMINFO)
+    {
         uint8_t *streaminfo_start = os->buf + os->pstart + 5 + 4 + 4 + 4;
-        skip_bits_long(&gb, 4*8); /* "FLAC" */
+        skip_bits_long(&gb, 4 * 8); /* "FLAC" */
         if(get_bits(&gb, 8) != 1) /* unsupported major version */
             return -1;
         skip_bits_long(&gb, 8 + 16); /* minor version + header count */
-        skip_bits_long(&gb, 4*8); /* "fLaC" */
+        skip_bits_long(&gb, 4 * 8); /* "fLaC" */
 
         /* METADATA_BLOCK_HEADER */
         if (get_bits_long(&gb, 32) != FLAC_STREAMINFO_SIZE)
@@ -66,7 +67,9 @@ flac_header (AVFormatContext * s, int idx)
         st->codec->extradata_size = FLAC_STREAMINFO_SIZE;
 
         av_set_pts_info(st, 64, 1, st->codec->sample_rate);
-    } else if (mdt == FLAC_METADATA_TYPE_VORBIS_COMMENT) {
+    }
+    else if (mdt == FLAC_METADATA_TYPE_VORBIS_COMMENT)
+    {
         ff_vorbis_comment (s, &st->metadata, os->buf + os->pstart + 4, os->psize - 4);
     }
 
@@ -74,7 +77,7 @@ flac_header (AVFormatContext * s, int idx)
 }
 
 static int
-old_flac_header (AVFormatContext * s, int idx)
+old_flac_header (AVFormatContext *s, int idx)
 {
     AVStream *st = s->streams[idx];
     st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
@@ -83,13 +86,15 @@ old_flac_header (AVFormatContext * s, int idx)
     return 0;
 }
 
-const struct ogg_codec ff_flac_codec = {
+const struct ogg_codec ff_flac_codec =
+{
     .magic = "\177FLAC",
     .magicsize = 5,
     .header = flac_header
 };
 
-const struct ogg_codec ff_old_flac_codec = {
+const struct ogg_codec ff_old_flac_codec =
+{
     .magic = "fLaC",
     .magicsize = 4,
     .header = old_flac_header

@@ -49,25 +49,28 @@ static void clear_blocks_dcbz32_ppc(DCTELEM *blocks)
     register int misal = ((unsigned long)blocks & 0x00000010);
     register int i = 0;
 #if 1
-    if (misal) {
-        ((unsigned long*)blocks)[0] = 0L;
-        ((unsigned long*)blocks)[1] = 0L;
-        ((unsigned long*)blocks)[2] = 0L;
-        ((unsigned long*)blocks)[3] = 0L;
+    if (misal)
+    {
+        ((unsigned long *)blocks)[0] = 0L;
+        ((unsigned long *)blocks)[1] = 0L;
+        ((unsigned long *)blocks)[2] = 0L;
+        ((unsigned long *)blocks)[3] = 0L;
         i += 16;
     }
-    for ( ; i < sizeof(DCTELEM)*6*64-31 ; i += 32) {
+    for ( ; i < sizeof(DCTELEM) * 6 * 64 - 31 ; i += 32)
+    {
         __asm__ volatile("dcbz %0,%1" : : "b" (blocks), "r" (i) : "memory");
     }
-    if (misal) {
-        ((unsigned long*)blocks)[188] = 0L;
-        ((unsigned long*)blocks)[189] = 0L;
-        ((unsigned long*)blocks)[190] = 0L;
-        ((unsigned long*)blocks)[191] = 0L;
+    if (misal)
+    {
+        ((unsigned long *)blocks)[188] = 0L;
+        ((unsigned long *)blocks)[189] = 0L;
+        ((unsigned long *)blocks)[190] = 0L;
+        ((unsigned long *)blocks)[191] = 0L;
         i += 16;
     }
 #else
-    memset(blocks, 0, sizeof(DCTELEM)*6*64);
+    memset(blocks, 0, sizeof(DCTELEM) * 6 * 64);
 #endif
 }
 
@@ -79,24 +82,26 @@ static void clear_blocks_dcbz128_ppc(DCTELEM *blocks)
     register int misal = ((unsigned long)blocks & 0x0000007f);
     register int i = 0;
 #if 1
-    if (misal) {
+    if (misal)
+    {
         // we could probably also optimize this case,
         // but there's not much point as the machines
         // aren't available yet (2003-06-26)
-        memset(blocks, 0, sizeof(DCTELEM)*6*64);
+        memset(blocks, 0, sizeof(DCTELEM) * 6 * 64);
     }
     else
-        for ( ; i < sizeof(DCTELEM)*6*64 ; i += 128) {
+        for ( ; i < sizeof(DCTELEM) * 6 * 64 ; i += 128)
+        {
             __asm__ volatile("dcbzl %0,%1" : : "b" (blocks), "r" (i) : "memory");
         }
 #else
-    memset(blocks, 0, sizeof(DCTELEM)*6*64);
+    memset(blocks, 0, sizeof(DCTELEM) * 6 * 64);
 #endif
 }
 #else
 static void clear_blocks_dcbz128_ppc(DCTELEM *blocks)
 {
-    memset(blocks, 0, sizeof(DCTELEM)*6*64);
+    memset(blocks, 0, sizeof(DCTELEM) * 6 * 64);
 }
 #endif
 
@@ -114,7 +119,8 @@ static long check_dcbzl_effect(void)
     register long i = 0;
     long count = 0;
 
-    if (!fakedata) {
+    if (!fakedata)
+    {
         return 0L;
     }
 
@@ -126,7 +132,8 @@ static long check_dcbzl_effect(void)
        in gcc-3.3 / RS/6000 speaks. seems to avoid using r0, so.... */
     __asm__ volatile("dcbzl %0, %1" : : "b" (fakedata_middle), "r" (zero));
 
-    for (i = 0; i < 1024 ; i ++) {
+    for (i = 0; i < 1024 ; i ++)
+    {
         if (fakedata[i] == (char)0)
             count++;
     }
@@ -138,27 +145,31 @@ static long check_dcbzl_effect(void)
 #else
 static long check_dcbzl_effect(void)
 {
-  return 0;
+    return 0;
 }
 #endif
 
 static void prefetch_ppc(void *mem, int stride, int h)
 {
     register const uint8_t *p = mem;
-    do {
+    do
+    {
         __asm__ volatile ("dcbt 0,%0" : : "r" (p));
-        p+= stride;
-    } while(--h);
+        p += stride;
+    }
+    while(--h);
 }
 
-void dsputil_init_ppc(DSPContext* c, AVCodecContext *avctx)
+void dsputil_init_ppc(DSPContext *c, AVCodecContext *avctx)
 {
     const int h264_high_depth = avctx->codec_id == CODEC_ID_H264 && avctx->bits_per_raw_sample > 8;
 
     // Common optimizations whether AltiVec is available or not
     c->prefetch = prefetch_ppc;
-    if (!h264_high_depth) {
-    switch (check_dcbzl_effect()) {
+    if (!h264_high_depth)
+    {
+        switch (check_dcbzl_effect())
+        {
         case 32:
             c->clear_blocks = clear_blocks_dcbz32_ppc;
             break;
@@ -167,13 +178,14 @@ void dsputil_init_ppc(DSPContext* c, AVCodecContext *avctx)
             break;
         default:
             break;
-    }
+        }
     }
 
 #if HAVE_ALTIVEC
     if(CONFIG_H264_DECODER) dsputil_h264_init_ppc(c, avctx);
 
-    if (av_get_cpu_flags() & AV_CPU_FLAG_ALTIVEC) {
+    if (av_get_cpu_flags() & AV_CPU_FLAG_ALTIVEC)
+    {
         dsputil_init_altivec(c, avctx);
         float_init_altivec(c, avctx);
         int_init_altivec(c, avctx);
@@ -181,19 +193,24 @@ void dsputil_init_ppc(DSPContext* c, AVCodecContext *avctx)
 
 #if CONFIG_ENCODERS
         if (avctx->dct_algo == FF_DCT_AUTO ||
-            avctx->dct_algo == FF_DCT_ALTIVEC) {
+                avctx->dct_algo == FF_DCT_ALTIVEC)
+        {
             c->fdct = fdct_altivec;
         }
 #endif //CONFIG_ENCODERS
 
-        if (avctx->lowres==0) {
+        if (avctx->lowres == 0)
+        {
             if ((avctx->idct_algo == FF_IDCT_AUTO) ||
-                (avctx->idct_algo == FF_IDCT_ALTIVEC)) {
+                    (avctx->idct_algo == FF_IDCT_ALTIVEC))
+            {
                 c->idct_put = idct_put_altivec;
                 c->idct_add = idct_add_altivec;
                 c->idct_permutation_type = FF_TRANSPOSE_IDCT_PERM;
-            }else if((CONFIG_VP3_DECODER || CONFIG_VP5_DECODER || CONFIG_VP6_DECODER) &&
-                     avctx->idct_algo==FF_IDCT_VP3){
+            }
+            else if((CONFIG_VP3_DECODER || CONFIG_VP5_DECODER || CONFIG_VP6_DECODER) &&
+                    avctx->idct_algo == FF_IDCT_VP3)
+            {
                 c->idct_put = ff_vp3_idct_put_altivec;
                 c->idct_add = ff_vp3_idct_add_altivec;
                 c->idct     = ff_vp3_idct_altivec;

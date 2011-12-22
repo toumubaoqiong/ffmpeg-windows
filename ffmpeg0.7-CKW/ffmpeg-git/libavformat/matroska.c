@@ -21,7 +21,8 @@
 
 #include "matroska.h"
 
-const CodecTags ff_mkv_codec_tags[]={
+const CodecTags ff_mkv_codec_tags[] =
+{
     {"A_AAC"            , CODEC_ID_AAC},
     {"A_AC3"            , CODEC_ID_AC3},
     {"A_DTS"            , CODEC_ID_DTS},
@@ -82,7 +83,8 @@ const CodecTags ff_mkv_codec_tags[]={
     {""                 , CODEC_ID_NONE}
 };
 
-const CodecMime ff_mkv_mime_tags[] = {
+const CodecMime ff_mkv_mime_tags[] =
+{
     {"text/plain"                 , CODEC_ID_TEXT},
     {"image/gif"                  , CODEC_ID_GIF},
     {"image/jpeg"                 , CODEC_ID_MJPEG},
@@ -94,7 +96,8 @@ const CodecMime ff_mkv_mime_tags[] = {
     {""                           , CODEC_ID_NONE}
 };
 
-const AVMetadataConv ff_mkv_metadata_conv[] = {
+const AVMetadataConv ff_mkv_metadata_conv[] =
+{
     { "LEAD_PERFORMER", "performer" },
     { "PART_NUMBER"   , "track"  },
     { 0 }

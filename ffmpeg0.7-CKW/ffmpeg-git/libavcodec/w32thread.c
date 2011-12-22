@@ -26,7 +26,8 @@
 #include <windows.h>
 #include <process.h>
 
-typedef struct ThreadContext{
+typedef struct ThreadContext
+{
     AVCodecContext *avctx;
     HANDLE thread;
     HANDLE work_sem;
@@ -39,15 +40,17 @@ typedef struct ThreadContext{
     int *jobnr;
     int *ret;
     int threadnr;
-}ThreadContext;
+} ThreadContext;
 
 
-static unsigned WINAPI attribute_align_arg thread_func(void *v){
-    ThreadContext *c= v;
+static unsigned WINAPI attribute_align_arg thread_func(void *v)
+{
+    ThreadContext *c = v;
 
-    for(;;){
+    for(;;)
+    {
         int ret, jobnr;
-//printf("thread_func %X enter wait\n", (int)v); fflush(stdout);
+        //printf("thread_func %X enter wait\n", (int)v); fflush(stdout);
         WaitForSingleObject(c->work_sem, INFINITE);
         // avoid trying to access jobnr if we should quit
         if (!c->func && !c->func2)
@@ -55,14 +58,14 @@ static unsigned WINAPI attribute_align_arg thread_func(void *v){
         WaitForSingleObject(c->job_sem, INFINITE);
         jobnr = (*c->jobnr)++;
         ReleaseSemaphore(c->job_sem, 1, 0);
-//printf("thread_func %X after wait (func=%X)\n", (int)v, (int)c->func); fflush(stdout);
+        //printf("thread_func %X after wait (func=%X)\n", (int)v, (int)c->func); fflush(stdout);
         if(c->func)
-            ret= c->func(c->avctx, (uint8_t *)c->arg + jobnr*c->argsize);
+            ret = c->func(c->avctx, (uint8_t *)c->arg + jobnr * c->argsize);
         else
-            ret= c->func2(c->avctx, c->arg, jobnr, c->threadnr);
+            ret = c->func2(c->avctx, c->arg, jobnr, c->threadnr);
         if (c->ret)
             c->ret[jobnr] = ret;
-//printf("thread_func %X signal complete\n", (int)v); fflush(stdout);
+        //printf("thread_func %X signal complete\n", (int)v); fflush(stdout);
         ReleaseSemaphore(c->done_sem, 1, 0);
     }
 
@@ -94,8 +97,9 @@ static unsigned WINAPI attribute_align_arg thread_func(void *v){
 //    av_freep(&s->thread_opaque);
 //}
 
-static int avcodec_thread_execute(AVCodecContext *s, int (*func)(AVCodecContext *c2, void *arg2),void *arg, int *ret, int count, int size){
-    ThreadContext *c= s->thread_opaque;
+static int avcodec_thread_execute(AVCodecContext *s, int (*func)(AVCodecContext *c2, void *arg2), void *arg, int *ret, int count, int size)
+{
+    ThreadContext *c = s->thread_opaque;
     int i;
     int jobnr = 0;
 
@@ -103,24 +107,26 @@ static int avcodec_thread_execute(AVCodecContext *s, int (*func)(AVCodecContext 
 
     /* note, we can be certain that this is not called with the same AVCodecContext by different threads at the same time */
 
-    for(i=0; i<s->thread_count; i++){
-        c[i].arg= arg;
-        c[i].argsize= size;
-        c[i].func= func;
-        c[i].ret= ret;
+    for(i = 0; i < s->thread_count; i++)
+    {
+        c[i].arg = arg;
+        c[i].argsize = size;
+        c[i].func = func;
+        c[i].ret = ret;
         c[i].jobnr = &jobnr;
     }
     ReleaseSemaphore(c[0].work_sem, count, 0);
-    for(i=0; i<count; i++)
+    for(i = 0; i < count; i++)
         WaitForSingleObject(c[0].done_sem, INFINITE);
 
     return 0;
 }
 
-static int avcodec_thread_execute2(AVCodecContext *s, int (*func)(AVCodecContext *c2, void *arg2, int, int),void *arg, int *ret, int count){
-    ThreadContext *c= s->thread_opaque;
+static int avcodec_thread_execute2(AVCodecContext *s, int (*func)(AVCodecContext *c2, void *arg2, int, int), void *arg, int *ret, int count)
+{
+    ThreadContext *c = s->thread_opaque;
     int i;
-    for(i=0; i<s->thread_count; i++)
+    for(i = 0; i < s->thread_count; i++)
         c[i].func2 = func;
     avcodec_thread_execute(s, NULL, arg, ret, count, 0);
 }

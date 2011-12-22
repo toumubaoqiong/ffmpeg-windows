@@ -45,36 +45,47 @@ static void dvd_encode_rle(uint8_t **pq,
 
     q = *pq;
 
-    for (y = 0; y < h; ++y) {
+    for (y = 0; y < h; ++y)
+    {
         ncnt = 0;
-        for(x = 0; x < w; x += len) {
+        for(x = 0; x < w; x += len)
+        {
             color = bitmap[x];
-            for (len=1; x+len < w; ++len)
+            for (len = 1; x + len < w; ++len)
                 if (bitmap[x+len] != color)
                     break;
             color = cmap[color];
             assert(color < 4);
-            if (len < 0x04) {
-                PUTNIBBLE((len << 2)|color);
-            } else if (len < 0x10) {
+            if (len < 0x04)
+            {
+                PUTNIBBLE((len << 2) | color);
+            }
+            else if (len < 0x10)
+            {
                 PUTNIBBLE(len >> 2);
-                PUTNIBBLE((len << 2)|color);
-            } else if (len < 0x40) {
+                PUTNIBBLE((len << 2) | color);
+            }
+            else if (len < 0x40)
+            {
                 PUTNIBBLE(0);
                 PUTNIBBLE(len >> 2);
-                PUTNIBBLE((len << 2)|color);
-            } else if (x+len == w) {
+                PUTNIBBLE((len << 2) | color);
+            }
+            else if (x + len == w)
+            {
                 PUTNIBBLE(0);
                 PUTNIBBLE(0);
                 PUTNIBBLE(0);
                 PUTNIBBLE(color);
-            } else {
+            }
+            else
+            {
                 if (len > 0xff)
                     len = 0xff;
                 PUTNIBBLE(0);
                 PUTNIBBLE(len >> 6);
                 PUTNIBBLE(len >> 2);
-                PUTNIBBLE((len << 2)|color);
+                PUTNIBBLE((len << 2) | color);
             }
         }
         /* end of line */
@@ -103,22 +114,26 @@ static int encode_dvd_subtitles(uint8_t *outbuf, int outbuf_size,
         rects = 20;
 
     // analyze bitmaps, compress to 4 colors
-    for (i=0; i<256; ++i) {
+    for (i = 0; i < 256; ++i)
+    {
         hist[i] = 0;
         cmap[i] = 0;
     }
     for (object_id = 0; object_id < rects; object_id++)
-        for (i=0; i<h->rects[object_id]->w*h->rects[object_id]->h; ++i) {
+        for (i = 0; i < h->rects[object_id]->w * h->rects[object_id]->h; ++i)
+        {
             color = h->rects[object_id]->pict.data[0][i];
             // only count non-transparent pixels
-            alpha = ((uint32_t*)h->rects[object_id]->pict.data[1])[color] >> 24;
+            alpha = ((uint32_t *)h->rects[object_id]->pict.data[1])[color] >> 24;
             hist[color] += alpha;
         }
-    for (color=3;; --color) {
+    for (color = 3;; --color)
+    {
         hmax = 0;
         imax = 0;
-        for (i=0; i<256; ++i)
-            if (hist[i] > hmax) {
+        for (i = 0; i < 256; ++i)
+            if (hist[i] > hmax)
+            {
                 imax = i;
                 hmax = hist[i];
             }
@@ -135,21 +150,23 @@ static int encode_dvd_subtitles(uint8_t *outbuf, int outbuf_size,
 
     // encode data block
     q = outbuf + 4;
-    for (object_id = 0; object_id < rects; object_id++) {
+    for (object_id = 0; object_id < rects; object_id++)
+    {
         offset1[object_id] = q - outbuf;
         // worst case memory requirement: 1 nibble per pixel..
-        if ((q - outbuf) + h->rects[object_id]->w*h->rects[object_id]->h/2
-            + 17*rects + 21 > outbuf_size) {
+        if ((q - outbuf) + h->rects[object_id]->w * h->rects[object_id]->h / 2
+                + 17 * rects + 21 > outbuf_size)
+        {
             av_log(NULL, AV_LOG_ERROR, "dvd_subtitle too big\n");
             return -1;
         }
         dvd_encode_rle(&q, h->rects[object_id]->pict.data[0],
-                       h->rects[object_id]->w*2,
+                       h->rects[object_id]->w * 2,
                        h->rects[object_id]->w, h->rects[object_id]->h >> 1,
                        cmap);
         offset2[object_id] = q - outbuf;
         dvd_encode_rle(&q, h->rects[object_id]->pict.data[0] + h->rects[object_id]->w,
-                       h->rects[object_id]->w*2,
+                       h->rects[object_id]->w * 2,
                        h->rects[object_id]->w, h->rects[object_id]->h >> 1,
                        cmap);
     }
@@ -159,17 +176,20 @@ static int encode_dvd_subtitles(uint8_t *outbuf, int outbuf_size,
     bytestream_put_be16(&qq, q - outbuf);
 
     // send start display command
-    bytestream_put_be16(&q, (h->start_display_time*90) >> 10);
-    bytestream_put_be16(&q, (q - outbuf) /*- 2 */ + 8 + 12*rects + 2);
+    bytestream_put_be16(&q, (h->start_display_time * 90) >> 10);
+    bytestream_put_be16(&q, (q - outbuf) /*- 2 */ + 8 + 12 * rects + 2);
     *q++ = 0x03; // palette - 4 nibbles
-    *q++ = 0x03; *q++ = 0x7f;
+    *q++ = 0x03;
+    *q++ = 0x7f;
     *q++ = 0x04; // alpha - 4 nibbles
-    *q++ = 0xf0; *q++ = 0x00;
+    *q++ = 0xf0;
+    *q++ = 0x00;
     //*q++ = 0x0f; *q++ = 0xff;
 
     // XXX not sure if more than one rect can really be encoded..
     // 12 bytes per rect
-    for (object_id = 0; object_id < rects; object_id++) {
+    for (object_id = 0; object_id < rects; object_id++)
+    {
         int x2 = h->rects[object_id]->x + h->rects[object_id]->w - 1;
         int y2 = h->rects[object_id]->y + h->rects[object_id]->h - 1;
 
@@ -192,7 +212,7 @@ static int encode_dvd_subtitles(uint8_t *outbuf, int outbuf_size,
     *q++ = 0xff; // terminating command
 
     // send stop display command last
-    bytestream_put_be16(&q, (h->end_display_time*90) >> 10);
+    bytestream_put_be16(&q, (h->end_display_time * 90) >> 10);
     bytestream_put_be16(&q, (q - outbuf) - 2 /*+ 4*/);
     *q++ = 0x02; // set end
     *q++ = 0xff; // terminating command
@@ -215,7 +235,8 @@ static int dvdsub_encode(AVCodecContext *avctx,
     return ret;
 }
 
-AVCodec ff_dvdsub_encoder = {
+AVCodec ff_dvdsub_encoder =
+{
     "dvdsub",
     AVMEDIA_TYPE_SUBTITLE,
     CODEC_ID_DVD_SUBTITLE,

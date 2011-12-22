@@ -30,7 +30,8 @@
 
 #include "cga_data.h"
 
-typedef struct TMVContext {
+typedef struct TMVContext
+{
     AVFrame pic;
 } TMVContext;
 
@@ -47,12 +48,14 @@ static int tmv_decode_frame(AVCodecContext *avctx, void *data,
     if (tmv->pic.data[0])
         avctx->release_buffer(avctx, &tmv->pic);
 
-    if (avctx->get_buffer(avctx, &tmv->pic) < 0) {
+    if (avctx->get_buffer(avctx, &tmv->pic) < 0)
+    {
         av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
         return -1;
     }
 
-    if (avpkt->size < 2*char_rows*char_cols) {
+    if (avpkt->size < 2 * char_rows * char_cols)
+    {
         av_log(avctx, AV_LOG_ERROR,
                "Input buffer too small, truncated sample?\n");
         *data_size = 0;
@@ -66,8 +69,10 @@ static int tmv_decode_frame(AVCodecContext *avctx, void *data,
     tmv->pic.palette_has_changed = 1;
     memcpy(tmv->pic.data[1], ff_cga_palette, 16 * 4);
 
-    for (y = 0; y < char_rows; y++) {
-        for (x = 0; x < char_cols; x++) {
+    for (y = 0; y < char_rows; y++)
+    {
+        for (x = 0; x < char_cols; x++)
+        {
             c  = *src++;
             bg = *src  >> 4;
             fg = *src++ & 0xF;
@@ -92,7 +97,8 @@ static av_cold int tmv_decode_close(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec ff_tmv_decoder = {
+AVCodec ff_tmv_decoder =
+{
     .name           = "tmv",
     .type           = AVMEDIA_TYPE_VIDEO,
     .id             = CODEC_ID_TMV,

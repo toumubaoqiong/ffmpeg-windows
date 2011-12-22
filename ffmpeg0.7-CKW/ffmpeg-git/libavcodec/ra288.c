@@ -31,7 +31,8 @@
 #define MAX_BACKWARD_FILTER_LEN    40
 #define MAX_BACKWARD_FILTER_NONREC 35
 
-typedef struct {
+typedef struct
+{
     float sp_lpc[36];      ///< LPC coefficients for speech data (spec: A)
     float gain_lpc[10];    ///< LPC coefficients for gain        (spec: GB)
 
@@ -79,11 +80,11 @@ static void decode(RA288Context *ractx, float gain, int cb_coef)
     float *block = ractx->sp_hist + 70 + 36; // current block
     float *gain_block = ractx->gain_hist + 28;
 
-    memmove(ractx->sp_hist + 70, ractx->sp_hist + 75, 36*sizeof(*block));
+    memmove(ractx->sp_hist + 70, ractx->sp_hist + 75, 36 * sizeof(*block));
 
     /* block 46 of G.728 spec */
     sum = 32.;
-    for (i=0; i < 10; i++)
+    for (i = 0; i < 10; i++)
         sum -= gain_block[9-i] * ractx->gain_lpc[i];
 
     /* block 47 of G.728 spec */
@@ -91,12 +92,12 @@ static void decode(RA288Context *ractx, float gain, int cb_coef)
 
     /* block 48 of G.728 spec */
     /* exp(sum * 0.1151292546497) == pow(10.0,sum/20) */
-    sumsum = exp(sum * 0.1151292546497) * gain * (1.0/(1<<23));
+    sumsum = exp(sum * 0.1151292546497) * gain * (1.0 / (1 << 23));
 
-    for (i=0; i < 5; i++)
+    for (i = 0; i < 5; i++)
         buffer[i] = codetable[cb_coef][i] * sumsum;
 
-    sum = ff_dot_productf(buffer, buffer, 5) * ((1<<24)/5.);
+    sum = ff_dot_productf(buffer, buffer, 5) * ((1 << 24) / 5.);
 
     sum = FFMAX(sum, 1);
 
@@ -133,13 +134,14 @@ static void do_hybrid_window(int order, int n, int non_rec, float *out,
     convolve(buffer1, work + order    , n      , order);
     convolve(buffer2, work + order + n, non_rec, order);
 
-    for (i=0; i <= order; i++) {
+    for (i = 0; i <= order; i++)
+    {
         out2[i] = out2[i] * 0.5625 + buffer1[i];
         out [i] = out2[i]          + buffer2[i];
     }
 
     /* Multiply by the white noise correcting factor (WNCF). */
-    *out *= 257./256.;
+    *out *= 257. / 256.;
 }
 
 /**
@@ -156,10 +158,10 @@ static void backward_filter(float *hist, float *rec, const float *window,
     if (!compute_lpc_coefs(temp, order, lpc, 0, 1, 1))
         apply_window(lpc, lpc, tab, order);
 
-    memmove(hist, hist + n, move_size*sizeof(*hist));
+    memmove(hist, hist + n, move_size * sizeof(*hist));
 }
 
-static int ra288_decode_frame(AVCodecContext * avctx, void *data,
+static int ra288_decode_frame(AVCodecContext *avctx, void *data,
                               int *data_size, AVPacket *avpkt)
 {
     const uint8_t *buf = avpkt->data;
@@ -169,28 +171,31 @@ static int ra288_decode_frame(AVCodecContext * avctx, void *data,
     RA288Context *ractx = avctx->priv_data;
     GetBitContext gb;
 
-    if (buf_size < avctx->block_align) {
+    if (buf_size < avctx->block_align)
+    {
         av_log(avctx, AV_LOG_ERROR,
                "Error! Input buffer is too small [%d<%d]\n",
                buf_size, avctx->block_align);
         return 0;
     }
 
-    if (*data_size < 32*5*4)
+    if (*data_size < 32 * 5 * 4)
         return -1;
 
     init_get_bits(&gb, buf, avctx->block_align * 8);
 
-    for (i=0; i < 32; i++) {
+    for (i = 0; i < 32; i++)
+    {
         float gain = amptable[get_bits(&gb, 3)];
-        int cb_coef = get_bits(&gb, 6 + (i&1));
+        int cb_coef = get_bits(&gb, 6 + (i & 1));
 
         decode(ractx, gain, cb_coef);
 
-        for (j=0; j < 5; j++)
+        for (j = 0; j < 5; j++)
             *(out++) = ractx->sp_hist[70 + 36 + j];
 
-        if ((i & 7) == 3) {
+        if ((i & 7) == 3)
+        {
             backward_filter(ractx->sp_hist, ractx->sp_rec, syn_window,
                             ractx->sp_lpc, syn_bw_tab, 36, 40, 35, 70);
 

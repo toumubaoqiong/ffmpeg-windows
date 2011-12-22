@@ -60,13 +60,15 @@ static void ffm_write_data(AVFormatContext *s,
     FFMContext *ffm = s->priv_data;
     int len;
 
-    if (header && ffm->frame_offset == 0) {
+    if (header && ffm->frame_offset == 0)
+    {
         ffm->frame_offset = ffm->packet_ptr - ffm->packet + FFM_HEADER_SIZE;
         ffm->dts = dts;
     }
 
     /* write as many packets as needed */
-    while (size > 0) {
+    while (size > 0)
+    {
         len = ffm->packet_end - ffm->packet_ptr;
         if (len > size)
             len = size;
@@ -97,14 +99,16 @@ static int ffm_write_header(AVFormatContext *s)
 
     avio_wb32(pb, s->nb_streams);
     bit_rate = 0;
-    for(i=0;i<s->nb_streams;i++) {
+    for(i = 0; i < s->nb_streams; i++)
+    {
         st = s->streams[i];
         bit_rate += st->codec->bit_rate;
     }
     avio_wb32(pb, bit_rate);
 
     /* list of streams */
-    for(i=0;i<s->nb_streams;i++) {
+    for(i = 0; i < s->nb_streams; i++)
+    {
         st = s->streams[i];
         av_set_pts_info(st, 64, 1, 1000000);
 
@@ -118,7 +122,8 @@ static int ffm_write_header(AVFormatContext *s)
         avio_wb32(pb, codec->flags2);
         avio_wb32(pb, codec->debug);
         /* specific info */
-        switch(codec->codec_type) {
+        switch(codec->codec_type)
+        {
         case AVMEDIA_TYPE_VIDEO:
             avio_wb32(pb, codec->time_base.num);
             avio_wb32(pb, codec->time_base.den);
@@ -177,7 +182,8 @@ static int ffm_write_header(AVFormatContext *s)
         default:
             return -1;
         }
-        if (codec->flags & CODEC_FLAG_GLOBAL_HEADER) {
+        if (codec->flags & CODEC_FLAG_GLOBAL_HEADER)
+        {
             avio_wb32(pb, codec->extradata_size);
             avio_write(pb, codec->extradata, codec->extradata_size);
         }
@@ -212,12 +218,13 @@ static int ffm_write_packet(AVFormatContext *s, AVPacket *pkt)
     header[1] = 0;
     if (pkt->flags & AV_PKT_FLAG_KEY)
         header[1] |= FLAG_KEY_FRAME;
-    AV_WB24(header+2, pkt->size);
-    AV_WB24(header+5, pkt->duration);
-    AV_WB64(header+8, s->timestamp + pkt->pts);
-    if (pkt->pts != pkt->dts) {
+    AV_WB24(header + 2, pkt->size);
+    AV_WB24(header + 5, pkt->duration);
+    AV_WB64(header + 8, s->timestamp + pkt->pts);
+    if (pkt->pts != pkt->dts)
+    {
         header[1] |= FLAG_DTS;
-        AV_WB32(header+16, pkt->pts - pkt->dts);
+        AV_WB32(header + 16, pkt->pts - pkt->dts);
         header_size += 4;
     }
     ffm_write_data(s, header, header_size, dts, 1);
@@ -240,7 +247,8 @@ static int ffm_write_trailer(AVFormatContext *s)
     return 0;
 }
 
-AVOutputFormat ff_ffm_muxer = {
+AVOutputFormat ff_ffm_muxer =
+{
     "ffm",
     NULL_IF_CONFIG_SMALL("FFM (FFserver live feed) format"),
     "",

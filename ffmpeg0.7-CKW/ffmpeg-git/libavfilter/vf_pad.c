@@ -34,7 +34,8 @@
 
 static int query_formats(AVFilterContext *ctx)
 {
-    static const enum PixelFormat pix_fmts[] = {
+    static const enum PixelFormat pix_fmts[] =
+    {
         PIX_FMT_ARGB,         PIX_FMT_RGBA,
         PIX_FMT_ABGR,         PIX_FMT_BGRA,
         PIX_FMT_RGB24,        PIX_FMT_BGR24,
@@ -53,7 +54,8 @@ static int query_formats(AVFilterContext *ctx)
     return 0;
 }
 
-typedef struct {
+typedef struct
+{
     int w, h;               ///< output dimensions, a value of 0 will result in the input size
     int x, y;               ///< offsets of the input area with respect to the padded area
     int in_w, in_h;         ///< width and height for the padded input video, which has to be aligned to the chroma values in order to avoid chroma issues
@@ -77,7 +79,8 @@ static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
         return AVERROR(EINVAL);
 
     /* sanity check params */
-    if (pad->w < 0 || pad->h < 0) {
+    if (pad->w < 0 || pad->h < 0)
+    {
         av_log(ctx, AV_LOG_ERROR, "Negative size values are not acceptable.\n");
         return AVERROR(EINVAL);
     }
@@ -90,7 +93,8 @@ static av_cold void uninit(AVFilterContext *ctx)
     PadContext *pad = ctx->priv;
     int i;
 
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < 4; i++)
+    {
         av_freep(&pad->line[i]);
         pad->line_step[i] = 0;
     }
@@ -130,9 +134,10 @@ static int config_input(AVFilterLink *inlink)
            is_packed_rgba ? "rgba" : "yuva");
 
     if (pad->x <  0 || pad->y <  0                      ||
-        pad->w <= 0 || pad->h <= 0                      ||
-        (unsigned)pad->x + (unsigned)inlink->w > pad->w ||
-        (unsigned)pad->y + (unsigned)inlink->h > pad->h) {
+            pad->w <= 0 || pad->h <= 0                      ||
+            (unsigned)pad->x + (unsigned)inlink->w > pad->w ||
+            (unsigned)pad->y + (unsigned)inlink->h > pad->h)
+    {
         av_log(ctx, AV_LOG_ERROR,
                "Input area %d:%d:%d:%d not within the padded area 0:0:%d:%d or zero-sized\n",
                pad->x, pad->y, pad->x + inlink->w, pad->y + inlink->h, pad->w, pad->h);
@@ -156,19 +161,20 @@ static AVFilterBufferRef *get_video_buffer(AVFilterLink *inlink, int perms, int 
     PadContext *pad = inlink->dst->priv;
 
     AVFilterBufferRef *picref = avfilter_get_video_buffer(inlink->dst->outputs[0], perms,
-                                                       w + (pad->w - pad->in_w),
-                                                       h + (pad->h - pad->in_h));
+                                w + (pad->w - pad->in_w),
+                                h + (pad->h - pad->in_h));
     int plane;
 
     picref->video->w = w;
     picref->video->h = h;
 
-    for (plane = 0; plane < 4 && picref->data[plane]; plane++) {
+    for (plane = 0; plane < 4 && picref->data[plane]; plane++)
+    {
         int hsub = (plane == 1 || plane == 2) ? pad->hsub : 0;
         int vsub = (plane == 1 || plane == 2) ? pad->vsub : 0;
 
         picref->data[plane] += (pad->x >> hsub) * pad->line_step[plane] +
-            (pad->y >> vsub) * picref->linesize[plane];
+                               (pad->y >> vsub) * picref->linesize[plane];
     }
 
     return picref;
@@ -179,20 +185,20 @@ static int does_clip(PadContext *pad, AVFilterBufferRef *outpicref, int plane, i
     int64_t x_in_buf, y_in_buf;
 
     x_in_buf =  outpicref->data[plane] - outpicref->buf->data[plane]
-             +  (x >> hsub) * pad      ->line_step[plane]
-             +  (y >> vsub) * outpicref->linesize [plane];
+                +  (x >> hsub) * pad      ->line_step[plane]
+                +  (y >> vsub) * outpicref->linesize [plane];
 
     if(x_in_buf < 0 || x_in_buf % pad->line_step[plane])
         return 1;
     x_in_buf /= pad->line_step[plane];
 
-    av_assert0(outpicref->buf->linesize[plane]>0); //while reference can use negative linesize the main buffer should not
+    av_assert0(outpicref->buf->linesize[plane] > 0); //while reference can use negative linesize the main buffer should not
 
     y_in_buf = x_in_buf / outpicref->buf->linesize[plane];
     x_in_buf %= outpicref->buf->linesize[plane];
 
-    if(   y_in_buf<<vsub >= outpicref->buf->h
-       || x_in_buf<<hsub >= outpicref->buf->w)
+    if(   y_in_buf << vsub >= outpicref->buf->h
+            || x_in_buf << hsub >= outpicref->buf->w)
         return 1;
     return 0;
 }
@@ -203,32 +209,34 @@ static void start_frame(AVFilterLink *inlink, AVFilterBufferRef *inpicref)
     AVFilterBufferRef *outpicref = avfilter_ref_buffer(inpicref, ~0);
     int plane;
 
-    for (plane = 0; plane < 4 && outpicref->data[plane]; plane++) {
+    for (plane = 0; plane < 4 && outpicref->data[plane]; plane++)
+    {
         int hsub = (plane == 1 || plane == 2) ? pad->hsub : 0;
         int vsub = (plane == 1 || plane == 2) ? pad->vsub : 0;
 
-        av_assert0(outpicref->buf->w>0 && outpicref->buf->h>0);
+        av_assert0(outpicref->buf->w > 0 && outpicref->buf->h > 0);
 
         if(outpicref->format != outpicref->buf->format) //unsupported currently
             break;
 
         outpicref->data[plane] -=   (pad->x  >> hsub) * pad      ->line_step[plane]
-                                  + (pad->y  >> vsub) * outpicref->linesize [plane];
+                                    + (pad->y  >> vsub) * outpicref->linesize [plane];
 
         if(   does_clip(pad, outpicref, plane, hsub, vsub, 0, 0)
-           || does_clip(pad, outpicref, plane, hsub, vsub, 0, pad->h-1)
-           || does_clip(pad, outpicref, plane, hsub, vsub, pad->w-1, 0)
-           || does_clip(pad, outpicref, plane, hsub, vsub, pad->w-1, pad->h-1)
+                || does_clip(pad, outpicref, plane, hsub, vsub, 0, pad->h - 1)
+                || does_clip(pad, outpicref, plane, hsub, vsub, pad->w - 1, 0)
+                || does_clip(pad, outpicref, plane, hsub, vsub, pad->w - 1, pad->h - 1)
           )
             break;
     }
-    pad->needs_copy= plane < 4 && outpicref->data[plane];
-    if(pad->needs_copy){
+    pad->needs_copy = plane < 4 && outpicref->data[plane];
+    if(pad->needs_copy)
+    {
         av_log(inlink->dst, AV_LOG_DEBUG, "Direct padding impossible allocating new frame\n");
         avfilter_unref_buffer(outpicref);
         outpicref = avfilter_get_video_buffer(inlink->dst->outputs[0], AV_PERM_WRITE | AV_PERM_NEG_LINESIZES,
-                                                       FFMAX(inlink->w, pad->w),
-                                                       FFMAX(inlink->h, pad->h));
+                                              FFMAX(inlink->w, pad->w),
+                                              FFMAX(inlink->h, pad->h));
         avfilter_copy_buffer_ref_props(outpicref, inpicref);
     }
 
@@ -251,17 +259,21 @@ static void draw_send_bar_slice(AVFilterLink *link, int y, int h, int slice_dir,
     PadContext *pad = link->dst->priv;
     int bar_y, bar_h = 0;
 
-    if        (slice_dir * before_slice ==  1 && y == pad->y) {
+    if        (slice_dir *before_slice ==  1 && y == pad->y)
+    {
         /* top bar */
         bar_y = 0;
         bar_h = pad->y;
-    } else if (slice_dir * before_slice == -1 && (y + h) == (pad->y + pad->in_h)) {
+    }
+    else if (slice_dir *before_slice == -1 && (y + h) == (pad->y + pad->in_h))
+    {
         /* bottom bar */
         bar_y = pad->y + pad->in_h;
         bar_h = pad->h - pad->in_h - pad->y;
     }
 
-    if (bar_h) {
+    if (bar_h)
+    {
         ff_draw_rectangle(link->dst->outputs[0]->out_buf->data,
                           link->dst->outputs[0]->out_buf->linesize,
                           pad->line, pad->line_step, pad->hsub, pad->vsub,
@@ -289,11 +301,12 @@ static void draw_slice(AVFilterLink *link, int y, int h, int slice_dir)
     ff_draw_rectangle(outpic->data, outpic->linesize, pad->line, pad->line_step,
                       pad->hsub, pad->vsub, 0, y, pad->x, h);
 
-    if(pad->needs_copy){
+    if(pad->needs_copy)
+    {
         ff_copy_rectangle(outpic->data, outpic->linesize,
                           inpic->data, inpic->linesize, pad->line_step,
                           pad->hsub, pad->vsub,
-                          pad->x, y, y-pad->y, inpic->video->w, h);
+                          pad->x, y, y - pad->y, inpic->video->w, h);
     }
 
     /* right border */
@@ -305,7 +318,8 @@ static void draw_slice(AVFilterLink *link, int y, int h, int slice_dir)
     draw_send_bar_slice(link, y, h, slice_dir, -1);
 }
 
-AVFilter avfilter_vf_pad = {
+AVFilter avfilter_vf_pad =
+{
     .name          = "pad",
     .description   = NULL_IF_CONFIG_SMALL("Pad input image to width:height[:x:y[:color]] (default x and y: 0, default color: black)."),
 
@@ -314,17 +328,27 @@ AVFilter avfilter_vf_pad = {
     .uninit        = uninit,
     .query_formats = query_formats,
 
-    .inputs    = (AVFilterPad[]) {{ .name             = "default",
-                                    .type             = AVMEDIA_TYPE_VIDEO,
-                                    .config_props     = config_input,
-                                    .get_video_buffer = get_video_buffer,
-                                    .start_frame      = start_frame,
-                                    .draw_slice       = draw_slice,
-                                    .end_frame        = end_frame, },
-                                  { .name = NULL}},
+    .inputs    = (AVFilterPad[])
+    {
+        {
+            .name             = "default",
+            .type             = AVMEDIA_TYPE_VIDEO,
+            .config_props     = config_input,
+            .get_video_buffer = get_video_buffer,
+            .start_frame      = start_frame,
+            .draw_slice       = draw_slice,
+            .end_frame        = end_frame,
+        },
+        { .name = NULL}
+    },
 
-    .outputs   = (AVFilterPad[]) {{ .name             = "default",
-                                    .type             = AVMEDIA_TYPE_VIDEO,
-                                    .config_props     = config_output, },
-                                  { .name = NULL}},
+    .outputs   = (AVFilterPad[])
+    {
+        {
+            .name             = "default",
+            .type             = AVMEDIA_TYPE_VIDEO,
+            .config_props     = config_output,
+        },
+        { .name = NULL}
+    },
 };

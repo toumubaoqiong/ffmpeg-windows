@@ -45,7 +45,8 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size,
     if (pic->data[0])
         avctx->release_buffer(avctx, pic);
 
-    if (avpkt->size < 4 * aligned_width * avctx->height) {
+    if (avpkt->size < 4 * aligned_width * avctx->height)
+    {
         av_log(avctx, AV_LOG_ERROR, "packet too small\n");
         return -1;
     }
@@ -58,16 +59,21 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size,
     pic->key_frame = 1;
     dst_line = pic->data[0];
 
-    for (h = 0; h < avctx->height; h++) {
+    for (h = 0; h < avctx->height; h++)
+    {
         uint16_t *dst = (uint16_t *)dst_line;
-        for (w = 0; w < avctx->width; w++) {
+        for (w = 0; w < avctx->width; w++)
+        {
             uint32_t pixel = av_be2ne32(*src++);
             uint16_t r, g, b;
-            if (avctx->codec_id==CODEC_ID_R210) {
+            if (avctx->codec_id == CODEC_ID_R210)
+            {
                 b =  pixel <<  6;
                 g = (pixel >>  4) & 0xffc0;
                 r = (pixel >> 14) & 0xffc0;
-            } else {
+            }
+            else
+            {
                 b =  pixel <<  4;
                 g = (pixel >>  6) & 0xffc0;
                 r = (pixel >> 16) & 0xffc0;
@@ -81,7 +87,7 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size,
     }
 
     *data_size = sizeof(AVFrame);
-    *(AVFrame*)data = *avctx->coded_frame;
+    *(AVFrame *)data = *avctx->coded_frame;
 
     return avpkt->size;
 }
@@ -97,7 +103,8 @@ static av_cold int decode_close(AVCodecContext *avctx)
 }
 
 #if CONFIG_R210_DECODER
-AVCodec ff_r210_decoder = {
+AVCodec ff_r210_decoder =
+{
     "r210",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_R210,
@@ -111,7 +118,8 @@ AVCodec ff_r210_decoder = {
 };
 #endif
 #if CONFIG_R10K_DECODER
-AVCodec ff_r10k_decoder = {
+AVCodec ff_r10k_decoder =
+{
     "r10k",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_R10K,

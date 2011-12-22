@@ -80,7 +80,10 @@ static inline uint64_t WORD_VEC(uint64_t x)
             __typeof__(*(p)) __s[sizeof (int32_t) / sizeof *(p)];       \
         } *) (p))->__l) = l;                                            \
     } while (0)
-struct unaligned_long { uint64_t l; } __attribute__((packed));
+struct unaligned_long
+{
+    uint64_t l;
+} __attribute__((packed));
 #define ldq_u(p)        (*(const uint64_t *) (((uint64_t) (p)) & ~7ul))
 #define uldq(a)         (((const struct unaligned_long *) (a))->l)
 

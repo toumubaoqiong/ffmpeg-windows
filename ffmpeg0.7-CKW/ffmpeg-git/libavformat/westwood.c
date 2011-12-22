@@ -62,7 +62,8 @@
 #define VQA_FRAMERATE 15
 #define VQA_PREAMBLE_SIZE 8
 
-typedef struct WsAudDemuxContext {
+typedef struct WsAudDemuxContext
+{
     int audio_samplerate;
     int audio_channels;
     int audio_bits;
@@ -71,7 +72,8 @@ typedef struct WsAudDemuxContext {
     int64_t audio_frame_counter;
 } WsAudDemuxContext;
 
-typedef struct WsVqaDemuxContext {
+typedef struct WsVqaDemuxContext
+{
     int audio_samplerate;
     int audio_channels;
     int audio_bits;
@@ -155,7 +157,7 @@ static int wsaud_read_header(AVFormatContext *s,
     st->codec->sample_rate = wsaud->audio_samplerate;
     st->codec->bits_per_coded_sample = wsaud->audio_bits;
     st->codec->bit_rate = st->codec->channels * st->codec->sample_rate *
-        st->codec->bits_per_coded_sample / 4;
+                          st->codec->bits_per_coded_sample / 4;
     st->codec->block_align = st->codec->channels * st->codec->bits_per_coded_sample;
 
     wsaud->audio_stream_index = st->index;
@@ -174,7 +176,7 @@ static int wsaud_read_packet(AVFormatContext *s,
     int ret = 0;
 
     if (avio_read(pb, preamble, AUD_CHUNK_PREAMBLE_SIZE) !=
-        AUD_CHUNK_PREAMBLE_SIZE)
+            AUD_CHUNK_PREAMBLE_SIZE)
         return AVERROR(EIO);
 
     /* validate the chunk */
@@ -182,7 +184,7 @@ static int wsaud_read_packet(AVFormatContext *s,
         return AVERROR_INVALIDDATA;
 
     chunk_size = AV_RL16(&preamble[0]);
-    ret= av_get_packet(pb, pkt, chunk_size);
+    ret = av_get_packet(pb, pkt, chunk_size);
     if (ret != chunk_size)
         return AVERROR(EIO);
     pkt->stream_index = wsaud->audio_stream_index;
@@ -203,7 +205,7 @@ static int wsvqa_probe(AVProbeData *p)
 
     /* check for the VQA signatures */
     if ((AV_RB32(&p->buf[0]) != FORM_TAG) ||
-        (AV_RB32(&p->buf[8]) != WVQA_TAG))
+            (AV_RB32(&p->buf[8]) != WVQA_TAG))
         return 0;
 
     return AVPROBE_SCORE_MAX;
@@ -238,7 +240,8 @@ static int wsvqa_read_header(AVFormatContext *s,
     st->codec->extradata = av_mallocz(VQA_HEADER_SIZE + FF_INPUT_BUFFER_PADDING_SIZE);
     header = (unsigned char *)st->codec->extradata;
     if (avio_read(pb, st->codec->extradata, VQA_HEADER_SIZE) !=
-        VQA_HEADER_SIZE) {
+            VQA_HEADER_SIZE)
+    {
         av_free(st->codec->extradata);
         return AVERROR(EIO);
     }
@@ -246,7 +249,8 @@ static int wsvqa_read_header(AVFormatContext *s,
     st->codec->height = AV_RL16(&header[8]);
 
     /* initialize the audio decoder stream for VQA v1 or nonzero samplerate */
-    if (AV_RL16(&header[24]) || (AV_RL16(&header[0]) == 1 && AV_RL16(&header[2]) == 1)) {
+    if (AV_RL16(&header[24]) || (AV_RL16(&header[0]) == 1 && AV_RL16(&header[2]) == 1))
+    {
         st = av_new_stream(s, 0);
         if (!st)
             return AVERROR(ENOMEM);
@@ -265,7 +269,7 @@ static int wsvqa_read_header(AVFormatContext *s,
             st->codec->channels = 1;
         st->codec->bits_per_coded_sample = 16;
         st->codec->bit_rate = st->codec->channels * st->codec->sample_rate *
-            st->codec->bits_per_coded_sample / 4;
+                              st->codec->bits_per_coded_sample / 4;
         st->codec->block_align = st->codec->channels * st->codec->bits_per_coded_sample;
 
         wsvqa->audio_stream_index = st->index;
@@ -276,8 +280,10 @@ static int wsvqa_read_header(AVFormatContext *s,
 
     /* there are 0 or more chunks before the FINF chunk; iterate until
      * FINF has been skipped and the file will be ready to be demuxed */
-    do {
-        if (avio_read(pb, scratch, VQA_PREAMBLE_SIZE) != VQA_PREAMBLE_SIZE) {
+    do
+    {
+        if (avio_read(pb, scratch, VQA_PREAMBLE_SIZE) != VQA_PREAMBLE_SIZE)
+        {
             av_free(st->codec->extradata);
             return AVERROR(EIO);
         }
@@ -285,7 +291,8 @@ static int wsvqa_read_header(AVFormatContext *s,
         chunk_size = AV_RB32(&scratch[4]);
 
         /* catch any unknown header tags, for curiousity */
-        switch (chunk_tag) {
+        switch (chunk_tag)
+        {
         case CINF_TAG:
         case CINH_TAG:
         case CIND_TAG:
@@ -298,13 +305,14 @@ static int wsvqa_read_header(AVFormatContext *s,
 
         default:
             av_log (s, AV_LOG_ERROR, " note: unknown chunk seen (%c%c%c%c)\n",
-                scratch[0], scratch[1],
-                scratch[2], scratch[3]);
+                    scratch[0], scratch[1],
+                    scratch[2], scratch[3]);
             break;
         }
 
         avio_skip(pb, chunk_size);
-    } while (chunk_tag != FINF_TAG);
+    }
+    while (chunk_tag != FINF_TAG);
 
     return 0;
 }
@@ -320,30 +328,38 @@ static int wsvqa_read_packet(AVFormatContext *s,
     unsigned int chunk_size;
     int skip_byte;
 
-    while (avio_read(pb, preamble, VQA_PREAMBLE_SIZE) == VQA_PREAMBLE_SIZE) {
+    while (avio_read(pb, preamble, VQA_PREAMBLE_SIZE) == VQA_PREAMBLE_SIZE)
+    {
         chunk_type = AV_RB32(&preamble[0]);
         chunk_size = AV_RB32(&preamble[4]);
         skip_byte = chunk_size & 0x01;
 
-        if ((chunk_type == SND1_TAG) || (chunk_type == SND2_TAG) || (chunk_type == VQFR_TAG)) {
+        if ((chunk_type == SND1_TAG) || (chunk_type == SND2_TAG) || (chunk_type == VQFR_TAG))
+        {
 
             if (av_new_packet(pkt, chunk_size))
                 return AVERROR(EIO);
             ret = avio_read(pb, pkt->data, chunk_size);
-            if (ret != chunk_size) {
+            if (ret != chunk_size)
+            {
                 av_free_packet(pkt);
                 return AVERROR(EIO);
             }
 
-            if (chunk_type == SND2_TAG) {
+            if (chunk_type == SND2_TAG)
+            {
                 pkt->stream_index = wsvqa->audio_stream_index;
                 /* 2 samples/byte, 1 or 2 samples per frame depending on stereo */
                 wsvqa->audio_frame_counter += (chunk_size * 2) / wsvqa->audio_channels;
-            } else if(chunk_type == SND1_TAG) {
+            }
+            else if(chunk_type == SND1_TAG)
+            {
                 pkt->stream_index = wsvqa->audio_stream_index;
                 /* unpacked size is stored in header */
                 wsvqa->audio_frame_counter += AV_RL16(pkt->data) / wsvqa->audio_channels;
-            } else {
+            }
+            else
+            {
                 pkt->stream_index = wsvqa->video_stream_index;
             }
             /* stay on 16-bit alignment */
@@ -351,8 +367,11 @@ static int wsvqa_read_packet(AVFormatContext *s,
                 avio_skip(pb, 1);
 
             return ret;
-        } else {
-            switch(chunk_type){
+        }
+        else
+        {
+            switch(chunk_type)
+            {
             case CMDS_TAG:
             case SND0_TAG:
                 break;
@@ -367,7 +386,8 @@ static int wsvqa_read_packet(AVFormatContext *s,
 }
 
 #if CONFIG_WSAUD_DEMUXER
-AVInputFormat ff_wsaud_demuxer = {
+AVInputFormat ff_wsaud_demuxer =
+{
     "wsaud",
     NULL_IF_CONFIG_SMALL("Westwood Studios audio format"),
     sizeof(WsAudDemuxContext),
@@ -377,7 +397,8 @@ AVInputFormat ff_wsaud_demuxer = {
 };
 #endif
 #if CONFIG_WSVQA_DEMUXER
-AVInputFormat ff_wsvqa_demuxer = {
+AVInputFormat ff_wsvqa_demuxer =
+{
     "wsvqa",
     NULL_IF_CONFIG_SMALL("Westwood Studios VQA format"),
     sizeof(WsVqaDemuxContext),

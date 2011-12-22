@@ -21,7 +21,8 @@
 
 #include "avi.h"
 
-const AVMetadataConv ff_avi_metadata_conv[] = {
+const AVMetadataConv ff_avi_metadata_conv[] =
+{
     { "IART", "artist"    },
     { "ICMT", "comment"   },
     { "ICOP", "copyright" },
@@ -37,7 +38,8 @@ const AVMetadataConv ff_avi_metadata_conv[] = {
     { 0 },
 };
 
-const char ff_avi_tags[][5] = {
+const char ff_avi_tags[][5] =
+{
     "IARL", "IART", "ICMS", "ICMT", "ICOP", "ICRD", "ICRP", "IDIM", "IDPI",
     "IENG", "IGNR", "IKEY", "ILGT", "ILNG", "IMED", "INAM", "IPLT", "IPRD",
     "IPRT", "ISBJ", "ISFT", "ISHP", "ISRC", "ISRF", "ITCH",

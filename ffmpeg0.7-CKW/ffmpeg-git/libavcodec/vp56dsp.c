@@ -29,7 +29,7 @@ static int vp5_adjust(int v, int t)
     int s2, s1 = v >> 31;
     v ^= s1;
     v -= s1;
-    v *= v < 2*t;
+    v *= v < 2 * t;
     v -= t;
     s2 = v >> 31;
     v ^= s2;
@@ -45,9 +45,9 @@ static int vp6_adjust(int v, int t)
     int V = v, s = v >> 31;
     V ^= s;
     V -= s;
-    if (V-t-1 >= (unsigned)(t-1))
+    if (V - t - 1 >= (unsigned)(t - 1))
         return v;
-    V = 2*t - V;
+    V = 2 * t - V;
     V += s;
     V ^= s;
     return V;
@@ -76,14 +76,18 @@ VP56_EDGE_FILTER(vp6, ver, stride, 1)
 
 void ff_vp56dsp_init(VP56DSPContext *s, enum CodecID codec)
 {
-    if (codec == CODEC_ID_VP5) {
+    if (codec == CODEC_ID_VP5)
+    {
         s->edge_filter_hor = vp5_edge_filter_hor;
         s->edge_filter_ver = vp5_edge_filter_ver;
-    } else {
+    }
+    else
+    {
         s->edge_filter_hor = vp6_edge_filter_hor;
         s->edge_filter_ver = vp6_edge_filter_ver;
 
-        if (CONFIG_VP6_DECODER) {
+        if (CONFIG_VP6_DECODER)
+        {
             s->vp6_filter_diag4 = ff_vp6_filter_diag4_c;
         }
     }

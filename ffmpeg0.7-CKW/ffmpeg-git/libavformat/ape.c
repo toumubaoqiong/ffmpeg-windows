@@ -43,7 +43,8 @@
 
 #define APE_EXTRADATA_SIZE 6
 
-typedef struct {
+typedef struct
+{
     int64_t pos;
     int nblocks;
     int size;
@@ -51,7 +52,8 @@ typedef struct {
     int64_t pts;
 } APEFrame;
 
-typedef struct {
+typedef struct
+{
     /* Derived fields */
     uint32_t junklength;
     uint32_t firstframe;
@@ -86,7 +88,7 @@ typedef struct {
     uint32_t *seektable;
 } APEContext;
 
-static int ape_probe(AVProbeData * p)
+static int ape_probe(AVProbeData *p)
 {
     if (p->buf[0] == 'M' && p->buf[1] == 'A' && p->buf[2] == 'C' && p->buf[3] == ' ')
         return AVPROBE_SCORE_MAX;
@@ -94,7 +96,7 @@ static int ape_probe(AVProbeData * p)
     return 0;
 }
 
-static void ape_dumpinfo(AVFormatContext * s, APEContext * ape_ctx)
+static void ape_dumpinfo(AVFormatContext *s, APEContext *ape_ctx)
 {
 #if ENABLE_DEBUG
     int i;
@@ -111,7 +113,7 @@ static void ape_dumpinfo(AVFormatContext * s, APEContext * ape_ctx)
     av_log(s, AV_LOG_DEBUG, "wavtaillength        = %d\n", ape_ctx->wavtaillength);
     av_log(s, AV_LOG_DEBUG, "md5                  = ");
     for (i = 0; i < 16; i++)
-         av_log(s, AV_LOG_DEBUG, "%02x", ape_ctx->md5[i]);
+        av_log(s, AV_LOG_DEBUG, "%02x", ape_ctx->md5[i]);
     av_log(s, AV_LOG_DEBUG, "\n");
 
     av_log(s, AV_LOG_DEBUG, "\nHeader Block:\n\n");
@@ -126,13 +128,20 @@ static void ape_dumpinfo(AVFormatContext * s, APEContext * ape_ctx)
     av_log(s, AV_LOG_DEBUG, "samplerate           = %d\n", ape_ctx->samplerate);
 
     av_log(s, AV_LOG_DEBUG, "\nSeektable\n\n");
-    if ((ape_ctx->seektablelength / sizeof(uint32_t)) != ape_ctx->totalframes) {
+    if ((ape_ctx->seektablelength / sizeof(uint32_t)) != ape_ctx->totalframes)
+    {
         av_log(s, AV_LOG_DEBUG, "No seektable\n");
-    } else {
-        for (i = 0; i < ape_ctx->seektablelength / sizeof(uint32_t); i++) {
-            if (i < ape_ctx->totalframes - 1) {
+    }
+    else
+    {
+        for (i = 0; i < ape_ctx->seektablelength / sizeof(uint32_t); i++)
+        {
+            if (i < ape_ctx->totalframes - 1)
+            {
                 av_log(s, AV_LOG_DEBUG, "%8d   %d (%d bytes)\n", i, ape_ctx->seektable[i], ape_ctx->seektable[i + 1] - ape_ctx->seektable[i]);
-            } else {
+            }
+            else
+            {
                 av_log(s, AV_LOG_DEBUG, "%8d   %d\n", i, ape_ctx->seektable[i]);
             }
         }
@@ -149,7 +158,7 @@ static void ape_dumpinfo(AVFormatContext * s, APEContext * ape_ctx)
 #endif
 }
 
-static int ape_read_header(AVFormatContext * s, AVFormatParameters * ap)
+static int ape_read_header(AVFormatContext *s, AVFormatParameters *ap)
 {
     AVIOContext *pb = s->pb;
     APEContext *ape = s->priv_data;
@@ -168,12 +177,14 @@ static int ape_read_header(AVFormatContext * s, AVFormatParameters * ap)
 
     ape->fileversion = avio_rl16(pb);
 
-    if (ape->fileversion < APE_MIN_VERSION || ape->fileversion > APE_MAX_VERSION) {
+    if (ape->fileversion < APE_MIN_VERSION || ape->fileversion > APE_MAX_VERSION)
+    {
         av_log(s, AV_LOG_ERROR, "Unsupported file version - %d.%02d\n", ape->fileversion / 1000, (ape->fileversion % 1000) / 10);
         return -1;
     }
 
-    if (ape->fileversion >= 3980) {
+    if (ape->fileversion >= 3980)
+    {
         ape->padding1             = avio_rl16(pb);
         ape->descriptorlength     = avio_rl32(pb);
         ape->headerlength         = avio_rl32(pb);
@@ -198,7 +209,9 @@ static int ape_read_header(AVFormatContext * s, AVFormatParameters * ap)
         ape->bps                  = avio_rl16(pb);
         ape->channels             = avio_rl16(pb);
         ape->samplerate           = avio_rl32(pb);
-    } else {
+    }
+    else
+    {
         ape->descriptorlength = 0;
         ape->headerlength = 32;
 
@@ -211,16 +224,19 @@ static int ape_read_header(AVFormatContext * s, AVFormatParameters * ap)
         ape->totalframes          = avio_rl32(pb);
         ape->finalframeblocks     = avio_rl32(pb);
 
-        if (ape->formatflags & MAC_FORMAT_FLAG_HAS_PEAK_LEVEL) {
+        if (ape->formatflags & MAC_FORMAT_FLAG_HAS_PEAK_LEVEL)
+        {
             avio_skip(pb, 4); /* Skip the peak level */
             ape->headerlength += 4;
         }
 
-        if (ape->formatflags & MAC_FORMAT_FLAG_HAS_SEEK_ELEMENTS) {
+        if (ape->formatflags & MAC_FORMAT_FLAG_HAS_SEEK_ELEMENTS)
+        {
             ape->seektablelength = avio_rl32(pb);
             ape->headerlength += 4;
             ape->seektablelength *= sizeof(int32_t);
-        } else
+        }
+        else
             ape->seektablelength = ape->totalframes * sizeof(int32_t);
 
         if (ape->formatflags & MAC_FORMAT_FLAG_8_BIT)
@@ -242,15 +258,18 @@ static int ape_read_header(AVFormatContext * s, AVFormatParameters * ap)
             avio_skip(pb, ape->wavheaderlength);
     }
 
-    if(!ape->totalframes){
+    if(!ape->totalframes)
+    {
         av_log(s, AV_LOG_ERROR, "No frames in the file!\n");
         return AVERROR(EINVAL);
     }
-    if(ape->totalframes > UINT_MAX / sizeof(APEFrame)){
+    if(ape->totalframes > UINT_MAX / sizeof(APEFrame))
+    {
         av_log(s, AV_LOG_ERROR, "Too many frames: %d\n", ape->totalframes);
         return -1;
     }
-    if (ape->seektablelength && (ape->seektablelength / sizeof(*ape->seektable)) < ape->totalframes) {
+    if (ape->seektablelength && (ape->seektablelength / sizeof(*ape->seektable)) < ape->totalframes)
+    {
         av_log(s, AV_LOG_ERROR, "Number of seek entries is less than number of frames: %d vs. %d\n",
                ape->seektablelength / sizeof(*ape->seektable), ape->totalframes);
         return AVERROR_INVALIDDATA;
@@ -266,7 +285,8 @@ static int ape_read_header(AVFormatContext * s, AVFormatParameters * ap)
     if (ape->totalframes > 1)
         ape->totalsamples += ape->blocksperframe * (ape->totalframes - 1);
 
-    if (ape->seektablelength > 0) {
+    if (ape->seektablelength > 0)
+    {
         ape->seektable = av_malloc(ape->seektablelength);
         for (i = 0; i < ape->seektablelength / sizeof(uint32_t); i++)
             ape->seektable[i] = avio_rl32(pb);
@@ -275,7 +295,8 @@ static int ape_read_header(AVFormatContext * s, AVFormatParameters * ap)
     ape->frames[0].pos     = ape->firstframe;
     ape->frames[0].nblocks = ape->blocksperframe;
     ape->frames[0].skip    = 0;
-    for (i = 1; i < ape->totalframes; i++) {
+    for (i = 1; i < ape->totalframes; i++)
+    {
         ape->frames[i].pos      = ape->seektable[i] + ape->junklength; //ape->frames[i-1].pos + ape->blocksperframe;
         ape->frames[i].nblocks  = ape->blocksperframe;
         ape->frames[i - 1].size = ape->frames[i].pos - ape->frames[i - 1].pos;
@@ -284,8 +305,10 @@ static int ape_read_header(AVFormatContext * s, AVFormatParameters * ap)
     ape->frames[ape->totalframes - 1].size    = ape->finalframeblocks * 4;
     ape->frames[ape->totalframes - 1].nblocks = ape->finalframeblocks;
 
-    for (i = 0; i < ape->totalframes; i++) {
-        if(ape->frames[i].skip){
+    for (i = 0; i < ape->totalframes; i++)
+    {
+        if(ape->frames[i].skip)
+        {
             ape->frames[i].pos  -= ape->frames[i].skip;
             ape->frames[i].size += ape->frames[i].skip;
         }
@@ -296,7 +319,8 @@ static int ape_read_header(AVFormatContext * s, AVFormatParameters * ap)
     ape_dumpinfo(s, ape);
 
     /* try to read APE tags */
-    if (pb->seekable) {
+    if (pb->seekable)
+    {
         ff_ape_parse_tag(s);
         avio_seek(pb, 0, SEEK_SET);
     }
@@ -330,7 +354,8 @@ static int ape_read_header(AVFormatContext * s, AVFormatParameters * ap)
     AV_WL16(st->codec->extradata + 4, ape->formatflags);
 
     pts = 0;
-    for (i = 0; i < ape->totalframes; i++) {
+    for (i = 0; i < ape->totalframes; i++)
+    {
         ape->frames[i].pts = pts;
         av_add_index_entry(st, ape->frames[i].pos, ape->frames[i].pts, 0, 0, AVINDEX_KEYFRAME);
         pts += ape->blocksperframe / MAC_SUBFRAME_SIZE;
@@ -339,7 +364,7 @@ static int ape_read_header(AVFormatContext * s, AVFormatParameters * ap)
     return 0;
 }
 
-static int ape_read_packet(AVFormatContext * s, AVPacket * pkt)
+static int ape_read_packet(AVFormatContext *s, AVPacket *pkt)
 {
     int ret;
     int nblocks;
@@ -378,7 +403,7 @@ static int ape_read_packet(AVFormatContext * s, AVPacket * pkt)
     return 0;
 }
 
-static int ape_read_close(AVFormatContext * s)
+static int ape_read_close(AVFormatContext *s)
 {
     APEContext *ape = s->priv_data;
 
@@ -400,7 +425,8 @@ static int ape_read_seek(AVFormatContext *s, int stream_index, int64_t timestamp
     return 0;
 }
 
-AVInputFormat ff_ape_demuxer = {
+AVInputFormat ff_ape_demuxer =
+{
     "ape",
     NULL_IF_CONFIG_SMALL("Monkey's Audio"),
     sizeof(APEContext),

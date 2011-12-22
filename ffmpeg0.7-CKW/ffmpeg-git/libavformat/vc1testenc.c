@@ -20,7 +20,8 @@
  */
 #include "avformat.h"
 
-typedef struct RCVContext {
+typedef struct RCVContext
+{
     int frames;
 } RCVContext;
 
@@ -29,7 +30,8 @@ static int vc1test_write_header(AVFormatContext *s)
     AVCodecContext *avc = s->streams[0]->codec;
     AVIOContext *pb = s->pb;
 
-    if (avc->codec_id != CODEC_ID_WMV3) {
+    if (avc->codec_id != CODEC_ID_WMV3)
+    {
         av_log(s, AV_LOG_ERROR, "Only WMV3 is accepted!\n");
         return -1;
     }
@@ -73,7 +75,8 @@ static int vc1test_write_trailer(AVFormatContext *s)
     RCVContext *ctx = s->priv_data;
     AVIOContext *pb = s->pb;
 
-    if (s->pb->seekable) {
+    if (s->pb->seekable)
+    {
         avio_seek(pb, 0, SEEK_SET);
         avio_wl24(pb, ctx->frames);
         avio_flush(pb);
@@ -81,7 +84,8 @@ static int vc1test_write_trailer(AVFormatContext *s)
     return 0;
 }
 
-AVOutputFormat ff_vc1t_muxer = {
+AVOutputFormat ff_vc1t_muxer =
+{
     "rcv",
     NULL_IF_CONFIG_SMALL("VC-1 test bitstream"),
     "",

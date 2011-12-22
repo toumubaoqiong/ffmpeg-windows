@@ -45,7 +45,8 @@
 
 #define SUBFRAME_COUNT_16k   2
 
-typedef enum {
+typedef enum
+{
     MODE_16k,
     MODE_8k5,
     MODE_6k5,
@@ -53,7 +54,8 @@ typedef enum {
     MODE_COUNT
 } SiprMode;
 
-typedef struct {
+typedef struct
+{
     AVCodecContext *avctx;
     DSPContext dsp;
 
@@ -88,7 +90,8 @@ typedef struct {
     double lsp_history_16k[16];
 } SiprContext;
 
-typedef struct {
+typedef struct
+{
     int ma_pred_switch;        ///< switched moving average predictor
     int vq_indexes[5];
     int pitch_delay[5];        ///< pitch delay

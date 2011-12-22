@@ -599,7 +599,7 @@ static void OPNAME ## pixels16_l2_shift5_ ## MMX(uint8_t *dst, int16_t *src16, u
     OPNAME ## pixels8_l2_shift5_ ## MMX(dst  , src16  , src8  , dstStride, src8Stride, h);\
     OPNAME ## pixels8_l2_shift5_ ## MMX(dst+8, src16+8, src8+8, dstStride, src8Stride, h);\
 }\
-
+ 
 
 #if ARCH_X86_64
 #define QPEL_H264_H16_XMM(OPNAME, OP, MMX)\
@@ -780,7 +780,7 @@ static void OPNAME ## h264_qpel16_h_lowpass_ ## MMX(uint8_t *dst, uint8_t *src, 
     OPNAME ## h264_qpel8_h_lowpass_ ## MMX(dst  , src  , dstStride, srcStride);\
     OPNAME ## h264_qpel8_h_lowpass_ ## MMX(dst+8, src+8, dstStride, srcStride);\
 }\
-
+ 
 #define QPEL_H264_V_XMM(OPNAME, OP, MMX)\
 static av_noinline void OPNAME ## h264_qpel8or16_v_lowpass_ ## MMX(uint8_t *dst, uint8_t *src, int dstStride, int srcStride, int h){\
     src -= 2*srcStride;\
@@ -837,10 +837,12 @@ static av_noinline void OPNAME ## h264_qpel16_v_lowpass_ ## MMX(uint8_t *dst, ui
     OPNAME ## h264_qpel8or16_v_lowpass_ ## MMX(dst+8, src+8, dstStride, srcStride, 16);\
 }
 
-static av_always_inline void put_h264_qpel8or16_hv1_lowpass_sse2(int16_t *tmp, uint8_t *src, int tmpStride, int srcStride, int size){
-    int w = (size+8)>>3;
-    src -= 2*srcStride+2;
-    while(w--){
+static av_always_inline void put_h264_qpel8or16_hv1_lowpass_sse2(int16_t *tmp, uint8_t *src, int tmpStride, int srcStride, int size)
+{
+    int w = (size + 8) >> 3;
+    src -= 2 * srcStride + 2;
+    while(w--)
+    {
         __asm__ volatile(
             "pxor %%xmm7, %%xmm7        \n\t"
             "movq (%0), %%xmm0          \n\t"
@@ -881,10 +883,10 @@ static av_always_inline void put_h264_qpel8or16_hv1_lowpass_sse2(int16_t *tmp, u
             : "c"(tmp), "S"((x86_reg)srcStride), "g"(size)
             : XMM_CLOBBERS("%xmm0", "%xmm1", "%xmm2", "%xmm3",
                            "%xmm4", "%xmm5", "%xmm6", "%xmm7",)
-              "memory"
+            "memory"
         );
         tmp += 8;
-        src += 8 - (size+5)*srcStride;
+        src += 8 - (size + 5) * srcStride;
     }
 }
 
@@ -998,7 +1000,7 @@ static void OPNAME ## h264_qpel8_hv_lowpass_ ## MMX(uint8_t *dst, int16_t *tmp, 
 static void OPNAME ## h264_qpel16_hv_lowpass_ ## MMX(uint8_t *dst, int16_t *tmp, uint8_t *src, int dstStride, int tmpStride, int srcStride){\
     OPNAME ## h264_qpel8or16_hv_lowpass_ ## MMX(dst, tmp, src, dstStride, tmpStride, srcStride, 16);\
 }\
-
+ 
 #define put_pixels8_l2_sse2 put_pixels8_l2_mmx2
 #define avg_pixels8_l2_sse2 avg_pixels8_l2_mmx2
 #define put_pixels16_l2_sse2 put_pixels16_l2_mmx2
@@ -1035,11 +1037,13 @@ H264_MC_C(OPNAME, SIZE, MMX, ALIGN)\
 H264_MC_V(OPNAME, SIZE, MMX, ALIGN)\
 H264_MC_H(OPNAME, SIZE, MMX, ALIGN)\
 H264_MC_HV(OPNAME, SIZE, MMX, ALIGN)\
-
-static void put_h264_qpel16_mc00_sse2 (uint8_t *dst, uint8_t *src, int stride){
+ 
+static void put_h264_qpel16_mc00_sse2 (uint8_t *dst, uint8_t *src, int stride)
+{
     put_pixels16_sse2(dst, src, stride, 16);
 }
-static void avg_h264_qpel16_mc00_sse2 (uint8_t *dst, uint8_t *src, int stride){
+static void avg_h264_qpel16_mc00_sse2 (uint8_t *dst, uint8_t *src, int stride)
+{
     avg_pixels16_sse2(dst, src, stride, 16);
 }
 #define put_h264_qpel8_mc00_sse2 put_h264_qpel8_mc00_mmx2
@@ -1049,7 +1053,7 @@ static void avg_h264_qpel16_mc00_sse2 (uint8_t *dst, uint8_t *src, int stride){
 static void OPNAME ## h264_qpel ## SIZE ## _mc00_ ## MMX (uint8_t *dst, uint8_t *src, int stride){\
     OPNAME ## pixels ## SIZE ## _ ## MMX(dst, src, stride, SIZE);\
 }\
-
+ 
 #define H264_MC_H(OPNAME, SIZE, MMX, ALIGN) \
 static void OPNAME ## h264_qpel ## SIZE ## _mc10_ ## MMX(uint8_t *dst, uint8_t *src, int stride){\
     OPNAME ## h264_qpel ## SIZE ## _h_lowpass_l2_ ## MMX(dst, src, src, stride, stride);\
@@ -1062,7 +1066,7 @@ static void OPNAME ## h264_qpel ## SIZE ## _mc20_ ## MMX(uint8_t *dst, uint8_t *
 static void OPNAME ## h264_qpel ## SIZE ## _mc30_ ## MMX(uint8_t *dst, uint8_t *src, int stride){\
     OPNAME ## h264_qpel ## SIZE ## _h_lowpass_l2_ ## MMX(dst, src, src+1, stride, stride);\
 }\
-
+ 
 #define H264_MC_V(OPNAME, SIZE, MMX, ALIGN) \
 static void OPNAME ## h264_qpel ## SIZE ## _mc01_ ## MMX(uint8_t *dst, uint8_t *src, int stride){\
     DECLARE_ALIGNED(ALIGN, uint8_t, temp)[SIZE*SIZE];\
@@ -1079,7 +1083,7 @@ static void OPNAME ## h264_qpel ## SIZE ## _mc03_ ## MMX(uint8_t *dst, uint8_t *
     put_h264_qpel ## SIZE ## _v_lowpass_ ## MMX(temp, src, SIZE, stride);\
     OPNAME ## pixels ## SIZE ## _l2_ ## MMX(dst, src+stride, temp, stride, stride, SIZE);\
 }\
-
+ 
 #define H264_MC_HV(OPNAME, SIZE, MMX, ALIGN) \
 static void OPNAME ## h264_qpel ## SIZE ## _mc11_ ## MMX(uint8_t *dst, uint8_t *src, int stride){\
     DECLARE_ALIGNED(ALIGN, uint8_t, temp)[SIZE*SIZE];\
@@ -1145,7 +1149,7 @@ static void OPNAME ## h264_qpel ## SIZE ## _mc32_ ## MMX(uint8_t *dst, uint8_t *
     put_h264_qpel ## SIZE ## _hv_lowpass_ ## MMX(halfHV, halfV, src, SIZE, SIZE, stride);\
     OPNAME ## pixels ## SIZE ## _l2_shift5_ ## MMX(dst, halfV+3, halfHV, stride, SIZE, SIZE);\
 }\
-
+ 
 #define H264_MC_4816(MMX)\
 H264_MC(put_, 4, MMX, 8)\
 H264_MC(put_, 8, MMX, 8)\
@@ -1153,13 +1157,13 @@ H264_MC(put_, 16,MMX, 8)\
 H264_MC(avg_, 4, MMX, 8)\
 H264_MC(avg_, 8, MMX, 8)\
 H264_MC(avg_, 16,MMX, 8)\
-
+ 
 #define H264_MC_816(QPEL, XMM)\
 QPEL(put_, 8, XMM, 16)\
 QPEL(put_, 16,XMM, 16)\
 QPEL(avg_, 8, XMM, 16)\
 QPEL(avg_, 16,XMM, 16)\
-
+ 
 
 #define AVG_3DNOW_OP(a,b,temp, size) \
 "mov" #size " " #b ", " #temp "   \n\t"\

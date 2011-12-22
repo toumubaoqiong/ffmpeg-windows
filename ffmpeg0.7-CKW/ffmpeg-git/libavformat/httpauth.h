@@ -25,14 +25,16 @@
 /**
  * Authentication types, ordered from weakest to strongest.
  */
-typedef enum HTTPAuthType {
+typedef enum HTTPAuthType
+{
     HTTP_AUTH_NONE = 0,    /**< No authentication specified */
     HTTP_AUTH_BASIC,       /**< HTTP 1.0 Basic auth from RFC 1945
                              *  (also in RFC 2617) */
     HTTP_AUTH_DIGEST,      /**< HTTP 1.1 Digest auth from RFC 2617 */
 } HTTPAuthType;
 
-typedef struct {
+typedef struct
+{
     char nonce[300];       /**< Server specified nonce */
     char algorithm[10];    /**< Server specified digest algorithm */
     char qop[30];          /**< Quality of protection, containing the one
@@ -49,7 +51,8 @@ typedef struct {
  * HTTP Authentication state structure. Must be zero-initialized
  * before used with the functions below.
  */
-typedef struct {
+typedef struct
+{
     /**
      * The currently chosen auth type.
      */

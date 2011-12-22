@@ -19,7 +19,8 @@
 #ifndef AVCODEC_DCADSP_H
 #define AVCODEC_DCADSP_H
 
-typedef struct DCADSPContext {
+typedef struct DCADSPContext
+{
     void (*lfe_fir)(float *out, const float *in, const float *coefs,
                     int decifactor, float scale);
 } DCADSPContext;

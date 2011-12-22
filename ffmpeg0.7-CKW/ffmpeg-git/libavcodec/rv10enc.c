@@ -30,7 +30,7 @@
 
 void rv10_encode_picture_header(MpegEncContext *s, int picture_number)
 {
-    int full_frame= 0;
+    int full_frame = 0;
 
     align_put_bits(&s->pb);
 
@@ -42,12 +42,14 @@ void rv10_encode_picture_header(MpegEncContext *s, int picture_number)
 
     put_bits(&s->pb, 5, s->qscale);
 
-    if (s->pict_type == FF_I_TYPE) {
+    if (s->pict_type == FF_I_TYPE)
+    {
         /* specific MPEG like DC coding not used */
     }
     /* if multiple packets per frame are sent, the position at which
        to display the macroblocks is coded here */
-    if(!full_frame){
+    if(!full_frame)
+    {
         put_bits(&s->pb, 6, 0); /* mb_x */
         put_bits(&s->pb, 6, 0); /* mb_y */
         put_bits(&s->pb, 12, s->mb_width * s->mb_height);
@@ -56,7 +58,8 @@ void rv10_encode_picture_header(MpegEncContext *s, int picture_number)
     put_bits(&s->pb, 3, 0);     /* ignored */
 }
 
-AVCodec ff_rv10_encoder = {
+AVCodec ff_rv10_encoder =
+{
     "rv10",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_RV10,
@@ -64,6 +67,9 @@ AVCodec ff_rv10_encoder = {
     MPV_encode_init,
     MPV_encode_picture,
     MPV_encode_end,
-    .pix_fmts= (const enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
-    .long_name= NULL_IF_CONFIG_SMALL("RealVideo 1.0"),
+    .pix_fmts = (const enum PixelFormat[])
+    {
+        PIX_FMT_YUV420P, PIX_FMT_NONE
+    },
+    .long_name = NULL_IF_CONFIG_SMALL("RealVideo 1.0"),
 };

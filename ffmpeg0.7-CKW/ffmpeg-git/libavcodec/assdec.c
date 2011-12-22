@@ -40,7 +40,8 @@ static int ass_decode_frame(AVCodecContext *avctx, void *data, int *got_sub_ptr,
     const char *ptr = avpkt->data;
     int len, size = avpkt->size;
 
-    while (size > 0) {
+    while (size > 0)
+    {
         ASSDialog *dialog = ff_ass_split_dialog(avctx->priv_data, ptr, 0, NULL);
         int duration = dialog->end - dialog->start;
         len = ff_ass_add_rect(data, ptr, 0, duration, 1);
@@ -61,7 +62,8 @@ static int ass_decode_close(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec ff_ass_decoder = {
+AVCodec ff_ass_decoder =
+{
     .name         = "ass",
     .long_name    = NULL_IF_CONFIG_SMALL("Advanced SubStation Alpha subtitle"),
     .type         = AVMEDIA_TYPE_SUBTITLE,

@@ -26,12 +26,14 @@
 
 static av_cold int encode_init(AVCodecContext *avctx)
 {
-    if (avctx->width & 1) {
+    if (avctx->width & 1)
+    {
         av_log(avctx, AV_LOG_ERROR, "v210 needs even width\n");
         return -1;
     }
 
-    if (avctx->pix_fmt != PIX_FMT_YUV422P16) {
+    if (avctx->pix_fmt != PIX_FMT_YUV422P16)
+    {
         av_log(avctx, AV_LOG_ERROR, "v210 needs YUV422P16\n");
         return -1;
     }
@@ -55,13 +57,14 @@ static int encode_frame(AVCodecContext *avctx, unsigned char *buf,
     int aligned_width = ((avctx->width + 47) / 48) * 48;
     int stride = aligned_width * 8 / 3;
     int h, w;
-    const uint16_t *y = (const uint16_t*)pic->data[0];
-    const uint16_t *u = (const uint16_t*)pic->data[1];
-    const uint16_t *v = (const uint16_t*)pic->data[2];
+    const uint16_t *y = (const uint16_t *)pic->data[0];
+    const uint16_t *u = (const uint16_t *)pic->data[1];
+    const uint16_t *v = (const uint16_t *)pic->data[2];
     uint8_t *p = buf;
     uint8_t *pdst = buf;
 
-    if (buf_size < aligned_width * avctx->height * 8 / 3) {
+    if (buf_size < aligned_width * avctx->height * 8 / 3)
+    {
         av_log(avctx, AV_LOG_ERROR, "output buffer too small\n");
         return -1;
     }
@@ -74,24 +77,28 @@ static int encode_frame(AVCodecContext *avctx, unsigned char *buf,
         bytestream_put_le32(&p, val);   \
     } while (0)
 
-    for (h = 0; h < avctx->height; h++) {
+    for (h = 0; h < avctx->height; h++)
+    {
         uint32_t val;
-        for (w = 0; w < avctx->width - 5; w += 6) {
+        for (w = 0; w < avctx->width - 5; w += 6)
+        {
             WRITE_PIXELS(u, y, v);
             WRITE_PIXELS(y, u, y);
             WRITE_PIXELS(v, y, u);
             WRITE_PIXELS(y, v, y);
         }
-        if (w < avctx->width - 1) {
+        if (w < avctx->width - 1)
+        {
             WRITE_PIXELS(u, y, v);
 
             val =   *y++           >>  6;
             if (w == avctx->width - 2)
                 bytestream_put_le32(&p, val);
         }
-        if (w < avctx->width - 3) {
-            val |=((*u++ & 0xFFC0) <<  4) |
-                  ((*y++ & 0xFFC0) << 14);
+        if (w < avctx->width - 3)
+        {
+            val |= ((*u++ & 0xFFC0) <<  4) |
+                   ((*y++ & 0xFFC0) << 14);
             bytestream_put_le32(&p, val);
 
             val =  (*v++           >>  6) |
@@ -117,7 +124,8 @@ static av_cold int encode_close(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec ff_v210_encoder = {
+AVCodec ff_v210_encoder =
+{
     "v210",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_V210,
@@ -125,6 +133,9 @@ AVCodec ff_v210_encoder = {
     encode_init,
     encode_frame,
     encode_close,
-    .pix_fmts = (const enum PixelFormat[]){PIX_FMT_YUV422P16, PIX_FMT_NONE},
+    .pix_fmts = (const enum PixelFormat[])
+    {
+        PIX_FMT_YUV422P16, PIX_FMT_NONE
+    },
     .long_name = NULL_IF_CONFIG_SMALL("Uncompressed 4:2:2 10-bit"),
 };

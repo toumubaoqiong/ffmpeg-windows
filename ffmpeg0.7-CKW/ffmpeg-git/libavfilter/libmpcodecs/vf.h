@@ -28,49 +28,53 @@
 struct vf_instance;
 struct vf_priv_s;
 
-typedef struct vf_info_s {
+typedef struct vf_info_s
+{
     const char *info;
     const char *name;
     const char *author;
     const char *comment;
-    int (*vf_open)(struct vf_instance *vf,char* args);
+    int (*vf_open)(struct vf_instance *vf, char *args);
     // Ptr to a struct dscribing the options
-    const void* opts;
+    const void *opts;
 } vf_info_t;
 
 #define NUM_NUMBERED_MPI 50
 
-typedef struct vf_image_context_s {
-    mp_image_t* static_images[2];
-    mp_image_t* temp_images[1];
-    mp_image_t* export_images[1];
-    mp_image_t* numbered_images[NUM_NUMBERED_MPI];
+typedef struct vf_image_context_s
+{
+    mp_image_t *static_images[2];
+    mp_image_t *temp_images[1];
+    mp_image_t *export_images[1];
+    mp_image_t *numbered_images[NUM_NUMBERED_MPI];
     int static_idx;
 } vf_image_context_t;
 
-typedef struct vf_format_context_t {
+typedef struct vf_format_context_t
+{
     int have_configured;
     int orig_width, orig_height, orig_fmt;
 } vf_format_context_t;
 
-typedef struct vf_instance {
-    const vf_info_t* info;
+typedef struct vf_instance
+{
+    const vf_info_t *info;
     // funcs:
     int (*config)(struct vf_instance *vf,
-        int width, int height, int d_width, int d_height,
-        unsigned int flags, unsigned int outfmt);
+                  int width, int height, int d_width, int d_height,
+                  unsigned int flags, unsigned int outfmt);
     int (*control)(struct vf_instance *vf,
-        int request, void* data);
+                   int request, void *data);
     int (*query_format)(struct vf_instance *vf,
-        unsigned int fmt);
+                        unsigned int fmt);
     void (*get_image)(struct vf_instance *vf,
-        mp_image_t *mpi);
+                      mp_image_t *mpi);
     int (*put_image)(struct vf_instance *vf,
-        mp_image_t *mpi, double pts);
+                     mp_image_t *mpi, double pts);
     void (*start_slice)(struct vf_instance *vf,
-        mp_image_t *mpi);
+                        mp_image_t *mpi);
     void (*draw_slice)(struct vf_instance *vf,
-        unsigned char** src, int* stride, int w,int h, int x, int y);
+                       unsigned char **src, int *stride, int w, int h, int x, int y);
     void (*uninit)(struct vf_instance *vf);
 
     int (*continue_buffered_image)(struct vf_instance *vf);
@@ -83,7 +87,7 @@ typedef struct vf_instance {
     vf_format_context_t fmt;
     struct vf_instance *next;
     mp_image_t *dmpi;
-    struct vf_priv_s* priv;
+    struct vf_priv_s *priv;
 } vf_instance_t;
 
 // control codes:
@@ -119,33 +123,33 @@ typedef struct vf_seteq_s
 
 
 // functions:
-void vf_mpi_clear(mp_image_t* mpi,int x0,int y0,int w,int h);
-mp_image_t* vf_get_image(vf_instance_t* vf, unsigned int outfmt, int mp_imgtype, int mp_imgflag, int w, int h);
+void vf_mpi_clear(mp_image_t *mpi, int x0, int y0, int w, int h);
+mp_image_t *vf_get_image(vf_instance_t *vf, unsigned int outfmt, int mp_imgtype, int mp_imgflag, int w, int h);
 
-vf_instance_t* vf_open_plugin(const vf_info_t* const* filter_list, vf_instance_t* next, const char *name, char **args);
-vf_instance_t* vf_open_filter(vf_instance_t* next, const char *name, char **args);
-vf_instance_t* vf_add_before_vo(vf_instance_t **vf, char *name, char **args);
-vf_instance_t* vf_open_encoder(vf_instance_t* next, const char *name, char *args);
+vf_instance_t *vf_open_plugin(const vf_info_t *const *filter_list, vf_instance_t *next, const char *name, char **args);
+vf_instance_t *vf_open_filter(vf_instance_t *next, const char *name, char **args);
+vf_instance_t *vf_add_before_vo(vf_instance_t **vf, char *name, char **args);
+vf_instance_t *vf_open_encoder(vf_instance_t *next, const char *name, char *args);
 
-unsigned int vf_match_csp(vf_instance_t** vfp,const unsigned int* list,unsigned int preferred);
-void vf_clone_mpi_attributes(mp_image_t* dst, mp_image_t* src);
-void vf_queue_frame(vf_instance_t *vf, int (*)(vf_instance_t *));
+unsigned int vf_match_csp(vf_instance_t **vfp, const unsigned int *list, unsigned int preferred);
+void vf_clone_mpi_attributes(mp_image_t *dst, mp_image_t *src);
+void vf_queue_frame(vf_instance_t *vf, int ( *)(vf_instance_t *));
 int vf_output_queued_frame(vf_instance_t *vf);
 
 // default wrappers:
 int vf_next_config(struct vf_instance *vf,
-        int width, int height, int d_width, int d_height,
-        unsigned int flags, unsigned int outfmt);
-int vf_next_control(struct vf_instance *vf, int request, void* data);
+                   int width, int height, int d_width, int d_height,
+                   unsigned int flags, unsigned int outfmt);
+int vf_next_control(struct vf_instance *vf, int request, void *data);
 void vf_extra_flip(struct vf_instance *vf);
 int vf_next_query_format(struct vf_instance *vf, unsigned int fmt);
-int vf_next_put_image(struct vf_instance *vf,mp_image_t *mpi, double pts);
-void vf_next_draw_slice (struct vf_instance *vf, unsigned char** src, int* stride, int w,int h, int x, int y);
+int vf_next_put_image(struct vf_instance *vf, mp_image_t *mpi, double pts);
+void vf_next_draw_slice (struct vf_instance *vf, unsigned char **src, int *stride, int w, int h, int x, int y);
 
-vf_instance_t* append_filters(vf_instance_t* last);
+vf_instance_t *append_filters(vf_instance_t *last);
 
-void vf_uninit_filter(vf_instance_t* vf);
-void vf_uninit_filter_chain(vf_instance_t* vf);
+void vf_uninit_filter(vf_instance_t *vf);
+void vf_uninit_filter_chain(vf_instance_t *vf);
 
 int vf_config_wrapper(struct vf_instance *vf,
                       int width, int height, int d_width, int d_height,
@@ -153,7 +157,8 @@ int vf_config_wrapper(struct vf_instance *vf,
 
 static inline int norm_qscale(int qscale, int type)
 {
-    switch (type) {
+    switch (type)
+    {
     case 0: // MPEG-1
         return qscale;
     case 1: // MPEG-2

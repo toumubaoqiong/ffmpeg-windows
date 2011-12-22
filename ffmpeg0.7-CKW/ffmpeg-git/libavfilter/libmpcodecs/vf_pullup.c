@@ -35,7 +35,8 @@
 #undef MAX
 #define MAX(a,b) ((a)>(b)?(a):(b))
 
-struct vf_priv_s {
+struct vf_priv_s
+{
     struct pullup_context *ctx;
     int init;
     int fakecount;
@@ -46,7 +47,8 @@ static void init_pullup(struct vf_instance *vf, mp_image_t *mpi)
 {
     struct pullup_context *c = vf->priv->ctx;
 
-    if (mpi->flags & MP_IMGFLAG_PLANAR) {
+    if (mpi->flags & MP_IMGFLAG_PLANAR)
+    {
         c->format = PULLUP_FMT_Y;
         c->nplanes = 4;
         pullup_preinit_context(c);
@@ -55,7 +57,7 @@ static void init_pullup(struct vf_instance *vf, mp_image_t *mpi)
         c->h[0] = mpi->h;
         c->w[1] = c->w[2] = mpi->chroma_width;
         c->h[1] = c->h[2] = mpi->chroma_height;
-        c->w[3] = ((mpi->w+15)/16) * ((mpi->h+15)/16);
+        c->w[3] = ((mpi->w + 15) / 16) * ((mpi->h + 15) / 16);
         c->h[3] = 2;
         c->stride[0] = mpi->width;
         c->stride[1] = c->stride[2] = mpi->chroma_width;
@@ -116,37 +118,43 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
 
     if (!vf->priv->init) init_pullup(vf, mpi);
 
-    if (mpi->flags & MP_IMGFLAG_DIRECT) {
+    if (mpi->flags & MP_IMGFLAG_DIRECT)
+    {
         b = mpi->priv;
         mpi->priv = 0;
-    } else {
+    }
+    else
+    {
         b = pullup_get_buffer(c, 2);
-        if (!b) {
-            mp_msg(MSGT_VFILTER,MSGL_ERR,"Could not get buffer from pullup!\n");
+        if (!b)
+        {
+            mp_msg(MSGT_VFILTER, MSGL_ERR, "Could not get buffer from pullup!\n");
             f = pullup_get_frame(c);
             pullup_release_frame(f);
             return 0;
         }
         memcpy_pic(b->planes[0], mpi->planes[0], mpi->w, mpi->h,
-            c->stride[0], mpi->stride[0]);
-        if (mpi->flags & MP_IMGFLAG_PLANAR) {
+                   c->stride[0], mpi->stride[0]);
+        if (mpi->flags & MP_IMGFLAG_PLANAR)
+        {
             memcpy_pic(b->planes[1], mpi->planes[1],
-                mpi->chroma_width, mpi->chroma_height,
-                c->stride[1], mpi->stride[1]);
+                       mpi->chroma_width, mpi->chroma_height,
+                       c->stride[1], mpi->stride[1]);
             memcpy_pic(b->planes[2], mpi->planes[2],
-                mpi->chroma_width, mpi->chroma_height,
-                c->stride[2], mpi->stride[2]);
+                       mpi->chroma_width, mpi->chroma_height,
+                       c->stride[2], mpi->stride[2]);
         }
     }
-    if (mpi->qscale) {
+    if (mpi->qscale)
+    {
         fast_memcpy(b->planes[3], mpi->qscale, c->w[3]);
-        fast_memcpy(b->planes[3]+c->w[3], mpi->qscale, c->w[3]);
+        fast_memcpy(b->planes[3] + c->w[3], mpi->qscale, c->w[3]);
     }
 
     p = mpi->fields & MP_IMGFIELD_TOP_FIRST ? 0 :
         (mpi->fields & MP_IMGFIELD_ORDERED ? 1 : 0);
     pullup_submit_field(c, b, p);
-    pullup_submit_field(c, b, p^1);
+    pullup_submit_field(c, b, p ^ 1);
     if (mpi->fields & MP_IMGFIELD_REPEAT_FIRST)
         pullup_submit_field(c, b, p);
 
@@ -156,19 +164,22 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
 
     /* Fake yes for first few frames (buffer depth) to keep from
      * breaking A/V sync with G1's bad architecture... */
-    if (!f) return vf->priv->fakecount ? (--vf->priv->fakecount,1) : 0;
+    if (!f) return vf->priv->fakecount ? (--vf->priv->fakecount, 1) : 0;
 
-    if (f->length < 2) {
+    if (f->length < 2)
+    {
         pullup_release_frame(f);
         f = pullup_get_frame(c);
         if (!f) return 0;
-        if (f->length < 2) {
+        if (f->length < 2)
+        {
             pullup_release_frame(f);
             if (!(mpi->fields & MP_IMGFIELD_REPEAT_FIRST))
                 return 0;
             f = pullup_get_frame(c);
             if (!f) return 0;
-            if (f->length < 2) {
+            if (f->length < 2)
+            {
                 pullup_release_frame(f);
                 return 0;
             }
@@ -177,55 +188,63 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
 
 #if 0
     /* Average qscale tables from both frames. */
-    if (mpi->qscale) {
-        for (i=0; i<c->w[3]; i++) {
+    if (mpi->qscale)
+    {
+        for (i = 0; i < c->w[3]; i++)
+        {
             vf->priv->qbuf[i] = (f->ofields[0]->planes[3][i]
-                + f->ofields[1]->planes[3][i+c->w[3]])>>1;
+                                 + f->ofields[1]->planes[3][i+c->w[3]]) >> 1;
         }
     }
 #else
     /* Take worst of qscale tables from both frames. */
-    if (mpi->qscale) {
-        for (i=0; i<c->w[3]; i++) {
+    if (mpi->qscale)
+    {
+        for (i = 0; i < c->w[3]; i++)
+        {
             vf->priv->qbuf[i] = MAX(f->ofields[0]->planes[3][i], f->ofields[1]->planes[3][i+c->w[3]]);
         }
     }
 #endif
 
     /* If the frame isn't already exportable... */
-    while (!f->buffer) {
+    while (!f->buffer)
+    {
         dmpi = vf_get_image(vf->next, mpi->imgfmt,
-            MP_IMGTYPE_TEMP, MP_IMGFLAG_ACCEPT_STRIDE,
-            mpi->width, mpi->height);
+                            MP_IMGTYPE_TEMP, MP_IMGFLAG_ACCEPT_STRIDE,
+                            mpi->width, mpi->height);
         /* FIXME: Is it ok to discard dmpi if it's not direct? */
-        if (!(dmpi->flags & MP_IMGFLAG_DIRECT)) {
+        if (!(dmpi->flags & MP_IMGFLAG_DIRECT))
+        {
             pullup_pack_frame(c, f);
             break;
         }
         /* Direct render fields into output buffer */
         my_memcpy_pic(dmpi->planes[0], f->ofields[0]->planes[0],
-            mpi->w, mpi->h/2, dmpi->stride[0]*2, c->stride[0]*2);
+                      mpi->w, mpi->h / 2, dmpi->stride[0] * 2, c->stride[0] * 2);
         my_memcpy_pic(dmpi->planes[0] + dmpi->stride[0],
-            f->ofields[1]->planes[0] + c->stride[0],
-            mpi->w, mpi->h/2, dmpi->stride[0]*2, c->stride[0]*2);
-        if (mpi->flags & MP_IMGFLAG_PLANAR) {
+                      f->ofields[1]->planes[0] + c->stride[0],
+                      mpi->w, mpi->h / 2, dmpi->stride[0] * 2, c->stride[0] * 2);
+        if (mpi->flags & MP_IMGFLAG_PLANAR)
+        {
             my_memcpy_pic(dmpi->planes[1], f->ofields[0]->planes[1],
-                mpi->chroma_width, mpi->chroma_height/2,
-                dmpi->stride[1]*2, c->stride[1]*2);
+                          mpi->chroma_width, mpi->chroma_height / 2,
+                          dmpi->stride[1] * 2, c->stride[1] * 2);
             my_memcpy_pic(dmpi->planes[1] + dmpi->stride[1],
-                f->ofields[1]->planes[1] + c->stride[1],
-                mpi->chroma_width, mpi->chroma_height/2,
-                dmpi->stride[1]*2, c->stride[1]*2);
+                          f->ofields[1]->planes[1] + c->stride[1],
+                          mpi->chroma_width, mpi->chroma_height / 2,
+                          dmpi->stride[1] * 2, c->stride[1] * 2);
             my_memcpy_pic(dmpi->planes[2], f->ofields[0]->planes[2],
-                mpi->chroma_width, mpi->chroma_height/2,
-                dmpi->stride[2]*2, c->stride[2]*2);
+                          mpi->chroma_width, mpi->chroma_height / 2,
+                          dmpi->stride[2] * 2, c->stride[2] * 2);
             my_memcpy_pic(dmpi->planes[2] + dmpi->stride[2],
-                f->ofields[1]->planes[2] + c->stride[2],
-                mpi->chroma_width, mpi->chroma_height/2,
-                dmpi->stride[2]*2, c->stride[2]*2);
+                          f->ofields[1]->planes[2] + c->stride[2],
+                          mpi->chroma_width, mpi->chroma_height / 2,
+                          dmpi->stride[2] * 2, c->stride[2] * 2);
         }
         pullup_release_frame(f);
-        if (mpi->qscale) {
+        if (mpi->qscale)
+        {
             dmpi->qscale = vf->priv->qbuf;
             dmpi->qstride = mpi->qstride;
             dmpi->qscale_type = mpi->qscale_type;
@@ -233,8 +252,8 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
         return vf_next_put_image(vf, dmpi, MP_NOPTS_VALUE);
     }
     dmpi = vf_get_image(vf->next, mpi->imgfmt,
-        MP_IMGTYPE_EXPORT, MP_IMGFLAG_ACCEPT_STRIDE,
-        mpi->width, mpi->height);
+                        MP_IMGTYPE_EXPORT, MP_IMGFLAG_ACCEPT_STRIDE,
+                        mpi->width, mpi->height);
 
     dmpi->planes[0] = f->buffer->planes[0];
     dmpi->planes[1] = f->buffer->planes[1];
@@ -244,7 +263,8 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
     dmpi->stride[1] = c->stride[1];
     dmpi->stride[2] = c->stride[2];
 
-    if (mpi->qscale) {
+    if (mpi->qscale)
+    {
         dmpi->qscale = vf->priv->qbuf;
         dmpi->qstride = mpi->qstride;
         dmpi->qscale_type = mpi->qscale_type;
@@ -257,7 +277,8 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
 static int query_format(struct vf_instance *vf, unsigned int fmt)
 {
     /* FIXME - support more formats */
-    switch (fmt) {
+    switch (fmt)
+    {
     case IMGFMT_YV12:
     case IMGFMT_IYUV:
     case IMGFMT_I420:
@@ -267,10 +288,10 @@ static int query_format(struct vf_instance *vf, unsigned int fmt)
 }
 
 static int config(struct vf_instance *vf,
-    int width, int height, int d_width, int d_height,
-    unsigned int flags, unsigned int outfmt)
+                  int width, int height, int d_width, int d_height,
+                  unsigned int flags, unsigned int outfmt)
 {
-    if (height&3) return 0;
+    if (height & 3) return 0;
     return vf_next_config(vf, width, height, d_width, d_height, flags, outfmt);
 }
 
@@ -298,13 +319,15 @@ static int vf_open(vf_instance_t *vf, char *args)
     c->junk_top = c->junk_bottom = 4;
     c->strict_breaks = 0;
     c->metric_plane = 0;
-    if (args) {
+    if (args)
+    {
         sscanf(args, "%d:%d:%d:%d:%d:%d", &c->junk_left, &c->junk_right, &c->junk_top, &c->junk_bottom, &c->strict_breaks, &c->metric_plane);
     }
     return 1;
 }
 
-const vf_info_t vf_info_pullup = {
+const vf_info_t vf_info_pullup =
+{
     "pullup (from field sequence to frames)",
     "pullup",
     "Rich Felker",

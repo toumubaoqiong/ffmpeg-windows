@@ -32,7 +32,8 @@
 #include "rtpdec.h"
 #include "rtpdec_formats.h"
 
-struct PayloadContext {
+struct PayloadContext
+{
     AVIOContext *pktbuf;
     int64_t        timestamp;
 };
@@ -54,13 +55,14 @@ static int svq3_parse_packet (AVFormatContext *s, PayloadContext *sv,
     buf += 2;     // ignore buf[1]
     len -= 2;
 
-    if (config_packet) {
+    if (config_packet)
+    {
 
         av_freep(&st->codec->extradata);
         st->codec->extradata_size = 0;
 
         if (len < 2 || !(st->codec->extradata =
-                         av_malloc(len + 8 + FF_INPUT_BUFFER_PADDING_SIZE)))
+                             av_malloc(len + 8 + FF_INPUT_BUFFER_PADDING_SIZE)))
             return AVERROR_INVALIDDATA;
 
         st->codec->extradata_size = len + 8;
@@ -78,10 +80,12 @@ static int svq3_parse_packet (AVFormatContext *s, PayloadContext *sv,
         return AVERROR(EAGAIN);
     }
 
-    if (start_packet) {
+    if (start_packet)
+    {
         int res;
 
-        if (sv->pktbuf) {
+        if (sv->pktbuf)
+        {
             uint8_t *tmp;
             avio_close_dyn_buf(sv->pktbuf, &tmp);
             av_free(tmp);
@@ -96,7 +100,8 @@ static int svq3_parse_packet (AVFormatContext *s, PayloadContext *sv,
 
     avio_write(sv->pktbuf, buf, len);
 
-    if (end_packet) {
+    if (end_packet)
+    {
         av_init_packet(pkt);
         pkt->stream_index = st->index;
         *timestamp        = sv->timestamp;
@@ -116,7 +121,8 @@ static PayloadContext *svq3_extradata_new(void)
 
 static void svq3_extradata_free(PayloadContext *sv)
 {
-    if (sv->pktbuf) {
+    if (sv->pktbuf)
+    {
         uint8_t *buf;
         avio_close_dyn_buf(sv->pktbuf, &buf);
         av_free(buf);
@@ -124,7 +130,8 @@ static void svq3_extradata_free(PayloadContext *sv)
     av_free(sv);
 }
 
-RTPDynamicProtocolHandler ff_svq3_dynamic_handler = {
+RTPDynamicProtocolHandler ff_svq3_dynamic_handler =
+{
     .enc_name         = "X-SV3V-ES",
     .codec_type       = AVMEDIA_TYPE_VIDEO,
     .codec_id         = CODEC_ID_NONE,      // see if (config_packet) above

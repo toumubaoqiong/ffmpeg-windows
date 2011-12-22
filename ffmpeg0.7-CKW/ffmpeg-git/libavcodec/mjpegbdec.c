@@ -28,9 +28,11 @@
 #include "mjpeg.h"
 #include "mjpegdec.h"
 
-static uint32_t read_offs(AVCodecContext *avctx, GetBitContext *gb, uint32_t size, const char *err_msg){
-    uint32_t offs= get_bits_long(gb, 32);
-    if(offs >= size){
+static uint32_t read_offs(AVCodecContext *avctx, GetBitContext *gb, uint32_t size, const char *err_msg)
+{
+    uint32_t offs = get_bits_long(gb, 32);
+    if(offs >= size)
+    {
         av_log(avctx, AV_LOG_WARNING, err_msg, offs, size);
         return 0;
     }
@@ -38,8 +40,8 @@ static uint32_t read_offs(AVCodecContext *avctx, GetBitContext *gb, uint32_t siz
 }
 
 static int mjpegb_decode_frame(AVCodecContext *avctx,
-                              void *data, int *data_size,
-                              AVPacket *avpkt)
+                               void *data, int *data_size,
+                               AVPacket *avpkt)
 {
     const uint8_t *buf = avpkt->data;
     int buf_size = avpkt->size;
@@ -59,11 +61,11 @@ read_header:
     s->restart_count = 0;
     s->mjpb_skiptosod = 0;
 
-    init_get_bits(&hgb, buf_ptr, /*buf_size*/(buf_end - buf_ptr)*8);
+    init_get_bits(&hgb, buf_ptr, /*buf_size*/(buf_end - buf_ptr) * 8);
 
     skip_bits(&hgb, 32); /* reserved zeros */
 
-    if (get_bits_long(&hgb, 32) != MKBETAG('m','j','p','g'))
+    if (get_bits_long(&hgb, 32) != MKBETAG('m', 'j', 'p', 'g'))
     {
         av_log(avctx, AV_LOG_WARNING, "not mjpeg-b (bad fourcc)\n");
         return 0;
@@ -79,7 +81,7 @@ read_header:
     av_log(avctx, AV_LOG_DEBUG, "dqt offs: 0x%x\n", dqt_offs);
     if (dqt_offs)
     {
-        init_get_bits(&s->gb, buf_ptr+dqt_offs, (buf_end - (buf_ptr+dqt_offs))*8);
+        init_get_bits(&s->gb, buf_ptr + dqt_offs, (buf_end - (buf_ptr + dqt_offs)) * 8);
         s->start_code = DQT;
         ff_mjpeg_decode_dqt(s);
     }
@@ -88,7 +90,7 @@ read_header:
     av_log(avctx, AV_LOG_DEBUG, "dht offs: 0x%x\n", dht_offs);
     if (dht_offs)
     {
-        init_get_bits(&s->gb, buf_ptr+dht_offs, (buf_end - (buf_ptr+dht_offs))*8);
+        init_get_bits(&s->gb, buf_ptr + dht_offs, (buf_end - (buf_ptr + dht_offs)) * 8);
         s->start_code = DHT;
         ff_mjpeg_decode_dht(s);
     }
@@ -97,7 +99,7 @@ read_header:
     av_log(avctx, AV_LOG_DEBUG, "sof offs: 0x%x\n", sof_offs);
     if (sof_offs)
     {
-        init_get_bits(&s->gb, buf_ptr+sof_offs, (buf_end - (buf_ptr+sof_offs))*8);
+        init_get_bits(&s->gb, buf_ptr + sof_offs, (buf_end - (buf_ptr + sof_offs)) * 8);
         s->start_code = SOF0;
         if (ff_mjpeg_decode_sof(s) < 0)
             return -1;
@@ -109,14 +111,15 @@ read_header:
     av_log(avctx, AV_LOG_DEBUG, "sod offs: 0x%x\n", sod_offs);
     if (sos_offs)
     {
-//        init_get_bits(&s->gb, buf+sos_offs, (buf_end - (buf+sos_offs))*8);
-        init_get_bits(&s->gb, buf_ptr+sos_offs, field_size*8);
+        //        init_get_bits(&s->gb, buf+sos_offs, (buf_end - (buf+sos_offs))*8);
+        init_get_bits(&s->gb, buf_ptr + sos_offs, field_size * 8);
         s->mjpb_skiptosod = (sod_offs - sos_offs - show_bits(&s->gb, 16));
         s->start_code = SOS;
         ff_mjpeg_decode_sos(s);
     }
 
-    if (s->interlaced) {
+    if (s->interlaced)
+    {
         s->bottom_field ^= 1;
         /* if not bottom field, do not output image yet */
         if (s->bottom_field != s->interlace_polarity && second_field_offs)
@@ -124,28 +127,30 @@ read_header:
             buf_ptr = buf + second_field_offs;
             second_field_offs = 0;
             goto read_header;
-            }
+        }
     }
 
     //XXX FIXME factorize, this looks very similar to the EOI code
 
-    *picture= s->picture;
+    *picture = s->picture;
     *data_size = sizeof(AVFrame);
 
-    if(!s->lossless){
-        picture->quality= FFMAX3(s->qscale[0], s->qscale[1], s->qscale[2]);
-        picture->qstride= 0;
-        picture->qscale_table= s->qscale_table;
-        memset(picture->qscale_table, picture->quality, (s->width+15)/16);
+    if(!s->lossless)
+    {
+        picture->quality = FFMAX3(s->qscale[0], s->qscale[1], s->qscale[2]);
+        picture->qstride = 0;
+        picture->qscale_table = s->qscale_table;
+        memset(picture->qscale_table, picture->quality, (s->width + 15) / 16);
         if(avctx->debug & FF_DEBUG_QP)
             av_log(avctx, AV_LOG_DEBUG, "QP: %d\n", picture->quality);
-        picture->quality*= FF_QP2LAMBDA;
+        picture->quality *= FF_QP2LAMBDA;
     }
 
     return buf_ptr - buf;
 }
 
-AVCodec ff_mjpegb_decoder = {
+AVCodec ff_mjpegb_decoder =
+{
     "mjpegb",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_MJPEGB,

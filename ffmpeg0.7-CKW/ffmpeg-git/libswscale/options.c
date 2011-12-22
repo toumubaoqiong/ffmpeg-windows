@@ -24,7 +24,7 @@
 #include "swscale.h"
 #include "swscale_internal.h"
 
-static const char * sws_context_to_name(void * ptr)
+static const char *sws_context_to_name(void *ptr)
 {
     return "swscaler";
 }
@@ -33,7 +33,8 @@ static const char * sws_context_to_name(void * ptr)
 #define DEFAULT 0
 #define VE AV_OPT_FLAG_VIDEO_PARAM | AV_OPT_FLAG_ENCODING_PARAM
 
-static const AVOption options[] = {
+static const AVOption options[] =
+{
     { "sws_flags", "scaler/cpu flags", OFFSET(flags), FF_OPT_TYPE_FLAGS, DEFAULT, 0, UINT_MAX, VE, "sws_flags" },
     { "fast_bilinear", "fast bilinear", 0, FF_OPT_TYPE_CONST, SWS_FAST_BILINEAR, INT_MIN, INT_MAX, VE, "sws_flags" },
     { "bilinear", "bilinear", 0, FF_OPT_TYPE_CONST, SWS_BILINEAR, INT_MIN, INT_MAX, VE, "sws_flags" },
@@ -62,8 +63,8 @@ static const AVOption options[] = {
     { "srch", "source height"     , OFFSET(srcH), FF_OPT_TYPE_INT, 16, 1, INT_MAX, VE },
     { "dstw", "destination width" , OFFSET(dstW), FF_OPT_TYPE_INT, 16, 1, INT_MAX, VE },
     { "dsth", "destination height", OFFSET(dstH), FF_OPT_TYPE_INT, 16, 1, INT_MAX, VE },
-    { "src_format", "source format"     , OFFSET(srcFormat), FF_OPT_TYPE_INT, DEFAULT, 0, PIX_FMT_NB-1, VE },
-    { "dst_format", "destination format", OFFSET(dstFormat), FF_OPT_TYPE_INT, DEFAULT, 0, PIX_FMT_NB-1, VE },
+    { "src_format", "source format"     , OFFSET(srcFormat), FF_OPT_TYPE_INT, DEFAULT, 0, PIX_FMT_NB - 1, VE },
+    { "dst_format", "destination format", OFFSET(dstFormat), FF_OPT_TYPE_INT, DEFAULT, 0, PIX_FMT_NB - 1, VE },
     { "src_range" , "source range"      , OFFSET(srcRange) , FF_OPT_TYPE_INT, DEFAULT, 0, 1, VE },
     { "dst_range" , "destination range" , OFFSET(dstRange) , FF_OPT_TYPE_INT, DEFAULT, 0, 1, VE },
     { "param0" , "scaler param 0" , OFFSET(param[0]) , FF_OPT_TYPE_DOUBLE, SWS_PARAM_DEFAULT, INT_MIN, INT_MAX, VE },

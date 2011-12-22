@@ -59,7 +59,7 @@ typedef struct TimeFilter TimeFilter;
  * For more details about these parameters and background concepts please see:
  * http://www.kokkinizita.net/papers/usingdll.pdf
  */
-TimeFilter * ff_timefilter_new(double clock_period, double feedback2_factor, double feedback3_factor);
+TimeFilter *ff_timefilter_new(double clock_period, double feedback2_factor, double feedback3_factor);
 
 /**
  * Update the filter

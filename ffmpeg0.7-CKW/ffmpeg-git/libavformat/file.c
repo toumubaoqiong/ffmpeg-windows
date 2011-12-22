@@ -68,11 +68,16 @@ static int file_open(URLContext *h, const char *filename, int flags)
 
     av_strstart(filename, "file:", &filename);
 
-    if (flags & AVIO_RDWR) {
+    if (flags & AVIO_RDWR)
+    {
         access = O_CREAT | O_TRUNC | O_RDWR;
-    } else if (flags & AVIO_WRONLY) {
+    }
+    else if (flags & AVIO_WRONLY)
+    {
         access = O_CREAT | O_TRUNC | O_WRONLY;
-    } else {
+    }
+    else
+    {
         access = O_RDONLY;
     }
 #ifdef O_BINARY
@@ -89,7 +94,8 @@ static int file_open(URLContext *h, const char *filename, int flags)
 static int64_t file_seek(URLContext *h, int64_t pos, int whence)
 {
     int fd = (intptr_t) h->priv_data;
-    if (whence == AVSEEK_SIZE) {
+    if (whence == AVSEEK_SIZE)
+    {
         struct stat st;
         int ret = fstat(fd, &st);
         return ret < 0 ? AVERROR(errno) : st.st_size;
@@ -110,14 +116,15 @@ static int file_check(URLContext *h, int mask)
     if (ret < 0)
         return AVERROR(errno);
 
-    ret |= st.st_mode&S_IRUSR ? mask&AVIO_RDONLY : 0;
-    ret |= st.st_mode&S_IWUSR ? mask&AVIO_WRONLY : 0;
-    ret |= st.st_mode&S_IWUSR && st.st_mode&S_IRUSR ? mask&AVIO_RDWR : 0;
+    ret |= st.st_mode & S_IRUSR ? mask & AVIO_RDONLY : 0;
+    ret |= st.st_mode & S_IWUSR ? mask & AVIO_WRONLY : 0;
+    ret |= st.st_mode & S_IWUSR && st.st_mode & S_IRUSR ? mask & AVIO_RDWR : 0;
 
     return ret;
 }
 
-URLProtocol ff_file_protocol = {
+URLProtocol ff_file_protocol =
+{
     .name                = "file",
     .url_open            = file_open,
     .url_read            = file_read,
@@ -139,10 +146,14 @@ static int pipe_open(URLContext *h, const char *filename, int flags)
     av_strstart(filename, "pipe:", &filename);
 
     fd = strtol(filename, &final, 10);
-    if((filename == final) || *final ) {/* No digits found, or something like 10ab */
-        if (flags & AVIO_WRONLY) {
+    if((filename == final) || *final )  /* No digits found, or something like 10ab */
+    {
+        if (flags & AVIO_WRONLY)
+        {
             fd = 1;
-        } else {
+        }
+        else
+        {
             fd = 0;
         }
     }
@@ -154,7 +165,8 @@ static int pipe_open(URLContext *h, const char *filename, int flags)
     return 0;
 }
 
-URLProtocol ff_pipe_protocol = {
+URLProtocol ff_pipe_protocol =
+{
     .name                = "pipe",
     .url_open            = pipe_open,
     .url_read            = file_read,

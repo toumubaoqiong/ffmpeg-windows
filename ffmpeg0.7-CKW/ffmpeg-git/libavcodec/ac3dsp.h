@@ -24,7 +24,8 @@
 
 #include <stdint.h>
 
-typedef struct AC3DSPContext {
+typedef struct AC3DSPContext
+{
     /**
      * Set each encoded exponent in a block to the minimum of itself and the
      * exponents in the same frequency bin of up to 5 following blocks.

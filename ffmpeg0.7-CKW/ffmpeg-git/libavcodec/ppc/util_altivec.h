@@ -99,7 +99,7 @@ do { \
 static inline vector unsigned char unaligned_load(int offset, uint8_t *src)
 {
     register vector unsigned char first = vec_ld(offset, src);
-    register vector unsigned char second = vec_ld(offset+15, src);
+    register vector unsigned char second = vec_ld(offset + 15, src);
     register vector unsigned char mask = vec_lvsl(offset, src);
     return vec_perm(first, second, mask);
 }
@@ -111,7 +111,7 @@ static inline vector unsigned char unaligned_load(int offset, uint8_t *src)
 static inline vec_u8 load_with_perm_vec(int offset, uint8_t *src, vec_u8 perm_vec)
 {
     vec_u8 a = vec_ld(offset, src);
-    vec_u8 b = vec_ld(offset+15, src);
+    vec_u8 b = vec_ld(offset + 15, src);
     return vec_perm(a, b, perm_vec);
 }
 

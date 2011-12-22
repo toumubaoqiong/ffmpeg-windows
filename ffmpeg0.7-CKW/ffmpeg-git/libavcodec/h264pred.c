@@ -42,8 +42,9 @@
 /**
  * Set the intra prediction function pointers.
  */
-void ff_h264_pred_init(H264PredContext *h, int codec_id, const int bit_depth){
-//    MpegEncContext * const s = &h->s;
+void ff_h264_pred_init(H264PredContext *h, int codec_id, const int bit_depth)
+{
+    //    MpegEncContext * const s = &h->s;
 
 #undef FUNC
 #undef FUNCC
@@ -171,17 +172,18 @@ void ff_h264_pred_init(H264PredContext *h, int codec_id, const int bit_depth){
     h->pred8x8_add  [ HOR_PRED8x8]= FUNCC(pred8x8_horizontal_add          , depth);\
     h->pred16x16_add[VERT_PRED8x8]= FUNCC(pred16x16_vertical_add          , depth);\
     h->pred16x16_add[ HOR_PRED8x8]= FUNCC(pred16x16_horizontal_add        , depth);\
-
-    switch (bit_depth) {
-        case 9:
-            H264_PRED(9)
-            break;
-        case 10:
-            H264_PRED(10)
-            break;
-        default:
-            H264_PRED(8)
-            break;
+ 
+    switch (bit_depth)
+    {
+    case 9:
+        H264_PRED(9)
+        break;
+    case 10:
+        H264_PRED(10)
+        break;
+    default:
+        H264_PRED(8)
+        break;
     }
 
     //if (ARCH_ARM) ff_h264_pred_init_arm(h, codec_id, bit_depth);

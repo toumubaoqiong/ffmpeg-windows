@@ -33,13 +33,14 @@
 
 typedef struct vp56_context VP56Context;
 
-typedef struct {
+typedef struct
+{
     int16_t x;
     int16_t y;
 } DECLARE_ALIGNED(4, , VP56mv);
 
 typedef void (*VP56ParseVectorAdjustment)(VP56Context *s,
-                                          VP56mv *vect);
+        VP56mv *vect);
 typedef void (*VP56Filter)(VP56Context *s, uint8_t *dst, uint8_t *src,
                            int offset1, int offset2, int stride,
                            VP56mv mv, int mask, int select, int luma);
@@ -50,7 +51,8 @@ typedef void (*VP56ParseCoeffModels)(VP56Context *s);
 typedef int  (*VP56ParseHeader)(VP56Context *s, const uint8_t *buf,
                                 int buf_size, int *golden_frame);
 
-typedef struct {
+typedef struct
+{
     int high;
     int bits; /* stored negated (i.e. negative "bits" is a positive number of
                  bits left) in order to eliminate a negate in cache refilling */
@@ -59,18 +61,21 @@ typedef struct {
     unsigned int code_word;
 } VP56RangeCoder;
 
-typedef struct {
+typedef struct
+{
     uint8_t not_null_dc;
     VP56Frame ref_frame;
     DCTELEM dc_coeff;
 } VP56RefDc;
 
-typedef struct {
+typedef struct
+{
     uint8_t type;
     VP56mv mv;
 } VP56Macroblock;
 
-typedef struct {
+typedef struct
+{
     uint8_t coeff_reorder[64];       /* used in vp6 only */
     uint8_t coeff_index_to_pos[64];  /* used in vp6 only */
     uint8_t vector_sig[2];           /* delta sign */
@@ -87,7 +92,8 @@ typedef struct {
     uint8_t mb_types_stats[3][10][2];/* contextual, next MB type stats */
 } VP56Model;
 
-struct vp56_context {
+struct vp56_context
+{
     AVCodecContext *avctx;
     DSPContext dsp;
     VP56DSPContext vp56dsp;
@@ -193,7 +199,8 @@ static av_always_inline unsigned int vp56_rac_renorm(VP56RangeCoder *c)
     c->high   <<= shift;
     code_word <<= shift;
     bits       += shift;
-    if(bits >= 0 && c->buffer < c->end) {
+    if(bits >= 0 && c->buffer < c->end)
+    {
         code_word |= bytestream_get_be16(&c->buffer) << bits;
         bits -= 16;
     }
@@ -231,7 +238,8 @@ static av_always_inline int vp56_rac_get_prob_branchy(VP56RangeCoder *c, int pro
     unsigned low = 1 + (((c->high - 1) * prob) >> 8);
     unsigned low_shift = low << 16;
 
-    if (code_word >= low_shift) {
+    if (code_word >= low_shift)
+    {
         c->high     -= low;
         c->code_word = code_word - low_shift;
         return 1;
@@ -250,10 +258,13 @@ static av_always_inline int vp56_rac_get(VP56RangeCoder *c)
     int low = (c->high + 1) >> 1;
     unsigned int low_shift = low << 16;
     int bit = code_word >= low_shift;
-    if (bit) {
+    if (bit)
+    {
         c->high   -= low;
         code_word -= low_shift;
-    } else {
+    }
+    else
+    {
         c->high = low;
     }
 
@@ -271,7 +282,8 @@ static av_unused int vp56_rac_gets(VP56RangeCoder *c, int bits)
 {
     int value = 0;
 
-    while (bits--) {
+    while (bits--)
+    {
         value = (value << 1) | vp56_rac_get(c);
     }
 
@@ -282,7 +294,8 @@ static av_unused int vp8_rac_get_uint(VP56RangeCoder *c, int bits)
 {
     int value = 0;
 
-    while (bits--) {
+    while (bits--)
+    {
         value = (value << 1) | vp8_rac_get(c);
     }
 
@@ -323,7 +336,8 @@ int vp56_rac_get_tree(VP56RangeCoder *c,
                       const VP56Tree *tree,
                       const uint8_t *probs)
 {
-    while (tree->val > 0) {
+    while (tree->val > 0)
+    {
         if (vp56_rac_get_prob(c, probs[tree->prob_idx]))
             tree += tree->val;
         else
@@ -341,9 +355,11 @@ static av_always_inline
 int vp8_rac_get_tree_with_offset(VP56RangeCoder *c, const int8_t (*tree)[2],
                                  const uint8_t *probs, int i)
 {
-    do {
+    do
+    {
         i = tree[i][vp56_rac_get_prob(c, probs[i])];
-    } while (i > 0);
+    }
+    while (i > 0);
 
     return -i;
 }
@@ -362,9 +378,11 @@ static av_always_inline int vp8_rac_get_coeff(VP56RangeCoder *c, const uint8_t *
 {
     int v = 0;
 
-    do {
-        v = (v<<1) + vp56_rac_get_prob(c, *prob++);
-    } while (*prob);
+    do
+    {
+        v = (v << 1) + vp56_rac_get_prob(c, *prob++);
+    }
+    while (*prob);
 
     return v;
 }

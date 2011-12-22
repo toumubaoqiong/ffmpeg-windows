@@ -32,7 +32,8 @@
  * Used by bap=1 mantissas and GAQ.
  * ff_ac3_ungroup_3_in_5_bits_tab[i] = { i/9, (i%9)/3, (i%9)%3 }
  */
-const uint8_t ff_ac3_ungroup_3_in_5_bits_tab[32][3] = {
+const uint8_t ff_ac3_ungroup_3_in_5_bits_tab[32][3] =
+{
     { 0, 0, 0 }, { 0, 0, 1 }, { 0, 0, 2 }, { 0, 1, 0 },
     { 0, 1, 1 }, { 0, 1, 2 }, { 0, 2, 0 }, { 0, 2, 1 },
     { 0, 2, 2 }, { 1, 0, 0 }, { 1, 0, 1 }, { 1, 0, 2 },
@@ -43,7 +44,8 @@ const uint8_t ff_ac3_ungroup_3_in_5_bits_tab[32][3] = {
     { 3, 0, 1 }, { 3, 0, 2 }, { 3, 1, 0 }, { 3, 1, 1 }
 };
 
-const uint8_t ff_eac3_hebap_tab[64] = {
+const uint8_t ff_eac3_hebap_tab[64] =
+{
     0, 1, 2, 3, 4, 5, 6, 7, 8, 8,
     8, 8, 9, 9, 9, 10, 10, 10, 10, 11,
     11, 11, 11, 12, 12, 12, 12, 13, 13, 13,

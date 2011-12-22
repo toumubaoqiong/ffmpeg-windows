@@ -48,9 +48,11 @@ static void mpc_synth(MPCContext *c, int16_t *out, int channels)
     int i, ch;
     OUT_INT samples[MPA_MAX_CHANNELS * MPA_FRAME_SIZE], *samples_ptr;
 
-    for(ch = 0;  ch < channels; ch++){
+    for(ch = 0;  ch < channels; ch++)
+    {
         samples_ptr = samples + ch;
-        for(i = 0; i < SAMPLES_PER_BAND; i++) {
+        for(i = 0; i < SAMPLES_PER_BAND; i++)
+        {
             ff_mpa_synth_filter(c->synth_buf[ch], &(c->synth_buf_offset[ch]),
                                 ff_mpa_synth_window, &dither_state,
                                 samples_ptr, channels,
@@ -58,11 +60,11 @@ static void mpc_synth(MPCContext *c, int16_t *out, int channels)
             samples_ptr += 32 * channels;
         }
     }
-    for(i = 0; i < MPC_FRAME_SIZE*channels; i++)
-        *out++=samples[i];
+    for(i = 0; i < MPC_FRAME_SIZE * channels; i++)
+        *out++ = samples[i];
 }
 
-void ff_mpc_dequantize_and_synth(MPCContext * c, int maxband, void *data, int channels)
+void ff_mpc_dequantize_and_synth(MPCContext *c, int maxband, void *data, int channels)
 {
     int i, j, ch;
     Band *bands = c->bands;
@@ -72,9 +74,12 @@ void ff_mpc_dequantize_and_synth(MPCContext * c, int maxband, void *data, int ch
     /* dequantize */
     memset(c->sb_samples, 0, sizeof(c->sb_samples));
     off = 0;
-    for(i = 0; i <= maxband; i++, off += SAMPLES_PER_BAND){
-        for(ch = 0; ch < 2; ch++){
-            if(bands[i].res[ch]){
+    for(i = 0; i <= maxband; i++, off += SAMPLES_PER_BAND)
+    {
+        for(ch = 0; ch < 2; ch++)
+        {
+            if(bands[i].res[ch])
+            {
                 j = 0;
                 mul = mpc_CC[bands[i].res[ch]] * mpc_SCF[bands[i].scf_idx[ch][0]];
                 for(; j < 12; j++)
@@ -87,9 +92,11 @@ void ff_mpc_dequantize_and_synth(MPCContext * c, int maxband, void *data, int ch
                     c->sb_samples[ch][j][i] = mul * c->Q[ch][j + off];
             }
         }
-        if(bands[i].msf){
+        if(bands[i].msf)
+        {
             int t1, t2;
-            for(j = 0; j < SAMPLES_PER_BAND; j++){
+            for(j = 0; j < SAMPLES_PER_BAND; j++)
+            {
                 t1 = c->sb_samples[0][j][i];
                 t2 = c->sb_samples[1][j][i];
                 c->sb_samples[0][j][i] = t1 + t2;

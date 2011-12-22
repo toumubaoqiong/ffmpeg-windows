@@ -40,7 +40,8 @@
 #endif
 
 #define MULH MULH
-static inline av_const int MULH(int a, int b){
+static inline av_const int MULH(int a, int b)
+{
     int r;
     __asm__ ("mulhw %0, %1, %2" : "=r"(r) : "r"(a), "r"(b));
     return r;
@@ -49,7 +50,11 @@ static inline av_const int MULH(int a, int b){
 #if !ARCH_PPC64
 static inline av_const int64_t MAC64(int64_t d, int a, int b)
 {
-    union { uint64_t x; unsigned hl[2]; } x = { d };
+    union
+    {
+        uint64_t x;
+        unsigned hl[2];
+    } x = { d };
     int h, l;
     __asm__ ("mullw %3, %4, %5   \n\t"
              "mulhw %2, %4, %5   \n\t"
@@ -63,7 +68,11 @@ static inline av_const int64_t MAC64(int64_t d, int a, int b)
 
 static inline av_const int64_t MLS64(int64_t d, int a, int b)
 {
-    union { uint64_t x; unsigned hl[2]; } x = { d };
+    union
+    {
+        uint64_t x;
+        unsigned hl[2];
+    } x = { d };
     int h, l;
     __asm__ ("mullw %3, %4, %5   \n\t"
              "mulhw %2, %4, %5   \n\t"

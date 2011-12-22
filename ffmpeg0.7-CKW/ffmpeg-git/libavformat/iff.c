@@ -60,18 +60,21 @@
 
 #define PACKET_SIZE 1024
 
-typedef enum {
+typedef enum
+{
     COMP_NONE,
     COMP_FIB,
     COMP_EXP
 } svx8_compression_type;
 
-typedef enum {
+typedef enum
+{
     BITMAP_RAW,
     BITMAP_BYTERUN1
 } bitmap_compression_type;
 
-typedef struct {
+typedef struct
+{
     uint64_t  body_pos;
     uint32_t  body_size;
     uint32_t  sent_bytes;
@@ -82,11 +85,12 @@ typedef struct {
 static void interleave_stereo(const uint8_t *src, uint8_t *dest, int size)
 {
     uint8_t *end = dest + size;
-    size = size>>1;
+    size = size >> 1;
 
-    while(dest < end) {
+    while(dest < end)
+    {
         *dest++ = *src;
-        *dest++ = *(src+size);
+        *dest++ = *(src + size);
         src++;
     }
 }
@@ -101,7 +105,8 @@ static int get_metadata(AVFormatContext *s,
     if (!buf)
         return AVERROR(ENOMEM);
 
-    if (avio_read(s->pb, buf, data_size) < 0) {
+    if (avio_read(s->pb, buf, data_size) < 0)
+    {
         av_free(buf);
         return AVERROR(EIO);
     }
@@ -115,7 +120,7 @@ static int iff_probe(AVProbeData *p)
     const uint8_t *d = p->buf;
 
     if ( AV_RL32(d)   == ID_FORM &&
-         (AV_RL32(d+8) == ID_8SVX || AV_RL32(d+8) == ID_PBM || AV_RL32(d+8) == ID_ILBM) )
+            (AV_RL32(d + 8) == ID_8SVX || AV_RL32(d + 8) == ID_PBM || AV_RL32(d + 8) == ID_ILBM) )
         return AVPROBE_SCORE_MAX;
     return 0;
 }
@@ -138,7 +143,8 @@ static int iff_read_header(AVFormatContext *s,
     // codec_tag used by ByteRun1 decoder to distinguish progressive (PBM) and interlaced (ILBM) content
     st->codec->codec_tag = avio_rl32(pb);
 
-    while(!url_feof(pb)) {
+    while(!url_feof(pb))
+    {
         uint64_t orig_pos;
         int res;
         const char *metadata_tag = NULL;
@@ -146,7 +152,8 @@ static int iff_read_header(AVFormatContext *s,
         data_size = avio_rb32(pb);
         orig_pos = avio_tell(pb);
 
-        switch(chunk_id) {
+        switch(chunk_id)
+        {
         case ID_VHDR:
             st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
 
@@ -154,7 +161,8 @@ static int iff_read_header(AVFormatContext *s,
                 return AVERROR_INVALIDDATA;
             avio_skip(pb, 12);
             st->codec->sample_rate = avio_rb16(pb);
-            if (data_size >= 16) {
+            if (data_size >= 16)
+            {
                 avio_skip(pb, 1);
                 compression        = avio_r8(pb);
             }
@@ -188,11 +196,13 @@ static int iff_read_header(AVFormatContext *s,
             st->codec->height                = avio_rb16(pb);
             avio_skip(pb, 4); // x, y offset
             st->codec->bits_per_coded_sample = avio_r8(pb);
-            if (data_size >= 11) {
+            if (data_size >= 11)
+            {
                 avio_skip(pb, 1); // masking
                 compression                  = avio_r8(pb);
             }
-            if (data_size >= 16) {
+            if (data_size >= 16)
+            {
                 avio_skip(pb, 3); // paddding, transparent
                 st->sample_aspect_ratio.num  = avio_r8(pb);
                 st->sample_aspect_ratio.den  = avio_r8(pb);
@@ -217,8 +227,10 @@ static int iff_read_header(AVFormatContext *s,
             break;
         }
 
-        if (metadata_tag) {
-            if ((res = get_metadata(s, metadata_tag, data_size)) < 0) {
+        if (metadata_tag)
+        {
+            if ((res = get_metadata(s, metadata_tag, data_size)) < 0)
+            {
                 av_log(s, AV_LOG_ERROR, "cannot allocate metadata tag %s!", metadata_tag);
                 return res;
             }
@@ -228,11 +240,13 @@ static int iff_read_header(AVFormatContext *s,
 
     avio_seek(pb, iff->body_pos, SEEK_SET);
 
-    switch(st->codec->codec_type) {
+    switch(st->codec->codec_type)
+    {
     case AVMEDIA_TYPE_AUDIO:
         av_set_pts_info(st, 32, 1, st->codec->sample_rate);
 
-        switch(compression) {
+        switch(compression)
+        {
         case COMP_NONE:
             st->codec->codec_id = CODEC_ID_PCM_S8;
             break;
@@ -253,7 +267,8 @@ static int iff_read_header(AVFormatContext *s,
         break;
 
     case AVMEDIA_TYPE_VIDEO:
-        switch (compression) {
+        switch (compression)
+        {
         case BITMAP_RAW:
             st->codec->codec_id = CODEC_ID_IFF_ILBM;
             break;
@@ -283,38 +298,49 @@ static int iff_read_packet(AVFormatContext *s,
     if(iff->sent_bytes >= iff->body_size)
         return AVERROR(EIO);
 
-    if(st->codec->channels == 2) {
+    if(st->codec->channels == 2)
+    {
         uint8_t sample_buffer[PACKET_SIZE];
 
         ret = avio_read(pb, sample_buffer, PACKET_SIZE);
-        if(av_new_packet(pkt, PACKET_SIZE) < 0) {
+        if(av_new_packet(pkt, PACKET_SIZE) < 0)
+        {
             av_log(s, AV_LOG_ERROR, "cannot allocate packet\n");
             return AVERROR(ENOMEM);
         }
         interleave_stereo(sample_buffer, pkt->data, PACKET_SIZE);
-    } else if (st->codec->codec_type == AVMEDIA_TYPE_VIDEO) {
+    }
+    else if (st->codec->codec_type == AVMEDIA_TYPE_VIDEO)
+    {
         ret = av_get_packet(pb, pkt, iff->body_size);
-    } else {
+    }
+    else
+    {
         ret = av_get_packet(pb, pkt, PACKET_SIZE);
     }
 
     if(iff->sent_bytes == 0)
         pkt->flags |= AV_PKT_FLAG_KEY;
 
-    if(st->codec->codec_type == AVMEDIA_TYPE_AUDIO) {
+    if(st->codec->codec_type == AVMEDIA_TYPE_AUDIO)
+    {
         iff->sent_bytes += PACKET_SIZE;
-    } else {
+    }
+    else
+    {
         iff->sent_bytes = iff->body_size;
     }
     pkt->stream_index = 0;
-    if(st->codec->codec_type == AVMEDIA_TYPE_AUDIO) {
+    if(st->codec->codec_type == AVMEDIA_TYPE_AUDIO)
+    {
         pkt->pts = iff->audio_frame_count;
         iff->audio_frame_count += ret / st->codec->channels;
     }
     return ret;
 }
 
-AVInputFormat ff_iff_demuxer = {
+AVInputFormat ff_iff_demuxer =
+{
     "IFF",
     NULL_IF_CONFIG_SMALL("IFF format"),
     sizeof(IffDemuxContext),

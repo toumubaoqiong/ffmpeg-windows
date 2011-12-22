@@ -28,7 +28,8 @@
 
 #include "avcodec.h"
 
-typedef struct {
+typedef struct
+{
     uint16_t width;
     uint16_t height;
     uint16_t frame_rate_num;
@@ -43,7 +44,8 @@ unsigned int ff_dirac_schro_get_video_format_idx(AVCodecContext *avccontext);
 /**
 * contains a single encoded frame returned from Dirac or Schroedinger
 */
-typedef struct FfmpegDiracSchroEncodedFrame {
+typedef struct FfmpegDiracSchroEncodedFrame
+{
     /** encoded frame data */
     uint8_t *p_encbuf;
 
@@ -60,7 +62,8 @@ typedef struct FfmpegDiracSchroEncodedFrame {
 /**
 * queue element
 */
-typedef struct FfmpegDiracSchroQueueElement {
+typedef struct FfmpegDiracSchroQueueElement
+{
     /** Data to be stored in queue*/
     void *data;
     /** Pointer to next element queue */
@@ -71,7 +74,8 @@ typedef struct FfmpegDiracSchroQueueElement {
 /**
 * A simple queue implementation used in libdirac and libschroedinger
 */
-typedef struct FfmpegDiracSchroQueue {
+typedef struct FfmpegDiracSchroQueue
+{
     /** Pointer to head of queue */
     FfmpegDiracSchroQueueElement *p_head;
     /** Pointer to tail of queue */

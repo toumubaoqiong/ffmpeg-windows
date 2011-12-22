@@ -41,22 +41,25 @@ static const uint8_t bfu_bands_t[4]  = {0, 20, 36, 52};
  *  block floating unit = group of spectral frequencies having the
  *  same quantization parameters like word length and scale factor
  */
-static const uint8_t specs_per_bfu[52] = {
-     8,  8,  8,  8,  4,  4,  4,  4,  8,  8,  8,  8,  6,  6,  6,  6, 6, 6, 6, 6, // low band
-     6,  6,  6,  6,  7,  7,  7,  7,  9,  9,  9,  9, 10, 10, 10, 10,             // midle band
+static const uint8_t specs_per_bfu[52] =
+{
+    8,  8,  8,  8,  4,  4,  4,  4,  8,  8,  8,  8,  6,  6,  6,  6, 6, 6, 6, 6, // low band
+    6,  6,  6,  6,  7,  7,  7,  7,  9,  9,  9,  9, 10, 10, 10, 10,             // midle band
     12, 12, 12, 12, 12, 12, 12, 12, 20, 20, 20, 20, 20, 20, 20, 20              // high band
 };
 
 /** start position of each BFU in the MDCT spectrum for the long mode */
-static const uint16_t bfu_start_long[52] = {
-      0,   8,  16,  24,  32,  36,  40,  44,  48,  56,  64,  72,  80,  86,  92,  98, 104, 110, 116, 122,
+static const uint16_t bfu_start_long[52] =
+{
+    0,   8,  16,  24,  32,  36,  40,  44,  48,  56,  64,  72,  80,  86,  92,  98, 104, 110, 116, 122,
     128, 134, 140, 146, 152, 159, 166, 173, 180, 189, 198, 207, 216, 226, 236, 246,
     256, 268, 280, 292, 304, 316, 328, 340, 352, 372, 392, 412, 432, 452, 472, 492,
 };
 
 /** start position of each BFU in the MDCT spectrum for the short mode */
-static const uint16_t bfu_start_short[52] = {
-      0,  32,  64,  96,   8,  40,  72, 104,  12,  44,  76, 108,  20,  52,  84, 116, 26, 58, 90, 122,
+static const uint16_t bfu_start_short[52] =
+{
+    0,  32,  64,  96,   8,  40,  72, 104,  12,  44,  76, 108,  20,  52,  84, 116, 26, 58, 90, 122,
     128, 160, 192, 224, 134, 166, 198, 230, 141, 173, 205, 237, 150, 182, 214, 246,
     256, 288, 320, 352, 384, 416, 448, 480, 268, 300, 332, 364, 396, 428, 460, 492
 };

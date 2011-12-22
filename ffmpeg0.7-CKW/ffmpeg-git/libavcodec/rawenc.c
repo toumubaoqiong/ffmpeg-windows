@@ -41,21 +41,23 @@ static av_cold int raw_init_encoder(AVCodecContext *avctx)
 }
 
 static int raw_encode(AVCodecContext *avctx,
-                            unsigned char *frame, int buf_size, void *data)
+                      unsigned char *frame, int buf_size, void *data)
 {
     int ret = avpicture_layout((AVPicture *)data, avctx->pix_fmt, avctx->width,
-                                               avctx->height, frame, buf_size);
+                               avctx->height, frame, buf_size);
 
     if(avctx->codec_tag == AV_RL32("yuv2") && ret > 0 &&
-       avctx->pix_fmt   == PIX_FMT_YUYV422) {
+            avctx->pix_fmt   == PIX_FMT_YUYV422)
+    {
         int x;
-        for(x = 1; x < avctx->height*avctx->width*2; x += 2)
+        for(x = 1; x < avctx->height * avctx->width * 2; x += 2)
             frame[x] ^= 0x80;
     }
     return ret;
 }
 
-AVCodec ff_rawvideo_encoder = {
+AVCodec ff_rawvideo_encoder =
+{
     "rawvideo",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_RAWVIDEO,

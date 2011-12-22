@@ -33,7 +33,8 @@ static void ff_mlp_filter_channel(int32_t *state, const int32_t *coeff,
     const int32_t *iircoeff = coeff + MAX_FIR_ORDER;
     int i;
 
-    for (i = 0; i < blocksize; i++) {
+    for (i = 0; i < blocksize; i++)
+    {
         int32_t residual = *sample_buffer;
         unsigned int order;
         int64_t accum = 0;
@@ -55,7 +56,7 @@ static void ff_mlp_filter_channel(int32_t *state, const int32_t *coeff,
     }
 }
 
-void ff_mlp_init(DSPContext* c, AVCodecContext *avctx)
+void ff_mlp_init(DSPContext *c, AVCodecContext *avctx)
 {
     c->mlp_filter_channel = ff_mlp_filter_channel;
     //if (ARCH_X86)

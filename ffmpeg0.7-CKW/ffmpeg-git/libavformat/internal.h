@@ -26,7 +26,8 @@
 
 #define MAX_URL_SIZE 4096
 
-typedef struct AVCodecTag {
+typedef struct AVCodecTag
+{
     enum CodecID id;
     unsigned int tag;
 } AVCodecTag;

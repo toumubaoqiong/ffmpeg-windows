@@ -54,6 +54,6 @@ extern SINETABLE(1024);
 extern SINETABLE(2048);
 extern SINETABLE(4096);
 
-extern SINETABLE_CONST float * const ff_sine_windows[13];
+extern SINETABLE_CONST float *const ff_sine_windows[13];
 
 #endif

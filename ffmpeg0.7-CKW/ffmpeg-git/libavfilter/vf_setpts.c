@@ -29,7 +29,8 @@
 #include "libavutil/eval.h"
 #include "avfilter.h"
 
-static const char *var_names[] = {
+static const char *var_names[] =
+{
     "E",           ///< Euler number
     "INTERLACED",  ///< tell if the current frame is interlaced
     "N",           ///< frame number (starting at zero)
@@ -44,7 +45,8 @@ static const char *var_names[] = {
     NULL
 };
 
-enum var_name {
+enum var_name
+{
     VAR_E,
     VAR_INTERLACED,
     VAR_N,
@@ -59,7 +61,8 @@ enum var_name {
     VAR_VARS_NB
 };
 
-typedef struct {
+typedef struct
+{
     AVExpr *expr;
     double var_values[VAR_VARS_NB];
 } SetPTSContext;
@@ -70,7 +73,8 @@ static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
     int ret;
 
     if ((ret = av_expr_parse(&setpts->expr, args ? args : "PTS",
-                             var_names, NULL, NULL, NULL, NULL, 0, ctx)) < 0) {
+                             var_names, NULL, NULL, NULL, NULL, 0, ctx)) < 0)
+    {
         av_log(ctx, AV_LOG_ERROR, "Error while parsing expression '%s'\n", args);
         return ret;
     }
@@ -137,7 +141,8 @@ static av_cold void uninit(AVFilterContext *ctx)
     setpts->expr = NULL;
 }
 
-AVFilter avfilter_vf_setpts = {
+AVFilter avfilter_vf_setpts =
+{
     .name      = "setpts",
     .description = NULL_IF_CONFIG_SMALL("Set PTS for the output video frame."),
     .init      = init,
@@ -145,13 +150,23 @@ AVFilter avfilter_vf_setpts = {
 
     .priv_size = sizeof(SetPTSContext),
 
-    .inputs    = (AVFilterPad[]) {{ .name             = "default",
-                                    .type             = AVMEDIA_TYPE_VIDEO,
-                                    .get_video_buffer = avfilter_null_get_video_buffer,
-                                    .config_props     = config_input,
-                                    .start_frame      = start_frame, },
-                                  { .name = NULL }},
-    .outputs   = (AVFilterPad[]) {{ .name             = "default",
-                                    .type             = AVMEDIA_TYPE_VIDEO, },
-                                  { .name = NULL}},
+    .inputs    = (AVFilterPad[])
+    {
+        {
+            .name             = "default",
+            .type             = AVMEDIA_TYPE_VIDEO,
+            .get_video_buffer = avfilter_null_get_video_buffer,
+            .config_props     = config_input,
+            .start_frame      = start_frame,
+        },
+        { .name = NULL }
+    },
+    .outputs   = (AVFilterPad[])
+    {
+        {
+            .name             = "default",
+            .type             = AVMEDIA_TYPE_VIDEO,
+        },
+        { .name = NULL}
+    },
 };

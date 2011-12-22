@@ -55,104 +55,115 @@
 #define MV_BWD_OFFS                     12
 #define MV_STRIDE                        4
 
-enum cavs_mb {
-  I_8X8 = 0,
-  P_SKIP,
-  P_16X16,
-  P_16X8,
-  P_8X16,
-  P_8X8,
-  B_SKIP,
-  B_DIRECT,
-  B_FWD_16X16,
-  B_BWD_16X16,
-  B_SYM_16X16,
-  B_8X8 = 29
+enum cavs_mb
+{
+    I_8X8 = 0,
+    P_SKIP,
+    P_16X16,
+    P_16X8,
+    P_8X16,
+    P_8X8,
+    B_SKIP,
+    B_DIRECT,
+    B_FWD_16X16,
+    B_BWD_16X16,
+    B_SYM_16X16,
+    B_8X8 = 29
 };
 
-enum cavs_sub_mb {
-  B_SUB_DIRECT,
-  B_SUB_FWD,
-  B_SUB_BWD,
-  B_SUB_SYM
+enum cavs_sub_mb
+{
+    B_SUB_DIRECT,
+    B_SUB_FWD,
+    B_SUB_BWD,
+    B_SUB_SYM
 };
 
-enum cavs_intra_luma {
-  INTRA_L_VERT,
-  INTRA_L_HORIZ,
-  INTRA_L_LP,
-  INTRA_L_DOWN_LEFT,
-  INTRA_L_DOWN_RIGHT,
-  INTRA_L_LP_LEFT,
-  INTRA_L_LP_TOP,
-  INTRA_L_DC_128
+enum cavs_intra_luma
+{
+    INTRA_L_VERT,
+    INTRA_L_HORIZ,
+    INTRA_L_LP,
+    INTRA_L_DOWN_LEFT,
+    INTRA_L_DOWN_RIGHT,
+    INTRA_L_LP_LEFT,
+    INTRA_L_LP_TOP,
+    INTRA_L_DC_128
 };
 
-enum cavs_intra_chroma {
-  INTRA_C_LP,
-  INTRA_C_HORIZ,
-  INTRA_C_VERT,
-  INTRA_C_PLANE,
-  INTRA_C_LP_LEFT,
-  INTRA_C_LP_TOP,
-  INTRA_C_DC_128,
+enum cavs_intra_chroma
+{
+    INTRA_C_LP,
+    INTRA_C_HORIZ,
+    INTRA_C_VERT,
+    INTRA_C_PLANE,
+    INTRA_C_LP_LEFT,
+    INTRA_C_LP_TOP,
+    INTRA_C_DC_128,
 };
 
-enum cavs_mv_pred {
-  MV_PRED_MEDIAN,
-  MV_PRED_LEFT,
-  MV_PRED_TOP,
-  MV_PRED_TOPRIGHT,
-  MV_PRED_PSKIP,
-  MV_PRED_BSKIP
+enum cavs_mv_pred
+{
+    MV_PRED_MEDIAN,
+    MV_PRED_LEFT,
+    MV_PRED_TOP,
+    MV_PRED_TOPRIGHT,
+    MV_PRED_PSKIP,
+    MV_PRED_BSKIP
 };
 
-enum cavs_block {
-  BLK_16X16,
-  BLK_16X8,
-  BLK_8X16,
-  BLK_8X8
+enum cavs_block
+{
+    BLK_16X16,
+    BLK_16X8,
+    BLK_8X16,
+    BLK_8X8
 };
 
-enum cavs_mv_loc {
-  MV_FWD_D3 = 0,
-  MV_FWD_B2,
-  MV_FWD_B3,
-  MV_FWD_C2,
-  MV_FWD_A1,
-  MV_FWD_X0,
-  MV_FWD_X1,
-  MV_FWD_A3 = 8,
-  MV_FWD_X2,
-  MV_FWD_X3,
-  MV_BWD_D3 = MV_BWD_OFFS,
-  MV_BWD_B2,
-  MV_BWD_B3,
-  MV_BWD_C2,
-  MV_BWD_A1,
-  MV_BWD_X0,
-  MV_BWD_X1,
-  MV_BWD_A3 = MV_BWD_OFFS+8,
-  MV_BWD_X2,
-  MV_BWD_X3
+enum cavs_mv_loc
+{
+    MV_FWD_D3 = 0,
+    MV_FWD_B2,
+    MV_FWD_B3,
+    MV_FWD_C2,
+    MV_FWD_A1,
+    MV_FWD_X0,
+    MV_FWD_X1,
+    MV_FWD_A3 = 8,
+    MV_FWD_X2,
+    MV_FWD_X3,
+    MV_BWD_D3 = MV_BWD_OFFS,
+    MV_BWD_B2,
+    MV_BWD_B3,
+    MV_BWD_C2,
+    MV_BWD_A1,
+    MV_BWD_X0,
+    MV_BWD_X1,
+    MV_BWD_A3 = MV_BWD_OFFS + 8,
+    MV_BWD_X2,
+    MV_BWD_X3
 };
 
-DECLARE_ALIGNED(8, typedef, struct) {
+DECLARE_ALIGNED(8, typedef, struct)
+{
     int16_t x;
     int16_t y;
     int16_t dist;
     int16_t ref;
-} cavs_vector;
+}
+cavs_vector;
 
-struct dec_2dvlc {
-  int8_t rltab[59][3];
-  int8_t level_add[27];
-  int8_t golomb_order;
-  int inc_limit;
-  int8_t max_run;
+struct dec_2dvlc
+{
+    int8_t rltab[59][3];
+    int8_t level_add[27];
+    int8_t golomb_order;
+    int inc_limit;
+    int8_t max_run;
 };
 
-typedef struct {
+typedef struct
+{
     MpegEncContext s;
     CAVSDSPContext cdsp;
     Picture picture; ///< currently decoded frame
@@ -212,8 +223,8 @@ typedef struct {
     uint8_t intern_border_y[26];
     uint8_t topleft_border_y, topleft_border_u, topleft_border_v;
 
-    void (*intra_pred_l[8])(uint8_t *d,uint8_t *top,uint8_t *left,int stride);
-    void (*intra_pred_c[7])(uint8_t *d,uint8_t *top,uint8_t *left,int stride);
+    void (*intra_pred_l[8])(uint8_t *d, uint8_t *top, uint8_t *left, int stride);
+    void (*intra_pred_c[7])(uint8_t *d, uint8_t *top, uint8_t *left, int stride);
     uint8_t *col_type_base;
 
     /* scaling factors for MV prediction */
@@ -241,26 +252,34 @@ extern const cavs_vector ff_cavs_intra_mv;
 extern const cavs_vector ff_cavs_un_mv;
 extern const cavs_vector ff_cavs_dir_mv;
 
-static inline void modify_pred(const int_fast8_t *mod_table, int *mode) {
+static inline void modify_pred(const int_fast8_t *mod_table, int *mode)
+{
     *mode = mod_table[*mode];
-    if(*mode < 0) {
+    if(*mode < 0)
+    {
         av_log(NULL, AV_LOG_ERROR, "Illegal intra prediction mode\n");
         *mode = 0;
     }
 }
 
-static inline void set_intra_mode_default(AVSContext *h) {
-    if(h->stream_revision > 0) {
+static inline void set_intra_mode_default(AVSContext *h)
+{
+    if(h->stream_revision > 0)
+    {
         h->pred_mode_Y[3] =  h->pred_mode_Y[6] = NOT_AVAIL;
         h->top_pred_Y[h->mbx*2+0] = h->top_pred_Y[h->mbx*2+1] = NOT_AVAIL;
-    } else {
+    }
+    else
+    {
         h->pred_mode_Y[3] =  h->pred_mode_Y[6] = INTRA_L_LP;
         h->top_pred_Y[h->mbx*2+0] = h->top_pred_Y[h->mbx*2+1] = INTRA_L_LP;
     }
 }
 
-static inline void set_mvs(cavs_vector *mv, enum cavs_block size) {
-    switch(size) {
+static inline void set_mvs(cavs_vector *mv, enum cavs_block size)
+{
+    switch(size)
+    {
     case BLK_16X16:
         mv[MV_STRIDE  ] = mv[0];
         mv[MV_STRIDE+1] = mv[0];
@@ -273,7 +292,8 @@ static inline void set_mvs(cavs_vector *mv, enum cavs_block size) {
     }
 }
 
-static inline void set_mv_intra(AVSContext *h) {
+static inline void set_mv_intra(AVSContext *h)
+{
     h->mv[MV_FWD_X0] = ff_cavs_intra_mv;
     set_mvs(&h->mv[MV_FWD_X0], BLK_16X16);
     h->mv[MV_BWD_X0] = ff_cavs_intra_mv;
@@ -283,21 +303,24 @@ static inline void set_mv_intra(AVSContext *h) {
 }
 
 static inline int dequant(AVSContext *h, DCTELEM *level_buf, uint8_t *run_buf,
-                          DCTELEM *dst, int mul, int shift, int coeff_num) {
+                          DCTELEM *dst, int mul, int shift, int coeff_num)
+{
     int round = 1 << (shift - 1);
     int pos = -1;
     const uint8_t *scantab = h->scantable.permutated;
 
     /* inverse scan and dequantization */
-    while(--coeff_num >= 0){
+    while(--coeff_num >= 0)
+    {
         pos += run_buf[coeff_num];
-        if(pos > 63) {
+        if(pos > 63)
+        {
             av_log(h->s.avctx, AV_LOG_ERROR,
-                "position out of block bounds at pic %d MB(%d,%d)\n",
-                h->picture.poc, h->mbx, h->mby);
+                   "position out of block bounds at pic %d MB(%d,%d)\n",
+                   h->picture.poc, h->mbx, h->mby);
             return -1;
         }
-        dst[scantab[pos]] = (level_buf[coeff_num]*mul + round) >> shift;
+        dst[scantab[pos]] = (level_buf[coeff_num] * mul + round) >> shift;
     }
     return 0;
 }

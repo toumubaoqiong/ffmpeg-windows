@@ -33,7 +33,7 @@
 #define MODE_EXT_I_STEREO  1
 
 extern const uint16_t ff_mpa_bitrate_tab[2][3][15];
-FFMPEGLIB_API const uint16_t*** av_getff_mpa_bitrate_tab(void);
+FFMPEGLIB_API const uint16_t *** av_getff_mpa_bitrate_tab(void);
 
 extern const uint16_t ff_mpa_freq_tab[3];
 FFMPEGLIB_API const uint16_t *av_getff_mpa_freq_tab(void);
@@ -41,6 +41,6 @@ extern const int32_t ff_mpa_enwindow[257];
 extern const int ff_mpa_sblimit_table[5];
 extern const int ff_mpa_quant_steps[17];
 extern const int ff_mpa_quant_bits[17];
-extern const unsigned char * const ff_mpa_alloc_tables[5];
+extern const unsigned char *const ff_mpa_alloc_tables[5];
 
 #endif /* AVCODEC_MPEGAUDIODATA_H */

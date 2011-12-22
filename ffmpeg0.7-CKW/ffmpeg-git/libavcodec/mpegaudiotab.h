@@ -35,7 +35,8 @@
 
 #define SQRT2 1.41421356237309514547
 
-static const int costab32[30] = {
+static const int costab32[30] =
+{
     FIX(0.54119610014619701222),
     FIX(1.3065629648763763537),
 
@@ -71,7 +72,8 @@ static const int costab32[30] = {
     FIX(0.5006029982351962726),
 };
 
-static const int bitinv32[32] = {
+static const int bitinv32[32] =
+{
     0,  16,  8, 24,  4,  20,  12,  28,
     2,  18, 10, 26,  6,  22,  14,  30,
     1,  17,  9, 25,  5,  21,  13,  29,
@@ -96,8 +98,9 @@ static unsigned short total_quant_bits[17];
 /* signal to noise ratio of each quantification step (could be
    computed from quant_steps[]). The values are dB multiplied by 10
 */
-static const unsigned short quant_snr[17] = {
-     70, 110, 160, 208,
+static const unsigned short quant_snr[17] =
+{
+    70, 110, 160, 208,
     253, 316, 378, 439,
     499, 559, 620, 680,
     740, 800, 861, 920,
@@ -106,7 +109,8 @@ static const unsigned short quant_snr[17] = {
 
 /* fixed psycho acoustic model. Values of SNR taken from the 'toolame'
    project */
-static const float fixed_smr[SBLIMIT] =  {
+static const float fixed_smr[SBLIMIT] =
+{
     30, 17, 16, 10, 3, 12, 8, 2.5,
     5, 5, 6, 6, 5, 6, 10, 6,
     -4, -10, -21, -30, -42, -55, -68, -75,

@@ -31,7 +31,11 @@
 #define MULL MULL
 static inline av_const int MULL(int a, int b, unsigned shift)
 {
-    union { int64_t x; int hl[2]; } x;
+    union
+    {
+        int64_t x;
+        int hl[2];
+    } x;
     __asm__ ("muls.d %0, %1, %2       \n\t"
              "lsr    %0, %3           \n\t"
              "or     %0, %0, %m0<<%4  \n\t"
@@ -42,7 +46,11 @@ static inline av_const int MULL(int a, int b, unsigned shift)
 #define MULH MULH
 static inline av_const int MULH(int a, int b)
 {
-    union { int64_t x; int hl[2]; } x;
+    union
+    {
+        int64_t x;
+        int hl[2];
+    } x;
     __asm__ ("muls.d %0, %1, %2" : "=r"(x.x) : "r"(a), "r"(b));
     return x.hl[0];
 }

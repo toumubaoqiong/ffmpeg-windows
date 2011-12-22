@@ -54,22 +54,25 @@ typedef void (* ltransform)(uint8_t *Y, uint8_t *U, uint8_t *V, uint8_t *out,
 static void bfin_prepare_coefficients(SwsContext *c, int rgb, int masks)
 {
     int oy;
-    oy      = c->yOffset&0xffff;
+    oy      = c->yOffset & 0xffff;
     oy      = oy >> 3; // keep everything U8.0 for offset calculation
 
-    c->oc   = 128*0x01010101U;
-    c->oy   =  oy*0x01010101U;
+    c->oc   = 128 * 0x01010101U;
+    c->oy   =  oy * 0x01010101U;
 
     /* copy 64bit vector coeffs down to 32bit vector coeffs */
     c->cy  = c->yCoeff;
     c->zero = 0;
 
-    if (rgb) {
+    if (rgb)
+    {
         c->crv = c->vrCoeff;
         c->cbu = c->ubCoeff;
         c->cgu = c->ugCoeff;
         c->cgv = c->vgCoeff;
-    } else {
+    }
+    else
+    {
         c->crv = c->ubCoeff;
         c->cbu = c->vrCoeff;
         c->cgu = c->vgCoeff;
@@ -77,11 +80,14 @@ static void bfin_prepare_coefficients(SwsContext *c, int rgb, int masks)
     }
 
 
-    if (masks == 555) {
+    if (masks == 555)
+    {
         c->rmask = 0x001f * 0x00010001U;
         c->gmask = 0x03e0 * 0x00010001U;
         c->bmask = 0x7c00 * 0x00010001U;
-    } else if (masks == 565) {
+    }
+    else if (masks == 565)
+    {
         c->rmask = 0x001f * 0x00010001U;
         c->gmask = 0x07e0 * 0x00010001U;
         c->bmask = 0xf800 * 0x00010001U;
@@ -94,9 +100,9 @@ static int core_yuv420_rgb(SwsContext *c,
                            uint8_t **oplanes, int *outstrides,
                            ltransform lcscf, int rgb, int masks)
 {
-    uint8_t *py,*pu,*pv,*op;
+    uint8_t *py, *pu, *pv, *op;
     int w  = instrides[0];
-    int h2 = srcSliceH>>1;
+    int h2 = srcSliceH >> 1;
     int i;
 
     bfin_prepare_coefficients(c, rgb, masks);
@@ -105,9 +111,10 @@ static int core_yuv420_rgb(SwsContext *c,
     pu = in[1+(1^rgb)];
     pv = in[1+(0^rgb)];
 
-    op = oplanes[0] + srcSliceY*outstrides[0];
+    op = oplanes[0] + srcSliceY * outstrides[0];
 
-    for (i=0;i<h2;i++) {
+    for (i = 0; i < h2; i++)
+    {
 
         lcscf(py, pu, pv, op, w, &c->oy);
 
@@ -185,13 +192,26 @@ SwsFunc ff_yuv2rgb_get_func_ptr_bfin(SwsContext *c)
 {
     SwsFunc f;
 
-    switch(c->dstFormat) {
-    case PIX_FMT_RGB555: f = bfin_yuv420_rgb555; break;
-    case PIX_FMT_BGR555: f = bfin_yuv420_bgr555; break;
-    case PIX_FMT_RGB565: f = bfin_yuv420_rgb565; break;
-    case PIX_FMT_BGR565: f = bfin_yuv420_bgr565; break;
-    case PIX_FMT_RGB24:  f = bfin_yuv420_rgb24;  break;
-    case PIX_FMT_BGR24:  f = bfin_yuv420_bgr24;  break;
+    switch(c->dstFormat)
+    {
+    case PIX_FMT_RGB555:
+        f = bfin_yuv420_rgb555;
+        break;
+    case PIX_FMT_BGR555:
+        f = bfin_yuv420_bgr555;
+        break;
+    case PIX_FMT_RGB565:
+        f = bfin_yuv420_rgb565;
+        break;
+    case PIX_FMT_BGR565:
+        f = bfin_yuv420_bgr565;
+        break;
+    case PIX_FMT_RGB24:
+        f = bfin_yuv420_rgb24;
+        break;
+    case PIX_FMT_BGR24:
+        f = bfin_yuv420_bgr24;
+        break;
     default:
         return 0;
     }

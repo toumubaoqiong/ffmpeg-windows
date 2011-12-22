@@ -42,13 +42,15 @@ static int rso_read_header(AVFormatContext *s, AVFormatParameters *ap)
 
     codec = ff_codec_get_id(ff_codec_rso_tags, id);
 
-    if (codec == CODEC_ID_ADPCM_IMA_WAV) {
+    if (codec == CODEC_ID_ADPCM_IMA_WAV)
+    {
         av_log(s, AV_LOG_ERROR, "ADPCM in RSO not implemented\n");
         return AVERROR_PATCHWELCOME;
     }
 
     bps = av_get_bits_per_sample(codec);
-    if (!bps) {
+    if (!bps)
+    {
         av_log_ask_for_sample(s, "could not determine bits per sample\n");
         return AVERROR_INVALIDDATA;
     }
@@ -88,7 +90,8 @@ static int rso_read_packet(AVFormatContext *s, AVPacket *pkt)
     return 0;
 }
 
-AVInputFormat ff_rso_demuxer = {
+AVInputFormat ff_rso_demuxer =
+{
     .name           =   "rso",
     .long_name      =   NULL_IF_CONFIG_SMALL("Lego Mindstorms RSO format"),
     .extensions     =   "rso",
@@ -98,5 +101,8 @@ AVInputFormat ff_rso_demuxer = {
     .read_packet    =   rso_read_packet,
     .read_close     =   NULL,
     .read_seek      =   pcm_read_seek,
-    .codec_tag      =   (const AVCodecTag* const []){ff_codec_rso_tags, 0},
+    .codec_tag      =   (const AVCodecTag *const [])
+    {
+        ff_codec_rso_tags, 0
+    },
 };

@@ -56,12 +56,13 @@
 
 typedef struct
 {
-  int count;
-  unsigned char used;
-  int children[2];
+    int count;
+    unsigned char used;
+    int children[2];
 } hnode;
 
-typedef struct IdcinContext {
+typedef struct IdcinContext
+{
 
     AVCodecContext *avctx;
     AVFrame frame;
@@ -81,18 +82,21 @@ typedef struct IdcinContext {
  * @return the node index of the lowest unused node, or -1 if all nodes
  * are used.
  */
-static int huff_smallest_node(hnode *hnodes, int num_hnodes) {
+static int huff_smallest_node(hnode *hnodes, int num_hnodes)
+{
     int i;
     int best, best_node;
 
     best = 99999999;
     best_node = -1;
-    for(i = 0; i < num_hnodes; i++) {
+    for(i = 0; i < num_hnodes; i++)
+    {
         if(hnodes[i].used)
             continue;
         if(!hnodes[i].count)
             continue;
-        if(hnodes[i].count < best) {
+        if(hnodes[i].count < best)
+        {
             best = hnodes[i].count;
             best_node = i;
         }
@@ -113,16 +117,18 @@ static int huff_smallest_node(hnode *hnodes, int num_hnodes) {
  *  num_huff_nodes[prev] - contains the index to the root node of the tree.
  *    That is: huff_nodes[prev][num_huff_nodes[prev]] is the root node.
  */
-static av_cold void huff_build_tree(IdcinContext *s, int prev) {
+static av_cold void huff_build_tree(IdcinContext *s, int prev)
+{
     hnode *node, *hnodes;
-     int num_hnodes, i;
+    int num_hnodes, i;
 
     num_hnodes = HUF_TOKENS;
     hnodes = s->huff_nodes[prev];
     for(i = 0; i < HUF_TOKENS * 2; i++)
         hnodes[i].used = 0;
 
-    while (1) {
+    while (1)
+    {
         node = &hnodes[num_hnodes];             /* next free node */
 
         /* pick two lowest counts */
@@ -136,7 +142,7 @@ static av_cold void huff_build_tree(IdcinContext *s, int prev) {
 
         /* combine nodes probability for new node */
         node->count = hnodes[node->children[0]].count +
-        hnodes[node->children[1]].count;
+                      hnodes[node->children[1]].count;
         num_hnodes++;
     }
 
@@ -153,14 +159,16 @@ static av_cold int idcin_decode_init(AVCodecContext *avctx)
     avctx->pix_fmt = PIX_FMT_PAL8;
 
     /* make sure the Huffman tables make it */
-    if (s->avctx->extradata_size != HUFFMAN_TABLE_SIZE) {
+    if (s->avctx->extradata_size != HUFFMAN_TABLE_SIZE)
+    {
         av_log(s->avctx, AV_LOG_ERROR, "  id CIN video: expected extradata size of %d\n", HUFFMAN_TABLE_SIZE);
         return -1;
     }
 
     /* build the 256 Huffman decode trees */
     histograms = (unsigned char *)s->avctx->extradata;
-    for (i = 0; i < 256; i++) {
+    for (i = 0; i < 256; i++)
+    {
         for(j = 0; j < HUF_TOKENS; j++)
             s->huff_nodes[i][j].count = histograms[histogram_index++];
         huff_build_tree(s, i);
@@ -181,14 +189,19 @@ static void idcin_decode_vlcs(IdcinContext *s)
 
     prev = bit_pos = dat_pos = 0;
     for (y = 0; y < (s->frame.linesize[0] * s->avctx->height);
-        y += s->frame.linesize[0]) {
-        for (x = y; x < y + s->avctx->width; x++) {
+            y += s->frame.linesize[0])
+    {
+        for (x = y; x < y + s->avctx->width; x++)
+        {
             node_num = s->num_huff_nodes[prev];
             hnodes = s->huff_nodes[prev];
 
-            while(node_num >= HUF_TOKENS) {
-                if(!bit_pos) {
-                    if(dat_pos >= s->size) {
+            while(node_num >= HUF_TOKENS)
+            {
+                if(!bit_pos)
+                {
+                    if(dat_pos >= s->size)
+                    {
                         av_log(s->avctx, AV_LOG_ERROR, "Huffman decode error.\n");
                         return;
                     }
@@ -222,14 +235,16 @@ static int idcin_decode_frame(AVCodecContext *avctx,
     if (s->frame.data[0])
         avctx->release_buffer(avctx, &s->frame);
 
-    if (avctx->get_buffer(avctx, &s->frame)) {
+    if (avctx->get_buffer(avctx, &s->frame))
+    {
         av_log(avctx, AV_LOG_ERROR, "  id CIN Video: get_buffer() failed\n");
         return -1;
     }
 
     idcin_decode_vlcs(s);
 
-    if (pal) {
+    if (pal)
+    {
         s->frame.palette_has_changed = 1;
         memcpy(s->pal, pal, AVPALETTE_SIZE);
     }
@@ -237,7 +252,7 @@ static int idcin_decode_frame(AVCodecContext *avctx,
     memcpy(s->frame.data[1], s->pal, AVPALETTE_SIZE);
 
     *data_size = sizeof(AVFrame);
-    *(AVFrame*)data = s->frame;
+    *(AVFrame *)data = s->frame;
 
     /* report that the buffer was completely consumed */
     return buf_size;
@@ -253,7 +268,8 @@ static av_cold int idcin_decode_end(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec ff_idcin_decoder = {
+AVCodec ff_idcin_decoder =
+{
     "idcinvideo",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_IDCIN,

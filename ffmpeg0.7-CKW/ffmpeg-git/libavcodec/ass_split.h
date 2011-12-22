@@ -25,7 +25,8 @@
 /**
  * fields extracted from the [Script Info] section
  */
-typedef struct {
+typedef struct
+{
     char *script_type;    /**< SSA script format version (eg. v4.00) */
     char *collisions;     /**< how subtitles are moved to prevent collisions */
     int   play_res_x;     /**< video width that ASS coords are referring to */
@@ -36,7 +37,8 @@ typedef struct {
 /**
  * fields extracted from the [V4(+) Styles] section
  */
-typedef struct {
+typedef struct
+{
     char *name;           /**< name of the tyle (case sensitive) */
     char *font_name;      /**< font face (case sensitive) */
     int   font_size;      /**< font height */
@@ -53,7 +55,8 @@ typedef struct {
 /**
  * fields extracted from the [Events] section
  */
-typedef struct {
+typedef struct
+{
     int   layer;    /**< higher numbered layers are drawn over lower numbered */
     int   start;    /**< start time of the dialog in centiseconds */
     int   end;      /**< end time of the dialog in centiseconds */
@@ -66,7 +69,8 @@ typedef struct {
 /**
  * structure containing the whole split ASS data
  */
-typedef struct {
+typedef struct
+{
     ASSScriptInfo script_info;   /**< general information about the SSA script*/
     ASSStyle     *styles;        /**< array of split out styles */
     int           styles_count;  /**< number of ASSStyle in the styles array */
@@ -116,7 +120,8 @@ void ff_ass_split_free(ASSSplitContext *ctx);
  * Set of callback functions corresponding to each override codes that can
  * be encountered in a "Dialogue" Text field.
  */
-typedef struct {
+typedef struct
+{
     /**
      * @defgroup ass_styles    ASS styles
      * @{

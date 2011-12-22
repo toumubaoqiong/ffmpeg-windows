@@ -26,7 +26,7 @@
 
 static int dnxhd_probe(AVProbeData *p)
 {
-    static const uint8_t header[] = {0x00,0x00,0x02,0x80,0x01};
+    static const uint8_t header[] = {0x00, 0x00, 0x02, 0x80, 0x01};
     int w, h, compression_id;
     if (p->buf_size < 0x2c)
         return 0;
@@ -42,13 +42,14 @@ static int dnxhd_probe(AVProbeData *p)
     return AVPROBE_SCORE_MAX;
 }
 
-AVInputFormat ff_dnxhd_demuxer = {
+AVInputFormat ff_dnxhd_demuxer =
+{
     "dnxhd",
     NULL_IF_CONFIG_SMALL("raw DNxHD (SMPTE VC-3)"),
     0,
     dnxhd_probe,
     ff_raw_video_read_header,
     ff_raw_read_partial_packet,
-    .flags= AVFMT_GENERIC_INDEX,
+    .flags = AVFMT_GENERIC_INDEX,
     .value = CODEC_ID_DNXHD,
 };

@@ -36,17 +36,21 @@
 #include "mp_image.h"
 #include "vf.h"
 
-struct vf_priv_s {
+struct vf_priv_s
+{
     unsigned int bamount, bthresh, frame, lastkeyframe;
 };
 
 static int config(struct vf_instance *vf, int width, int height, int d_width,
-                    int d_height, unsigned int flags, unsigned int outfmt) {
-    return vf_next_config(vf,width,height,d_width,d_height,flags,outfmt);
+                  int d_height, unsigned int flags, unsigned int outfmt)
+{
+    return vf_next_config(vf, width, height, d_width, d_height, flags, outfmt);
 }
 
-static int query_format(struct vf_instance *vf, unsigned fmt) {
-    switch(fmt) {
+static int query_format(struct vf_instance *vf, unsigned fmt)
+{
+    switch(fmt)
+    {
     case IMGFMT_YVU9:
     case IMGFMT_IF09:
     case IMGFMT_YV12:
@@ -66,10 +70,11 @@ static int query_format(struct vf_instance *vf, unsigned fmt) {
     return 0;
 }
 
-static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts){
+static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
+{
     mp_image_t *dmpi;
     int x, y;
-    int nblack=0, pblack=0;
+    int nblack = 0, pblack = 0;
     unsigned char *yplane = mpi->planes[0];
     unsigned int ystride = mpi->stride[0];
     int pict_type = mpi->pict_type;
@@ -78,10 +83,11 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts){
     int bamount = vf->priv->bamount;
     static const char *const picttypes[4] = { "unknown", "I", "P", "B" };
 
-    for (y=1; y<=h; y++) {
-        for (x=0; x<w; x++)
+    for (y = 1; y <= h; y++)
+    {
+        for (x = 0; x < w; x++)
             nblack += yplane[x] < bthresh;
-        pblack = nblack*100/(w*y);
+        pblack = nblack * 100 / (w * y);
         if (pblack < bamount) break;
         yplane += ystride;
     }
@@ -90,14 +96,14 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts){
     if (pict_type == 1) vf->priv->lastkeyframe = vf->priv->frame;
 
     if (pblack >= bamount)
-        mp_msg(MSGT_VFILTER, MSGL_INFO,"vf_blackframe: %u, %i%%, %s (I:%u)\n",
-                                vf->priv->frame, pblack, picttypes[pict_type],
-                                vf->priv->lastkeyframe);
+        mp_msg(MSGT_VFILTER, MSGL_INFO, "vf_blackframe: %u, %i%%, %s (I:%u)\n",
+               vf->priv->frame, pblack, picttypes[pict_type],
+               vf->priv->lastkeyframe);
 
     vf->priv->frame++;
 
     dmpi = vf_get_image(vf->next, mpi->imgfmt, MP_IMGTYPE_EXPORT, 0,
-                                                    mpi->width, mpi->height);
+                        mpi->width, mpi->height);
     dmpi->planes[0] = mpi->planes[0];
     dmpi->stride[0] = mpi->stride[0];
     dmpi->planes[1] = mpi->planes[1];
@@ -110,15 +116,18 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts){
     return vf_next_put_image(vf, dmpi, pts);
 }
 
-static int control(struct vf_instance *vf, int request, void* data){
-    return vf_next_control(vf,request,data);
+static int control(struct vf_instance *vf, int request, void *data)
+{
+    return vf_next_control(vf, request, data);
 }
 
-static void uninit(struct vf_instance *vf) {
+static void uninit(struct vf_instance *vf)
+{
     free(vf->priv);
 }
 
-static int vf_open(vf_instance_t *vf, char *args){
+static int vf_open(vf_instance_t *vf, char *args)
+{
     vf->priv = malloc(sizeof(struct vf_priv_s));
     if (!vf->priv) return 0;
 
@@ -138,7 +147,8 @@ static int vf_open(vf_instance_t *vf, char *args){
     return 1;
 }
 
-const vf_info_t vf_info_blackframe = {
+const vf_info_t vf_info_blackframe =
+{
     "detects black frames",
     "blackframe",
     "Brian J. Murrell, Julian Hall, Ivo van Poorten",

@@ -35,8 +35,8 @@
 
 #if 0
 /* C row IDCT - it is just here to document the MMXEXT and MMX versions */
-static inline void idct_row (int16_t * row, int offset,
-                             int16_t * table, int32_t * rounder)
+static inline void idct_row (int16_t *row, int offset,
+                             int16_t *table, int32_t *rounder)
 {
     int C1, C2, C3, C4, C5, C6, C7;
     int a0, a1, a2, a3, b0, b1, b2, b3;
@@ -51,15 +51,15 @@ static inline void idct_row (int16_t * row, int offset,
     C6 = table[6];
     C7 = table[7];
 
-    a0 = C4*row[0] + C2*row[2] + C4*row[4] + C6*row[6] + *rounder;
-    a1 = C4*row[0] + C6*row[2] - C4*row[4] - C2*row[6] + *rounder;
-    a2 = C4*row[0] - C6*row[2] - C4*row[4] + C2*row[6] + *rounder;
-    a3 = C4*row[0] - C2*row[2] + C4*row[4] - C6*row[6] + *rounder;
+    a0 = C4 * row[0] + C2 * row[2] + C4 * row[4] + C6 * row[6] + *rounder;
+    a1 = C4 * row[0] + C6 * row[2] - C4 * row[4] - C2 * row[6] + *rounder;
+    a2 = C4 * row[0] - C6 * row[2] - C4 * row[4] + C2 * row[6] + *rounder;
+    a3 = C4 * row[0] - C2 * row[2] + C4 * row[4] - C6 * row[6] + *rounder;
 
-    b0 = C1*row[1] + C3*row[3] + C5*row[5] + C7*row[7];
-    b1 = C3*row[1] - C7*row[3] - C1*row[5] - C5*row[7];
-    b2 = C5*row[1] - C1*row[3] + C7*row[5] + C3*row[7];
-    b3 = C7*row[1] - C5*row[3] + C3*row[5] - C1*row[7];
+    b0 = C1 * row[1] + C3 * row[3] + C5 * row[5] + C7 * row[7];
+    b1 = C3 * row[1] - C7 * row[3] - C1 * row[5] - C5 * row[7];
+    b2 = C5 * row[1] - C1 * row[3] + C7 * row[5] + C3 * row[7];
+    b3 = C7 * row[1] - C5 * row[3] + C3 * row[5] - C1 * row[7];
 
     row[0] = (a0 + b0) >> ROW_SHIFT;
     row[1] = (a1 + b1) >> ROW_SHIFT;
@@ -84,8 +84,8 @@ static inline void idct_row (int16_t * row, int offset,
                                                    c5, -c1,  c3, -c1,   \
                                                    c7,  c3,  c7, -c5 }
 
-static inline void mmxext_row_head (int16_t * const row, const int offset,
-                                    const int16_t * const table)
+static inline void mmxext_row_head (int16_t *const row, const int offset,
+                                    const int16_t *const table)
 {
     __asm__ volatile(
         "movq     (%0), %%mm2        \n\t"  /* mm2 = x6 x4 x2 x0 */
@@ -104,8 +104,8 @@ static inline void mmxext_row_head (int16_t * const row, const int offset,
     );
 }
 
-static inline void mmxext_row (const int16_t * const table,
-                               const int32_t * const rounder)
+static inline void mmxext_row (const int16_t *const table,
+                               const int32_t *const rounder)
 {
     __asm__ volatile (
         "movq    16(%0), %%mm1         \n\t" /* mm1 = -C5 -C1 C3 C1 */
@@ -146,7 +146,7 @@ static inline void mmxext_row (const int16_t * const table,
         : : "r" (table), "r" (rounder));
 }
 
-static inline void mmxext_row_tail (int16_t * const row, const int store)
+static inline void mmxext_row_tail (int16_t *const row, const int store)
 {
     __asm__ volatile (
         "psrad $" AV_STRINGIFY(ROW_SHIFT) ", %%mm0        \n\t"  /* mm0 = y3 y2 */
@@ -164,12 +164,12 @@ static inline void mmxext_row_tail (int16_t * const row, const int store)
 
         "movq     %%mm4, 8(%0)        \n\t"  /* save y7 y6 y5 y4 */
         :: "r" (row+store)
-        );
+    );
 }
 
-static inline void mmxext_row_mid (int16_t * const row, const int store,
+static inline void mmxext_row_mid (int16_t *const row, const int store,
                                    const int offset,
-                                   const int16_t * const table)
+                                   const int16_t *const table)
 {
     __asm__ volatile (
         "movq     (%0,%1), %%mm2       \n\t" /* mm2 = x6 x4 x2 x0 */
@@ -195,7 +195,7 @@ static inline void mmxext_row_mid (int16_t * const row, const int store,
         "movq       8(%3), %%mm4       \n\t" /* mm4 = C6 C4 C6 C4 */
         "pshufw     $0x4e, %%mm2, %%mm2\n\t" /* mm2 = x2 x0 x6 x4 */
         :: "r" (row), "r" ((x86_reg) (2*offset)), "r" ((x86_reg) (2*store)), "r" (table)
-        );
+    );
 }
 
 
@@ -210,8 +210,8 @@ static inline void mmxext_row_mid (int16_t * const row, const int store,
                                            c5, -c1,  c7, -c5,   \
                                            c7,  c3,  c3, -c1 }
 
-static inline void mmx_row_head (int16_t * const row, const int offset,
-                                 const int16_t * const table)
+static inline void mmx_row_head (int16_t *const row, const int offset,
+                                 const int16_t *const table)
 {
     __asm__ volatile (
         "movq (%0), %%mm2       \n\t"    /* mm2 = x6 x4 x2 x0 */
@@ -230,11 +230,11 @@ static inline void mmx_row_head (int16_t * const row, const int offset,
         "movq 16(%1), %%mm1     \n\t"    /* mm1 = -C7 C3 C3 C1 */
         "punpckhdq %%mm2, %%mm2 \n\t"    /* mm2 = x6 x4 x6 x4 */
         :: "r" ((row+offset)), "r" (table)
-        );
+    );
 }
 
-static inline void mmx_row (const int16_t * const table,
-                            const int32_t * const rounder)
+static inline void mmx_row (const int16_t *const table,
+                            const int32_t *const rounder)
 {
     __asm__ volatile (
         "pmaddwd   %%mm2, %%mm4    \n\t"  /* mm4 = -C4*x4-C2*x6 C4*x4+C6*x6 */
@@ -273,10 +273,10 @@ static inline void mmx_row (const int16_t * const table,
         "paddd     %%mm5, %%mm0    \n\t"  /* mm0 = a3+b3 a2+b2 + rounder */
         "psubd     %%mm5, %%mm7    \n\t"  /* mm7 = a3-b3 a2-b2 + rounder */
         :: "r" (table), "r" (rounder)
-        );
+    );
 }
 
-static inline void mmx_row_tail (int16_t * const row, const int store)
+static inline void mmx_row_tail (int16_t *const row, const int store)
 {
     __asm__ volatile (
         "psrad $" AV_STRINGIFY(ROW_SHIFT) ", %%mm0      \n\t" /* mm0 = y3 y2 */
@@ -300,11 +300,11 @@ static inline void mmx_row_tail (int16_t * const row, const int store)
 
         "movq %%mm7, 8(%0)     \n\t" /* save y7 y6 y5 y4 */
         :: "r" (row+store)
-        );
+    );
 }
 
-static inline void mmx_row_mid (int16_t * const row, const int store,
-                                const int offset, const int16_t * const table)
+static inline void mmx_row_mid (int16_t *const row, const int store,
+                                const int offset, const int16_t *const table)
 {
 
     __asm__ volatile (
@@ -338,18 +338,18 @@ static inline void mmx_row_mid (int16_t * const row, const int store,
         "movq      %%mm7, 8(%0,%2) \n\t" /* save y7 y6 y5 y4 */
         "pmaddwd   %%mm0, %%mm3    \n\t" /* mm3 = C4*x0+C6*x2 C4*x0+C2*x2 */
         : : "r" (row), "r" ((x86_reg) (2*offset)), "r" ((x86_reg) (2*store)), "r" (table)
-        );
+    );
 }
 
 
 #if 0
 /* C column IDCT - it is just here to document the MMXEXT and MMX versions */
-static inline void idct_col (int16_t * col, int offset)
+static inline void idct_col (int16_t *col, int offset)
 {
-/* multiplication - as implemented on mmx */
+    /* multiplication - as implemented on mmx */
 #define F(c,x) (((c) * (x)) >> 16)
 
-/* saturation - it helps us handle torture test cases */
+    /* saturation - it helps us handle torture test cases */
 #define S(x) (((x)>32767) ? 32767 : ((x)<-32768) ? -32768 : (x))
 
     int16_t x0, x1, x2, x3, x4, x5, x6, x7;
@@ -415,18 +415,19 @@ static inline void idct_col (int16_t * col, int offset)
 
 
 /* MMX column IDCT */
-static inline void idct_col (int16_t * const col, const int offset)
+static inline void idct_col (int16_t *const col, const int offset)
 {
 #define T1 13036
 #define T2 27146
 #define T3 43790
 #define C4 23170
 
-    DECLARE_ALIGNED(8, static const short, t1_vector)[] = {
-        T1,T1,T1,T1,
-        T2,T2,T2,T2,
-        T3,T3,T3,T3,
-        C4,C4,C4,C4
+    DECLARE_ALIGNED(8, static const short, t1_vector)[] =
+    {
+        T1, T1, T1, T1,
+        T2, T2, T2, T2,
+        T3, T3, T3, T3,
+        C4, C4, C4, C4
     };
 
     /* column code adapted from Peter Gubanov */
@@ -560,7 +561,7 @@ static inline void idct_col (int16_t * const col, const int offset)
 
         "movq     %%mm4, 3*8*2(%1)\n\t" /* save y3 */
         :: "r" (t1_vector), "r" (col+offset)
-        );
+    );
 
 #undef T1
 #undef T2

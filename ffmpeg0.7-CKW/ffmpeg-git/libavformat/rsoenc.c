@@ -33,23 +33,27 @@ static int rso_write_header(AVFormatContext *s)
     if (!enc->codec_tag)
         return AVERROR_INVALIDDATA;
 
-    if (enc->channels != 1) {
+    if (enc->channels != 1)
+    {
         av_log(s, AV_LOG_ERROR, "RSO only supports mono\n");
         return AVERROR_INVALIDDATA;
     }
 
-    if (!s->pb->seekable) {
+    if (!s->pb->seekable)
+    {
         av_log(s, AV_LOG_ERROR, "muxer does not support non seekable output\n");
         return AVERROR_INVALIDDATA;
     }
 
     /* XXX: find legal sample rates (if any) */
-    if (enc->sample_rate >= 1u<<16) {
+    if (enc->sample_rate >= 1u << 16)
+    {
         av_log(s, AV_LOG_ERROR, "Sample rate must be < 65536\n");
         return AVERROR_INVALIDDATA;
     }
 
-    if (enc->codec_id == CODEC_ID_ADPCM_IMA_WAV) {
+    if (enc->codec_id == CODEC_ID_ADPCM_IMA_WAV)
+    {
         av_log(s, AV_LOG_ERROR, "ADPCM in RSO not implemented\n");
         return AVERROR_PATCHWELCOME;
     }
@@ -82,11 +86,14 @@ static int rso_write_trailer(AVFormatContext *s)
     if (file_size < 0)
         return file_size;
 
-    if (file_size > 0xffff + RSO_HEADER_SIZE) {
+    if (file_size > 0xffff + RSO_HEADER_SIZE)
+    {
         av_log(s, AV_LOG_WARNING,
                "Output file is too big (%"PRId64" bytes >= 64kB)\n", file_size);
         coded_file_size = 0xffff;
-    } else {
+    }
+    else
+    {
         coded_file_size = file_size - RSO_HEADER_SIZE;
     }
 
@@ -100,7 +107,8 @@ static int rso_write_trailer(AVFormatContext *s)
     return 0;
 }
 
-AVOutputFormat ff_rso_muxer = {
+AVOutputFormat ff_rso_muxer =
+{
     .name           =   "rso",
     .long_name      =   NULL_IF_CONFIG_SMALL("Lego Mindstorms RSO format"),
     .extensions     =   "rso",
@@ -110,5 +118,8 @@ AVOutputFormat ff_rso_muxer = {
     .write_header   =   rso_write_header,
     .write_packet   =   rso_write_packet,
     .write_trailer  =   rso_write_trailer,
-    .codec_tag      =   (const AVCodecTag* const []){ff_codec_rso_tags, 0},
+    .codec_tag      =   (const AVCodecTag *const [])
+    {
+        ff_codec_rso_tags, 0
+    },
 };

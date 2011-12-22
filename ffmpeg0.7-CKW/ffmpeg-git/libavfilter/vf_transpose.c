@@ -30,7 +30,8 @@
 #include "libavutil/imgutils.h"
 #include "avfilter.h"
 
-typedef struct {
+typedef struct
+{
     int hsub, vsub;
     int pixsteps[4];
 
@@ -49,7 +50,8 @@ static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
     if (args)
         sscanf(args, "%d", &trans->dir);
 
-    if (trans->dir < 0 || trans->dir > 3) {
+    if (trans->dir < 0 || trans->dir > 3)
+    {
         av_log(ctx, AV_LOG_ERROR, "Invalid value %d not between 0 and 3.\n",
                trans->dir);
         return AVERROR(EINVAL);
@@ -59,7 +61,8 @@ static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
 
 static int query_formats(AVFilterContext *ctx)
 {
-    enum PixelFormat pix_fmts[] = {
+    enum PixelFormat pix_fmts[] =
+    {
         PIX_FMT_ARGB,         PIX_FMT_RGBA,
         PIX_FMT_ABGR,         PIX_FMT_BGRA,
         PIX_FMT_RGB24,        PIX_FMT_BGR24,
@@ -102,9 +105,14 @@ static int config_props_output(AVFilterLink *outlink)
     outlink->w = inlink->h;
     outlink->h = inlink->w;
 
-    if (inlink->sample_aspect_ratio.num){
-        outlink->sample_aspect_ratio = av_div_q((AVRational){1,1}, inlink->sample_aspect_ratio);
-    } else
+    if (inlink->sample_aspect_ratio.num)
+    {
+        outlink->sample_aspect_ratio = av_div_q((AVRational)
+        {
+            1, 1
+        }, inlink->sample_aspect_ratio);
+    }
+    else
         outlink->sample_aspect_ratio = inlink->sample_aspect_ratio;
 
     av_log(ctx, AV_LOG_INFO, "w:%d h:%d dir:%d -> w:%d h:%d rotation:%s vflip:%d\n",
@@ -119,12 +127,15 @@ static void start_frame(AVFilterLink *inlink, AVFilterBufferRef *picref)
     AVFilterLink *outlink = inlink->dst->outputs[0];
 
     outlink->out_buf = avfilter_get_video_buffer(outlink, AV_PERM_WRITE,
-                                                 outlink->w, outlink->h);
+                       outlink->w, outlink->h);
     outlink->out_buf->pts = picref->pts;
 
-    if (picref->video->pixel_aspect.num == 0) {
+    if (picref->video->pixel_aspect.num == 0)
+    {
         outlink->out_buf->video->pixel_aspect = picref->video->pixel_aspect;
-    } else {
+    }
+    else
+    {
         outlink->out_buf->video->pixel_aspect.num = picref->video->pixel_aspect.den;
         outlink->out_buf->video->pixel_aspect.den = picref->video->pixel_aspect.num;
     }
@@ -140,49 +151,57 @@ static void end_frame(AVFilterLink *inlink)
     AVFilterLink *outlink = inlink->dst->outputs[0];
     int plane;
 
-    for (plane = 0; outpic->data[plane]; plane++) {
+    for (plane = 0; outpic->data[plane]; plane++)
+    {
         int hsub = plane == 1 || plane == 2 ? trans->hsub : 0;
         int vsub = plane == 1 || plane == 2 ? trans->vsub : 0;
         int pixstep = trans->pixsteps[plane];
-        int inh  = inpic->video->h>>vsub;
-        int outw = outpic->video->w>>hsub;
-        int outh = outpic->video->h>>vsub;
+        int inh  = inpic->video->h >> vsub;
+        int outw = outpic->video->w >> hsub;
+        int outh = outpic->video->h >> vsub;
         uint8_t *out, *in;
         int outlinesize, inlinesize;
         int x, y;
 
-        out = outpic->data[plane]; outlinesize = outpic->linesize[plane];
-        in  = inpic ->data[plane]; inlinesize  = inpic ->linesize[plane];
+        out = outpic->data[plane];
+        outlinesize = outpic->linesize[plane];
+        in  = inpic ->data[plane];
+        inlinesize  = inpic ->linesize[plane];
 
-        if (trans->dir&1) {
-            in +=  inpic->linesize[plane] * (inh-1);
+        if (trans->dir & 1)
+        {
+            in +=  inpic->linesize[plane] * (inh - 1);
             inlinesize *= -1;
         }
 
-        if (trans->dir&2) {
-            out += outpic->linesize[plane] * (outh-1);
+        if (trans->dir & 2)
+        {
+            out += outpic->linesize[plane] * (outh - 1);
             outlinesize *= -1;
         }
 
-        for (y = 0; y < outh; y++) {
-            switch (pixstep) {
+        for (y = 0; y < outh; y++)
+        {
+            switch (pixstep)
+            {
             case 1:
                 for (x = 0; x < outw; x++)
                     out[x] = in[x*inlinesize + y];
                 break;
             case 2:
                 for (x = 0; x < outw; x++)
-                    *((uint16_t *)(out + 2*x)) = *((uint16_t *)(in + x*inlinesize + y*2));
+                    *((uint16_t *)(out + 2 * x)) = *((uint16_t *)(in + x * inlinesize + y * 2));
                 break;
             case 3:
-                for (x = 0; x < outw; x++) {
-                    int32_t v = AV_RB24(in + x*inlinesize + y*3);
-                    AV_WB24(out + 3*x, v);
+                for (x = 0; x < outw; x++)
+                {
+                    int32_t v = AV_RB24(in + x * inlinesize + y * 3);
+                    AV_WB24(out + 3 * x, v);
                 }
                 break;
             case 4:
                 for (x = 0; x < outw; x++)
-                    *((uint32_t *)(out + 4*x)) = *((uint32_t *)(in + x*inlinesize + y*4));
+                    *((uint32_t *)(out + 4 * x)) = *((uint32_t *)(in + x * inlinesize + y * 4));
                 break;
             }
             out += outlinesize;
@@ -195,7 +214,8 @@ static void end_frame(AVFilterLink *inlink)
     avfilter_unref_buffer(outpic);
 }
 
-AVFilter avfilter_vf_transpose = {
+AVFilter avfilter_vf_transpose =
+{
     .name      = "transpose",
     .description = NULL_IF_CONFIG_SMALL("Transpose input video."),
 
@@ -204,14 +224,24 @@ AVFilter avfilter_vf_transpose = {
 
     .query_formats = query_formats,
 
-    .inputs    = (AVFilterPad[]) {{ .name            = "default",
-                                    .type            = AVMEDIA_TYPE_VIDEO,
-                                    .start_frame     = start_frame,
-                                    .end_frame       = end_frame,
-                                    .min_perms       = AV_PERM_READ, },
-                                  { .name = NULL}},
-    .outputs   = (AVFilterPad[]) {{ .name            = "default",
-                                    .config_props    = config_props_output,
-                                    .type            = AVMEDIA_TYPE_VIDEO, },
-                                  { .name = NULL}},
+    .inputs    = (AVFilterPad[])
+    {
+        {
+            .name            = "default",
+            .type            = AVMEDIA_TYPE_VIDEO,
+            .start_frame     = start_frame,
+            .end_frame       = end_frame,
+            .min_perms       = AV_PERM_READ,
+        },
+        { .name = NULL}
+    },
+    .outputs   = (AVFilterPad[])
+    {
+        {
+            .name            = "default",
+            .config_props    = config_props_output,
+            .type            = AVMEDIA_TYPE_VIDEO,
+        },
+        { .name = NULL}
+    },
 };

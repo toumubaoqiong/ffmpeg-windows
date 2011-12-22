@@ -25,23 +25,27 @@
 #include "libavcodec/dsputil.h"
 #include "dsputil_vis.h"
 
-static const DECLARE_ALIGNED(8, int16_t, coeffs)[28] = {
-    - 1259,- 1259,- 1259,- 1259,
-    - 4989,- 4989,- 4989,- 4989,
-    -11045,-11045,-11045,-11045,
-    -19195,-19195,-19195,-19195,
-    -29126,-29126,-29126,-29126,
-     25080, 25080, 25080, 25080,
-     12785, 12785, 12785, 12785
+static const DECLARE_ALIGNED(8, int16_t, coeffs)[28] =
+{
+    - 1259, - 1259, - 1259, - 1259,
+    - 4989, - 4989, - 4989, - 4989,
+    -11045, -11045, -11045, -11045,
+    -19195, -19195, -19195, -19195,
+    -29126, -29126, -29126, -29126,
+    25080, 25080, 25080, 25080,
+    12785, 12785, 12785, 12785
 };
-static const DECLARE_ALIGNED(8, uint16_t, scale)[4] = {
-    65536>>6, 65536>>6, 65536>>6, 65536>>6
+static const DECLARE_ALIGNED(8, uint16_t, scale)[4] =
+{
+    65536 >> 6, 65536 >> 6, 65536 >> 6, 65536 >> 6
 };
-static const DECLARE_ALIGNED(8, uint16_t, rounder)[4] = {
-    1<<5, 1<<5, 1<<5, 1<<5
+static const DECLARE_ALIGNED(8, uint16_t, rounder)[4] =
+{
+    1 << 5, 1 << 5, 1 << 5, 1 << 5
 };
-static const DECLARE_ALIGNED(8, uint16_t, expand)[4] = {
-    1<<14, 1<<14, 1<<14, 1<<14
+static const DECLARE_ALIGNED(8, uint16_t, expand)[4] =
+{
+    1 << 14, 1 << 14, 1 << 14, 1 << 14
 };
 
 #define INIT_IDCT \
@@ -54,7 +58,7 @@ static const DECLARE_ALIGNED(8, uint16_t, expand)[4] = {
         "ldd [%1+48], %%f44      \n\t"\
         "ldd [%0], %%f46         \n\t"\
         "fzero %%f62             \n\t"\
-
+ 
 #define LOADSCALE(in) \
         "ldd [" in "], %%f0          \n\t"\
         "ldd [" in "+16], %%f2       \n\t"\
@@ -99,7 +103,7 @@ static const DECLARE_ALIGNED(8, uint16_t, expand)[4] = {
         "fpadd16 %%f10, %%f10, %%f10 \n\t"\
         "fpadd16 %%f12, %%f12, %%f12 \n\t"\
         "fpadd16 %%f14, %%f14, %%f14 \n\t"\
-
+ 
 #define LOAD(in) \
         "ldd [" in "], %%f16         \n\t"\
         "ldd [" in "+8], %%f18       \n\t"\
@@ -109,7 +113,7 @@ static const DECLARE_ALIGNED(8, uint16_t, expand)[4] = {
         "ldd [" in "+40], %%f26      \n\t"\
         "ldd [" in "+48], %%f28      \n\t"\
         "ldd [" in "+56], %%f30      \n\t"\
-
+ 
 #define TRANSPOSE \
         "fpmerge %%f16, %%f24, %%f0  \n\t"\
         "fpmerge %%f20, %%f28, %%f2  \n\t"\
@@ -137,7 +141,7 @@ static const DECLARE_ALIGNED(8, uint16_t, expand)[4] = {
         "fpmerge %%f26, %%f27, %%f10 \n\t"\
         "fpmerge %%f28, %%f29, %%f12 \n\t"\
         "fpmerge %%f30, %%f31, %%f14 \n\t"\
-
+ 
 #define IDCT4ROWS \
     /* 1. column */\
         "fmul8ulx16 %%f0, %%f38, %%f28 \n\t"\
@@ -302,7 +306,7 @@ static const DECLARE_ALIGNED(8, uint16_t, expand)[4] = {
         "fpadd16 %%f20, %%f22, %%f20 \n\t"\
         "fpadd16 %%f24, %%f26, %%f24 \n\t"\
         "fpadd16 %%f28, %%f30, %%f28 \n\t"\
-
+ 
 #define STOREROWS(out) \
         "std %%f48, [" out "+112]          \n\t"\
         "std %%f50, [" out "+96]           \n\t"\
@@ -312,7 +316,7 @@ static const DECLARE_ALIGNED(8, uint16_t, expand)[4] = {
         "std %%f20, [" out "+16]           \n\t"\
         "std %%f24, [" out "+32]           \n\t"\
         "std %%f28, [" out "+48]           \n\t"\
-
+ 
 #define SCALEROWS \
         "fmul8sux16 %%f46, %%f48, %%f48 \n\t"\
         "fmul8sux16 %%f46, %%f50, %%f50 \n\t"\
@@ -322,7 +326,7 @@ static const DECLARE_ALIGNED(8, uint16_t, expand)[4] = {
         "fmul8sux16 %%f46, %%f20, %%f20 \n\t"\
         "fmul8sux16 %%f46, %%f24, %%f24 \n\t"\
         "fmul8sux16 %%f46, %%f28, %%f28 \n\t"\
-
+ 
 #define PUTPIXELSCLAMPED(dest) \
         "fpack16 %%f48, %%f14 \n\t"\
         "fpack16 %%f50, %%f12 \n\t"\
@@ -340,7 +344,7 @@ static const DECLARE_ALIGNED(8, uint16_t, expand)[4] = {
         "st %%f10, [%9+" dest "]  \n\t"\
         "st %%f12, [%10+" dest "] \n\t"\
         "st %%f14, [%11+" dest "] \n\t"\
-
+ 
 #define ADDPIXELSCLAMPED(dest) \
         "ldd [%5], %%f18         \n\t"\
         "ld [%3+" dest"], %%f0   \n\t"\
@@ -383,9 +387,10 @@ static const DECLARE_ALIGNED(8, uint16_t, expand)[4] = {
         "st %%f10, [%10+" dest "] \n\t"\
         "st %%f12, [%11+" dest "] \n\t"\
         "st %%f14, [%12+" dest "] \n\t"\
+ 
 
-
-void ff_simple_idct_vis(DCTELEM *data) {
+void ff_simple_idct_vis(DCTELEM *data)
+{
     int out1, out2, out3, out4;
     DECLARE_ALIGNED(8, int16_t, temp)[8*8];
 
@@ -425,7 +430,8 @@ void ff_simple_idct_vis(DCTELEM *data) {
     );
 }
 
-void ff_simple_idct_put_vis(uint8_t *dest, int line_size, DCTELEM *data) {
+void ff_simple_idct_put_vis(uint8_t *dest, int line_size, DCTELEM *data)
+{
     int out1, out2, out3, out4, out5;
     int r1, r2, r3, r4, r5, r6, r7;
 
@@ -470,12 +476,13 @@ void ff_simple_idct_put_vis(uint8_t *dest, int line_size, DCTELEM *data) {
         PUTPIXELSCLAMPED("4")
 
         : "=r" (out1), "=r" (out2), "=r" (out3), "=r" (out4), "=r" (out5),
-          "=r" (r1), "=r" (r2), "=r" (r3), "=r" (r4), "=r" (r5), "=r" (r6), "=r" (r7)
+        "=r" (r1), "=r" (r2), "=r" (r3), "=r" (r4), "=r" (r5), "=r" (r6), "=r" (r7)
         : "0" (rounder), "1" (coeffs), "2" (data), "3" (dest), "4" (line_size)
     );
 }
 
-void ff_simple_idct_add_vis(uint8_t *dest, int line_size, DCTELEM *data) {
+void ff_simple_idct_add_vis(uint8_t *dest, int line_size, DCTELEM *data)
+{
     int out1, out2, out3, out4, out5, out6;
     int r1, r2, r3, r4, r5, r6, r7;
 
@@ -523,7 +530,7 @@ void ff_simple_idct_add_vis(uint8_t *dest, int line_size, DCTELEM *data) {
         ADDPIXELSCLAMPED("4")
 
         : "=r" (out1), "=r" (out2), "=r" (out3), "=r" (out4), "=r" (out5), "=r" (out6),
-          "=r" (r1), "=r" (r2), "=r" (r3), "=r" (r4), "=r" (r5), "=r" (r6), "=r" (r7)
+        "=r" (r1), "=r" (r2), "=r" (r3), "=r" (r4), "=r" (r5), "=r" (r6), "=r" (r7)
         : "0" (rounder), "1" (coeffs), "2" (data), "3" (dest), "4" (line_size), "5" (expand)
     );
 }

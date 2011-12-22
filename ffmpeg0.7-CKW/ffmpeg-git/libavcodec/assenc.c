@@ -38,15 +38,18 @@ static int ass_encode_frame(AVCodecContext *avctx,
     AVSubtitle *sub = data;
     int i, len, total_len = 0;
 
-    for (i=0; i<sub->num_rects; i++) {
-        if (sub->rects[i]->type != SUBTITLE_ASS) {
+    for (i = 0; i < sub->num_rects; i++)
+    {
+        if (sub->rects[i]->type != SUBTITLE_ASS)
+        {
             av_log(avctx, AV_LOG_ERROR, "Only SUBTITLE_ASS type supported.\n");
             return -1;
         }
 
-        len = av_strlcpy(buf+total_len, sub->rects[i]->ass, bufsize-total_len);
+        len = av_strlcpy(buf + total_len, sub->rects[i]->ass, bufsize - total_len);
 
-        if (len > bufsize-total_len-1) {
+        if (len > bufsize - total_len - 1)
+        {
             av_log(avctx, AV_LOG_ERROR, "Buffer too small for ASS event.\n");
             return -1;
         }
@@ -57,7 +60,8 @@ static int ass_encode_frame(AVCodecContext *avctx,
     return total_len;
 }
 
-AVCodec ff_ass_encoder = {
+AVCodec ff_ass_encoder =
+{
     .name         = "ass",
     .long_name    = NULL_IF_CONFIG_SMALL("Advanced SubStation Alpha subtitle"),
     .type         = AVMEDIA_TYPE_SUBTITLE,

@@ -45,7 +45,8 @@ struct PayloadContext
     char *mode;
 
     /** mpeg 4 AU headers */
-    struct AUHeaders {
+    struct AUHeaders
+    {
         int size;
         int index;
         int cts_flag;
@@ -61,7 +62,8 @@ struct PayloadContext
     int cur_au_index;
 };
 
-typedef struct {
+typedef struct
+{
     const char *str;
     uint16_t    type;
     uint32_t    offset;
@@ -70,20 +72,32 @@ typedef struct {
 /* All known fmtp parameters and the corresponding RTPAttrTypeEnum */
 #define ATTR_NAME_TYPE_INT 0
 #define ATTR_NAME_TYPE_STR 1
-static const AttrNameMap attr_names[]=
+static const AttrNameMap attr_names[] =
 {
-    { "SizeLength",       ATTR_NAME_TYPE_INT,
-      offsetof(PayloadContext, sizelength) },
-    { "IndexLength",      ATTR_NAME_TYPE_INT,
-      offsetof(PayloadContext, indexlength) },
-    { "IndexDeltaLength", ATTR_NAME_TYPE_INT,
-      offsetof(PayloadContext, indexdeltalength) },
-    { "profile-level-id", ATTR_NAME_TYPE_INT,
-      offsetof(PayloadContext, profile_level_id) },
-    { "StreamType",       ATTR_NAME_TYPE_INT,
-      offsetof(PayloadContext, streamtype) },
-    { "mode",             ATTR_NAME_TYPE_STR,
-      offsetof(PayloadContext, mode) },
+    {
+        "SizeLength",       ATTR_NAME_TYPE_INT,
+        offsetof(PayloadContext, sizelength)
+    },
+    {
+        "IndexLength",      ATTR_NAME_TYPE_INT,
+        offsetof(PayloadContext, indexlength)
+    },
+    {
+        "IndexDeltaLength", ATTR_NAME_TYPE_INT,
+        offsetof(PayloadContext, indexdeltalength)
+    },
+    {
+        "profile-level-id", ATTR_NAME_TYPE_INT,
+        offsetof(PayloadContext, profile_level_id)
+    },
+    {
+        "StreamType",       ATTR_NAME_TYPE_INT,
+        offsetof(PayloadContext, streamtype)
+    },
+    {
+        "mode",             ATTR_NAME_TYPE_STR,
+        offsetof(PayloadContext, mode)
+    },
     { NULL, -1, -1 },
 };
 
@@ -92,22 +106,23 @@ static PayloadContext *new_context(void)
     return av_mallocz(sizeof(PayloadContext));
 }
 
-static void free_context(PayloadContext * data)
+static void free_context(PayloadContext *data)
 {
     int i;
-    for (i = 0; i < data->nb_au_headers; i++) {
-         /* according to rtp_parse_mp4_au, we treat multiple
-          * au headers as one, so nb_au_headers is always 1.
-          * loop anyway in case this changes.
-          * (note: changes done carelessly might lead to a double free)
-          */
-       av_free(&data->au_headers[i]);
+    for (i = 0; i < data->nb_au_headers; i++)
+    {
+        /* according to rtp_parse_mp4_au, we treat multiple
+         * au headers as one, so nb_au_headers is always 1.
+         * loop anyway in case this changes.
+         * (note: changes done carelessly might lead to a double free)
+         */
+        av_free(&data->au_headers[i]);
     }
     av_free(data->mode);
     av_free(data);
 }
 
-static int parse_fmtp_config(AVCodecContext * codec, char *value)
+static int parse_fmtp_config(AVCodecContext *codec, char *value)
 {
     /* decode the hexa encoded parameter */
     int len = ff_hex_to_data(NULL, value);
@@ -130,7 +145,7 @@ static int rtp_parse_mp4_au(PayloadContext *data, const uint8_t *buf)
     au_headers_length = AV_RB16(buf);
 
     if (au_headers_length > RTP_MAX_PACKET_LENGTH)
-      return -1;
+        return -1;
 
     data->au_headers_length_bytes = (au_headers_length + 7) / 8;
 
@@ -145,7 +160,8 @@ static int rtp_parse_mp4_au(PayloadContext *data, const uint8_t *buf)
         return -1;
 
     data->nb_au_headers = au_headers_length / au_header_size;
-    if (!data->au_headers || data->au_headers_allocated < data->nb_au_headers) {
+    if (!data->au_headers || data->au_headers_allocated < data->nb_au_headers)
+    {
         av_free(data->au_headers);
         data->au_headers = av_malloc(sizeof(struct AUHeaders) * data->nb_au_headers);
         data->au_headers_allocated = data->nb_au_headers;
@@ -156,7 +172,8 @@ static int rtp_parse_mp4_au(PayloadContext *data, const uint8_t *buf)
        but does when sending the whole as one big packet...  */
     data->au_headers[0].size = 0;
     data->au_headers[0].index = 0;
-    for (i = 0; i < data->nb_au_headers; ++i) {
+    for (i = 0; i < data->nb_au_headers; ++i)
+    {
         data->au_headers[0].size += get_bits_long(&getbitcontext, data->sizelength);
         data->au_headers[0].index = get_bits_long(&getbitcontext, data->indexlength);
     }
@@ -196,23 +213,29 @@ static int parse_fmtp(AVStream *stream, PayloadContext *data,
     AVCodecContext *codec = stream->codec;
     int res, i;
 
-    if (!strcmp(attr, "config")) {
+    if (!strcmp(attr, "config"))
+    {
         res = parse_fmtp_config(codec, value);
 
         if (res < 0)
             return res;
     }
 
-    if (codec->codec_id == CODEC_ID_AAC) {
+    if (codec->codec_id == CODEC_ID_AAC)
+    {
         /* Looking for a known attribute */
-        for (i = 0; attr_names[i].str; ++i) {
-            if (!strcasecmp(attr, attr_names[i].str)) {
-                if (attr_names[i].type == ATTR_NAME_TYPE_INT) {
-                    *(int *)((char *)data+
-                        attr_names[i].offset) = atoi(value);
-                } else if (attr_names[i].type == ATTR_NAME_TYPE_STR)
-                    *(char **)((char *)data+
-                        attr_names[i].offset) = av_strdup(value);
+        for (i = 0; attr_names[i].str; ++i)
+        {
+            if (!strcasecmp(attr, attr_names[i].str))
+            {
+                if (attr_names[i].type == ATTR_NAME_TYPE_INT)
+                {
+                    *(int *)((char *)data +
+                             attr_names[i].offset) = atoi(value);
+                }
+                else if (attr_names[i].type == ATTR_NAME_TYPE_STR)
+                    *(char **)((char *)data +
+                               attr_names[i].offset) = av_strdup(value);
             }
         }
     }
@@ -230,7 +253,8 @@ static int parse_sdp_line(AVFormatContext *s, int st_index,
     return 0;
 }
 
-RTPDynamicProtocolHandler ff_mp4v_es_dynamic_handler = {
+RTPDynamicProtocolHandler ff_mp4v_es_dynamic_handler =
+{
     .enc_name           = "MP4V-ES",
     .codec_type         = AVMEDIA_TYPE_VIDEO,
     .codec_id           = CODEC_ID_MPEG4,
@@ -240,7 +264,8 @@ RTPDynamicProtocolHandler ff_mp4v_es_dynamic_handler = {
     .parse_packet       = NULL
 };
 
-RTPDynamicProtocolHandler ff_mpeg4_generic_dynamic_handler = {
+RTPDynamicProtocolHandler ff_mpeg4_generic_dynamic_handler =
+{
     .enc_name           = "mpeg4-generic",
     .codec_type         = AVMEDIA_TYPE_AUDIO,
     .codec_id           = CODEC_ID_AAC,

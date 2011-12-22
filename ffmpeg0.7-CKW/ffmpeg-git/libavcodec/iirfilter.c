@@ -30,19 +30,21 @@
 /**
  * IIR filter global parameters
  */
-typedef struct FFIIRFilterCoeffs{
+typedef struct FFIIRFilterCoeffs
+{
     int   order;
     float gain;
     int   *cx;
     float *cy;
-}FFIIRFilterCoeffs;
+} FFIIRFilterCoeffs;
 
 /**
  * IIR filter state
  */
-typedef struct FFIIRFilterState{
+typedef struct FFIIRFilterState
+{
     float x[1];
-}FFIIRFilterState;
+} FFIIRFilterState;
 
 /// maximum supported filter order
 #define MAXORDER 30
@@ -56,12 +58,14 @@ static int butterworth_init_coeffs(void *avc, struct FFIIRFilterCoeffs *c,
     double wa;
     double p[MAXORDER + 1][2];
 
-    if (filt_mode != FF_FILTER_MODE_LOWPASS) {
+    if (filt_mode != FF_FILTER_MODE_LOWPASS)
+    {
         av_log(avc, AV_LOG_ERROR, "Butterworth filter currently only supports "
                "low-pass filter mode\n");
         return -1;
     }
-    if (order & 1) {
+    if (order & 1)
+    {
         av_log(avc, AV_LOG_ERROR, "Butterworth filter currently only supports "
                "even filter orders\n");
         return -1;
@@ -77,7 +81,8 @@ static int butterworth_init_coeffs(void *avc, struct FFIIRFilterCoeffs *c,
     p[0][1] = 0.0;
     for(i = 1; i <= order; i++)
         p[i][0] = p[i][1] = 0.0;
-    for(i = 0; i < order; i++){
+    for(i = 0; i < order; i++)
+    {
         double zp[2];
         double th = (i + (order >> 1) + 0.5) * M_PI / order;
         double a_re, a_im, c_re, c_im;
@@ -86,7 +91,7 @@ static int butterworth_init_coeffs(void *avc, struct FFIIRFilterCoeffs *c,
         a_re = zp[0] + 2.0;
         c_re = zp[0] - 2.0;
         a_im =
-        c_im = zp[1];
+            c_im = zp[1];
         zp[0] = (a_re * c_re + a_im * c_im) / (c_re * c_re + c_im * c_im);
         zp[1] = (a_im * c_re - a_re * c_im) / (c_re * c_re + c_im * c_im);
 
@@ -94,15 +99,16 @@ static int butterworth_init_coeffs(void *avc, struct FFIIRFilterCoeffs *c,
         {
             a_re = p[j][0];
             a_im = p[j][1];
-            p[j][0] = a_re*zp[0] - a_im*zp[1] + p[j-1][0];
-            p[j][1] = a_re*zp[1] + a_im*zp[0] + p[j-1][1];
+            p[j][0] = a_re * zp[0] - a_im * zp[1] + p[j-1][0];
+            p[j][1] = a_re * zp[1] + a_im * zp[0] + p[j-1][1];
         }
-        a_re    = p[0][0]*zp[0] - p[0][1]*zp[1];
-        p[0][1] = p[0][0]*zp[1] + p[0][1]*zp[0];
+        a_re    = p[0][0] * zp[0] - p[0][1] * zp[1];
+        p[0][1] = p[0][0] * zp[1] + p[0][1] * zp[0];
         p[0][0] = a_re;
     }
     c->gain = p[order][0];
-    for(i = 0; i < order; i++){
+    for(i = 0; i < order; i++)
+    {
         c->gain += p[i][0];
         c->cy[i] = (-p[i][0] * p[order][0] + -p[i][1] * p[order][1]) /
                    (p[order][0] * p[order][0] + p[order][1] * p[order][1]);
@@ -120,12 +126,14 @@ static int biquad_init_coeffs(void *avc, struct FFIIRFilterCoeffs *c,
     double a0, x0, x1;
 
     if (filt_mode != FF_FILTER_MODE_HIGHPASS &&
-        filt_mode != FF_FILTER_MODE_LOWPASS) {
+            filt_mode != FF_FILTER_MODE_LOWPASS)
+    {
         av_log(avc, AV_LOG_ERROR, "Biquad filter currently only supports "
                "high-pass and low-pass filter modes\n");
         return -1;
     }
-    if (order != 2) {
+    if (order != 2)
+    {
         av_log(avc, AV_LOG_ERROR, "Biquad filter must have order of 2\n");
         return -1;
     }
@@ -135,11 +143,14 @@ static int biquad_init_coeffs(void *avc, struct FFIIRFilterCoeffs *c,
 
     a0 = 1.0 + (sin_w0 / 2.0);
 
-    if (filt_mode == FF_FILTER_MODE_HIGHPASS) {
+    if (filt_mode == FF_FILTER_MODE_HIGHPASS)
+    {
         c->gain  =  ((1.0 + cos_w0) / 2.0)  / a0;
         x0       =  ((1.0 + cos_w0) / 2.0)  / a0;
         x1       = (-(1.0 + cos_w0))        / a0;
-    } else { // FF_FILTER_MODE_LOWPASS
+    }
+    else     // FF_FILTER_MODE_LOWPASS
+    {
         c->gain  =  ((1.0 - cos_w0) / 2.0)  / a0;
         x0       =  ((1.0 - cos_w0) / 2.0)  / a0;
         x1       =   (1.0 - cos_w0)         / a0;
@@ -157,11 +168,11 @@ static int biquad_init_coeffs(void *avc, struct FFIIRFilterCoeffs *c,
     return 0;
 }
 
-av_cold struct FFIIRFilterCoeffs* ff_iir_filter_init_coeffs(void *avc,
-                                                enum IIRFilterType filt_type,
-                                                enum IIRFilterMode filt_mode,
-                                                int order, float cutoff_ratio,
-                                                float stopband, float ripple)
+av_cold struct FFIIRFilterCoeffs *ff_iir_filter_init_coeffs(void *avc,
+        enum IIRFilterType filt_type,
+        enum IIRFilterMode filt_mode,
+        int order, float cutoff_ratio,
+        float stopband, float ripple)
 {
     FFIIRFilterCoeffs *c;
     int ret = 0;
@@ -177,7 +188,8 @@ av_cold struct FFIIRFilterCoeffs* ff_iir_filter_init_coeffs(void *avc,
                       init_fail);
     c->order = order;
 
-    switch (filt_type) {
+    switch (filt_type)
+    {
     case FF_FILTER_TYPE_BUTTERWORTH:
         ret = butterworth_init_coeffs(avc, c, filt_mode, order, cutoff_ratio,
                                       stopband);
@@ -199,9 +211,9 @@ init_fail:
     return NULL;
 }
 
-av_cold struct FFIIRFilterState* ff_iir_filter_init_state(int order)
+av_cold struct FFIIRFilterState *ff_iir_filter_init_state(int order)
 {
-    FFIIRFilterState* s = av_mallocz(sizeof(FFIIRFilterState) + sizeof(s->x[0]) * (order - 1));
+    FFIIRFilterState *s = av_mallocz(sizeof(FFIIRFilterState) + sizeof(s->x[0]) * (order - 1));
     return s;
 }
 
@@ -276,11 +288,16 @@ void ff_iir_filter(const struct FFIIRFilterCoeffs *c,
                    struct FFIIRFilterState *s, int size,
                    const int16_t *src, int sstep, int16_t *dst, int dstep)
 {
-    if (c->order == 2) {
+    if (c->order == 2)
+    {
         FILTER_O2(int16_t, S16)
-    } else if (c->order == 4) {
+    }
+    else if (c->order == 4)
+    {
         FILTER_BW_O4(int16_t, S16)
-    } else {
+    }
+    else
+    {
         FILTER_DIRECT_FORM_II(int16_t, S16)
     }
 }
@@ -289,11 +306,16 @@ void ff_iir_filter_flt(const struct FFIIRFilterCoeffs *c,
                        struct FFIIRFilterState *s, int size,
                        const float *src, int sstep, float *dst, int dstep)
 {
-    if (c->order == 2) {
+    if (c->order == 2)
+    {
         FILTER_O2(float, FLT)
-    } else if (c->order == 4) {
+    }
+    else if (c->order == 4)
+    {
         FILTER_BW_O4(float, FLT)
-    } else {
+    }
+    else
+    {
         FILTER_DIRECT_FORM_II(float, FLT)
     }
 }
@@ -305,7 +327,8 @@ av_cold void ff_iir_filter_free_state(struct FFIIRFilterState *state)
 
 av_cold void ff_iir_filter_free_coeffs(struct FFIIRFilterCoeffs *coeffs)
 {
-    if(coeffs){
+    if(coeffs)
+    {
         av_free(coeffs->cx);
         av_free(coeffs->cy);
     }
@@ -322,15 +345,16 @@ int main(void)
     float cutoff_coeff = 0.4;
     int16_t x[SIZE], y[SIZE];
     int i;
-    FILE* fd;
+    FILE *fd;
 
     fcoeffs = ff_iir_filter_init_coeffs(FF_FILTER_TYPE_BUTTERWORTH,
                                         FF_FILTER_MODE_LOWPASS, FILT_ORDER,
                                         cutoff_coeff, 0.0, 0.0);
     fstate  = ff_iir_filter_init_state(FILT_ORDER);
 
-    for (i = 0; i < SIZE; i++) {
-        x[i] = lrint(0.75 * INT16_MAX * sin(0.5*M_PI*i*i/SIZE));
+    for (i = 0; i < SIZE; i++)
+    {
+        x[i] = lrint(0.75 * INT16_MAX * sin(0.5 * M_PI * i * i / SIZE));
     }
 
     ff_iir_filter(fcoeffs, fstate, SIZE, x, 1, y, 1);

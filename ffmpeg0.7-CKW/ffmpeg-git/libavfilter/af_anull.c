@@ -23,19 +23,30 @@
 
 #include "avfilter.h"
 
-AVFilter avfilter_af_anull = {
+AVFilter avfilter_af_anull =
+{
     .name      = "anull",
     .description = NULL_IF_CONFIG_SMALL("Pass the source unchanged to the output."),
 
     .priv_size = 0,
 
-    .inputs    = (AVFilterPad[]) {{ .name             = "default",
-                                    .type             = AVMEDIA_TYPE_AUDIO,
-                                    .get_audio_buffer = avfilter_null_get_audio_buffer,
-                                    .filter_samples   = avfilter_null_filter_samples },
-                                  { .name = NULL}},
+    .inputs    = (AVFilterPad[])
+    {
+        {
+            .name             = "default",
+            .type             = AVMEDIA_TYPE_AUDIO,
+            .get_audio_buffer = avfilter_null_get_audio_buffer,
+            .filter_samples   = avfilter_null_filter_samples
+        },
+        { .name = NULL}
+    },
 
-    .outputs   = (AVFilterPad[]) {{ .name             = "default",
-                                    .type             = AVMEDIA_TYPE_AUDIO, },
-                                  { .name = NULL}},
+    .outputs   = (AVFilterPad[])
+    {
+        {
+            .name             = "default",
+            .type             = AVMEDIA_TYPE_AUDIO,
+        },
+        { .name = NULL}
+    },
 };

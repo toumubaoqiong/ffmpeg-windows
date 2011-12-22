@@ -51,7 +51,8 @@
 
 #define EA3_HEADER_SIZE 96
 
-enum {
+enum
+{
     OMA_CODECID_ATRAC3  = 0,
     OMA_CODECID_ATRAC3P = 1,
     OMA_CODECID_MP3     = 3,
@@ -59,7 +60,8 @@ enum {
     OMA_CODECID_WMA     = 5,
 };
 
-static const AVCodecTag codec_oma_tags[] = {
+static const AVCodecTag codec_oma_tags[] =
+{
     { CODEC_ID_ATRAC3,  OMA_CODECID_ATRAC3 },
     { CODEC_ID_ATRAC3P, OMA_CODECID_ATRAC3P },
     { CODEC_ID_MP3,     OMA_CODECID_MP3 },
@@ -70,7 +72,7 @@ static const AVCodecTag codec_oma_tags[] = {
 static int oma_read_header(AVFormatContext *s,
                            AVFormatParameters *ap)
 {
-    static const uint16_t srate_tab[6] = {320,441,480,882,960,0};
+    static const uint16_t srate_tab[6] = {320, 441, 480, 882, 960, 0};
     int     ret, framesize, jsflag, samplerate;
     uint32_t codec_params;
     int16_t eid;
@@ -81,13 +83,17 @@ static int oma_read_header(AVFormatContext *s,
     ff_id3v2_read(s, ID3v2_EA3_MAGIC);
     ret = avio_read(s->pb, buf, EA3_HEADER_SIZE);
 
-    if (memcmp(buf, ((const uint8_t[]){'E', 'A', '3'}),3) || buf[4] != 0 || buf[5] != EA3_HEADER_SIZE) {
+    if (memcmp(buf, ((const uint8_t[])
+{'E', 'A', '3'
+}), 3) || buf[4] != 0 || buf[5] != EA3_HEADER_SIZE)
+    {
         av_log(s, AV_LOG_ERROR, "Couldn't find the EA3 header !\n");
         return -1;
     }
 
     eid = AV_RB16(&buf[6]);
-    if (eid != -1 && eid != -128) {
+    if (eid != -1 && eid != -128)
+    {
         av_log(s, AV_LOG_ERROR, "Encrypted file! Eid: %d\n", eid);
         return -1;
     }
@@ -103,50 +109,51 @@ static int oma_read_header(AVFormatContext *s,
     st->codec->codec_tag   = buf[32];
     st->codec->codec_id    = ff_codec_get_id(codec_oma_tags, st->codec->codec_tag);
 
-    switch (buf[32]) {
-        case OMA_CODECID_ATRAC3:
-            samplerate = srate_tab[(codec_params >> 13) & 7]*100;
-            if (samplerate != 44100)
-                av_log(s, AV_LOG_ERROR, "Unsupported sample rate, send sample file to developers: %d\n", samplerate);
+    switch (buf[32])
+    {
+    case OMA_CODECID_ATRAC3:
+        samplerate = srate_tab[(codec_params >> 13) & 7] * 100;
+        if (samplerate != 44100)
+            av_log(s, AV_LOG_ERROR, "Unsupported sample rate, send sample file to developers: %d\n", samplerate);
 
-            framesize = (codec_params & 0x3FF) * 8;
-            jsflag = (codec_params >> 17) & 1; /* get stereo coding mode, 1 for joint-stereo */
-            st->codec->channels    = 2;
-            st->codec->sample_rate = samplerate;
-            st->codec->bit_rate    = st->codec->sample_rate * framesize * 8 / 1024;
+        framesize = (codec_params & 0x3FF) * 8;
+        jsflag = (codec_params >> 17) & 1; /* get stereo coding mode, 1 for joint-stereo */
+        st->codec->channels    = 2;
+        st->codec->sample_rate = samplerate;
+        st->codec->bit_rate    = st->codec->sample_rate * framesize * 8 / 1024;
 
-            /* fake the atrac3 extradata (wav format, makes stream copy to wav work) */
-            st->codec->extradata_size = 14;
-            edata = av_mallocz(14 + FF_INPUT_BUFFER_PADDING_SIZE);
-            if (!edata)
-                return AVERROR(ENOMEM);
+        /* fake the atrac3 extradata (wav format, makes stream copy to wav work) */
+        st->codec->extradata_size = 14;
+        edata = av_mallocz(14 + FF_INPUT_BUFFER_PADDING_SIZE);
+        if (!edata)
+            return AVERROR(ENOMEM);
 
-            st->codec->extradata = edata;
-            AV_WL16(&edata[0],  1);             // always 1
-            AV_WL32(&edata[2],  samplerate);    // samples rate
-            AV_WL16(&edata[6],  jsflag);        // coding mode
-            AV_WL16(&edata[8],  jsflag);        // coding mode
-            AV_WL16(&edata[10], 1);             // always 1
-            // AV_WL16(&edata[12], 0);          // always 0
+        st->codec->extradata = edata;
+        AV_WL16(&edata[0],  1);             // always 1
+        AV_WL32(&edata[2],  samplerate);    // samples rate
+        AV_WL16(&edata[6],  jsflag);        // coding mode
+        AV_WL16(&edata[8],  jsflag);        // coding mode
+        AV_WL16(&edata[10], 1);             // always 1
+        // AV_WL16(&edata[12], 0);          // always 0
 
-            av_set_pts_info(st, 64, 1, st->codec->sample_rate);
-            break;
-        case OMA_CODECID_ATRAC3P:
-            st->codec->channels = (codec_params >> 10) & 7;
-            framesize = ((codec_params & 0x3FF) * 8) + 8;
-            st->codec->sample_rate = srate_tab[(codec_params >> 13) & 7]*100;
-            st->codec->bit_rate    = st->codec->sample_rate * framesize * 8 / 1024;
-            av_set_pts_info(st, 64, 1, st->codec->sample_rate);
-            av_log(s, AV_LOG_ERROR, "Unsupported codec ATRAC3+!\n");
-            break;
-        case OMA_CODECID_MP3:
-            st->need_parsing = AVSTREAM_PARSE_FULL;
-            framesize = 1024;
-            break;
-        default:
-            av_log(s, AV_LOG_ERROR, "Unsupported codec %d!\n",buf[32]);
-            return -1;
-            break;
+        av_set_pts_info(st, 64, 1, st->codec->sample_rate);
+        break;
+    case OMA_CODECID_ATRAC3P:
+        st->codec->channels = (codec_params >> 10) & 7;
+        framesize = ((codec_params & 0x3FF) * 8) + 8;
+        st->codec->sample_rate = srate_tab[(codec_params >> 13) & 7] * 100;
+        st->codec->bit_rate    = st->codec->sample_rate * framesize * 8 / 1024;
+        av_set_pts_info(st, 64, 1, st->codec->sample_rate);
+        av_log(s, AV_LOG_ERROR, "Unsupported codec ATRAC3+!\n");
+        break;
+    case OMA_CODECID_MP3:
+        st->need_parsing = AVSTREAM_PARSE_FULL;
+        framesize = 1024;
+        break;
+    default:
+        av_log(s, AV_LOG_ERROR, "Unsupported codec %d!\n", buf[32]);
+        return -1;
+        break;
     }
 
     st->codec->block_align = framesize;
@@ -189,7 +196,8 @@ static int oma_read_probe(AVProbeData *p)
 }
 
 
-AVInputFormat ff_oma_demuxer = {
+AVInputFormat ff_oma_demuxer =
+{
     "oma",
     NULL_IF_CONFIG_SMALL("Sony OpenMG audio"),
     0,
@@ -198,8 +206,11 @@ AVInputFormat ff_oma_demuxer = {
     oma_read_packet,
     0,
     pcm_read_seek,
-    .flags= AVFMT_GENERIC_INDEX,
+    .flags = AVFMT_GENERIC_INDEX,
     .extensions = "oma,aa3",
-    .codec_tag= (const AVCodecTag* const []){codec_oma_tags, 0},
+    .codec_tag = (const AVCodecTag *const [])
+    {
+        codec_oma_tags, 0
+    },
 };
 

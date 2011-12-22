@@ -201,36 +201,40 @@
 #define MATROSKA_ID_CHAPTERFLAGENABLED  0x4598
 #define MATROSKA_ID_CHAPTERPHYSEQUIV    0x63C3
 
-typedef enum {
-  MATROSKA_TRACK_TYPE_NONE     = 0x0,
-  MATROSKA_TRACK_TYPE_VIDEO    = 0x1,
-  MATROSKA_TRACK_TYPE_AUDIO    = 0x2,
-  MATROSKA_TRACK_TYPE_COMPLEX  = 0x3,
-  MATROSKA_TRACK_TYPE_LOGO     = 0x10,
-  MATROSKA_TRACK_TYPE_SUBTITLE = 0x11,
-  MATROSKA_TRACK_TYPE_CONTROL  = 0x20,
+typedef enum
+{
+    MATROSKA_TRACK_TYPE_NONE     = 0x0,
+    MATROSKA_TRACK_TYPE_VIDEO    = 0x1,
+    MATROSKA_TRACK_TYPE_AUDIO    = 0x2,
+    MATROSKA_TRACK_TYPE_COMPLEX  = 0x3,
+    MATROSKA_TRACK_TYPE_LOGO     = 0x10,
+    MATROSKA_TRACK_TYPE_SUBTITLE = 0x11,
+    MATROSKA_TRACK_TYPE_CONTROL  = 0x20,
 } MatroskaTrackType;
 
-typedef enum {
-  MATROSKA_TRACK_ENCODING_COMP_ZLIB        = 0,
-  MATROSKA_TRACK_ENCODING_COMP_BZLIB       = 1,
-  MATROSKA_TRACK_ENCODING_COMP_LZO         = 2,
-  MATROSKA_TRACK_ENCODING_COMP_HEADERSTRIP = 3,
+typedef enum
+{
+    MATROSKA_TRACK_ENCODING_COMP_ZLIB        = 0,
+    MATROSKA_TRACK_ENCODING_COMP_BZLIB       = 1,
+    MATROSKA_TRACK_ENCODING_COMP_LZO         = 2,
+    MATROSKA_TRACK_ENCODING_COMP_HEADERSTRIP = 3,
 } MatroskaTrackEncodingCompAlgo;
 
 /*
  * Matroska Codec IDs, strings
  */
 
-typedef struct CodecTags{
+typedef struct CodecTags
+{
     char str[20];
     enum CodecID id;
-}CodecTags;
+} CodecTags;
 
-typedef struct CodecMime{
+typedef struct CodecMime
+{
     char str[32];
     enum CodecID id;
-}CodecMime;
+} CodecMime;
 
 /* max. depth in the EBML tree structure */
 #define EBML_MAX_DEPTH 16

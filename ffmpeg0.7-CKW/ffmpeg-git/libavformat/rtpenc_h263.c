@@ -24,12 +24,14 @@
 #include "rtpenc.h"
 
 static const uint8_t *find_resync_marker_reverse(const uint8_t *restrict start,
-                                                 const uint8_t *restrict end)
+        const uint8_t *restrict end)
 {
     const uint8_t *p = end - 1;
     start += 1; /* Make sure we never return the original start. */
-    for (; p > start; p -= 2) {
-        if (!*p) {
+    for (; p > start; p -= 2)
+    {
+        if (!*p)
+        {
             if      (!p[ 1] && p[2]) return p;
             else if (!p[-1] && p[1]) return p - 1;
         }
@@ -45,7 +47,8 @@ void ff_rtp_send_h263(AVFormatContext *s1, const uint8_t *buf1, int size)
     int len;
 
     // test picture start code
-    if (buf1[0] != 0 || buf1[1] != 0 || (buf1[2] & 0xfc) != 0x80) {
+    if (buf1[0] != 0 || buf1[1] != 0 || (buf1[2] & 0xfc) != 0x80)
+    {
         av_log(s1, AV_LOG_ERROR, "bad picture start code (%02x %02x %02x), skip sending frame\n", buf1[0], buf1[1], buf1[2]);
         return;
     }
@@ -70,13 +73,14 @@ void ff_rtp_send_h263(AVFormatContext *s1, const uint8_t *buf1, int size)
 
     s->timestamp = s->cur_timestamp;
 
-    while (size > 0) {
-        len = s->max_payload_size-4;
+    while (size > 0)
+    {
+        len = s->max_payload_size - 4;
         if (len > size)
             len = size;
 
         memcpy(&s->buf[4], buf1, len);
-        ff_rtp_send_data(s1, s->buf, len+4, (len == size));
+        ff_rtp_send_data(s1, s->buf, len + 4, (len == size));
 
         buf1 += len;
         size -= len;
@@ -107,7 +111,7 @@ void ff_rtp_send_h263_RFC4629(AVFormatContext *s1, const uint8_t *buf1, int size
 
         len = FFMIN(max_packet_size - 2, size);
 
-        // Look for a better place to split the frame into packets. 
+        // Look for a better place to split the frame into packets.
         if (len < size) {
             const uint8_t *end = find_resync_marker_reverse(buf1, buf1 + len);
             len = end - buf1;

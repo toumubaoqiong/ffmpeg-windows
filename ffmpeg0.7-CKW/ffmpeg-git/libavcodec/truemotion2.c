@@ -31,13 +31,16 @@
 #define TM2_ESCAPE 0x80000000
 #define TM2_DELTAS 64
 /* Huffman-coded streams of different types of blocks */
-enum TM2_STREAMS{ TM2_C_HI = 0, TM2_C_LO, TM2_L_HI, TM2_L_LO,
-     TM2_UPD, TM2_MOT, TM2_TYPE, TM2_NUM_STREAMS};
+enum TM2_STREAMS { TM2_C_HI = 0, TM2_C_LO, TM2_L_HI, TM2_L_LO,
+                   TM2_UPD, TM2_MOT, TM2_TYPE, TM2_NUM_STREAMS
+                 };
 /* Block types */
-enum TM2_BLOCKS{ TM2_HI_RES = 0, TM2_MED_RES, TM2_LOW_RES, TM2_NULL_RES,
-                 TM2_UPDATE, TM2_STILL, TM2_MOTION};
+enum TM2_BLOCKS { TM2_HI_RES = 0, TM2_MED_RES, TM2_LOW_RES, TM2_NULL_RES,
+                  TM2_UPDATE, TM2_STILL, TM2_MOTION
+                };
 
-typedef struct TM2Context{
+typedef struct TM2Context
+{
     AVCodecContext *avctx;
     AVFrame pic;
 
@@ -63,7 +66,8 @@ typedef struct TM2Context{
 /**
 * Huffman codes for each of streams
 */
-typedef struct TM2Codes{
+typedef struct TM2Codes
+{
     VLC vlc; ///< table for FFmpeg bitstream reader
     int bits;
     int *recode; ///< table for converting from code indexes to values
@@ -73,7 +77,8 @@ typedef struct TM2Codes{
 /**
 * structure for gathering Huffman codes information
 */
-typedef struct TM2Huff{
+typedef struct TM2Huff
+{
     int val_bits; ///< length of literal
     int max_bits; ///< maximum length of code
     int min_bits; ///< minimum length of code
@@ -87,16 +92,20 @@ typedef struct TM2Huff{
 
 static int tm2_read_tree(TM2Context *ctx, uint32_t prefix, int length, TM2Huff *huff)
 {
-    if(length > huff->max_bits) {
+    if(length > huff->max_bits)
+    {
         av_log(ctx->avctx, AV_LOG_ERROR, "Tree exceeded its given depth (%i)\n", huff->max_bits);
         return -1;
     }
 
-    if(!get_bits1(&ctx->gb)) { /* literal */
-        if (length == 0) {
+    if(!get_bits1(&ctx->gb))   /* literal */
+    {
+        if (length == 0)
+        {
             length = 1;
         }
-        if(huff->num >= huff->max_num) {
+        if(huff->num >= huff->max_num)
+        {
             av_log(ctx->avctx, AV_LOG_DEBUG, "Too many literals\n");
             return -1;
         }
@@ -105,7 +114,9 @@ static int tm2_read_tree(TM2Context *ctx, uint32_t prefix, int length, TM2Huff *
         huff->lens[huff->num] = length;
         huff->num++;
         return 0;
-    } else { /* non-terminal node */
+    }
+    else     /* non-terminal node */
+    {
         if(tm2_read_tree(ctx, prefix << 1, length + 1, huff) == -1)
             return -1;
         if(tm2_read_tree(ctx, (prefix << 1) | 1, length + 1, huff) == -1)
@@ -127,12 +138,14 @@ static int tm2_build_huff_table(TM2Context *ctx, TM2Codes *code)
 
     /* check for correct codes parameters */
     if((huff.val_bits < 1) || (huff.val_bits > 32) ||
-       (huff.max_bits < 0) || (huff.max_bits > 32)) {
+            (huff.max_bits < 0) || (huff.max_bits > 32))
+    {
         av_log(ctx->avctx, AV_LOG_ERROR, "Incorrect tree parameters - literal length: %i, max code length: %i\n",
                huff.val_bits, huff.max_bits);
         return -1;
     }
-    if((huff.nodes < 0) || (huff.nodes > 0x10000)) {
+    if((huff.nodes < 0) || (huff.nodes > 0x10000))
+    {
         av_log(ctx->avctx, AV_LOG_ERROR, "Incorrect number of Huffman tree nodes: %i\n", huff.nodes);
         return -1;
     }
@@ -149,25 +162,30 @@ static int tm2_build_huff_table(TM2Context *ctx, TM2Codes *code)
     if(tm2_read_tree(ctx, 0, 0, &huff) == -1)
         res = -1;
 
-    if(huff.num != huff.max_num) {
+    if(huff.num != huff.max_num)
+    {
         av_log(ctx->avctx, AV_LOG_ERROR, "Got less codes than expected: %i of %i\n",
                huff.num, huff.max_num);
         res = -1;
     }
 
     /* convert codes to vlc_table */
-    if(res != -1) {
+    if(res != -1)
+    {
         int i;
 
         res = init_vlc(&code->vlc, huff.max_bits, huff.max_num,
-                    huff.lens, sizeof(int), sizeof(int),
-                    huff.bits, sizeof(uint32_t), sizeof(uint32_t), 0);
-        if(res < 0) {
+                       huff.lens, sizeof(int), sizeof(int),
+                       huff.bits, sizeof(uint32_t), sizeof(uint32_t), 0);
+        if(res < 0)
+        {
             av_log(ctx->avctx, AV_LOG_ERROR, "Cannot build VLC table\n");
             res = -1;
-        } else
+        }
+        else
             res = 0;
-        if(res != -1) {
+        if(res != -1)
+        {
             code->bits = huff.max_bits;
             code->length = huff.max_num;
             code->recode = av_malloc(code->length * sizeof(int));
@@ -208,10 +226,13 @@ static inline int tm2_read_header(TM2Context *ctx, const uint8_t *buf)
     magic = AV_RL32(buf);
     buf += 4;
 
-    if(magic == 0x00000100) { /* old header */
-/*      av_log (ctx->avctx, AV_LOG_ERROR, "TM2 old header: not implemented (yet)\n"); */
+    if(magic == 0x00000100)   /* old header */
+    {
+        /*      av_log (ctx->avctx, AV_LOG_ERROR, "TM2 old header: not implemented (yet)\n"); */
         return 40;
-    } else if(magic == 0x00000101) { /* new header */
+    }
+    else if(magic == 0x00000101)     /* new header */
+    {
         int w, h, size, flags, xr, yr;
 
         length = AV_RL32(buf);
@@ -226,7 +247,9 @@ static inline int tm2_read_header(TM2Context *ctx, const uint8_t *buf)
         xr = get_bits(&ctx->gb, 9);
 
         return 40;
-    } else {
+    }
+    else
+    {
         av_log (ctx->avctx, AV_LOG_ERROR, "Not a TM2 header: 0x%08X\n", magic);
         return -1;
     }
@@ -234,19 +257,22 @@ static inline int tm2_read_header(TM2Context *ctx, const uint8_t *buf)
     return buf - obuf;
 }
 
-static int tm2_read_deltas(TM2Context *ctx, int stream_id) {
+static int tm2_read_deltas(TM2Context *ctx, int stream_id)
+{
     int d, mb;
     int i, v;
 
     d = get_bits(&ctx->gb, 9);
     mb = get_bits(&ctx->gb, 5);
 
-    if((d < 1) || (d > TM2_DELTAS) || (mb < 1) || (mb > 32)) {
+    if((d < 1) || (d > TM2_DELTAS) || (mb < 1) || (mb > 32))
+    {
         av_log(ctx->avctx, AV_LOG_ERROR, "Incorrect delta table: %i deltas x %i bits\n", d, mb);
         return -1;
     }
 
-    for(i = 0; i < d; i++) {
+    for(i = 0; i < d; i++)
+    {
         v = get_bits_long(&ctx->gb, mb);
         if(v & (1 << (mb - 1)))
             ctx->deltas[stream_id][i] = v - (1 << mb);
@@ -268,24 +294,36 @@ static int tm2_read_stream(TM2Context *ctx, const uint8_t *buf, int stream_id, i
     TM2Codes codes;
 
     /* get stream length in dwords */
-    len = AV_RB32(buf); buf += 4; cur += 4;
+    len = AV_RB32(buf);
+    buf += 4;
+    cur += 4;
     skip = len * 4 + 4;
 
     if(len == 0)
         return 4;
 
-    if (len >= INT_MAX/4-1 || len < 0 || len > buf_size) {
+    if (len >= INT_MAX / 4 - 1 || len < 0 || len > buf_size)
+    {
         av_log(ctx->avctx, AV_LOG_ERROR, "Error, invalid stream size.\n");
         return -1;
     }
 
-    toks = AV_RB32(buf); buf += 4; cur += 4;
-    if(toks & 1) {
-        len = AV_RB32(buf); buf += 4; cur += 4;
-        if(len == TM2_ESCAPE) {
-            len = AV_RB32(buf); buf += 4; cur += 4;
+    toks = AV_RB32(buf);
+    buf += 4;
+    cur += 4;
+    if(toks & 1)
+    {
+        len = AV_RB32(buf);
+        buf += 4;
+        cur += 4;
+        if(len == TM2_ESCAPE)
+        {
+            len = AV_RB32(buf);
+            buf += 4;
+            cur += 4;
         }
-        if(len > 0) {
+        if(len > 0)
+        {
             init_get_bits(&ctx->gb, buf, (skip - cur) * 8);
             if(tm2_read_deltas(ctx, stream_id) == -1)
                 return -1;
@@ -294,11 +332,15 @@ static int tm2_read_stream(TM2Context *ctx, const uint8_t *buf, int stream_id, i
         }
     }
     /* skip unused fields */
-    if(AV_RB32(buf) == TM2_ESCAPE) {
-        buf += 4; cur += 4; /* some unknown length - could be escaped too */
+    if(AV_RB32(buf) == TM2_ESCAPE)
+    {
+        buf += 4;
+        cur += 4; /* some unknown length - could be escaped too */
     }
-    buf += 4; cur += 4;
-    buf += 4; cur += 4; /* unused by decoder */
+    buf += 4;
+    cur += 4;
+    buf += 4;
+    cur += 4; /* unused by decoder */
 
     init_get_bits(&ctx->gb, buf, (skip - cur) * 8);
     if(tm2_build_huff_table(ctx, &codes) == -1)
@@ -308,24 +350,32 @@ static int tm2_read_stream(TM2Context *ctx, const uint8_t *buf, int stream_id, i
 
     toks >>= 1;
     /* check if we have sane number of tokens */
-    if((toks < 0) || (toks > 0xFFFFFF)){
+    if((toks < 0) || (toks > 0xFFFFFF))
+    {
         av_log(ctx->avctx, AV_LOG_ERROR, "Incorrect number of tokens: %i\n", toks);
         tm2_free_codes(&codes);
         return -1;
     }
     ctx->tokens[stream_id] = av_realloc(ctx->tokens[stream_id], toks * sizeof(int));
     ctx->tok_lens[stream_id] = toks;
-    len = AV_RB32(buf); buf += 4; cur += 4;
-    if(len > 0) {
+    len = AV_RB32(buf);
+    buf += 4;
+    cur += 4;
+    if(len > 0)
+    {
         init_get_bits(&ctx->gb, buf, (skip - cur) * 8);
-        for(i = 0; i < toks; i++) {
-            if (get_bits_left(&ctx->gb) <= 0) {
+        for(i = 0; i < toks; i++)
+        {
+            if (get_bits_left(&ctx->gb) <= 0)
+            {
                 av_log(ctx->avctx, AV_LOG_ERROR, "Incorrect number of tokens: %i\n", toks);
                 return -1;
             }
             ctx->tokens[stream_id][i] = tm2_get_token(&ctx->gb, &codes);
         }
-    } else {
+    }
+    else
+    {
         for(i = 0; i < toks; i++)
             ctx->tokens[stream_id][i] = codes.recode[0];
     }
@@ -334,8 +384,10 @@ static int tm2_read_stream(TM2Context *ctx, const uint8_t *buf, int stream_id, i
     return skip;
 }
 
-static inline int GET_TOK(TM2Context *ctx,int type) {
-    if(ctx->tok_ptrs[type] >= ctx->tok_lens[type]) {
+static inline int GET_TOK(TM2Context *ctx, int type)
+{
+    if(ctx->tok_ptrs[type] >= ctx->tok_lens[type])
+    {
         av_log(ctx->avctx, AV_LOG_ERROR, "Read token from stream %i out of bounds (%i>=%i)\n", type, ctx->tok_ptrs[type], ctx->tok_lens[type]);
         return 0;
     }
@@ -381,14 +433,16 @@ static inline int GET_TOK(TM2Context *ctx,int type) {
     last[1] = (int)CHR[stride + 1];}
 
 /* common operations - add deltas to 4x4 block of luma or 2x2 blocks of chroma */
-static inline void tm2_apply_deltas(TM2Context *ctx, int* Y, int stride, int *deltas, int *last)
+static inline void tm2_apply_deltas(TM2Context *ctx, int *Y, int stride, int *deltas, int *last)
 {
     int ct, d;
     int i, j;
 
-    for(j = 0; j < 4; j++){
+    for(j = 0; j < 4; j++)
+    {
         ct = ctx->D[j];
-        for(i = 0; i < 4; i++){
+        for(i = 0; i < 4; i++)
+        {
             d = deltas[i + j * 4];
             ct += d;
             last[i] += ct;
@@ -402,8 +456,10 @@ static inline void tm2_apply_deltas(TM2Context *ctx, int* Y, int stride, int *de
 static inline void tm2_high_chroma(int *data, int stride, int *last, int *CD, int *deltas)
 {
     int i, j;
-    for(j = 0; j < 2; j++){
-        for(i = 0; i < 2; i++){
+    for(j = 0; j < 2; j++)
+    {
+        for(i = 0; i < 2; i++)
+        {
             CD[j] += deltas[i + j * 2];
             last[i] += CD[j];
             data[i] = last[i];
@@ -438,7 +494,8 @@ static inline void tm2_hi_res_block(TM2Context *ctx, AVFrame *pic, int bx, int b
     TM2_INIT_POINTERS();
 
     /* hi-res chroma */
-    for(i = 0; i < 4; i++) {
+    for(i = 0; i < 4; i++)
+    {
         deltas[i] = GET_TOK(ctx, TM2_C_HI);
         deltas[i + 4] = GET_TOK(ctx, TM2_C_HI);
     }
@@ -502,7 +559,7 @@ static inline void tm2_low_res_block(TM2Context *ctx, AVFrame *pic, int bx, int 
     if(bx > 0)
         last[0] = (last[-1] - ctx->D[0] - ctx->D[1] - ctx->D[2] - ctx->D[3] + last[1]) >> 1;
     else
-        last[0] = (last[1]  - ctx->D[0] - ctx->D[1] - ctx->D[2] - ctx->D[3])>> 1;
+        last[0] = (last[1]  - ctx->D[0] - ctx->D[1] - ctx->D[2] - ctx->D[3]) >> 1;
     last[2] = (last[1] + last[3]) >> 1;
 
     t1 = ctx->D[0] + ctx->D[1];
@@ -567,13 +624,17 @@ static inline void tm2_still_block(TM2Context *ctx, AVFrame *pic, int bx, int by
     TM2_INIT_POINTERS_2();
 
     /* update chroma */
-    for(j = 0; j < 2; j++){
-        for(i = 0; i < 2; i++){
+    for(j = 0; j < 2; j++)
+    {
+        for(i = 0; i < 2; i++)
+        {
             U[i] = Uo[i];
             V[i] = Vo[i];
         }
-        U += Ustride; V += Vstride;
-        Uo += oUstride; Vo += oVstride;
+        U += Ustride;
+        V += Vstride;
+        Uo += oUstride;
+        Vo += oVstride;
     }
     U -= Ustride * 2;
     V -= Vstride * 2;
@@ -586,8 +647,10 @@ static inline void tm2_still_block(TM2Context *ctx, AVFrame *pic, int bx, int by
     ctx->D[2] = Yo[3 + oYstride * 2] - Yo[3 + oYstride];
     ctx->D[3] = Yo[3 + oYstride * 3] - Yo[3 + oYstride * 2];
 
-    for(j = 0; j < 4; j++){
-        for(i = 0; i < 4; i++){
+    for(j = 0; j < 4; j++)
+    {
+        for(i = 0; i < 4; i++)
+        {
             Y[i] = Yo[i];
             last[i] = Yo[i];
         }
@@ -603,13 +666,17 @@ static inline void tm2_update_block(TM2Context *ctx, AVFrame *pic, int bx, int b
     TM2_INIT_POINTERS_2();
 
     /* update chroma */
-    for(j = 0; j < 2; j++){
-        for(i = 0; i < 2; i++){
+    for(j = 0; j < 2; j++)
+    {
+        for(i = 0; i < 2; i++)
+        {
             U[i] = Uo[i] + GET_TOK(ctx, TM2_UPD);
             V[i] = Vo[i] + GET_TOK(ctx, TM2_UPD);
         }
-        U += Ustride; V += Vstride;
-        Uo += oUstride; Vo += oVstride;
+        U += Ustride;
+        V += Vstride;
+        Uo += oUstride;
+        Vo += oVstride;
     }
     U -= Ustride * 2;
     V -= Vstride * 2;
@@ -622,9 +689,11 @@ static inline void tm2_update_block(TM2Context *ctx, AVFrame *pic, int bx, int b
     ctx->D[2] = Yo[3 + oYstride * 2] - Yo[3 + oYstride];
     ctx->D[3] = Yo[3 + oYstride * 3] - Yo[3 + oYstride * 2];
 
-    for(j = 0; j < 4; j++){
+    for(j = 0; j < 4; j++)
+    {
         d = last[3];
-        for(i = 0; i < 4; i++){
+        for(i = 0; i < 4; i++)
+        {
             Y[i] = Yo[i] + GET_TOK(ctx, TM2_UPD);
             last[i] = Y[i];
         }
@@ -648,13 +717,17 @@ static inline void tm2_motion_block(TM2Context *ctx, AVFrame *pic, int bx, int b
     Vo += (my >> 1) * oVstride + (mx >> 1);
 
     /* copy chroma */
-    for(j = 0; j < 2; j++){
-        for(i = 0; i < 2; i++){
+    for(j = 0; j < 2; j++)
+    {
+        for(i = 0; i < 2; i++)
+        {
             U[i] = Uo[i];
             V[i] = Vo[i];
         }
-        U += Ustride; V += Vstride;
-        Uo += oUstride; Vo += oVstride;
+        U += Ustride;
+        V += Vstride;
+        Uo += oUstride;
+        Vo += oVstride;
     }
     U -= Ustride * 2;
     V -= Vstride * 2;
@@ -662,8 +735,10 @@ static inline void tm2_motion_block(TM2Context *ctx, AVFrame *pic, int bx, int b
     TM2_RECALC_BLOCK(V, Vstride, (clast + 2), (ctx->CD + 2));
 
     /* copy luma */
-    for(j = 0; j < 4; j++){
-        for(i = 0; i < 4; i++){
+    for(j = 0; j < 4; j++)
+    {
+        for(i = 0; i < 4; i++)
+        {
             Y[i] = Yo[i];
         }
         Y += Ystride;
@@ -694,20 +769,24 @@ static int tm2_decode_blocks(TM2Context *ctx, AVFrame *p)
     for(i = 0; i < TM2_NUM_STREAMS; i++)
         ctx->tok_ptrs[i] = 0;
 
-    if (ctx->tok_lens[TM2_TYPE]<bw*bh){
-        av_log(ctx->avctx,AV_LOG_ERROR,"Got %i tokens for %i blocks\n",ctx->tok_lens[TM2_TYPE],bw*bh);
+    if (ctx->tok_lens[TM2_TYPE] < bw * bh)
+    {
+        av_log(ctx->avctx, AV_LOG_ERROR, "Got %i tokens for %i blocks\n", ctx->tok_lens[TM2_TYPE], bw * bh);
         return -1;
     }
 
     memset(ctx->last, 0, 4 * bw * sizeof(int));
     memset(ctx->clast, 0, 4 * bw * sizeof(int));
 
-    for(j = 0; j < bh; j++) {
+    for(j = 0; j < bh; j++)
+    {
         memset(ctx->D, 0, 4 * sizeof(int));
         memset(ctx->CD, 0, 4 * sizeof(int));
-        for(i = 0; i < bw; i++) {
+        for(i = 0; i < bw; i++)
+        {
             type = GET_TOK(ctx, TM2_TYPE);
-            switch(type) {
+            switch(type)
+            {
             case TM2_HI_RES:
                 tm2_hi_res_block(ctx, p, i, j);
                 break;
@@ -739,19 +818,22 @@ static int tm2_decode_blocks(TM2Context *ctx, AVFrame *p)
     }
 
     /* copy data from our buffer to AVFrame */
-    Y = (ctx->cur?ctx->Y2:ctx->Y1);
-    U = (ctx->cur?ctx->U2:ctx->U1);
-    V = (ctx->cur?ctx->V2:ctx->V1);
+    Y = (ctx->cur ? ctx->Y2 : ctx->Y1);
+    U = (ctx->cur ? ctx->U2 : ctx->U1);
+    V = (ctx->cur ? ctx->V2 : ctx->V1);
     dst = p->data[0];
-    for(j = 0; j < ctx->avctx->height; j++){
-        for(i = 0; i < ctx->avctx->width; i++){
+    for(j = 0; j < ctx->avctx->height; j++)
+    {
+        for(i = 0; i < ctx->avctx->width; i++)
+        {
             int y = Y[i], u = U[i >> 1], v = V[i >> 1];
             dst[3*i+0] = av_clip_uint8(y + v);
             dst[3*i+1] = av_clip_uint8(y);
             dst[3*i+2] = av_clip_uint8(y + u);
         }
         Y += ctx->avctx->width;
-        if (j & 1) {
+        if (j & 1)
+        {
             U += ctx->avctx->width >> 1;
             V += ctx->avctx->width >> 1;
         }
@@ -761,7 +843,8 @@ static int tm2_decode_blocks(TM2Context *ctx, AVFrame *p)
     return keyframe;
 }
 
-static const int tm2_stream_order[TM2_NUM_STREAMS] = {
+static const int tm2_stream_order[TM2_NUM_STREAMS] =
+{
     TM2_C_HI, TM2_C_LO, TM2_L_HI, TM2_L_LO, TM2_UPD, TM2_MOT, TM2_TYPE
 };
 
@@ -771,35 +854,40 @@ static int decode_frame(AVCodecContext *avctx,
 {
     const uint8_t *buf = avpkt->data;
     int buf_size = avpkt->size;
-    TM2Context * const l = avctx->priv_data;
-    AVFrame * const p= (AVFrame*)&l->pic;
+    TM2Context *const l = avctx->priv_data;
+    AVFrame *const p = (AVFrame *)&l->pic;
     int i, skip, t;
     uint8_t *swbuf;
 
     swbuf = av_malloc(buf_size + FF_INPUT_BUFFER_PADDING_SIZE);
-    if(!swbuf){
+    if(!swbuf)
+    {
         av_log(avctx, AV_LOG_ERROR, "Cannot allocate temporary buffer\n");
         return -1;
     }
     p->reference = 1;
     p->buffer_hints = FF_BUFFER_HINTS_VALID | FF_BUFFER_HINTS_PRESERVE | FF_BUFFER_HINTS_REUSABLE;
-    if(avctx->reget_buffer(avctx, p) < 0){
+    if(avctx->reget_buffer(avctx, p) < 0)
+    {
         av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
         av_free(swbuf);
         return -1;
     }
 
-    l->dsp.bswap_buf((uint32_t*)swbuf, (const uint32_t*)buf, buf_size >> 2);
+    l->dsp.bswap_buf((uint32_t *)swbuf, (const uint32_t *)buf, buf_size >> 2);
     skip = tm2_read_header(l, swbuf);
 
-    if(skip == -1){
+    if(skip == -1)
+    {
         av_free(swbuf);
         return -1;
     }
 
-    for(i = 0; i < TM2_NUM_STREAMS; i++){
+    for(i = 0; i < TM2_NUM_STREAMS; i++)
+    {
         t = tm2_read_stream(l, swbuf + skip, tm2_stream_order[i], buf_size);
-        if(t == -1){
+        if(t == -1)
+        {
             av_free(swbuf);
             return -1;
         }
@@ -813,23 +901,25 @@ static int decode_frame(AVCodecContext *avctx,
 
     l->cur = !l->cur;
     *data_size = sizeof(AVFrame);
-    *(AVFrame*)data = l->pic;
+    *(AVFrame *)data = l->pic;
     av_free(swbuf);
 
     return buf_size;
 }
 
-static av_cold int decode_init(AVCodecContext *avctx){
-    TM2Context * const l = avctx->priv_data;
+static av_cold int decode_init(AVCodecContext *avctx)
+{
+    TM2Context *const l = avctx->priv_data;
     int i;
 
-    if((avctx->width & 3) || (avctx->height & 3)){
+    if((avctx->width & 3) || (avctx->height & 3))
+    {
         av_log(avctx, AV_LOG_ERROR, "Width and height must be multiple of 4\n");
         return -1;
     }
 
     l->avctx = avctx;
-    l->pic.data[0]=NULL;
+    l->pic.data[0] = NULL;
     avctx->pix_fmt = PIX_FMT_BGR24;
 
     dsputil_init(&l->dsp, avctx);
@@ -837,7 +927,8 @@ static av_cold int decode_init(AVCodecContext *avctx){
     l->last = av_malloc(4 * sizeof(int) * (avctx->width >> 2));
     l->clast = av_malloc(4 * sizeof(int) * (avctx->width >> 2));
 
-    for(i = 0; i < TM2_NUM_STREAMS; i++) {
+    for(i = 0; i < TM2_NUM_STREAMS; i++)
+    {
         l->tokens[i] = NULL;
         l->tok_lens[i] = 0;
     }
@@ -853,8 +944,9 @@ static av_cold int decode_init(AVCodecContext *avctx){
     return 0;
 }
 
-static av_cold int decode_end(AVCodecContext *avctx){
-    TM2Context * const l = avctx->priv_data;
+static av_cold int decode_end(AVCodecContext *avctx)
+{
+    TM2Context *const l = avctx->priv_data;
     AVFrame *pic = &l->pic;
     int i;
 
@@ -862,7 +954,8 @@ static av_cold int decode_end(AVCodecContext *avctx){
     av_free(l->clast);
     for(i = 0; i < TM2_NUM_STREAMS; i++)
         av_free(l->tokens[i]);
-    if(l->Y1){
+    if(l->Y1)
+    {
         av_free(l->Y1);
         av_free(l->U1);
         av_free(l->V1);
@@ -877,7 +970,8 @@ static av_cold int decode_end(AVCodecContext *avctx){
     return 0;
 }
 
-AVCodec ff_truemotion2_decoder = {
+AVCodec ff_truemotion2_decoder =
+{
     "truemotion2",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_TRUEMOTION2,

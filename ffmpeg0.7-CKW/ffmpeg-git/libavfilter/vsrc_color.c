@@ -25,7 +25,8 @@
 #include "libavutil/parseutils.h"
 #include "drawutils.h"
 
-typedef struct {
+typedef struct
+{
     int w, h;
     uint8_t color[4];
     AVRational time_base;
@@ -47,13 +48,15 @@ static av_cold int color_init(AVFilterContext *ctx, const char *args, void *opaq
     if (args)
         sscanf(args, "%127[^:]:%127[^:]:%127s", color_string, frame_size, frame_rate);
 
-    if (av_parse_video_size(&color->w, &color->h, frame_size) < 0) {
+    if (av_parse_video_size(&color->w, &color->h, frame_size) < 0)
+    {
         av_log(ctx, AV_LOG_ERROR, "Invalid frame size: %s\n", frame_size);
         return AVERROR(EINVAL);
     }
 
     if (av_parse_video_rate(&frame_rate_q, frame_rate) < 0 ||
-        frame_rate_q.den <= 0 || frame_rate_q.num <= 0) {
+            frame_rate_q.den <= 0 || frame_rate_q.num <= 0)
+    {
         av_log(ctx, AV_LOG_ERROR, "Invalid frame rate: %s\n", frame_rate);
         return AVERROR(EINVAL);
     }
@@ -71,7 +74,8 @@ static av_cold void color_uninit(AVFilterContext *ctx)
     ColorContext *color = ctx->priv;
     int i;
 
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < 4; i++)
+    {
         av_freep(&color->line[i]);
         color->line_step[i] = 0;
     }
@@ -79,7 +83,8 @@ static av_cold void color_uninit(AVFilterContext *ctx)
 
 static int query_formats(AVFilterContext *ctx)
 {
-    static const enum PixelFormat pix_fmts[] = {
+    static const enum PixelFormat pix_fmts[] =
+    {
         PIX_FMT_ARGB,         PIX_FMT_RGBA,
         PIX_FMT_ABGR,         PIX_FMT_BGRA,
         PIX_FMT_RGB24,        PIX_FMT_BGR24,
@@ -132,7 +137,10 @@ static int color_request_frame(AVFilterLink *link)
 {
     ColorContext *color = link->src->priv;
     AVFilterBufferRef *picref = avfilter_get_video_buffer(link, AV_PERM_WRITE, color->w, color->h);
-    picref->video->pixel_aspect = (AVRational) {1, 1};
+    picref->video->pixel_aspect = (AVRational)
+    {
+        1, 1
+    };
     picref->pts                 = av_rescale_q(color->pts++, color->time_base, AV_TIME_BASE_Q);
     picref->pos                 = 0;
 
@@ -147,7 +155,8 @@ static int color_request_frame(AVFilterLink *link)
     return 0;
 }
 
-AVFilter avfilter_vsrc_color = {
+AVFilter avfilter_vsrc_color =
+{
     .name        = "color",
     .description = NULL_IF_CONFIG_SMALL("Provide an uniformly colored input, syntax is: [color[:size[:rate]]]"),
 
@@ -157,11 +166,21 @@ AVFilter avfilter_vsrc_color = {
 
     .query_formats = query_formats,
 
-    .inputs    = (AVFilterPad[]) {{ .name = NULL}},
+    .inputs    = (AVFilterPad[])
+    {
+        {
+            .name = NULL
+        }
+    },
 
-    .outputs   = (AVFilterPad[]) {{ .name            = "default",
-                                    .type            = AVMEDIA_TYPE_VIDEO,
-                                    .request_frame   = color_request_frame,
-                                    .config_props    = color_config_props },
-                                  { .name = NULL}},
+    .outputs   = (AVFilterPad[])
+    {
+        {
+            .name            = "default",
+            .type            = AVMEDIA_TYPE_VIDEO,
+            .request_frame   = color_request_frame,
+            .config_props    = color_config_props
+        },
+        { .name = NULL}
+    },
 };

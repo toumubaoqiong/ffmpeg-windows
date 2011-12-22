@@ -126,7 +126,7 @@ static inline float *VMUL4S(float *dst, const float *v, unsigned idx,
                       "vmul.f32 q0,  q0,  q1          \n\t"
                       "vst1.32  {q0},     [%4,:128]!  \n\t"
                       : "=&r"(v0), "=&r"(v1), "=&r"(v2), "=&r"(v3), "+r"(dst),
-                        "+r"(sign), "=r"(nz)
+                      "+r"(sign), "=r"(nz)
                       : "r"(v), "r"(idx), "r"(scale)
                       : "d0", "d1", "d2", "d3", "d4", "d5");
     return dst;

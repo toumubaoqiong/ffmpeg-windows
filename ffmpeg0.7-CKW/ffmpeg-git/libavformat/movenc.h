@@ -39,7 +39,8 @@
 #define MODE_3G2  0x10
 #define MODE_IPOD 0x20
 
-typedef struct MOVIentry {
+typedef struct MOVIentry
+{
     unsigned int size;
     uint64_t     pos;
     unsigned int samplesInChunk;
@@ -51,7 +52,8 @@ typedef struct MOVIentry {
     uint32_t     flags;
 } MOVIentry;
 
-typedef struct HintSample {
+typedef struct HintSample
+{
     uint8_t *data;
     int size;
     int sample_number;
@@ -59,13 +61,15 @@ typedef struct HintSample {
     int own_data;
 } HintSample;
 
-typedef struct {
+typedef struct
+{
     int size;
     int len;
     HintSample *samples;
 } HintSampleQueue;
 
-typedef struct MOVIndex {
+typedef struct MOVIndex
+{
     int         mode;
     int         entry;
     unsigned    timescale;
@@ -100,7 +104,8 @@ typedef struct MOVIndex {
     HintSampleQueue sample_queue;
 } MOVTrack;
 
-typedef struct MOVMuxContext {
+typedef struct MOVMuxContext
+{
     int     mode;
     int64_t time;
     int     nb_streams;

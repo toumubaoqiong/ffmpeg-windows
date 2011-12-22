@@ -27,198 +27,203 @@
 
 #pragma comment(lib, "vfw32.lib")
 
-typedef struct {
-  PAVISTREAM handle;
-  AVISTREAMINFO info;
-  DWORD read;
-  LONG chunck_size;
-  LONG chunck_samples;
+typedef struct
+{
+    PAVISTREAM handle;
+    AVISTREAMINFO info;
+    DWORD read;
+    LONG chunck_size;
+    LONG chunck_samples;
 } AVISynthStream;
 
-typedef struct {
-  PAVIFILE file;
-  AVISynthStream *streams;
-  int nb_streams;
-  int next_stream;
+typedef struct
+{
+    PAVIFILE file;
+    AVISynthStream *streams;
+    int nb_streams;
+    int next_stream;
 } AVISynthContext;
 
 static int avisynth_read_header(AVFormatContext *s, AVFormatParameters *ap)
 {
-  AVISynthContext *avs = s->priv_data;
-  HRESULT res;
-  AVIFILEINFO info;
-  DWORD id;
-  AVStream *st;
-  AVISynthStream *stream;
+    AVISynthContext *avs = s->priv_data;
+    HRESULT res;
+    AVIFILEINFO info;
+    DWORD id;
+    AVStream *st;
+    AVISynthStream *stream;
 
-  AVIFileInit();
+    AVIFileInit();
 
-  res = AVIFileOpen(&avs->file, s->filename, OF_READ|OF_SHARE_DENY_WRITE, NULL);
-  if (res != S_OK)
+    res = AVIFileOpen(&avs->file, s->filename, OF_READ | OF_SHARE_DENY_WRITE, NULL);
+    if (res != S_OK)
     {
-      av_log(s, AV_LOG_ERROR, "AVIFileOpen failed with error %ld", res);
-      AVIFileExit();
-      return -1;
+        av_log(s, AV_LOG_ERROR, "AVIFileOpen failed with error %ld", res);
+        AVIFileExit();
+        return -1;
     }
 
-  res = AVIFileInfo(avs->file, &info, sizeof(info));
-  if (res != S_OK)
+    res = AVIFileInfo(avs->file, &info, sizeof(info));
+    if (res != S_OK)
     {
-      av_log(s, AV_LOG_ERROR, "AVIFileInfo failed with error %ld", res);
-      AVIFileExit();
-      return -1;
+        av_log(s, AV_LOG_ERROR, "AVIFileInfo failed with error %ld", res);
+        AVIFileExit();
+        return -1;
     }
 
-  avs->streams = av_mallocz(info.dwStreams * sizeof(AVISynthStream));
+    avs->streams = av_mallocz(info.dwStreams * sizeof(AVISynthStream));
 
-  for (id=0; id<info.dwStreams; id++)
+    for (id = 0; id < info.dwStreams; id++)
     {
-      stream = &avs->streams[id];
-      stream->read = 0;
-      if (AVIFileGetStream(avs->file, &stream->handle, 0, id) == S_OK)
+        stream = &avs->streams[id];
+        stream->read = 0;
+        if (AVIFileGetStream(avs->file, &stream->handle, 0, id) == S_OK)
         {
-          if (AVIStreamInfo(stream->handle, &stream->info, sizeof(stream->info)) == S_OK)
+            if (AVIStreamInfo(stream->handle, &stream->info, sizeof(stream->info)) == S_OK)
             {
-              if (stream->info.fccType == streamtypeAUDIO)
+                if (stream->info.fccType == streamtypeAUDIO)
                 {
-                  WAVEFORMATEX wvfmt;
-                  LONG struct_size = sizeof(WAVEFORMATEX);
-                  if (AVIStreamReadFormat(stream->handle, 0, &wvfmt, &struct_size) != S_OK)
+                    WAVEFORMATEX wvfmt;
+                    LONG struct_size = sizeof(WAVEFORMATEX);
+                    if (AVIStreamReadFormat(stream->handle, 0, &wvfmt, &struct_size) != S_OK)
+                        continue;
+
+                    st = av_new_stream(s, id);
+                    st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
+
+                    st->codec->block_align = wvfmt.nBlockAlign;
+                    st->codec->channels = wvfmt.nChannels;
+                    st->codec->sample_rate = wvfmt.nSamplesPerSec;
+                    st->codec->bit_rate = wvfmt.nAvgBytesPerSec * 8;
+                    st->codec->bits_per_coded_sample = wvfmt.wBitsPerSample;
+
+                    stream->chunck_samples = wvfmt.nSamplesPerSec * (uint64_t)info.dwScale / (uint64_t)info.dwRate;
+                    stream->chunck_size = stream->chunck_samples * wvfmt.nChannels * wvfmt.wBitsPerSample / 8;
+
+                    st->codec->codec_tag = wvfmt.wFormatTag;
+                    st->codec->codec_id = ff_wav_codec_get_id(wvfmt.wFormatTag, st->codec->bits_per_coded_sample);
+                }
+                else if (stream->info.fccType == streamtypeVIDEO)
+                {
+                    BITMAPINFO imgfmt;
+                    LONG struct_size = sizeof(BITMAPINFO);
+
+                    stream->chunck_size = stream->info.dwSampleSize;
+                    stream->chunck_samples = 1;
+
+                    if (AVIStreamReadFormat(stream->handle, 0, &imgfmt, &struct_size) != S_OK)
+                        continue;
+
+                    st = av_new_stream(s, id);
+                    st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
+                    st->r_frame_rate.num = stream->info.dwRate;
+                    st->r_frame_rate.den = stream->info.dwScale;
+
+                    st->codec->width = imgfmt.bmiHeader.biWidth;
+                    st->codec->height = imgfmt.bmiHeader.biHeight;
+
+                    st->codec->bits_per_coded_sample = imgfmt.bmiHeader.biBitCount;
+                    st->codec->bit_rate = (uint64_t)stream->info.dwSampleSize * (uint64_t)stream->info.dwRate * 8 / (uint64_t)stream->info.dwScale;
+                    st->codec->codec_tag = imgfmt.bmiHeader.biCompression;
+                    st->codec->codec_id = ff_codec_get_id(ff_codec_bmp_tags, imgfmt.bmiHeader.biCompression);
+
+                    st->duration = stream->info.dwLength;
+                }
+                else
+                {
+                    AVIStreamRelease(stream->handle);
                     continue;
-
-                  st = av_new_stream(s, id);
-                  st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
-
-                  st->codec->block_align = wvfmt.nBlockAlign;
-                  st->codec->channels = wvfmt.nChannels;
-                  st->codec->sample_rate = wvfmt.nSamplesPerSec;
-                  st->codec->bit_rate = wvfmt.nAvgBytesPerSec * 8;
-                  st->codec->bits_per_coded_sample = wvfmt.wBitsPerSample;
-
-                  stream->chunck_samples = wvfmt.nSamplesPerSec * (uint64_t)info.dwScale / (uint64_t)info.dwRate;
-                  stream->chunck_size = stream->chunck_samples * wvfmt.nChannels * wvfmt.wBitsPerSample / 8;
-
-                  st->codec->codec_tag = wvfmt.wFormatTag;
-                  st->codec->codec_id = ff_wav_codec_get_id(wvfmt.wFormatTag, st->codec->bits_per_coded_sample);
-                }
-              else if (stream->info.fccType == streamtypeVIDEO)
-                {
-                  BITMAPINFO imgfmt;
-                  LONG struct_size = sizeof(BITMAPINFO);
-
-                  stream->chunck_size = stream->info.dwSampleSize;
-                  stream->chunck_samples = 1;
-
-                  if (AVIStreamReadFormat(stream->handle, 0, &imgfmt, &struct_size) != S_OK)
-                    continue;
-
-                  st = av_new_stream(s, id);
-                  st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
-                  st->r_frame_rate.num = stream->info.dwRate;
-                  st->r_frame_rate.den = stream->info.dwScale;
-
-                  st->codec->width = imgfmt.bmiHeader.biWidth;
-                  st->codec->height = imgfmt.bmiHeader.biHeight;
-
-                  st->codec->bits_per_coded_sample = imgfmt.bmiHeader.biBitCount;
-                  st->codec->bit_rate = (uint64_t)stream->info.dwSampleSize * (uint64_t)stream->info.dwRate * 8 / (uint64_t)stream->info.dwScale;
-                  st->codec->codec_tag = imgfmt.bmiHeader.biCompression;
-                  st->codec->codec_id = ff_codec_get_id(ff_codec_bmp_tags, imgfmt.bmiHeader.biCompression);
-
-                  st->duration = stream->info.dwLength;
-                }
-              else
-                {
-                  AVIStreamRelease(stream->handle);
-                  continue;
                 }
 
-              avs->nb_streams++;
+                avs->nb_streams++;
 
-              st->codec->stream_codec_tag = stream->info.fccHandler;
+                st->codec->stream_codec_tag = stream->info.fccHandler;
 
-              av_set_pts_info(st, 64, info.dwScale, info.dwRate);
-              st->start_time = stream->info.dwStart;
+                av_set_pts_info(st, 64, info.dwScale, info.dwRate);
+                st->start_time = stream->info.dwStart;
             }
         }
     }
 
-  return 0;
+    return 0;
 }
 
 static int avisynth_read_packet(AVFormatContext *s, AVPacket *pkt)
 {
-  AVISynthContext *avs = s->priv_data;
-  HRESULT res;
-  AVISynthStream *stream;
-  int stream_id = avs->next_stream;
-  LONG read_size;
+    AVISynthContext *avs = s->priv_data;
+    HRESULT res;
+    AVISynthStream *stream;
+    int stream_id = avs->next_stream;
+    LONG read_size;
 
-  // handle interleaving manually...
-  stream = &avs->streams[stream_id];
+    // handle interleaving manually...
+    stream = &avs->streams[stream_id];
 
-  if (stream->read >= stream->info.dwLength)
-    return AVERROR(EIO);
+    if (stream->read >= stream->info.dwLength)
+        return AVERROR(EIO);
 
-  if (av_new_packet(pkt, stream->chunck_size))
-    return AVERROR(EIO);
-  pkt->stream_index = stream_id;
-  pkt->pts = avs->streams[stream_id].read / avs->streams[stream_id].chunck_samples;
+    if (av_new_packet(pkt, stream->chunck_size))
+        return AVERROR(EIO);
+    pkt->stream_index = stream_id;
+    pkt->pts = avs->streams[stream_id].read / avs->streams[stream_id].chunck_samples;
 
-  res = AVIStreamRead(stream->handle, stream->read, stream->chunck_samples, pkt->data, stream->chunck_size, &read_size, NULL);
+    res = AVIStreamRead(stream->handle, stream->read, stream->chunck_samples, pkt->data, stream->chunck_size, &read_size, NULL);
 
-  pkt->pts = stream->read;
-  pkt->size = read_size;
+    pkt->pts = stream->read;
+    pkt->size = read_size;
 
-  stream->read += stream->chunck_samples;
+    stream->read += stream->chunck_samples;
 
-  // prepare for the next stream to read
-  do {
-    avs->next_stream = (avs->next_stream+1) % avs->nb_streams;
-  } while (avs->next_stream != stream_id && s->streams[avs->next_stream]->discard >= AVDISCARD_ALL);
+    // prepare for the next stream to read
+    do
+    {
+        avs->next_stream = (avs->next_stream + 1) % avs->nb_streams;
+    }
+    while (avs->next_stream != stream_id && s->streams[avs->next_stream]->discard >= AVDISCARD_ALL);
 
-  return (res == S_OK) ? pkt->size : -1;
+    return (res == S_OK) ? pkt->size : -1;
 }
 
 static int avisynth_read_close(AVFormatContext *s)
 {
-  AVISynthContext *avs = s->priv_data;
-  int i;
+    AVISynthContext *avs = s->priv_data;
+    int i;
 
-  for (i=0;i<avs->nb_streams;i++)
+    for (i = 0; i < avs->nb_streams; i++)
     {
-      AVIStreamRelease(avs->streams[i].handle);
+        AVIStreamRelease(avs->streams[i].handle);
     }
 
-  av_free(avs->streams);
-  AVIFileRelease(avs->file);
-  AVIFileExit();
-  return 0;
+    av_free(avs->streams);
+    AVIFileRelease(avs->file);
+    AVIFileExit();
+    return 0;
 }
 
 static int avisynth_read_seek(AVFormatContext *s, int stream_index, int64_t pts, int flags)
 {
-  AVISynthContext *avs = s->priv_data;
-  int stream_id;
+    AVISynthContext *avs = s->priv_data;
+    int stream_id;
 
-  for (stream_id = 0; stream_id < avs->nb_streams; stream_id++)
+    for (stream_id = 0; stream_id < avs->nb_streams; stream_id++)
     {
-      avs->streams[stream_id].read = pts * avs->streams[stream_id].chunck_samples;
+        avs->streams[stream_id].read = pts * avs->streams[stream_id].chunck_samples;
     }
 
-  return 0;
+    return 0;
 }
 
-AVInputFormat ff_avisynth_demuxer = {
-  "avs",
-  NULL_IF_CONFIG_SMALL("AVISynth"),
-  sizeof(AVISynthContext),
-  NULL,
-  avisynth_read_header,
-  avisynth_read_packet,
-  avisynth_read_close,
-  avisynth_read_seek,
-  NULL,
-  0,
-  "avs",
+AVInputFormat ff_avisynth_demuxer =
+{
+    "avs",
+    NULL_IF_CONFIG_SMALL("AVISynth"),
+    sizeof(AVISynthContext),
+    NULL,
+    avisynth_read_header,
+    avisynth_read_packet,
+    avisynth_read_close,
+    avisynth_read_seek,
+    NULL,
+    0,
+    "avs",
 };

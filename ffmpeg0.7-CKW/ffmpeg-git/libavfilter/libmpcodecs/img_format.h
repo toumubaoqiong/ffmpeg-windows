@@ -195,8 +195,9 @@
 
 #define IMGFMT_IS_HWACCEL(fmt) (IMGFMT_IS_VDPAU(fmt) || IMGFMT_IS_XVMC(fmt))
 
-typedef struct {
-    void* data;
+typedef struct
+{
+    void *data;
     int size;
     int id;        // stream id. usually 0x1E0
     int timestamp; // pts, 90000 Hz counter based

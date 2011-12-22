@@ -28,7 +28,8 @@
 #include "libavutil/imgutils.h"
 #include "avcodec.h"
 
-typedef struct {
+typedef struct
+{
     AVCodecContext *avctx;
     AVFrame pic;
     uint16_t *prev, *cur;
@@ -38,7 +39,7 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPac
 {
     const uint8_t *buf = avpkt->data;
     const uint8_t *buf_end = buf + avpkt->size;
-    KgvContext * const c = avctx->priv_data;
+    KgvContext *const c = avctx->priv_data;
     int offsets[7];
     uint16_t *out, *prev;
     int outcnt = 0, maxcnt;
@@ -72,24 +73,30 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPac
     for (i = 0; i < 7; i++)
         offsets[i] = -1;
 
-    while (outcnt < maxcnt && buf_end - 2 > buf) {
+    while (outcnt < maxcnt && buf_end - 2 > buf)
+    {
         int code = AV_RL16(buf);
         buf += 2;
 
-        if (!(code & 0x8000)) {
+        if (!(code & 0x8000))
+        {
             out[outcnt++] = code; // rgb555 pixel coded directly
-        } else {
+        }
+        else
+        {
             int count;
             uint16_t *inp;
 
-            if ((code & 0x6000) == 0x6000) {
+            if ((code & 0x6000) == 0x6000)
+            {
                 // copy from previous frame
                 int oidx = (code >> 10) & 7;
                 int start;
 
                 count = (code & 0x3FF) + 3;
 
-                if (offsets[oidx] < 0) {
+                if (offsets[oidx] < 0)
+                {
                     if (buf_end - 3 < buf)
                         break;
                     offsets[oidx] = AV_RL24(buf);
@@ -102,15 +109,22 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPac
                     break;
 
                 inp = prev + start;
-            } else {
+            }
+            else
+            {
                 // copy from earlier in this frame
                 int offset = (code & 0x1FFF) + 1;
 
-                if (!(code & 0x6000)) {
+                if (!(code & 0x6000))
+                {
                     count = 2;
-                } else if ((code & 0x6000) == 0x2000) {
+                }
+                else if ((code & 0x6000) == 0x2000)
+                {
                     count = 3;
-                } else {
+                }
+                else
+                {
                     if (buf_end - 1 < buf)
                         break;
                     count = 4 + *buf++;
@@ -137,7 +151,7 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPac
     c->pic.linesize[0] = w * 2;
 
     *data_size = sizeof(AVFrame);
-    *(AVFrame*)data = c->pic;
+    *(AVFrame *)data = c->pic;
 
     FFSWAP(uint16_t *, c->cur, c->prev);
 
@@ -146,7 +160,7 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPac
 
 static av_cold int decode_init(AVCodecContext *avctx)
 {
-    KgvContext * const c = avctx->priv_data;
+    KgvContext *const c = avctx->priv_data;
 
     c->avctx = avctx;
     avctx->pix_fmt = PIX_FMT_RGB555;
@@ -156,7 +170,7 @@ static av_cold int decode_init(AVCodecContext *avctx)
 
 static av_cold int decode_end(AVCodecContext *avctx)
 {
-    KgvContext * const c = avctx->priv_data;
+    KgvContext *const c = avctx->priv_data;
 
     av_freep(&c->cur);
     av_freep(&c->prev);
@@ -164,7 +178,8 @@ static av_cold int decode_end(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec ff_kgv1_decoder = {
+AVCodec ff_kgv1_decoder =
+{
     "kgv1",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_KGV1,

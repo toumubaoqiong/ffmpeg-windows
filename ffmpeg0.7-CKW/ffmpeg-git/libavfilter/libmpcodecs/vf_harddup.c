@@ -27,7 +27,8 @@
 #include "mp_image.h"
 #include "vf.h"
 
-struct vf_priv_s {
+struct vf_priv_s
+{
     mp_image_t *last_mpi;
 };
 
@@ -38,11 +39,12 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
     vf->priv->last_mpi = mpi;
 
     dmpi = vf_get_image(vf->next, mpi->imgfmt,
-        MP_IMGTYPE_EXPORT, 0, mpi->width, mpi->height);
+                        MP_IMGTYPE_EXPORT, 0, mpi->width, mpi->height);
 
     dmpi->planes[0] = mpi->planes[0];
     dmpi->stride[0] = mpi->stride[0];
-    if (dmpi->flags&MP_IMGFLAG_PLANAR) {
+    if (dmpi->flags & MP_IMGFLAG_PLANAR)
+    {
         dmpi->planes[1] = mpi->planes[1];
         dmpi->stride[1] = mpi->stride[1];
         dmpi->planes[2] = mpi->planes[2];
@@ -52,9 +54,10 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
     return vf_next_put_image(vf, dmpi, pts);
 }
 
-static int control(struct vf_instance *vf, int request, void* data)
+static int control(struct vf_instance *vf, int request, void *data)
 {
-    switch (request) {
+    switch (request)
+    {
     case VFCTRL_DUPLICATE_FRAME:
         if (!vf->priv->last_mpi) break;
         // This is a huge hack. We assume nothing
@@ -82,7 +85,8 @@ static int vf_open(vf_instance_t *vf, char *args)
     return 1;
 }
 
-const vf_info_t vf_info_harddup = {
+const vf_info_t vf_info_harddup =
+{
     "resubmit duplicate frames for encoding",
     "harddup",
     "Rich Felker",

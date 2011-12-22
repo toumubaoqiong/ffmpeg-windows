@@ -459,7 +459,7 @@ void DEF(avg, pixels8_y2)(uint8_t *block, const uint8_t *pixels, const int line_
         "pld            [%[pixels]]                             \n\t"
         "pld            [%[pixels], #32]                        \n\t"
 
-      "1:                                                       \n\t"
+        "1:                                                       \n\t"
         "wldrd          wr10, [%[pixels]]                       \n\t"
         "wldrd          wr11, [%[pixels], #8]                   \n\t"
         "add            %[pixels], %[pixels], %[line_size]      \n\t"
@@ -467,8 +467,8 @@ void DEF(avg, pixels8_y2)(uint8_t *block, const uint8_t *pixels, const int line_
         "pld            [%[pixels], #32]                        \n\t"
         "walignr1       wr4, wr10, wr11                         \n\t"
         "wldrd          wr10, [%[block]]                        \n\t"
-         WAVG2B"        wr8, wr0, wr4                           \n\t"
-         WAVG2B"        wr8, wr8, wr10                          \n\t"
+        WAVG2B"        wr8, wr0, wr4                           \n\t"
+        WAVG2B"        wr8, wr8, wr10                          \n\t"
         "wstrd          wr8, [%[block]]                         \n\t"
         "add            %[block], %[block], %[line_size]        \n\t"
 
@@ -480,8 +480,8 @@ void DEF(avg, pixels8_y2)(uint8_t *block, const uint8_t *pixels, const int line_
         "pld            [%[pixels], #32]                        \n\t"
         "walignr1       wr0, wr10, wr11                         \n\t"
         "wldrd          wr10, [%[block]]                        \n\t"
-         WAVG2B"        wr8, wr0, wr4                           \n\t"
-         WAVG2B"        wr8, wr8, wr10                          \n\t"
+        WAVG2B"        wr8, wr0, wr4                           \n\t"
+        WAVG2B"        wr8, wr8, wr10                          \n\t"
         "wstrd          wr8, [%[block]]                         \n\t"
         "add            %[block], %[block], %[line_size]        \n\t"
 

@@ -30,7 +30,8 @@
 #include "libavutil/avassert.h"
 #include "libswscale/swscale.h"
 
-static const char *var_names[] = {
+static const char *var_names[] =
+{
     "PI",
     "PHI",
     "E",
@@ -44,7 +45,8 @@ static const char *var_names[] = {
     NULL
 };
 
-enum var_name {
+enum var_name
+{
     VAR_PI,
     VAR_PHI,
     VAR_E,
@@ -58,7 +60,8 @@ enum var_name {
     VARS_NB
 };
 
-typedef struct {
+typedef struct
+{
     struct SwsContext *sws;     ///< software scaler context
     struct SwsContext *isws[2]; ///< software scaler context for interlaced material
 
@@ -88,14 +91,17 @@ static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
     av_strlcpy(scale->h_expr, "ih", sizeof(scale->h_expr));
 
     scale->flags = SWS_BILINEAR;
-    if (args) {
+    if (args)
+    {
         sscanf(args, "%255[^:]:%255[^:]", scale->w_expr, scale->h_expr);
-        p = strstr(args,"flags=");
-        if (p) scale->flags = strtoul(p+6, NULL, 0);
-        if(strstr(args,"interl=1")){
-            scale->interlaced=1;
-        }else if(strstr(args,"interl=-1"))
-            scale->interlaced=-1;
+        p = strstr(args, "flags=");
+        if (p) scale->flags = strtoul(p + 6, NULL, 0);
+        if(strstr(args, "interl=1"))
+        {
+            scale->interlaced = 1;
+        }
+        else if(strstr(args, "interl=-1"))
+            scale->interlaced = -1;
     }
 
     return 0;
@@ -116,21 +122,25 @@ static int query_formats(AVFilterContext *ctx)
     enum PixelFormat pix_fmt;
     int ret;
 
-    if (ctx->inputs[0]) {
+    if (ctx->inputs[0])
+    {
         formats = NULL;
         for (pix_fmt = 0; pix_fmt < PIX_FMT_NB; pix_fmt++)
             if (   sws_isSupportedInput(pix_fmt)
-                && (ret = avfilter_add_format(&formats, pix_fmt)) < 0) {
+                    && (ret = avfilter_add_format(&formats, pix_fmt)) < 0)
+            {
                 avfilter_formats_unref(&formats);
                 return ret;
             }
         avfilter_formats_ref(formats, &ctx->inputs[0]->out_formats);
     }
-    if (ctx->outputs[0]) {
+    if (ctx->outputs[0])
+    {
         formats = NULL;
         for (pix_fmt = 0; pix_fmt < PIX_FMT_NB; pix_fmt++)
             if (    sws_isSupportedOutput(pix_fmt)
-                && (ret = avfilter_add_format(&formats, pix_fmt)) < 0) {
+                    && (ret = avfilter_add_format(&formats, pix_fmt)) < 0)
+            {
                 avfilter_formats_unref(&formats);
                 return ret;
             }
@@ -158,8 +168,8 @@ static int config_props(AVFilterLink *outlink)
     var_values[VAR_OUT_W] = var_values[VAR_OW] = NAN;
     var_values[VAR_OUT_H] = var_values[VAR_OH] = NAN;
     var_values[VAR_A]     = (float) inlink->w / inlink->h;
-    var_values[VAR_HSUB]  = 1<<(av_getav_pix_fmt_descriptors())[inlink->format].log2_chroma_w;
-    var_values[VAR_VSUB]  = 1<<(av_getav_pix_fmt_descriptors())[inlink->format].log2_chroma_h;
+    var_values[VAR_HSUB]  = 1 << (av_getav_pix_fmt_descriptors())[inlink->format].log2_chroma_w;
+    var_values[VAR_VSUB]  = 1 << (av_getav_pix_fmt_descriptors())[inlink->format].log2_chroma_h;
 
     /* evaluate width and height */
     av_expr_parse_and_eval(&res, (expr = scale->w_expr),
@@ -182,7 +192,8 @@ static int config_props(AVFilterLink *outlink)
     h = scale->h;
 
     /* sanity check params */
-    if (w <  -1 || h <  -1) {
+    if (w <  -1 || h <  -1)
+    {
         av_log(ctx, AV_LOG_ERROR, "Size values less than -1 are not acceptable.\n");
         return AVERROR(EINVAL);
     }
@@ -199,8 +210,8 @@ static int config_props(AVFilterLink *outlink)
         h = av_rescale(w, inlink->h, inlink->w);
 
     if (w > INT_MAX || h > INT_MAX ||
-        (h * inlink->w) > INT_MAX  ||
-        (w * inlink->h) > INT_MAX)
+            (h * inlink->w) > INT_MAX  ||
+            (w * inlink->h) > INT_MAX)
         av_log(ctx, AV_LOG_ERROR, "Rescaled value for width or height is too big.\n");
 
     outlink->w = w;
@@ -219,11 +230,11 @@ static int config_props(AVFilterLink *outlink)
     scale->sws = sws_getContext(inlink ->w, inlink ->h, inlink ->format,
                                 outlink->w, outlink->h, outlink->format,
                                 scale->flags, NULL, NULL, NULL);
-    scale->isws[0] = sws_getContext(inlink ->w, inlink ->h/2, inlink ->format,
-                                    outlink->w, outlink->h/2, outlink->format,
+    scale->isws[0] = sws_getContext(inlink ->w, inlink ->h / 2, inlink ->format,
+                                    outlink->w, outlink->h / 2, outlink->format,
                                     scale->flags, NULL, NULL, NULL);
-    scale->isws[1] = sws_getContext(inlink ->w, inlink ->h/2, inlink ->format,
-                                    outlink->w, outlink->h/2, outlink->format,
+    scale->isws[1] = sws_getContext(inlink ->w, inlink ->h / 2, inlink ->format,
+                                    outlink->w, outlink->h / 2, outlink->format,
                                     scale->flags, NULL, NULL, NULL);
     if (!scale->sws)
         return AVERROR(EINVAL);
@@ -267,23 +278,25 @@ static int scale_slice(AVFilterLink *link, struct SwsContext *sws, int y, int h,
     AVFilterBufferRef *cur_pic = link->cur_buf;
     AVFilterBufferRef *out_buf = link->dst->outputs[0]->out_buf;
     const uint8_t *in[4], *out[4];
-    int in_stride[4],out_stride[4];
+    int in_stride[4], out_stride[4];
     int i;
 
-    for(i=0; i<4; i++){
-        int vsub= ((i+1)&2) ? scale->vsub : 0;
-         in_stride[i] = cur_pic->linesize[i] * mul;
+    for(i = 0; i < 4; i++)
+    {
+        int vsub = ((i + 1) & 2) ? scale->vsub : 0;
+        in_stride[i] = cur_pic->linesize[i] * mul;
         out_stride[i] = out_buf->linesize[i] * mul;
-         in[i] = cur_pic->data[i] + ((y>>vsub)+field) * cur_pic->linesize[i];
+        in[i] = cur_pic->data[i] + ((y >> vsub) + field) * cur_pic->linesize[i];
         out[i] = out_buf->data[i] +            field  * out_buf->linesize[i];
     }
-    if(scale->input_is_pal){
-         in[1] = cur_pic->data[1];
+    if(scale->input_is_pal)
+    {
+        in[1] = cur_pic->data[1];
         out[1] = out_buf->data[1];
     }
 
-    return sws_scale(sws, in, in_stride, y/mul, h,
-                         out,out_stride);
+    return sws_scale(sws, in, in_stride, y / mul, h,
+                     out, out_stride);
 }
 
 static void draw_slice(AVFilterLink *link, int y, int h, int slice_dir)
@@ -294,11 +307,14 @@ static void draw_slice(AVFilterLink *link, int y, int h, int slice_dir)
     if (scale->slice_y == 0 && slice_dir == -1)
         scale->slice_y = link->dst->outputs[0]->h;
 
-    if(scale->interlaced>0 || (scale->interlaced<0 && link->cur_buf->video->interlaced)){
-        av_assert0(y%4 == 0);
-        out_h = scale_slice(link, scale->isws[0], y, (h+1)/2, 2, 0);
-        out_h+= scale_slice(link, scale->isws[1], y,  h   /2, 2, 1);
-    }else{
+    if(scale->interlaced > 0 || (scale->interlaced < 0 && link->cur_buf->video->interlaced))
+    {
+        av_assert0(y % 4 == 0);
+        out_h = scale_slice(link, scale->isws[0], y, (h + 1) / 2, 2, 0);
+        out_h += scale_slice(link, scale->isws[1], y,  h   / 2, 2, 1);
+    }
+    else
+    {
         out_h = scale_slice(link, scale->sws, y, h, 1, 0);
     }
 
@@ -309,7 +325,8 @@ static void draw_slice(AVFilterLink *link, int y, int h, int slice_dir)
         scale->slice_y += out_h;
 }
 
-AVFilter avfilter_vf_scale = {
+AVFilter avfilter_vf_scale =
+{
     .name      = "scale",
     .description = NULL_IF_CONFIG_SMALL("Scale the input video to width:height size and/or convert the image format."),
 
@@ -320,14 +337,24 @@ AVFilter avfilter_vf_scale = {
 
     .priv_size = sizeof(ScaleContext),
 
-    .inputs    = (AVFilterPad[]) {{ .name             = "default",
-                                    .type             = AVMEDIA_TYPE_VIDEO,
-                                    .start_frame      = start_frame,
-                                    .draw_slice       = draw_slice,
-                                    .min_perms        = AV_PERM_READ, },
-                                  { .name = NULL}},
-    .outputs   = (AVFilterPad[]) {{ .name             = "default",
-                                    .type             = AVMEDIA_TYPE_VIDEO,
-                                    .config_props     = config_props, },
-                                  { .name = NULL}},
+    .inputs    = (AVFilterPad[])
+    {
+        {
+            .name             = "default",
+            .type             = AVMEDIA_TYPE_VIDEO,
+            .start_frame      = start_frame,
+            .draw_slice       = draw_slice,
+            .min_perms        = AV_PERM_READ,
+        },
+        { .name = NULL}
+    },
+    .outputs   = (AVFilterPad[])
+    {
+        {
+            .name             = "default",
+            .type             = AVMEDIA_TYPE_VIDEO,
+            .config_props     = config_props,
+        },
+        { .name = NULL}
+    },
 };

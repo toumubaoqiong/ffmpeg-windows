@@ -34,9 +34,9 @@ static int rawvideo_read_packet(AVFormatContext *s, AVPacket *pkt)
     if (packet_size < 0)
         return -1;
 
-    ret= av_get_packet(s->pb, pkt, packet_size);
-    pkt->pts=
-    pkt->dts= pkt->pos / packet_size;
+    ret = av_get_packet(s->pb, pkt, packet_size);
+    pkt->pts =
+        pkt->dts = pkt->pos / packet_size;
 
     pkt->stream_index = 0;
     if (ret < 0)
@@ -44,14 +44,15 @@ static int rawvideo_read_packet(AVFormatContext *s, AVPacket *pkt)
     return 0;
 }
 
-AVInputFormat ff_rawvideo_demuxer = {
+AVInputFormat ff_rawvideo_demuxer =
+{
     "rawvideo",
     NULL_IF_CONFIG_SMALL("raw video format"),
     0,
     NULL,
     ff_raw_read_header,
     rawvideo_read_packet,
-    .flags= AVFMT_GENERIC_INDEX,
+    .flags = AVFMT_GENERIC_INDEX,
     .extensions = "yuv,cif,qcif,rgb",
     .value = CODEC_ID_RAWVIDEO,
 };

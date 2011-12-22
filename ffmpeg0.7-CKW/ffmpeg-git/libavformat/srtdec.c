@@ -31,7 +31,8 @@ static int srt_probe(AVProbeData *p)
     if (AV_RB24(ptr) == 0xEFBBBF)
         ptr += 3;  /* skip UTF-8 BOM */
 
-    for (i=0; i<2; i++) {
+    for (i = 0; i < 2; i++)
+    {
         if (num == i && sscanf(ptr, "%*d:%*2d:%*2d%*1[,.]%*3d --> %*d:%*2d:%*2d%*1[,.]%3d", &v) == 1)
             return AVPROBE_SCORE_MAX;
         num = atoi(ptr);
@@ -55,12 +56,14 @@ static int64_t get_pts(const char *buf)
 {
     int i, v, hour, min, sec, hsec;
 
-    for (i=0; i<2; i++) {
+    for (i = 0; i < 2; i++)
+    {
         if (sscanf(buf, "%d:%2d:%2d%*1[,.]%3d --> %*d:%*2d:%*2d%*1[,.]%3d",
-                   &hour, &min, &sec, &hsec, &v) == 5) {
-            min += 60*hour;
-            sec += 60*min;
-            return sec*1000+hsec;
+                   &hour, &min, &sec, &hsec, &v) == 5)
+        {
+            min += 60 * hour;
+            sec += 60 * min;
+            return sec * 1000 + hsec;
         }
         buf += strcspn(buf, "\n") + 1;
     }
@@ -78,12 +81,15 @@ static int srt_read_packet(AVFormatContext *s, AVPacket *pkt)
     int64_t pos = avio_tell(s->pb);
     int res = AVERROR_EOF;
 
-    do {
+    do
+    {
         ptr2 = ptr;
-        ptr += ff_get_line(s->pb, ptr, sizeof(buffer)+buffer-ptr);
-    } while (!is_eol(*ptr2) && !url_feof(s->pb) && ptr-buffer<sizeof(buffer)-1);
+        ptr += ff_get_line(s->pb, ptr, sizeof(buffer) + buffer - ptr);
+    }
+    while (!is_eol(*ptr2) && !url_feof(s->pb) && ptr - buffer < sizeof(buffer) - 1);
 
-    if (buffer[0] && !(res = av_new_packet(pkt, ptr-buffer))) {
+    if (buffer[0] && !(res = av_new_packet(pkt, ptr - buffer)))
+    {
         memcpy(pkt->data, buffer, pkt->size);
         pkt->flags |= AV_PKT_FLAG_KEY;
         pkt->pos = pos;
@@ -92,7 +98,8 @@ static int srt_read_packet(AVFormatContext *s, AVPacket *pkt)
     return res;
 }
 
-AVInputFormat ff_srt_demuxer = {
+AVInputFormat ff_srt_demuxer =
+{
     .name        = "srt",
     .long_name   = NULL_IF_CONFIG_SMALL("SubRip subtitle format"),
     .read_probe  = srt_probe,

@@ -33,7 +33,8 @@
 
 extern int (*url_interrupt_cb)(void);
 
-typedef struct URLContext {
+typedef struct URLContext
+{
     const AVClass *av_class;    /**< information for av_log(). Set by url_open(). */
     struct URLProtocol *prot;
     void *priv_data;
@@ -44,7 +45,8 @@ typedef struct URLContext {
     int is_connected;
 } URLContext;
 
-typedef struct URLProtocol {
+typedef struct URLProtocol
+{
     const char *name;
     int     (*url_open)( URLContext *h, const char *url, int flags);
     int     (*url_read)( URLContext *h, unsigned char *buf, int size);

@@ -57,7 +57,7 @@ static int vid_probe(AVProbeData *p)
 }
 
 static int vid_read_header(AVFormatContext *s,
-                            AVFormatParameters *ap)
+                           AVFormatParameters *ap)
 {
     BVID_DemuxContext *vid = s->priv_data;
     AVIOContext *pb = s->pb;
@@ -100,7 +100,7 @@ static int vid_read_header(AVFormatContext *s,
 static int read_frame(BVID_DemuxContext *vid, AVIOContext *pb, AVPacket *pkt,
                       uint8_t block_type, AVFormatContext *s, int npixels)
 {
-    uint8_t * vidbuf_start = NULL;
+    uint8_t *vidbuf_start = NULL;
     int vidbuf_nbytes = 0;
     int code;
     int bytes_copied = 0;
@@ -120,13 +120,15 @@ static int read_frame(BVID_DemuxContext *vid, AVIOContext *pb, AVPacket *pkt,
     vid->video_pts += vid->bethsoft_global_delay + avio_rl16(pb);
 
     // set the y offset if it exists (decoder header data should be in data section)
-    if(block_type == VIDEO_YOFF_P_FRAME){
+    if(block_type == VIDEO_YOFF_P_FRAME)
+    {
         if(avio_read(pb, &vidbuf_start[vidbuf_nbytes], 2) != 2)
             goto fail;
         vidbuf_nbytes += 2;
     }
 
-    do{
+    do
+    {
         vidbuf_start = av_fast_realloc(vidbuf_start, &vidbuf_capacity, vidbuf_nbytes + BUFFER_PADDING_SIZE);
         if(!vidbuf_start)
             return AVERROR(ENOMEM);
@@ -134,16 +136,20 @@ static int read_frame(BVID_DemuxContext *vid, AVIOContext *pb, AVPacket *pkt,
         code = avio_r8(pb);
         vidbuf_start[vidbuf_nbytes++] = code;
 
-        if(code >= 0x80){ // rle sequence
+        if(code >= 0x80)  // rle sequence
+        {
             if(block_type == VIDEO_I_FRAME)
                 vidbuf_start[vidbuf_nbytes++] = avio_r8(pb);
-        } else if(code){ // plain sequence
+        }
+        else if(code)    // plain sequence
+        {
             if(avio_read(pb, &vidbuf_start[vidbuf_nbytes], code) != code)
                 goto fail;
             vidbuf_nbytes += code;
         }
         bytes_copied += code & 0x7F;
-        if(bytes_copied == npixels){ // sometimes no stop character is given, need to keep track of bytes copied
+        if(bytes_copied == npixels)  // sometimes no stop character is given, need to keep track of bytes copied
+        {
             // may contain a 0 byte even if read all pixels
             if(avio_r8(pb))
                 avio_seek(pb, -1, SEEK_CUR);
@@ -151,7 +157,8 @@ static int read_frame(BVID_DemuxContext *vid, AVIOContext *pb, AVPacket *pkt,
         }
         if(bytes_copied > npixels)
             goto fail;
-    } while(code);
+    }
+    while(code);
 
     // copy data into packet
     if(av_new_packet(pkt, vidbuf_nbytes) < 0)
@@ -183,48 +190,52 @@ static int vid_read_packet(AVFormatContext *s,
         return AVERROR(EIO);
 
     block_type = avio_r8(pb);
-    switch(block_type){
-        case PALETTE_BLOCK:
-            avio_seek(pb, -1, SEEK_CUR);     // include block type
-            ret_value = av_get_packet(pb, pkt, 3 * 256 + 1);
-            if(ret_value != 3 * 256 + 1){
-                av_free_packet(pkt);
-                return AVERROR(EIO);
-            }
-            pkt->stream_index = 0;
-            return ret_value;
-
-        case FIRST_AUDIO_BLOCK:
-            avio_rl16(pb);
-            // soundblaster DAC used for sample rate, as on specification page (link above)
-            s->streams[1]->codec->sample_rate = 1000000 / (256 - avio_r8(pb));
-            s->streams[1]->codec->bit_rate = s->streams[1]->codec->channels * s->streams[1]->codec->sample_rate * s->streams[1]->codec->bits_per_coded_sample;
-        case AUDIO_BLOCK:
-            audio_length = avio_rl16(pb);
-            ret_value = av_get_packet(pb, pkt, audio_length);
-            pkt->stream_index = 1;
-            return ret_value != audio_length ? AVERROR(EIO) : ret_value;
-
-        case VIDEO_P_FRAME:
-        case VIDEO_YOFF_P_FRAME:
-        case VIDEO_I_FRAME:
-            return read_frame(vid, pb, pkt, block_type, s,
-                              s->streams[0]->codec->width * s->streams[0]->codec->height);
-
-        case EOF_BLOCK:
-            if(vid->nframes != 0)
-                av_log(s, AV_LOG_VERBOSE, "reached terminating character but not all frames read.\n");
-            vid->is_finished = 1;
+    switch(block_type)
+    {
+    case PALETTE_BLOCK:
+        avio_seek(pb, -1, SEEK_CUR);     // include block type
+        ret_value = av_get_packet(pb, pkt, 3 * 256 + 1);
+        if(ret_value != 3 * 256 + 1)
+        {
+            av_free_packet(pkt);
             return AVERROR(EIO);
-        default:
-            av_log(s, AV_LOG_ERROR, "unknown block (character = %c, decimal = %d, hex = %x)!!!\n",
-                   block_type, block_type, block_type); return -1;
+        }
+        pkt->stream_index = 0;
+        return ret_value;
+
+    case FIRST_AUDIO_BLOCK:
+        avio_rl16(pb);
+        // soundblaster DAC used for sample rate, as on specification page (link above)
+        s->streams[1]->codec->sample_rate = 1000000 / (256 - avio_r8(pb));
+        s->streams[1]->codec->bit_rate = s->streams[1]->codec->channels * s->streams[1]->codec->sample_rate * s->streams[1]->codec->bits_per_coded_sample;
+    case AUDIO_BLOCK:
+        audio_length = avio_rl16(pb);
+        ret_value = av_get_packet(pb, pkt, audio_length);
+        pkt->stream_index = 1;
+        return ret_value != audio_length ? AVERROR(EIO) : ret_value;
+
+    case VIDEO_P_FRAME:
+    case VIDEO_YOFF_P_FRAME:
+    case VIDEO_I_FRAME:
+        return read_frame(vid, pb, pkt, block_type, s,
+                          s->streams[0]->codec->width * s->streams[0]->codec->height);
+
+    case EOF_BLOCK:
+        if(vid->nframes != 0)
+            av_log(s, AV_LOG_VERBOSE, "reached terminating character but not all frames read.\n");
+        vid->is_finished = 1;
+        return AVERROR(EIO);
+    default:
+        av_log(s, AV_LOG_ERROR, "unknown block (character = %c, decimal = %d, hex = %x)!!!\n",
+               block_type, block_type, block_type);
+        return -1;
     }
 
     return 0;
 }
 
-AVInputFormat ff_bethsoftvid_demuxer = {
+AVInputFormat ff_bethsoftvid_demuxer =
+{
     "bethsoftvid",
     NULL_IF_CONFIG_SMALL("Bethesda Softworks VID format"),
     sizeof(BVID_DemuxContext),

@@ -26,7 +26,8 @@
 #include "avfilter.h"
 #include "libavutil/pixdesc.h"
 
-typedef struct {
+typedef struct
+{
     int h;          ///< output slice height
     int vshift;     ///< vertical chroma subsampling shift
     uint32_t lcg_state; ///< LCG state used to compute random slice height
@@ -38,10 +39,14 @@ static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
     SliceContext *slice = ctx->priv;
 
     slice->h = 16;
-    if (args) {
-        if (!strcmp(args, "random")) {
+    if (args)
+    {
+        if (!strcmp(args, "random"))
+        {
             slice->use_random_h = 1;
-        } else {
+        }
+        else
+        {
             sscanf(args, "%d", &slice->h);
         }
     }
@@ -61,7 +66,8 @@ static void start_frame(AVFilterLink *link, AVFilterBufferRef *picref)
 {
     SliceContext *slice = link->dst->priv;
 
-    if (slice->use_random_h) {
+    if (slice->use_random_h)
+    {
         slice->lcg_state = slice->lcg_state * 1664525 + 1013904223;
         slice->h = 8 + (uint64_t)slice->lcg_state * 25 / UINT32_MAX;
     }
@@ -80,13 +86,16 @@ static void draw_slice(AVFilterLink *link, int y, int h, int slice_dir)
     SliceContext *slice = link->dst->priv;
     int y2;
 
-    if (slice_dir == 1) {
+    if (slice_dir == 1)
+    {
         for (y2 = y; y2 + slice->h <= y + h; y2 += slice->h)
             avfilter_draw_slice(link->dst->outputs[0], y2, slice->h, slice_dir);
 
         if (y2 < y + h)
             avfilter_draw_slice(link->dst->outputs[0], y2, y + h - y2, slice_dir);
-    } else if (slice_dir == -1) {
+    }
+    else if (slice_dir == -1)
+    {
         for (y2 = y + h; y2 - slice->h >= y; y2 -= slice->h)
             avfilter_draw_slice(link->dst->outputs[0], y2 - slice->h, slice->h, slice_dir);
 
@@ -95,7 +104,8 @@ static void draw_slice(AVFilterLink *link, int y, int h, int slice_dir)
     }
 }
 
-AVFilter avfilter_vf_slicify = {
+AVFilter avfilter_vf_slicify =
+{
     .name      = "slicify",
     .description = NULL_IF_CONFIG_SMALL("Pass the images of input video on to next video filter as multiple slices."),
 
@@ -103,15 +113,25 @@ AVFilter avfilter_vf_slicify = {
 
     .priv_size = sizeof(SliceContext),
 
-    .inputs    = (AVFilterPad[]) {{ .name             = "default",
-                                    .type             = AVMEDIA_TYPE_VIDEO,
-                                    .get_video_buffer = avfilter_null_get_video_buffer,
-                                    .start_frame      = start_frame,
-                                    .draw_slice       = draw_slice,
-                                    .config_props     = config_props,
-                                    .end_frame        = avfilter_null_end_frame, },
-                                  { .name = NULL}},
-    .outputs   = (AVFilterPad[]) {{ .name            = "default",
-                                    .type            = AVMEDIA_TYPE_VIDEO, },
-                                  { .name = NULL}},
+    .inputs    = (AVFilterPad[])
+    {
+        {
+            .name             = "default",
+            .type             = AVMEDIA_TYPE_VIDEO,
+            .get_video_buffer = avfilter_null_get_video_buffer,
+            .start_frame      = start_frame,
+            .draw_slice       = draw_slice,
+            .config_props     = config_props,
+            .end_frame        = avfilter_null_end_frame,
+        },
+        { .name = NULL}
+    },
+    .outputs   = (AVFilterPad[])
+    {
+        {
+            .name            = "default",
+            .type            = AVMEDIA_TYPE_VIDEO,
+        },
+        { .name = NULL}
+    },
 };

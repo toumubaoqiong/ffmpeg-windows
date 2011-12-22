@@ -30,16 +30,19 @@
 
 #define JV_PREAMBLE_SIZE 5
 
-typedef struct {
+typedef struct
+{
     int audio_size;    /** audio packet size (bytes) */
     int video_size;    /** video packet size (bytes) */
     int palette_size;  /** palette size (bytes) */
     int video_type;    /** per-frame video compression type */
 } JVFrame;
 
-typedef struct {
+typedef struct
+{
     JVFrame *frames;
-    enum {
+    enum
+    {
         JV_AUDIO = 0,
         JV_VIDEO,
         JV_PADDING
@@ -52,7 +55,7 @@ typedef struct {
 static int read_probe(AVProbeData *pd)
 {
     if (pd->buf[0] == 'J' && pd->buf[1] == 'V' &&
-        !memcmp(pd->buf + 4, MAGIC, FFMIN(strlen(MAGIC), pd->buf_size - 4)))
+            !memcmp(pd->buf + 4, MAGIC, FFMIN(strlen(MAGIC), pd->buf_size - 4)))
         return AVPROBE_SCORE_MAX;
     return 0;
 }
@@ -80,7 +83,7 @@ static int read_header(AVFormatContext *s,
     vst->codec->width       = avio_rl16(pb);
     vst->codec->height      = avio_rl16(pb);
     vst->nb_frames          =
-    ast->nb_index_entries   = avio_rl16(pb);
+        ast->nb_index_entries   = avio_rl16(pb);
     av_set_pts_info(vst, 64, avio_rl16(pb), 1000);
 
     avio_skip(pb, 4);
@@ -103,7 +106,8 @@ static int read_header(AVFormatContext *s,
         return AVERROR(ENOMEM);
 
     offset = 0x68 + ast->nb_index_entries * 16;
-    for(i = 0; i < ast->nb_index_entries; i++) {
+    for(i = 0; i < ast->nb_index_entries; i++)
+    {
         AVIndexEntry *e   = ast->index_entries + i;
         JVFrame      *jvf = jv->frames + i;
 
@@ -119,7 +123,7 @@ static int read_header(AVFormatContext *s,
         jvf->video_size = FFMIN(FFMAX(jvf->video_size, 0),
                                 INT_MAX - JV_PREAMBLE_SIZE - jvf->palette_size);
         if (avio_r8(pb))
-             av_log(s, AV_LOG_WARNING, "unsupported audio codec\n");
+            av_log(s, AV_LOG_WARNING, "unsupported audio codec\n");
         jvf->video_type = avio_r8(pb);
         avio_skip(pb, 1);
 
@@ -139,14 +143,17 @@ static int read_packet(AVFormatContext *s, AVPacket *pkt)
     AVIOContext *pb = s->pb;
     AVStream *ast = s->streams[0];
 
-    while (!url_feof(s->pb) && jv->pts < ast->nb_index_entries) {
+    while (!url_feof(s->pb) && jv->pts < ast->nb_index_entries)
+    {
         const AVIndexEntry *e   = ast->index_entries + jv->pts;
         const JVFrame      *jvf = jv->frames + jv->pts;
 
-        switch(jv->state) {
+        switch(jv->state)
+        {
         case JV_AUDIO:
             jv->state++;
-            if (jvf->audio_size ) {
+            if (jvf->audio_size )
+            {
                 if (av_get_packet(s->pb, pkt, jvf->audio_size) < 0)
                     return AVERROR(ENOMEM);
                 pkt->stream_index = 0;
@@ -156,7 +163,8 @@ static int read_packet(AVFormatContext *s, AVPacket *pkt)
             }
         case JV_VIDEO:
             jv->state++;
-            if (jvf->video_size || jvf->palette_size) {
+            if (jvf->video_size || jvf->palette_size)
+            {
                 int size = jvf->video_size + jvf->palette_size;
                 if (av_new_packet(pkt, size + JV_PREAMBLE_SIZE))
                     return AVERROR(ENOMEM);
@@ -175,7 +183,7 @@ static int read_packet(AVFormatContext *s, AVPacket *pkt)
             }
         case JV_PADDING:
             avio_skip(pb, FFMAX(e->size - jvf->audio_size - jvf->video_size
-                                        - jvf->palette_size, 0));
+                                - jvf->palette_size, 0));
             jv->state = JV_AUDIO;
             jv->pts++;
         }
@@ -191,10 +199,11 @@ static int read_seek(AVFormatContext *s, int stream_index,
     AVStream *ast = s->streams[0];
     int i;
 
-    if (flags & (AVSEEK_FLAG_BYTE|AVSEEK_FLAG_FRAME))
+    if (flags & (AVSEEK_FLAG_BYTE | AVSEEK_FLAG_FRAME))
         return AVERROR(ENOSYS);
 
-    switch(stream_index) {
+    switch(stream_index)
+    {
     case 0:
         i = av_index_search_timestamp(ast, ts, flags);
         break;
@@ -214,7 +223,8 @@ static int read_seek(AVFormatContext *s, int stream_index,
     return 0;
 }
 
-AVInputFormat ff_jv_demuxer = {
+AVInputFormat ff_jv_demuxer =
+{
     .name           = "jv",
     .long_name      = NULL_IF_CONFIG_SMALL("Bitmap Brothers JV"),
     .priv_data_size = sizeof(JVDemuxContext),

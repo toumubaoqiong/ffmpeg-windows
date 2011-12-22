@@ -20,7 +20,8 @@
  */
 #include "avformat.h"
 
-static int daud_header(AVFormatContext *s, AVFormatParameters *ap) {
+static int daud_header(AVFormatContext *s, AVFormatParameters *ap)
+{
     AVStream *st = av_new_stream(s, 0);
     if (!st)
         return AVERROR(ENOMEM);
@@ -35,7 +36,8 @@ static int daud_header(AVFormatContext *s, AVFormatParameters *ap) {
     return 0;
 }
 
-static int daud_packet(AVFormatContext *s, AVPacket *pkt) {
+static int daud_packet(AVFormatContext *s, AVPacket *pkt)
+{
     AVIOContext *pb = s->pb;
     int ret, size;
     if (url_feof(pb))
@@ -50,14 +52,15 @@ static int daud_packet(AVFormatContext *s, AVPacket *pkt) {
 static int daud_write_header(struct AVFormatContext *s)
 {
     AVCodecContext *codec = s->streams[0]->codec;
-    if (codec->channels!=6 || codec->sample_rate!=96000)
+    if (codec->channels != 6 || codec->sample_rate != 96000)
         return -1;
     return 0;
 }
 
 static int daud_write_packet(struct AVFormatContext *s, AVPacket *pkt)
 {
-    if (pkt->size > 65535) {
+    if (pkt->size > 65535)
+    {
         av_log(s, AV_LOG_ERROR,
                "Packet size too large for s302m. (%d > 65535)\n", pkt->size);
         return -1;
@@ -70,7 +73,8 @@ static int daud_write_packet(struct AVFormatContext *s, AVPacket *pkt)
 }
 
 #if CONFIG_DAUD_DEMUXER
-AVInputFormat ff_daud_demuxer = {
+AVInputFormat ff_daud_demuxer =
+{
     "daud",
     NULL_IF_CONFIG_SMALL("D-Cinema audio format"),
     0,
@@ -95,6 +99,6 @@ AVOutputFormat ff_daud_muxer =
     CODEC_ID_NONE,
     daud_write_header,
     daud_write_packet,
-    .flags= AVFMT_NOTIMESTAMPS,
+    .flags = AVFMT_NOTIMESTAMPS,
 };
 #endif

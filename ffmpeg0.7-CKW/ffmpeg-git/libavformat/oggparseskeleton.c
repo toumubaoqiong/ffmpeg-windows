@@ -38,14 +38,16 @@ static int skeleton_header(AVFormatContext *s, int idx)
     if (os->psize < 8)
         return -1;
 
-    if (!strncmp(buf, "fishead", 8)) {
+    if (!strncmp(buf, "fishead", 8))
+    {
         if (os->psize < 64)
             return -1;
 
-        version_major = AV_RL16(buf+8);
-        version_minor = AV_RL16(buf+10);
+        version_major = AV_RL16(buf + 8);
+        version_minor = AV_RL16(buf + 10);
 
-        if (version_major != 3) {
+        if (version_major != 3)
+        {
             av_log(s, AV_LOG_WARNING, "Unknown skeleton version %d.%d\n",
                    version_major, version_minor);
             return -1;
@@ -56,32 +58,37 @@ static int skeleton_header(AVFormatContext *s, int idx)
         // which we don't want since skeleton is timeless
         // FIXME: the real meaning of this field is "start playback at
         // this time which can be in the middle of a packet
-        start_num = AV_RL64(buf+12);
-        start_den = AV_RL64(buf+20);
+        start_num = AV_RL64(buf + 12);
+        start_den = AV_RL64(buf + 20);
 
-        if (start_den) {
+        if (start_den)
+        {
             int base_den;
             av_reduce(&start_time, &base_den, start_num, start_den, INT_MAX);
             av_set_pts_info(st, 64, 1, base_den);
             os->lastpts =
-            st->start_time = start_time;
+                st->start_time = start_time;
         }
-    } else if (!strncmp(buf, "fisbone", 8)) {
+    }
+    else if (!strncmp(buf, "fisbone", 8))
+    {
         if (os->psize < 52)
             return -1;
 
-        target_idx = ogg_find_stream(ogg, AV_RL32(buf+12));
-        start_granule = AV_RL64(buf+36);
-        if (target_idx >= 0 && start_granule != -1) {
+        target_idx = ogg_find_stream(ogg, AV_RL32(buf + 12));
+        start_granule = AV_RL64(buf + 36);
+        if (target_idx >= 0 && start_granule != -1)
+        {
             ogg->streams[target_idx].lastpts =
-            s->streams[target_idx]->start_time = ogg_gptopts(s, target_idx, start_granule, NULL);
+                s->streams[target_idx]->start_time = ogg_gptopts(s, target_idx, start_granule, NULL);
         }
     }
 
     return 1;
 }
 
-const struct ogg_codec ff_skeleton_codec = {
+const struct ogg_codec ff_skeleton_codec =
+{
     .magic = "fishead",
     .magicsize = 8,
     .header = skeleton_header,

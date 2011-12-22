@@ -58,10 +58,10 @@
 // VP8 specific
 #define TM_VP8_PRED           9     ///< "True Motion", used instead of plane
 #define VERT_VP8_PRED         10    ///< for VP8, #VERT_PRED is the average of
-                                    ///< (left col+cur col x2+right col) / 4;
-                                    ///< this is the "unaveraged" one
+///< (left col+cur col x2+right col) / 4;
+///< this is the "unaveraged" one
 #define HOR_VP8_PRED          11    ///< unaveraged version of #HOR_PRED, see
-                                    ///< #VERT_VP8_PRED for details
+///< #VERT_VP8_PRED for details
 #define DC_127_PRED           12
 #define DC_129_PRED           13
 
@@ -89,7 +89,8 @@
 /**
  * Context for storing H.264 prediction functions
  */
-typedef struct H264PredContext{
+typedef struct H264PredContext
+{
     void (*pred4x4  [9+3+3])(uint8_t *src, const uint8_t *topright, int stride);//FIXME move to dsp?
     void (*pred8x8l [9+3])(uint8_t *src, int topleft, int topright, int stride);
     void (*pred8x8  [4+3+4])(uint8_t *src, int stride);
@@ -99,7 +100,7 @@ typedef struct H264PredContext{
     void (*pred8x8l_add [2])(uint8_t *pix/*align  8*/, const DCTELEM *block/*align 16*/, int stride);
     void (*pred8x8_add  [3])(uint8_t *pix/*align  8*/, const int *block_offset, const DCTELEM *block/*align 16*/, int stride);
     void (*pred16x16_add[3])(uint8_t *pix/*align 16*/, const int *block_offset, const DCTELEM *block/*align 16*/, int stride);
-}H264PredContext;
+} H264PredContext;
 
 void ff_h264_pred_init(H264PredContext *h, int codec_id, const int bit_depth);
 void ff_h264_pred_init_arm(H264PredContext *h, int codec_id, const int bit_depth);

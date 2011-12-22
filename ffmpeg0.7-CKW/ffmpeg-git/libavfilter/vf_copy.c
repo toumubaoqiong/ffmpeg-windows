@@ -23,18 +23,29 @@
 
 #include "avfilter.h"
 
-AVFilter avfilter_vf_copy = {
+AVFilter avfilter_vf_copy =
+{
     .name      = "copy",
     .description = NULL_IF_CONFIG_SMALL("Copy the input video unchanged to the output."),
 
-    .inputs    = (AVFilterPad[]) {{ .name             = "default",
-                                    .type             = AVMEDIA_TYPE_VIDEO,
-                                    .get_video_buffer = avfilter_null_get_video_buffer,
-                                    .start_frame      = avfilter_null_start_frame,
-                                    .end_frame        = avfilter_null_end_frame,
-                                    .rej_perms        = ~0 },
-                                  { .name = NULL}},
-    .outputs   = (AVFilterPad[]) {{ .name             = "default",
-                                    .type             = AVMEDIA_TYPE_VIDEO, },
-                                  { .name = NULL}},
+    .inputs    = (AVFilterPad[])
+    {
+        {
+            .name             = "default",
+            .type             = AVMEDIA_TYPE_VIDEO,
+            .get_video_buffer = avfilter_null_get_video_buffer,
+            .start_frame      = avfilter_null_start_frame,
+            .end_frame        = avfilter_null_end_frame,
+            .rej_perms        = ~0
+        },
+        { .name = NULL}
+    },
+    .outputs   = (AVFilterPad[])
+    {
+        {
+            .name             = "default",
+            .type             = AVMEDIA_TYPE_VIDEO,
+        },
+        { .name = NULL}
+    },
 };

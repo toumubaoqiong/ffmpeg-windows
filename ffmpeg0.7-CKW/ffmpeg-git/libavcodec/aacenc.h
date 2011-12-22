@@ -32,7 +32,8 @@
 
 struct AACEncContext;
 
-typedef struct AACCoefficientsEncoder {
+typedef struct AACCoefficientsEncoder
+{
     void (*search_for_quantizers)(AVCodecContext *avctx, struct AACEncContext *s,
                                   SingleChannelElement *sce, const float lambda);
     void (*encode_window_bands_info)(struct AACEncContext *s, SingleChannelElement *sce,
@@ -47,7 +48,8 @@ extern AACCoefficientsEncoder ff_aac_coders[];
 /**
  * AAC encoder context
  */
-typedef struct AACEncContext {
+typedef struct AACEncContext
+{
     PutBitContext pb;
     FFTContext mdct1024;                         ///< long (1024 samples) frame transform context
     FFTContext mdct128;                          ///< short (128 samples) frame transform context
@@ -58,7 +60,7 @@ typedef struct AACEncContext {
 
     ChannelElement *cpe;                         ///< channel elements
     FFPsyContext psy;
-    struct FFPsyPreprocessContext* psypp;
+    struct FFPsyPreprocessContext *psypp;
     AACCoefficientsEncoder *coder;
     int cur_channel;
     int last_frame;

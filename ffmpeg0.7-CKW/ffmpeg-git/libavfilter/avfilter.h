@@ -71,7 +71,8 @@ typedef struct AVFilterPad     AVFilterPad;
  * should not store pointers to this structure directly, but instead use the
  * AVFilterBufferRef structure below.
  */
-typedef struct AVFilterBuffer {
+typedef struct AVFilterBuffer
+{
     uint8_t *data[8];           ///< buffer data for each plane/channel
     int linesize[8];            ///< number of bytes per line
 
@@ -103,7 +104,8 @@ typedef struct AVFilterBuffer {
  * AVFilterBufferRef is common to different media formats, audio specific
  * per reference properties must be separated out.
  */
-typedef struct AVFilterBufferRefAudioProps {
+typedef struct AVFilterBufferRefAudioProps
+{
     int64_t channel_layout;     ///< channel layout of audio buffer
     int nb_samples;             ///< number of audio samples
     int size;                   ///< audio buffer size
@@ -116,7 +118,8 @@ typedef struct AVFilterBufferRefAudioProps {
  * AVFilterBufferRef is common to different media formats, video specific
  * per reference properties must be separated out.
  */
-typedef struct AVFilterBufferRefVideoProps {
+typedef struct AVFilterBufferRefVideoProps
+{
     int w;                      ///< image width
     int h;                      ///< image height
     AVRational pixel_aspect;    ///< pixel aspect ratio
@@ -134,7 +137,8 @@ typedef struct AVFilterBufferRefVideoProps {
  *
  * TODO: add anything necessary for frame reordering
  */
-typedef struct AVFilterBufferRef {
+typedef struct AVFilterBufferRef
+{
     AVFilterBuffer *buf;        ///< the buffer that this is a reference to
     uint8_t *data[8];           ///< picture/audio data for each plane
     int linesize[8];            ///< number of bytes per line
@@ -164,9 +168,14 @@ static inline void avfilter_copy_buffer_ref_props(AVFilterBufferRef *dst, AVFilt
     dst->pts             = src->pts;
     dst->pos             = src->pos;
 
-    switch (src->type) {
-    case AVMEDIA_TYPE_VIDEO: *dst->video = *src->video; break;
-    case AVMEDIA_TYPE_AUDIO: *dst->audio = *src->audio; break;
+    switch (src->type)
+    {
+    case AVMEDIA_TYPE_VIDEO:
+        *dst->video = *src->video;
+        break;
+    case AVMEDIA_TYPE_AUDIO:
+        *dst->audio = *src->audio;
+        break;
     }
 }
 
@@ -229,7 +238,8 @@ FFMPEGLIB_API void avfilter_unref_buffer(AVFilterBufferRef *ref);
  * get updated as well. Therefore, we have the format list structure store a
  * pointer to each of the pointers to itself.
  */
-typedef struct AVFilterFormats {
+typedef struct AVFilterFormats
+{
     unsigned format_count;      ///< number of formats
     int *formats;               ///< list of media formats
 
@@ -316,12 +326,13 @@ FFMPEGLIB_API void avfilter_formats_unref(AVFilterFormats **ref);
  *                                                             |_______|
  */
 FFMPEGLIB_API void avfilter_formats_changeref(AVFilterFormats **oldref,
-                                AVFilterFormats **newref);
+        AVFilterFormats **newref);
 
 /**
  * A filter pad used for either input or output.
  */
-struct AVFilterPad {
+struct AVFilterPad
+{
     /**
      * Pad name. The name is unique among inputs and among outputs, but an
      * input may have the same name as an output. This may be NULL if this
@@ -464,12 +475,12 @@ FFMPEGLIB_API int avfilter_default_config_input_link (AVFilterLink *link);
 
 /** default handler for get_video_buffer() for video inputs */
 FFMPEGLIB_API AVFilterBufferRef *avfilter_default_get_video_buffer(AVFilterLink *link,
-                                                     int perms, int w, int h);
+        int perms, int w, int h);
 
 /** default handler for get_audio_buffer() for audio inputs */
 FFMPEGLIB_API AVFilterBufferRef *avfilter_default_get_audio_buffer(AVFilterLink *link, int perms,
-                                                     enum AVSampleFormat sample_fmt, int size,
-                                                     int64_t channel_layout, int planar);
+        enum AVSampleFormat sample_fmt, int size,
+        int64_t channel_layout, int planar);
 
 /**
  * A helper for query_formats() which sets all links to the same list of
@@ -495,18 +506,19 @@ FFMPEGLIB_API void avfilter_null_filter_samples(AVFilterLink *link, AVFilterBuff
 
 /** get_video_buffer() handler for filters which simply pass video along */
 FFMPEGLIB_API AVFilterBufferRef *avfilter_null_get_video_buffer(AVFilterLink *link,
-                                                  int perms, int w, int h);
+        int perms, int w, int h);
 
 /** get_audio_buffer() handler for filters which simply pass audio along */
 FFMPEGLIB_API AVFilterBufferRef *avfilter_null_get_audio_buffer(AVFilterLink *link, int perms,
-                                                  enum AVSampleFormat sample_fmt, int size,
-                                                  int64_t channel_layout, int planar);
+        enum AVSampleFormat sample_fmt, int size,
+        int64_t channel_layout, int planar);
 
 /**
  * Filter definition. This defines the pads a filter contains, and all the
  * callback functions used to interact with the filter.
  */
-typedef struct AVFilter {
+typedef struct AVFilter
+{
     const char *name;         ///< filter name
 
     int priv_size;      ///< size of private data to allocate for the filter
@@ -547,7 +559,8 @@ typedef struct AVFilter {
 } AVFilter;
 
 /** An instance of a filter */
-struct AVFilterContext {
+struct AVFilterContext
+{
     const AVClass *av_class;              ///< needed for av_log()
 
     AVFilter *filter;               ///< the AVFilter of which this is an instance
@@ -572,7 +585,8 @@ struct AVFilterContext {
  * which have been negotiated and agreed upon between the filter, such as
  * image dimensions, format, etc.
  */
-struct AVFilterLink {
+struct AVFilterLink
+{
     AVFilterContext *src;       ///< source filter
     AVFilterPad *srcpad;        ///< output pad on the source filter
 
@@ -580,7 +594,8 @@ struct AVFilterLink {
     AVFilterPad *dstpad;        ///< input pad on the dest filter
 
     /** stage of the initialization of the link properties (dimensions, etc) */
-    enum {
+    enum
+    {
         AVLINK_UNINIT = 0,      ///< not started
         AVLINK_STARTINIT,       ///< started, but incomplete
         AVLINK_INIT             ///< complete
@@ -638,7 +653,7 @@ struct AVFilterLink {
  * @return       zero on success
  */
 FFMPEGLIB_API int avfilter_link(AVFilterContext *src, unsigned srcpad,
-                  AVFilterContext *dst, unsigned dstpad);
+                                AVFilterContext *dst, unsigned dstpad);
 
 /**
  * Negotiate the media format, dimensions, etc of all inputs to a filter.
@@ -660,7 +675,7 @@ FFMPEGLIB_API int avfilter_config_links(AVFilterContext *filter);
  *              avfilter_unref_buffer when you are finished with it.
  */
 FFMPEGLIB_API AVFilterBufferRef *avfilter_get_video_buffer(AVFilterLink *link, int perms,
-                                          int w, int h);
+        int w, int h);
 
 /**
  * Create a buffer reference wrapped around an already allocated image
@@ -675,7 +690,7 @@ FFMPEGLIB_API AVFilterBufferRef *avfilter_get_video_buffer(AVFilterLink *link, i
  */
 FFMPEGLIB_API AVFilterBufferRef *
 avfilter_get_video_buffer_ref_from_arrays(uint8_t *data[4], int linesize[4], int perms,
-                                          int w, int h, enum PixelFormat format);
+        int w, int h, enum PixelFormat format);
 
 /**
  * Request an audio samples buffer with a specific set of permissions.
@@ -691,8 +706,8 @@ avfilter_get_video_buffer_ref_from_arrays(uint8_t *data[4], int linesize[4], int
  *                       avfilter_unref_buffer when you are finished with it.
  */
 FFMPEGLIB_API AVFilterBufferRef *avfilter_get_audio_buffer(AVFilterLink *link, int perms,
-                                             enum AVSampleFormat sample_fmt, int size,
-                                             int64_t channel_layout, int planar);
+        enum AVSampleFormat sample_fmt, int size,
+        int64_t channel_layout, int planar);
 
 /**
  * Request an input frame from the filter at the other end of the link.
@@ -831,7 +846,7 @@ FFMPEGLIB_API void avfilter_free(AVFilterContext *filter);
  * @return     zero on success
  */
 FFMPEGLIB_API int avfilter_insert_filter(AVFilterLink *link, AVFilterContext *filt,
-                           unsigned filt_srcpad_idx, unsigned filt_dstpad_idx);
+        unsigned filt_srcpad_idx, unsigned filt_dstpad_idx);
 
 /**
  * Insert a new pad.
@@ -847,12 +862,12 @@ FFMPEGLIB_API int avfilter_insert_filter(AVFilterLink *link, AVFilterContext *fi
  * @param newpad The new pad to add. A copy is made when adding.
  */
 FFMPEGLIB_API void avfilter_insert_pad(unsigned idx, unsigned *count, size_t padidx_off,
-                         AVFilterPad **pads, AVFilterLink ***links,
-                         AVFilterPad *newpad);
+                                       AVFilterPad **pads, AVFilterLink ***links,
+                                       AVFilterPad *newpad);
 
 /** Insert a new input pad for the filter. */
 static inline void avfilter_insert_inpad(AVFilterContext *f, unsigned index,
-                                         AVFilterPad *p)
+        AVFilterPad *p)
 {
     avfilter_insert_pad(index, &f->input_count, offsetof(AVFilterLink, dstpad),
                         &f->input_pads, &f->inputs, p);
@@ -860,7 +875,7 @@ static inline void avfilter_insert_inpad(AVFilterContext *f, unsigned index,
 
 /** Insert a new output pad for the filter. */
 static inline void avfilter_insert_outpad(AVFilterContext *f, unsigned index,
-                                          AVFilterPad *p)
+        AVFilterPad *p)
 {
     avfilter_insert_pad(index, &f->output_count, offsetof(AVFilterLink, srcpad),
                         &f->output_pads, &f->outputs, p);

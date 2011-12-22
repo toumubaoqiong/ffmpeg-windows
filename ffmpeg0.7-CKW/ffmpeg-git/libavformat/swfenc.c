@@ -32,10 +32,13 @@ static void put_swf_tag(AVFormatContext *s, int tag)
     swf->tag_pos = avio_tell(pb);
     swf->tag = tag;
     /* reserve some room for the tag */
-    if (tag & TAG_LONG) {
+    if (tag & TAG_LONG)
+    {
         avio_wl16(pb, 0);
         avio_wl32(pb, 0);
-    } else {
+    }
+    else
+    {
         avio_wl16(pb, 0);
     }
 }
@@ -51,11 +54,14 @@ static void put_swf_end_tag(AVFormatContext *s)
     tag_len = pos - swf->tag_pos - 2;
     tag = swf->tag;
     avio_seek(pb, swf->tag_pos, SEEK_SET);
-    if (tag & TAG_LONG) {
+    if (tag & TAG_LONG)
+    {
         tag &= ~TAG_LONG;
         avio_wl16(pb, (tag << 6) | 0x3f);
         avio_wl32(pb, tag_len - 4);
-    } else {
+    }
+    else
+    {
         assert(tag_len < 0x3f);
         avio_wl16(pb, (tag << 6) | tag_len);
     }
@@ -70,7 +76,8 @@ static inline void max_nbits(int *nbits_ptr, int val)
         return;
     val = abs(val);
     n = 1;
-    while (val != 0) {
+    while (val != 0)
+    {
         n++;
         val >>= 1;
     }
@@ -117,15 +124,20 @@ static void put_swf_line_edge(PutBitContext *pb, int dx, int dy)
 
     mask = (1 << nbits) - 1;
     put_bits(pb, 4, nbits - 2); /* 16 bits precision */
-    if (dx == 0) {
+    if (dx == 0)
+    {
         put_bits(pb, 1, 0);
         put_bits(pb, 1, 1);
         put_bits(pb, nbits, dy & mask);
-    } else if (dy == 0) {
+    }
+    else if (dy == 0)
+    {
         put_bits(pb, 1, 0);
         put_bits(pb, 1, 0);
         put_bits(pb, nbits, dx & mask);
-    } else {
+    }
+    else
+    {
         put_bits(pb, 1, 1);
         put_bits(pb, nbits, dx & mask);
         put_bits(pb, nbits, dy & mask);
@@ -183,41 +195,55 @@ static int swf_write_header(AVFormatContext *s)
     swf->swf_frame_number = 0;
     swf->video_frame_number = 0;
 
-    for(i=0;i<s->nb_streams;i++) {
+    for(i = 0; i < s->nb_streams; i++)
+    {
         AVCodecContext *enc = s->streams[i]->codec;
-        if (enc->codec_type == AVMEDIA_TYPE_AUDIO) {
-            if (enc->codec_id == CODEC_ID_MP3) {
-                if (!enc->frame_size) {
+        if (enc->codec_type == AVMEDIA_TYPE_AUDIO)
+        {
+            if (enc->codec_id == CODEC_ID_MP3)
+            {
+                if (!enc->frame_size)
+                {
                     av_log(s, AV_LOG_ERROR, "audio frame size not set\n");
                     return -1;
                 }
                 swf->audio_enc = enc;
-                swf->audio_fifo= av_fifo_alloc(AUDIO_FIFO_SIZE);
+                swf->audio_fifo = av_fifo_alloc(AUDIO_FIFO_SIZE);
                 if (!swf->audio_fifo)
                     return AVERROR(ENOMEM);
-            } else {
+            }
+            else
+            {
                 av_log(s, AV_LOG_ERROR, "SWF muxer only supports MP3\n");
                 return -1;
             }
-        } else {
+        }
+        else
+        {
             if (enc->codec_id == CODEC_ID_VP6F ||
-                enc->codec_id == CODEC_ID_FLV1 ||
-                enc->codec_id == CODEC_ID_MJPEG) {
+                    enc->codec_id == CODEC_ID_FLV1 ||
+                    enc->codec_id == CODEC_ID_MJPEG)
+            {
                 swf->video_enc = enc;
-            } else {
+            }
+            else
+            {
                 av_log(s, AV_LOG_ERROR, "SWF muxer only supports VP6, FLV1 and MJPEG\n");
                 return -1;
             }
         }
     }
 
-    if (!swf->video_enc) {
+    if (!swf->video_enc)
+    {
         /* currently, cannot work correctly if audio only */
         width = 320;
         height = 200;
         rate = 10;
-        rate_base= 1;
-    } else {
+        rate_base = 1;
+    }
+    else
+    {
         width = swf->video_enc->width;
         height = swf->video_enc->height;
         rate = swf->video_enc->time_base.den;
@@ -250,14 +276,16 @@ static int swf_write_header(AVFormatContext *s)
     avio_wl16(pb, (uint16_t)(DUMMY_DURATION * (int64_t)rate / rate_base)); /* frame count */
 
     /* avm2/swf v9 (also v8?) files require a file attribute tag */
-    if (version == 9) {
+    if (version == 9)
+    {
         put_swf_tag(s, TAG_FILEATTRIBUTES);
-        avio_wl32(pb, 1<<3); /* set ActionScript v3/AVM2 flag */
+        avio_wl32(pb, 1 << 3); /* set ActionScript v3/AVM2 flag */
         put_swf_end_tag(s);
     }
 
     /* define a shape with the jpeg inside */
-    if (swf->video_enc && swf->video_enc->codec_id == CODEC_ID_MJPEG) {
+    if (swf->video_enc && swf->video_enc->codec_id == CODEC_ID_MJPEG)
+    {
         put_swf_tag(s, TAG_DEFINESHAPE);
 
         avio_wl16(pb, SHAPE_ID); /* ID of shape */
@@ -300,15 +328,23 @@ static int swf_write_header(AVFormatContext *s)
         put_swf_end_tag(s);
     }
 
-    if (swf->audio_enc && swf->audio_enc->codec_id == CODEC_ID_MP3) {
+    if (swf->audio_enc && swf->audio_enc->codec_id == CODEC_ID_MP3)
+    {
         int v = 0;
 
         /* start sound */
         put_swf_tag(s, TAG_STREAMHEAD2);
-        switch(swf->audio_enc->sample_rate) {
-        case 11025: v |= 1 << 2; break;
-        case 22050: v |= 2 << 2; break;
-        case 44100: v |= 3 << 2; break;
+        switch(swf->audio_enc->sample_rate)
+        {
+        case 11025:
+            v |= 1 << 2;
+            break;
+        case 22050:
+            v |= 2 << 2;
+            break;
+        case 44100:
+            v |= 3 << 2;
+            break;
         default:
             /* not supported */
             av_log(s, AV_LOG_ERROR, "swf does not support that sample rate, choose from (44100, 22050, 11025).\n");
@@ -341,8 +377,10 @@ static int swf_write_video(AVFormatContext *s,
         av_log(enc, AV_LOG_INFO, "warning: Flash Player limit of 16000 frames reached\n");
 
     if (enc->codec_id == CODEC_ID_VP6F ||
-        enc->codec_id == CODEC_ID_FLV1) {
-        if (swf->video_frame_number == 0) {
+            enc->codec_id == CODEC_ID_FLV1)
+    {
+        if (swf->video_frame_number == 0)
+        {
             /* create a new video object */
             put_swf_tag(s, TAG_VIDEOSTREAM);
             avio_wl16(pb, VIDEO_ID);
@@ -351,7 +389,7 @@ static int swf_write_video(AVFormatContext *s,
             avio_wl16(pb, enc->width);
             avio_wl16(pb, enc->height);
             avio_w8(pb, 0);
-            avio_w8(pb,ff_codec_get_tag(swf_codec_tags,enc->codec_id));
+            avio_w8(pb, ff_codec_get_tag(swf_codec_tags, enc->codec_id));
             put_swf_end_tag(s);
 
             /* place the video object for the first time */
@@ -364,7 +402,9 @@ static int swf_write_video(AVFormatContext *s,
             avio_write(pb, "video", 5);
             avio_w8(pb, 0x00);
             put_swf_end_tag(s);
-        } else {
+        }
+        else
+        {
             /* mark the character for update */
             put_swf_tag(s, TAG_PLACEOBJECT2);
             avio_w8(pb, 0x11);
@@ -379,8 +419,11 @@ static int swf_write_video(AVFormatContext *s,
         avio_wl16(pb, swf->video_frame_number++);
         avio_write(pb, buf, size);
         put_swf_end_tag(s);
-    } else if (enc->codec_id == CODEC_ID_MJPEG) {
-        if (swf->swf_frame_number > 0) {
+    }
+    else if (enc->codec_id == CODEC_ID_MJPEG)
+    {
+        if (swf->swf_frame_number > 0)
+        {
             /* remove the shape */
             put_swf_tag(s, TAG_REMOVEOBJECT);
             avio_wl16(pb, SHAPE_ID); /* shape ID */
@@ -416,7 +459,8 @@ static int swf_write_video(AVFormatContext *s,
     swf->swf_frame_number++;
 
     /* streaming sound always should be placed just before showframe tags */
-    if (swf->audio_enc && av_fifo_size(swf->audio_fifo)) {
+    if (swf->audio_enc && av_fifo_size(swf->audio_fifo))
+    {
         int frame_size = av_fifo_size(swf->audio_fifo);
         put_swf_tag(s, TAG_STREAMBLOCK | TAG_LONG);
         avio_wl16(pb, swf->sound_samples);
@@ -446,7 +490,8 @@ static int swf_write_audio(AVFormatContext *s,
     if (swf->swf_frame_number == 16000)
         av_log(enc, AV_LOG_INFO, "warning: Flash Player limit of 16000 frames reached\n");
 
-    if (av_fifo_size(swf->audio_fifo) + size > AUDIO_FIFO_SIZE) {
+    if (av_fifo_size(swf->audio_fifo) + size > AUDIO_FIFO_SIZE)
+    {
         av_log(s, AV_LOG_ERROR, "audio fifo too small to mux audio essence\n");
         return -1;
     }
@@ -478,7 +523,8 @@ static int swf_write_trailer(AVFormatContext *s)
     int file_size, i;
 
     video_enc = NULL;
-    for(i=0;i<s->nb_streams;i++) {
+    for(i = 0; i < s->nb_streams; i++)
+    {
         enc = s->streams[i]->codec;
         if (enc->codec_type == AVMEDIA_TYPE_VIDEO)
             video_enc = enc;
@@ -492,7 +538,8 @@ static int swf_write_trailer(AVFormatContext *s)
     avio_flush(s->pb);
 
     /* patch file size and number of frames if not streamed */
-    if (s->pb->seekable && video_enc) {
+    if (s->pb->seekable && video_enc)
+    {
         file_size = avio_tell(pb);
         avio_seek(pb, 4, SEEK_SET);
         avio_wl32(pb, file_size);
@@ -506,7 +553,8 @@ static int swf_write_trailer(AVFormatContext *s)
 }
 
 #if CONFIG_SWF_MUXER
-AVOutputFormat ff_swf_muxer = {
+AVOutputFormat ff_swf_muxer =
+{
     "swf",
     NULL_IF_CONFIG_SMALL("Flash format"),
     "application/x-shockwave-flash",
@@ -520,7 +568,8 @@ AVOutputFormat ff_swf_muxer = {
 };
 #endif
 #if CONFIG_AVM2_MUXER
-AVOutputFormat ff_avm2_muxer = {
+AVOutputFormat ff_avm2_muxer =
+{
     "avm2",
     NULL_IF_CONFIG_SMALL("Flash 9 (AVM2) format"),
     "application/x-shockwave-flash",

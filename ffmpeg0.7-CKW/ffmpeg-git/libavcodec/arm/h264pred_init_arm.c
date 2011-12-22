@@ -54,7 +54,8 @@ static void ff_h264_pred_init_neon(H264PredContext *h, int codec_id, const int b
     if (codec_id != CODEC_ID_VP8)
         h->pred8x8[PLANE_PRED8x8] = ff_pred8x8_plane_neon;
     h->pred8x8[DC_128_PRED8x8   ] = ff_pred8x8_128_dc_neon;
-    if (codec_id != CODEC_ID_RV40 && codec_id != CODEC_ID_VP8) {
+    if (codec_id != CODEC_ID_RV40 && codec_id != CODEC_ID_VP8)
+    {
         h->pred8x8[DC_PRED8x8     ] = ff_pred8x8_dc_neon;
         h->pred8x8[LEFT_DC_PRED8x8] = ff_pred8x8_left_dc_neon;
         h->pred8x8[TOP_DC_PRED8x8 ] = ff_pred8x8_top_dc_neon;

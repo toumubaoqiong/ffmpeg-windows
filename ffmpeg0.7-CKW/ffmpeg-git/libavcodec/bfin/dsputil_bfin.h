@@ -44,7 +44,7 @@ void ff_bfin_add_pixels_clamped (const DCTELEM *block, uint8_t *dest, int line_s
 void ff_bfin_put_pixels_clamped (const DCTELEM *block, uint8_t *dest, int line_size) attribute_l1_text;
 void ff_bfin_diff_pixels (DCTELEM *block, const uint8_t *s1, const uint8_t *s2, int stride)  attribute_l1_text;
 void ff_bfin_get_pixels  (DCTELEM *restrict block, const uint8_t *pixels, int line_size) attribute_l1_text;
-int  ff_bfin_pix_norm1  (uint8_t * pix, int line_size) attribute_l1_text;
+int  ff_bfin_pix_norm1  (uint8_t *pix, int line_size) attribute_l1_text;
 int  ff_bfin_z_sad8x8   (uint8_t *blk1, uint8_t *blk2, int dsz, int line_size, int h) attribute_l1_text;
 int  ff_bfin_z_sad16x16 (uint8_t *blk1, uint8_t *blk2, int dsz, int line_size, int h) attribute_l1_text;
 
@@ -79,23 +79,25 @@ static void prof_report (void)
 {
     int i;
     double s = 0;
-    for (i=0;i<16;i++) {
+    for (i = 0; i < 16; i++)
+    {
         double v;
-        if (TelemNames[i]) {
-            v = Telem[i]/TelemCnt;
-            av_log (NULL,AV_LOG_DEBUG,"%-20s: %12.4f\t%12.4f\n", TelemNames[i],v,v/64);
+        if (TelemNames[i])
+        {
+            v = Telem[i] / TelemCnt;
+            av_log (NULL, AV_LOG_DEBUG, "%-20s: %12.4f\t%12.4f\n", TelemNames[i], v, v / 64);
             s = s + Telem[i];
         }
     }
-    av_log (NULL,AV_LOG_DEBUG,"%-20s: %12.4f\t%12.4f\n%20.4f\t%d\n",
-            "total",s/TelemCnt,s/TelemCnt/64,s,TelemCnt);
+    av_log (NULL, AV_LOG_DEBUG, "%-20s: %12.4f\t%12.4f\n%20.4f\t%d\n",
+            "total", s / TelemCnt, s / TelemCnt / 64, s, TelemCnt);
 }
 
 static void bfprof (void)
 {
     static int init;
     if (!init) atexit (prof_report);
-    init=1;
+    init = 1;
     TelemCnt++;
 }
 

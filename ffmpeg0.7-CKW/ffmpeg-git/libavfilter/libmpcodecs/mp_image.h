@@ -112,17 +112,18 @@
 #define MP_IMGFIELD_BOTTOM 0x10
 #define MP_IMGFIELD_INTERLACED 0x20
 
-typedef struct mp_image {
+typedef struct mp_image
+{
     unsigned int flags;
     unsigned char type;
     int number;
     unsigned char bpp;  // bits/pixel. NOT depth! for RGB it will be n*8
     unsigned int imgfmt;
-    int width,height;  // stored dimensions
-    int x,y,w,h;  // visible dimensions
-    unsigned char* planes[MP_MAX_PLANES];
+    int width, height; // stored dimensions
+    int x, y, w, h; // visible dimensions
+    unsigned char *planes[MP_MAX_PLANES];
     int stride[MP_MAX_PLANES];
-    char * qscale;
+    char *qscale;
     int qstride;
     int pict_type; // 0->unknown, 1->I, 2->P, 3->B
     int fields;
@@ -135,14 +136,14 @@ typedef struct mp_image {
     int chroma_y_shift; // vertical
     int usage_count;
     /* for private use by filter or vo driver (to store buffer id or dmpi) */
-    void* priv;
+    void *priv;
 } mp_image_t;
 
-void mp_image_setfmt(mp_image_t* mpi,unsigned int out_fmt);
-mp_image_t* new_mp_image(int w,int h);
-void free_mp_image(mp_image_t* mpi);
+void mp_image_setfmt(mp_image_t *mpi, unsigned int out_fmt);
+mp_image_t *new_mp_image(int w, int h);
+void free_mp_image(mp_image_t *mpi);
 
-mp_image_t* alloc_mpi(int w, int h, unsigned long int fmt);
+mp_image_t *alloc_mpi(int w, int h, unsigned long int fmt);
 void mp_image_alloc_planes(mp_image_t *mpi);
 void copy_mpi(mp_image_t *dmpi, mp_image_t *mpi);
 

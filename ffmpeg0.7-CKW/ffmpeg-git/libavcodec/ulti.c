@@ -33,7 +33,8 @@
 
 #include "ulti_cb.h"
 
-typedef struct UltimotionDecodeContext {
+typedef struct UltimotionDecodeContext
+{
     AVCodecContext *avctx;
     int width, height, blocks;
     AVFrame frame;
@@ -49,13 +50,14 @@ static av_cold int ulti_decode_init(AVCodecContext *avctx)
     s->height = avctx->height;
     s->blocks = (s->width / 8) * (s->height / 8);
     avctx->pix_fmt = PIX_FMT_YUV410P;
-    avctx->coded_frame = (AVFrame*) &s->frame;
+    avctx->coded_frame = (AVFrame *) &s->frame;
     s->ulti_codebook = ulti_codebook;
 
     return 0;
 }
 
-static av_cold int ulti_decode_end(AVCodecContext *avctx){
+static av_cold int ulti_decode_end(AVCodecContext *avctx)
+{
     UltimotionDecodeContext *s = avctx->priv_data;
     AVFrame *pic = &s->frame;
 
@@ -66,29 +68,33 @@ static av_cold int ulti_decode_end(AVCodecContext *avctx){
 }
 
 static const int block_coords[8] = // 4x4 block coords in 8x8 superblock
-    { 0, 0, 0, 4, 4, 4, 4, 0};
+{ 0, 0, 0, 4, 4, 4, 4, 0};
 
 static const int angle_by_index[4] = { 0, 2, 6, 12};
 
 /* Lookup tables for luma and chroma - used by ulti_convert_yuv() */
 static const uint8_t ulti_lumas[64] =
-    { 0x10, 0x13, 0x17, 0x1A, 0x1E, 0x21, 0x25, 0x28,
-      0x2C, 0x2F, 0x33, 0x36, 0x3A, 0x3D, 0x41, 0x44,
-      0x48, 0x4B, 0x4F, 0x52, 0x56, 0x59, 0x5C, 0x60,
-      0x63, 0x67, 0x6A, 0x6E, 0x71, 0x75, 0x78, 0x7C,
-      0x7F, 0x83, 0x86, 0x8A, 0x8D, 0x91, 0x94, 0x98,
-      0x9B, 0x9F, 0xA2, 0xA5, 0xA9, 0xAC, 0xB0, 0xB3,
-      0xB7, 0xBA, 0xBE, 0xC1, 0xC5, 0xC8, 0xCC, 0xCF,
-      0xD3, 0xD6, 0xDA, 0xDD, 0xE1, 0xE4, 0xE8, 0xEB};
+{
+    0x10, 0x13, 0x17, 0x1A, 0x1E, 0x21, 0x25, 0x28,
+    0x2C, 0x2F, 0x33, 0x36, 0x3A, 0x3D, 0x41, 0x44,
+    0x48, 0x4B, 0x4F, 0x52, 0x56, 0x59, 0x5C, 0x60,
+    0x63, 0x67, 0x6A, 0x6E, 0x71, 0x75, 0x78, 0x7C,
+    0x7F, 0x83, 0x86, 0x8A, 0x8D, 0x91, 0x94, 0x98,
+    0x9B, 0x9F, 0xA2, 0xA5, 0xA9, 0xAC, 0xB0, 0xB3,
+    0xB7, 0xBA, 0xBE, 0xC1, 0xC5, 0xC8, 0xCC, 0xCF,
+    0xD3, 0xD6, 0xDA, 0xDD, 0xE1, 0xE4, 0xE8, 0xEB
+};
 
 static const uint8_t ulti_chromas[16] =
-    { 0x60, 0x67, 0x6D, 0x73, 0x7A, 0x80, 0x86, 0x8D,
-      0x93, 0x99, 0xA0, 0xA6, 0xAC, 0xB3, 0xB9, 0xC0};
+{
+    0x60, 0x67, 0x6D, 0x73, 0x7A, 0x80, 0x86, 0x8D,
+    0x93, 0x99, 0xA0, 0xA6, 0xAC, 0xB3, 0xB9, 0xC0
+};
 
 /* convert Ultimotion YUV block (sixteen 6-bit Y samples and
  two 4-bit chroma samples) into standard YUV and put it into frame */
 static void ulti_convert_yuv(AVFrame *frame, int x, int y,
-                             uint8_t *luma,int chroma)
+                             uint8_t *luma, int chroma)
 {
     uint8_t *y_plane, *cr_plane, *cb_plane;
     int i;
@@ -102,9 +108,11 @@ static void ulti_convert_yuv(AVFrame *frame, int x, int y,
     cb_plane[0] = ulti_chromas[chroma & 0xF];
 
 
-    for(i = 0; i < 16; i++){
+    for(i = 0; i < 16; i++)
+    {
         y_plane[i & 3] = ulti_lumas[luma[i]];
-        if((i & 3) == 3) { //next row
+        if((i & 3) == 3)   //next row
+        {
             y_plane += frame->linesize[0];
         }
     }
@@ -116,14 +124,16 @@ static void ulti_pattern(AVFrame *frame, int x, int y,
 {
     uint8_t Luma[16];
     int mask, i;
-    for(mask = 0x80, i = 0; mask; mask >>= 1, i++) {
+    for(mask = 0x80, i = 0; mask; mask >>= 1, i++)
+    {
         if(f0 & mask)
             Luma[i] = Y1;
         else
             Luma[i] = Y0;
     }
 
-    for(mask = 0x80, i = 8; mask; mask >>= 1, i++) {
+    for(mask = 0x80, i = 8; mask; mask >>= 1, i++)
+    {
         if(f1 & mask)
             Luma[i] = Y1;
         else
@@ -137,7 +147,8 @@ static void ulti_pattern(AVFrame *frame, int x, int y,
 static void ulti_grad(AVFrame *frame, int x, int y, uint8_t *Y, int chroma, int angle)
 {
     uint8_t Luma[16];
-    if(angle & 8) { //reverse order
+    if(angle & 8)   //reverse order
+    {
         int t;
         angle &= 0x7;
         t = Y[0];
@@ -147,60 +158,169 @@ static void ulti_grad(AVFrame *frame, int x, int y, uint8_t *Y, int chroma, int 
         Y[1] = Y[2];
         Y[2] = t;
     }
-    switch(angle){
+    switch(angle)
+    {
     case 0:
-        Luma[0]  = Y[0]; Luma[1]  = Y[1]; Luma[2]  = Y[2]; Luma[3]  = Y[3];
-        Luma[4]  = Y[0]; Luma[5]  = Y[1]; Luma[6]  = Y[2]; Luma[7]  = Y[3];
-        Luma[8]  = Y[0]; Luma[9]  = Y[1]; Luma[10] = Y[2]; Luma[11] = Y[3];
-        Luma[12] = Y[0]; Luma[13] = Y[1]; Luma[14] = Y[2]; Luma[15] = Y[3];
+        Luma[0]  = Y[0];
+        Luma[1]  = Y[1];
+        Luma[2]  = Y[2];
+        Luma[3]  = Y[3];
+        Luma[4]  = Y[0];
+        Luma[5]  = Y[1];
+        Luma[6]  = Y[2];
+        Luma[7]  = Y[3];
+        Luma[8]  = Y[0];
+        Luma[9]  = Y[1];
+        Luma[10] = Y[2];
+        Luma[11] = Y[3];
+        Luma[12] = Y[0];
+        Luma[13] = Y[1];
+        Luma[14] = Y[2];
+        Luma[15] = Y[3];
         break;
     case 1:
-        Luma[0]  = Y[1]; Luma[1]  = Y[2]; Luma[2]  = Y[3]; Luma[3]  = Y[3];
-        Luma[4]  = Y[0]; Luma[5]  = Y[1]; Luma[6]  = Y[2]; Luma[7]  = Y[3];
-        Luma[8]  = Y[0]; Luma[9]  = Y[1]; Luma[10] = Y[2]; Luma[11] = Y[3];
-        Luma[12] = Y[0]; Luma[13] = Y[0]; Luma[14] = Y[1]; Luma[15] = Y[2];
+        Luma[0]  = Y[1];
+        Luma[1]  = Y[2];
+        Luma[2]  = Y[3];
+        Luma[3]  = Y[3];
+        Luma[4]  = Y[0];
+        Luma[5]  = Y[1];
+        Luma[6]  = Y[2];
+        Luma[7]  = Y[3];
+        Luma[8]  = Y[0];
+        Luma[9]  = Y[1];
+        Luma[10] = Y[2];
+        Luma[11] = Y[3];
+        Luma[12] = Y[0];
+        Luma[13] = Y[0];
+        Luma[14] = Y[1];
+        Luma[15] = Y[2];
         break;
     case 2:
-        Luma[0]  = Y[1]; Luma[1]  = Y[2]; Luma[2]  = Y[3]; Luma[3]  = Y[3];
-        Luma[4]  = Y[1]; Luma[5]  = Y[2]; Luma[6]  = Y[2]; Luma[7]  = Y[3];
-        Luma[8]  = Y[0]; Luma[9]  = Y[1]; Luma[10] = Y[1]; Luma[11] = Y[2];
-        Luma[12] = Y[0]; Luma[13] = Y[0]; Luma[14] = Y[1]; Luma[15] = Y[2];
+        Luma[0]  = Y[1];
+        Luma[1]  = Y[2];
+        Luma[2]  = Y[3];
+        Luma[3]  = Y[3];
+        Luma[4]  = Y[1];
+        Luma[5]  = Y[2];
+        Luma[6]  = Y[2];
+        Luma[7]  = Y[3];
+        Luma[8]  = Y[0];
+        Luma[9]  = Y[1];
+        Luma[10] = Y[1];
+        Luma[11] = Y[2];
+        Luma[12] = Y[0];
+        Luma[13] = Y[0];
+        Luma[14] = Y[1];
+        Luma[15] = Y[2];
         break;
     case 3:
-        Luma[0]  = Y[2]; Luma[1]  = Y[3]; Luma[2]  = Y[3]; Luma[3]  = Y[3];
-        Luma[4]  = Y[1]; Luma[5]  = Y[2]; Luma[6]  = Y[2]; Luma[7]  = Y[3];
-        Luma[8]  = Y[0]; Luma[9]  = Y[1]; Luma[10] = Y[1]; Luma[11] = Y[2];
-        Luma[12] = Y[0]; Luma[13] = Y[0]; Luma[14] = Y[0]; Luma[15] = Y[1];
+        Luma[0]  = Y[2];
+        Luma[1]  = Y[3];
+        Luma[2]  = Y[3];
+        Luma[3]  = Y[3];
+        Luma[4]  = Y[1];
+        Luma[5]  = Y[2];
+        Luma[6]  = Y[2];
+        Luma[7]  = Y[3];
+        Luma[8]  = Y[0];
+        Luma[9]  = Y[1];
+        Luma[10] = Y[1];
+        Luma[11] = Y[2];
+        Luma[12] = Y[0];
+        Luma[13] = Y[0];
+        Luma[14] = Y[0];
+        Luma[15] = Y[1];
         break;
     case 4:
-        Luma[0]  = Y[3]; Luma[1]  = Y[3]; Luma[2]  = Y[3]; Luma[3]  = Y[3];
-        Luma[4]  = Y[2]; Luma[5]  = Y[2]; Luma[6]  = Y[2]; Luma[7]  = Y[2];
-        Luma[8]  = Y[1]; Luma[9]  = Y[1]; Luma[10] = Y[1]; Luma[11] = Y[1];
-        Luma[12] = Y[0]; Luma[13] = Y[0]; Luma[14] = Y[0]; Luma[15] = Y[0];
+        Luma[0]  = Y[3];
+        Luma[1]  = Y[3];
+        Luma[2]  = Y[3];
+        Luma[3]  = Y[3];
+        Luma[4]  = Y[2];
+        Luma[5]  = Y[2];
+        Luma[6]  = Y[2];
+        Luma[7]  = Y[2];
+        Luma[8]  = Y[1];
+        Luma[9]  = Y[1];
+        Luma[10] = Y[1];
+        Luma[11] = Y[1];
+        Luma[12] = Y[0];
+        Luma[13] = Y[0];
+        Luma[14] = Y[0];
+        Luma[15] = Y[0];
         break;
     case 5:
-        Luma[0]  = Y[3]; Luma[1]  = Y[3]; Luma[2]  = Y[3]; Luma[3]  = Y[2];
-        Luma[4]  = Y[3]; Luma[5]  = Y[2]; Luma[6]  = Y[2]; Luma[7]  = Y[1];
-        Luma[8]  = Y[2]; Luma[9]  = Y[1]; Luma[10] = Y[1]; Luma[11] = Y[0];
-        Luma[12] = Y[1]; Luma[13] = Y[0]; Luma[14] = Y[0]; Luma[15] = Y[0];
+        Luma[0]  = Y[3];
+        Luma[1]  = Y[3];
+        Luma[2]  = Y[3];
+        Luma[3]  = Y[2];
+        Luma[4]  = Y[3];
+        Luma[5]  = Y[2];
+        Luma[6]  = Y[2];
+        Luma[7]  = Y[1];
+        Luma[8]  = Y[2];
+        Luma[9]  = Y[1];
+        Luma[10] = Y[1];
+        Luma[11] = Y[0];
+        Luma[12] = Y[1];
+        Luma[13] = Y[0];
+        Luma[14] = Y[0];
+        Luma[15] = Y[0];
         break;
     case 6:
-        Luma[0]  = Y[3]; Luma[1]  = Y[3]; Luma[2]  = Y[2]; Luma[3]  = Y[2];
-        Luma[4]  = Y[3]; Luma[5]  = Y[2]; Luma[6]  = Y[1]; Luma[7]  = Y[1];
-        Luma[8]  = Y[2]; Luma[9]  = Y[2]; Luma[10] = Y[1]; Luma[11] = Y[0];
-        Luma[12] = Y[1]; Luma[13] = Y[1]; Luma[14] = Y[0]; Luma[15] = Y[0];
+        Luma[0]  = Y[3];
+        Luma[1]  = Y[3];
+        Luma[2]  = Y[2];
+        Luma[3]  = Y[2];
+        Luma[4]  = Y[3];
+        Luma[5]  = Y[2];
+        Luma[6]  = Y[1];
+        Luma[7]  = Y[1];
+        Luma[8]  = Y[2];
+        Luma[9]  = Y[2];
+        Luma[10] = Y[1];
+        Luma[11] = Y[0];
+        Luma[12] = Y[1];
+        Luma[13] = Y[1];
+        Luma[14] = Y[0];
+        Luma[15] = Y[0];
         break;
     case 7:
-        Luma[0]  = Y[3]; Luma[1]  = Y[3]; Luma[2]  = Y[2]; Luma[3]  = Y[1];
-        Luma[4]  = Y[3]; Luma[5]  = Y[2]; Luma[6]  = Y[1]; Luma[7]  = Y[0];
-        Luma[8]  = Y[3]; Luma[9]  = Y[2]; Luma[10] = Y[1]; Luma[11] = Y[0];
-        Luma[12] = Y[2]; Luma[13] = Y[1]; Luma[14] = Y[0]; Luma[15] = Y[0];
+        Luma[0]  = Y[3];
+        Luma[1]  = Y[3];
+        Luma[2]  = Y[2];
+        Luma[3]  = Y[1];
+        Luma[4]  = Y[3];
+        Luma[5]  = Y[2];
+        Luma[6]  = Y[1];
+        Luma[7]  = Y[0];
+        Luma[8]  = Y[3];
+        Luma[9]  = Y[2];
+        Luma[10] = Y[1];
+        Luma[11] = Y[0];
+        Luma[12] = Y[2];
+        Luma[13] = Y[1];
+        Luma[14] = Y[0];
+        Luma[15] = Y[0];
         break;
     default:
-        Luma[0]  = Y[0]; Luma[1]  = Y[0]; Luma[2]  = Y[1]; Luma[3]  = Y[1];
-        Luma[4]  = Y[0]; Luma[5]  = Y[0]; Luma[6]  = Y[1]; Luma[7]  = Y[1];
-        Luma[8]  = Y[2]; Luma[9]  = Y[2]; Luma[10] = Y[3]; Luma[11] = Y[3];
-        Luma[12] = Y[2]; Luma[13] = Y[2]; Luma[14] = Y[3]; Luma[15] = Y[3];
+        Luma[0]  = Y[0];
+        Luma[1]  = Y[0];
+        Luma[2]  = Y[1];
+        Luma[3]  = Y[1];
+        Luma[4]  = Y[0];
+        Luma[5]  = Y[0];
+        Luma[6]  = Y[1];
+        Luma[7]  = Y[1];
+        Luma[8]  = Y[2];
+        Luma[9]  = Y[2];
+        Luma[10] = Y[3];
+        Luma[11] = Y[3];
+        Luma[12] = Y[2];
+        Luma[13] = Y[2];
+        Luma[14] = Y[3];
+        Luma[15] = Y[3];
         break;
     }
 
@@ -213,7 +333,7 @@ static int ulti_decode_frame(AVCodecContext *avctx,
 {
     const uint8_t *buf = avpkt->data;
     int buf_size = avpkt->size;
-    UltimotionDecodeContext *s=avctx->priv_data;
+    UltimotionDecodeContext *s = avctx->priv_data;
     int modifier = 0;
     int uniq = 0;
     int mode = 0;
@@ -229,22 +349,26 @@ static int ulti_decode_frame(AVCodecContext *avctx,
 
     s->frame.reference = 1;
     s->frame.buffer_hints = FF_BUFFER_HINTS_VALID | FF_BUFFER_HINTS_PRESERVE | FF_BUFFER_HINTS_REUSABLE;
-    if(avctx->get_buffer(avctx, &s->frame) < 0) {
+    if(avctx->get_buffer(avctx, &s->frame) < 0)
+    {
         av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
         return -1;
     }
 
-    while(!done) {
+    while(!done)
+    {
         int idx;
         if(blocks >= s->blocks || y >= s->height)
             break;//all blocks decoded
 
         idx = *buf++;
-        if((idx & 0xF8) == 0x70) {
-            switch(idx) {
+        if((idx & 0xF8) == 0x70)
+        {
+            switch(idx)
+            {
             case 0x70: //change modifier
                 modifier = *buf++;
-                if(modifier>1)
+                if(modifier > 1)
                     av_log(avctx, AV_LOG_INFO, "warning: modifier must be 0 or 1, got %i\n", modifier);
                 break;
             case 0x71: // set uniq flag
@@ -262,7 +386,8 @@ static int ulti_decode_frame(AVCodecContext *avctx,
                     break;
                 blocks += skip;
                 x += skip * 8;
-                while(x >= s->width) {
+                while(x >= s->width)
+                {
                     x -= s->width;
                     y += 8;
                 }
@@ -270,31 +395,38 @@ static int ulti_decode_frame(AVCodecContext *avctx,
             default:
                 av_log(avctx, AV_LOG_INFO, "warning: unknown escape 0x%02X\n", idx);
             }
-        } else { //handle one block
+        }
+        else     //handle one block
+        {
             int code;
             int cf;
             int angle = 0;
             uint8_t Y[4]; // luma samples of block
             int tx = 0, ty = 0; //coords of subblock
             int chroma = 0;
-            if (mode || uniq) {
+            if (mode || uniq)
+            {
                 uniq = 0;
                 cf = 1;
                 chroma = 0;
-            } else {
+            }
+            else
+            {
                 cf = 0;
                 if (idx)
                     chroma = *buf++;
             }
-            for (i = 0; i < 4; i++) { // for every subblock
-                code = (idx >> (6 - i*2)) & 3; //extract 2 bits
+            for (i = 0; i < 4; i++)   // for every subblock
+            {
+                code = (idx >> (6 - i * 2)) & 3; //extract 2 bits
                 if(!code) //skip subblock
                     continue;
                 if(cf)
                     chroma = *buf++;
                 tx = x + block_coords[i * 2];
                 ty = y + block_coords[(i * 2) + 1];
-                switch(code) {
+                switch(code)
+                {
                 case 1:
                     tmp = *buf++;
 
@@ -303,19 +435,23 @@ static int ulti_decode_frame(AVCodecContext *avctx,
                     Y[0] = tmp & 0x3F;
                     Y[1] = Y[0];
 
-                    if (angle) {
-                        Y[2] = Y[0]+1;
+                    if (angle)
+                    {
+                        Y[2] = Y[0] + 1;
                         if (Y[2] > 0x3F)
                             Y[2] = 0x3F;
                         Y[3] = Y[2];
-                    } else {
+                    }
+                    else
+                    {
                         Y[2] = Y[0];
                         Y[3] = Y[0];
                     }
                     break;
 
                 case 2:
-                    if (modifier) { // unpack four luma samples
+                    if (modifier)   // unpack four luma samples
+                    {
                         tmp = bytestream_get_be24(&buf);
 
                         Y[0] = (tmp >> 18) & 0x3F;
@@ -323,7 +459,9 @@ static int ulti_decode_frame(AVCodecContext *avctx,
                         Y[2] = (tmp >> 6) & 0x3F;
                         Y[3] = tmp & 0x3F;
                         angle = 16;
-                    } else { // retrieve luma samples from codebook
+                    }
+                    else     // retrieve luma samples from codebook
+                    {
                         tmp = bytestream_get_be16(&buf);
 
                         angle = (tmp >> 12) & 0xF;
@@ -337,7 +475,8 @@ static int ulti_decode_frame(AVCodecContext *avctx,
                     break;
 
                 case 3:
-                    if (modifier) { // all 16 luma samples
+                    if (modifier)   // all 16 luma samples
+                    {
                         uint8_t Luma[16];
 
                         tmp = bytestream_get_be24(&buf);
@@ -365,9 +504,12 @@ static int ulti_decode_frame(AVCodecContext *avctx,
                         Luma[15] = tmp & 0x3F;
 
                         ulti_convert_yuv(&s->frame, tx, ty, Luma, chroma);
-                    } else {
+                    }
+                    else
+                    {
                         tmp = *buf++;
-                        if(tmp & 0x80) {
+                        if(tmp & 0x80)
+                        {
                             angle = (tmp >> 4) & 0x7;
                             tmp = (tmp << 8) + *buf++;
                             Y[0] = (tmp >> 6) & 0x3F;
@@ -375,7 +517,9 @@ static int ulti_decode_frame(AVCodecContext *avctx,
                             Y[2] = (*buf++) & 0x3F;
                             Y[3] = (*buf++) & 0x3F;
                             ulti_grad(&s->frame, tx, ty, Y, chroma, angle); //draw block
-                        } else { // some patterns
+                        }
+                        else     // some patterns
+                        {
                             int f0, f1;
                             f0 = *buf++;
                             f1 = tmp;
@@ -390,21 +534,23 @@ static int ulti_decode_frame(AVCodecContext *avctx,
                     ulti_grad(&s->frame, tx, ty, Y, chroma, angle); // draw block
             }
             blocks++;
-                x += 8;
-            if(x >= s->width) {
+            x += 8;
+            if(x >= s->width)
+            {
                 x = 0;
                 y += 8;
             }
         }
     }
 
-    *data_size=sizeof(AVFrame);
-    *(AVFrame*)data= s->frame;
+    *data_size = sizeof(AVFrame);
+    *(AVFrame *)data = s->frame;
 
     return buf_size;
 }
 
-AVCodec ff_ulti_decoder = {
+AVCodec ff_ulti_decoder =
+{
     "ultimotion",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_ULTI,

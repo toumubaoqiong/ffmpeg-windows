@@ -22,7 +22,8 @@
 #include "libavutil/intreadwrite.h"
 #include "avformat.h"
 
-typedef struct {
+typedef struct
+{
     int cur_stream;
     int num_streams;
     int audio_packets;
@@ -31,14 +32,16 @@ typedef struct {
     int packet_sizes_alloc;
 } PMPContext;
 
-static int pmp_probe(AVProbeData *p) {
+static int pmp_probe(AVProbeData *p)
+{
     if (AV_RN32(p->buf) == AV_RN32("pmpm") &&
-        AV_RL32(p->buf + 4) == 1)
+            AV_RL32(p->buf + 4) == 1)
         return AVPROBE_SCORE_MAX;
     return 0;
 }
 
-static int pmp_header(AVFormatContext *s, AVFormatParameters *ap) {
+static int pmp_header(AVFormatContext *s, AVFormatParameters *ap)
+{
     PMPContext *pmp = s->priv_data;
     AVIOContext *pb = s->pb;
     int tb_num, tb_den;
@@ -52,7 +55,8 @@ static int pmp_header(AVFormatContext *s, AVFormatParameters *ap) {
         return AVERROR(ENOMEM);
     vst->codec->codec_type = AVMEDIA_TYPE_VIDEO;
     avio_skip(pb, 8);
-    switch (avio_rl32(pb)) {
+    switch (avio_rl32(pb))
+    {
     case 0:
         vst->codec->codec_id = CODEC_ID_MPEG4;
         break;
@@ -73,7 +77,8 @@ static int pmp_header(AVFormatContext *s, AVFormatParameters *ap) {
     vst->nb_frames = index_cnt;
     vst->duration = index_cnt;
 
-    switch (avio_rl32(pb)) {
+    switch (avio_rl32(pb))
+    {
     case 0:
         audio_codec_id = CODEC_ID_MP3;
         break;
@@ -89,7 +94,8 @@ static int pmp_header(AVFormatContext *s, AVFormatParameters *ap) {
     avio_skip(pb, 10);
     srate = avio_rl32(pb);
     channels = avio_rl32(pb) + 1;
-    for (i = 1; i < pmp->num_streams; i++) {
+    for (i = 1; i < pmp->num_streams; i++)
+    {
         AVStream *ast = av_new_stream(s, i);
         if (!ast)
             return AVERROR(ENOMEM);
@@ -99,8 +105,9 @@ static int pmp_header(AVFormatContext *s, AVFormatParameters *ap) {
         ast->codec->sample_rate = srate;
         av_set_pts_info(ast, 32, 1, srate);
     }
-    pos = avio_tell(pb) + 4*index_cnt;
-    for (i = 0; i < index_cnt; i++) {
+    pos = avio_tell(pb) + 4 * index_cnt;
+    for (i = 0; i < index_cnt; i++)
+    {
         int size = avio_rl32(pb);
         int flags = size & 1 ? AVINDEX_KEYFRAME : 0;
         size >>= 1;
@@ -110,7 +117,8 @@ static int pmp_header(AVFormatContext *s, AVFormatParameters *ap) {
     return 0;
 }
 
-static int pmp_packet(AVFormatContext *s, AVPacket *pkt) {
+static int pmp_packet(AVFormatContext *s, AVPacket *pkt)
+{
     PMPContext *pmp = s->priv_data;
     AVIOContext *pb = s->pb;
     int ret = 0;
@@ -118,7 +126,8 @@ static int pmp_packet(AVFormatContext *s, AVPacket *pkt) {
 
     if (url_feof(pb))
         return AVERROR_EOF;
-    if (pmp->cur_stream == 0) {
+    if (pmp->cur_stream == 0)
+    {
         int num_packets;
         pmp->audio_packets = avio_r8(pb);
         num_packets = (pmp->num_streams - 1) * pmp->audio_packets + 1;
@@ -131,7 +140,8 @@ static int pmp_packet(AVFormatContext *s, AVPacket *pkt) {
             pmp->packet_sizes[i] = avio_rl32(pb);
     }
     ret = av_get_packet(pb, pkt, pmp->packet_sizes[pmp->current_packet]);
-    if (ret >= 0) {
+    if (ret >= 0)
+    {
         ret = 0;
         // FIXME: this is a hack that should be remove once
         // compute_pkt_fields can handle
@@ -146,7 +156,8 @@ static int pmp_packet(AVFormatContext *s, AVPacket *pkt) {
 }
 
 static int pmp_seek(AVFormatContext *s, int stream_index,
-                     int64_t ts, int flags) {
+                    int64_t ts, int flags)
+{
     PMPContext *pmp = s->priv_data;
     pmp->cur_stream = 0;
     // fallback to default seek now
@@ -160,7 +171,8 @@ static int pmp_close(AVFormatContext *s)
     return 0;
 }
 
-AVInputFormat ff_pmp_demuxer = {
+AVInputFormat ff_pmp_demuxer =
+{
     .name           = "pmp",
     .long_name      = NULL_IF_CONFIG_SMALL("Playstation Portable PMP format"),
     .priv_data_size = sizeof(PMPContext),

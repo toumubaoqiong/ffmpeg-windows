@@ -33,7 +33,8 @@ int ff_raw_write_packet(AVFormatContext *s, AVPacket *pkt)
 /* Note: Do not forget to add new entries to the Makefile as well. */
 
 #if CONFIG_AC3_MUXER
-AVOutputFormat ff_ac3_muxer = {
+AVOutputFormat ff_ac3_muxer =
+{
     "ac3",
     NULL_IF_CONFIG_SMALL("raw AC-3"),
     "audio/x-ac3",
@@ -43,12 +44,13 @@ AVOutputFormat ff_ac3_muxer = {
     CODEC_ID_NONE,
     NULL,
     ff_raw_write_packet,
-    .flags= AVFMT_NOTIMESTAMPS,
+    .flags = AVFMT_NOTIMESTAMPS,
 };
 #endif
 
 #if CONFIG_DIRAC_MUXER
-AVOutputFormat ff_dirac_muxer = {
+AVOutputFormat ff_dirac_muxer =
+{
     "dirac",
     NULL_IF_CONFIG_SMALL("raw Dirac"),
     NULL,
@@ -58,12 +60,13 @@ AVOutputFormat ff_dirac_muxer = {
     CODEC_ID_DIRAC,
     NULL,
     ff_raw_write_packet,
-    .flags= AVFMT_NOTIMESTAMPS,
+    .flags = AVFMT_NOTIMESTAMPS,
 };
 #endif
 
 #if CONFIG_DNXHD_MUXER
-AVOutputFormat ff_dnxhd_muxer = {
+AVOutputFormat ff_dnxhd_muxer =
+{
     "dnxhd",
     NULL_IF_CONFIG_SMALL("raw DNxHD (SMPTE VC-3)"),
     NULL,
@@ -73,12 +76,13 @@ AVOutputFormat ff_dnxhd_muxer = {
     CODEC_ID_DNXHD,
     NULL,
     ff_raw_write_packet,
-    .flags= AVFMT_NOTIMESTAMPS,
+    .flags = AVFMT_NOTIMESTAMPS,
 };
 #endif
 
 #if CONFIG_DTS_MUXER
-AVOutputFormat ff_dts_muxer = {
+AVOutputFormat ff_dts_muxer =
+{
     "dts",
     NULL_IF_CONFIG_SMALL("raw DTS"),
     "audio/x-dca",
@@ -88,12 +92,13 @@ AVOutputFormat ff_dts_muxer = {
     CODEC_ID_NONE,
     NULL,
     ff_raw_write_packet,
-    .flags= AVFMT_NOTIMESTAMPS,
+    .flags = AVFMT_NOTIMESTAMPS,
 };
 #endif
 
 #if CONFIG_EAC3_MUXER
-AVOutputFormat ff_eac3_muxer = {
+AVOutputFormat ff_eac3_muxer =
+{
     "eac3",
     NULL_IF_CONFIG_SMALL("raw E-AC-3"),
     "audio/x-eac3",
@@ -103,12 +108,13 @@ AVOutputFormat ff_eac3_muxer = {
     CODEC_ID_NONE,
     NULL,
     ff_raw_write_packet,
-    .flags= AVFMT_NOTIMESTAMPS,
+    .flags = AVFMT_NOTIMESTAMPS,
 };
 #endif
 
 #if CONFIG_G722_MUXER
-AVOutputFormat ff_g722_muxer = {
+AVOutputFormat ff_g722_muxer =
+{
     "g722",
     NULL_IF_CONFIG_SMALL("raw G.722"),
     "audio/G722",
@@ -118,12 +124,13 @@ AVOutputFormat ff_g722_muxer = {
     CODEC_ID_NONE,
     NULL,
     ff_raw_write_packet,
-    .flags= AVFMT_NOTIMESTAMPS,
+    .flags = AVFMT_NOTIMESTAMPS,
 };
 #endif
 
 #if CONFIG_H261_MUXER
-AVOutputFormat ff_h261_muxer = {
+AVOutputFormat ff_h261_muxer =
+{
     "h261",
     NULL_IF_CONFIG_SMALL("raw H.261"),
     "video/x-h261",
@@ -133,12 +140,13 @@ AVOutputFormat ff_h261_muxer = {
     CODEC_ID_H261,
     NULL,
     ff_raw_write_packet,
-    .flags= AVFMT_NOTIMESTAMPS,
+    .flags = AVFMT_NOTIMESTAMPS,
 };
 #endif
 
 #if CONFIG_H263_MUXER
-AVOutputFormat ff_h263_muxer = {
+AVOutputFormat ff_h263_muxer =
+{
     "h263",
     NULL_IF_CONFIG_SMALL("raw H.263"),
     "video/x-h263",
@@ -148,12 +156,13 @@ AVOutputFormat ff_h263_muxer = {
     CODEC_ID_H263,
     NULL,
     ff_raw_write_packet,
-    .flags= AVFMT_NOTIMESTAMPS,
+    .flags = AVFMT_NOTIMESTAMPS,
 };
 #endif
 
 #if CONFIG_H264_MUXER
-AVOutputFormat ff_h264_muxer = {
+AVOutputFormat ff_h264_muxer =
+{
     "h264",
     NULL_IF_CONFIG_SMALL("raw H.264 video format"),
     NULL,
@@ -163,12 +172,13 @@ AVOutputFormat ff_h264_muxer = {
     CODEC_ID_H264,
     NULL,
     ff_raw_write_packet,
-    .flags= AVFMT_NOTIMESTAMPS,
+    .flags = AVFMT_NOTIMESTAMPS,
 };
 #endif
 
 #if CONFIG_CAVSVIDEO_MUXER
-AVOutputFormat ff_cavsvideo_muxer = {
+AVOutputFormat ff_cavsvideo_muxer =
+{
     "cavsvideo",
     NULL_IF_CONFIG_SMALL("raw Chinese AVS video"),
     NULL,
@@ -178,12 +188,13 @@ AVOutputFormat ff_cavsvideo_muxer = {
     CODEC_ID_CAVS,
     NULL,
     ff_raw_write_packet,
-    .flags= AVFMT_NOTIMESTAMPS,
+    .flags = AVFMT_NOTIMESTAMPS,
 };
 #endif
 
 #if CONFIG_M4V_MUXER
-AVOutputFormat ff_m4v_muxer = {
+AVOutputFormat ff_m4v_muxer =
+{
     "m4v",
     NULL_IF_CONFIG_SMALL("raw MPEG-4 video format"),
     NULL,
@@ -193,12 +204,13 @@ AVOutputFormat ff_m4v_muxer = {
     CODEC_ID_MPEG4,
     NULL,
     ff_raw_write_packet,
-    .flags= AVFMT_NOTIMESTAMPS,
+    .flags = AVFMT_NOTIMESTAMPS,
 };
 #endif
 
 #if CONFIG_MJPEG_MUXER
-AVOutputFormat ff_mjpeg_muxer = {
+AVOutputFormat ff_mjpeg_muxer =
+{
     "mjpeg",
     NULL_IF_CONFIG_SMALL("raw MJPEG video"),
     "video/x-mjpeg",
@@ -208,12 +220,13 @@ AVOutputFormat ff_mjpeg_muxer = {
     CODEC_ID_MJPEG,
     NULL,
     ff_raw_write_packet,
-    .flags= AVFMT_NOTIMESTAMPS,
+    .flags = AVFMT_NOTIMESTAMPS,
 };
 #endif
 
 #if CONFIG_MLP_MUXER
-AVOutputFormat ff_mlp_muxer = {
+AVOutputFormat ff_mlp_muxer =
+{
     "mlp",
     NULL_IF_CONFIG_SMALL("raw MLP"),
     NULL,
@@ -223,12 +236,13 @@ AVOutputFormat ff_mlp_muxer = {
     CODEC_ID_NONE,
     NULL,
     ff_raw_write_packet,
-    .flags= AVFMT_NOTIMESTAMPS,
+    .flags = AVFMT_NOTIMESTAMPS,
 };
 #endif
 
 #if CONFIG_SRT_MUXER
-AVOutputFormat ff_srt_muxer = {
+AVOutputFormat ff_srt_muxer =
+{
     .name           = "srt",
     .long_name      = NULL_IF_CONFIG_SMALL("SubRip subtitle format"),
     .mime_type      = "application/x-subrip",
@@ -240,7 +254,8 @@ AVOutputFormat ff_srt_muxer = {
 #endif
 
 #if CONFIG_TRUEHD_MUXER
-AVOutputFormat ff_truehd_muxer = {
+AVOutputFormat ff_truehd_muxer =
+{
     "truehd",
     NULL_IF_CONFIG_SMALL("raw TrueHD"),
     NULL,
@@ -250,12 +265,13 @@ AVOutputFormat ff_truehd_muxer = {
     CODEC_ID_NONE,
     NULL,
     ff_raw_write_packet,
-    .flags= AVFMT_NOTIMESTAMPS,
+    .flags = AVFMT_NOTIMESTAMPS,
 };
 #endif
 
 #if CONFIG_MPEG1VIDEO_MUXER
-AVOutputFormat ff_mpeg1video_muxer = {
+AVOutputFormat ff_mpeg1video_muxer =
+{
     "mpeg1video",
     NULL_IF_CONFIG_SMALL("raw MPEG-1 video"),
     "video/x-mpeg",
@@ -265,12 +281,13 @@ AVOutputFormat ff_mpeg1video_muxer = {
     CODEC_ID_MPEG1VIDEO,
     NULL,
     ff_raw_write_packet,
-    .flags= AVFMT_NOTIMESTAMPS,
+    .flags = AVFMT_NOTIMESTAMPS,
 };
 #endif
 
 #if CONFIG_MPEG2VIDEO_MUXER
-AVOutputFormat ff_mpeg2video_muxer = {
+AVOutputFormat ff_mpeg2video_muxer =
+{
     "mpeg2video",
     NULL_IF_CONFIG_SMALL("raw MPEG-2 video"),
     NULL,
@@ -280,12 +297,13 @@ AVOutputFormat ff_mpeg2video_muxer = {
     CODEC_ID_MPEG2VIDEO,
     NULL,
     ff_raw_write_packet,
-    .flags= AVFMT_NOTIMESTAMPS,
+    .flags = AVFMT_NOTIMESTAMPS,
 };
 #endif
 
 #if CONFIG_RAWVIDEO_MUXER
-AVOutputFormat ff_rawvideo_muxer = {
+AVOutputFormat ff_rawvideo_muxer =
+{
     "rawvideo",
     NULL_IF_CONFIG_SMALL("raw video format"),
     NULL,
@@ -295,6 +313,6 @@ AVOutputFormat ff_rawvideo_muxer = {
     CODEC_ID_RAWVIDEO,
     NULL,
     ff_raw_write_packet,
-    .flags= AVFMT_NOTIMESTAMPS,
+    .flags = AVFMT_NOTIMESTAMPS,
 };
 #endif

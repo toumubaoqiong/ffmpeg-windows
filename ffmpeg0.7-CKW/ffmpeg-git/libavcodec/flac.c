@@ -38,7 +38,8 @@ int ff_flac_decode_frame_header(AVCodecContext *avctx, GetBitContext *gb,
     int bs_code, sr_code, bps_code;
 
     /* frame sync code */
-    if ((get_bits(gb, 15) & 0x7FFF) != 0x7FFC) {
+    if ((get_bits(gb, 15) & 0x7FFF) != 0x7FFC)
+    {
         av_log(avctx, AV_LOG_ERROR + log_level_offset, "invalid sync code\n");
         return -1;
     }
@@ -52,12 +53,17 @@ int ff_flac_decode_frame_header(AVCodecContext *avctx, GetBitContext *gb,
 
     /* channels and decorrelation */
     fi->ch_mode = get_bits(gb, 4);
-    if (fi->ch_mode < FLAC_MAX_CHANNELS) {
+    if (fi->ch_mode < FLAC_MAX_CHANNELS)
+    {
         fi->channels = fi->ch_mode + 1;
         fi->ch_mode = FLAC_CHMODE_INDEPENDENT;
-    } else if (fi->ch_mode <= FLAC_CHMODE_MID_SIDE) {
+    }
+    else if (fi->ch_mode <= FLAC_CHMODE_MID_SIDE)
+    {
         fi->channels = 2;
-    } else {
+    }
+    else
+    {
         av_log(avctx, AV_LOG_ERROR + log_level_offset,
                "invalid channel mode: %d\n", fi->ch_mode);
         return -1;
@@ -65,7 +71,8 @@ int ff_flac_decode_frame_header(AVCodecContext *avctx, GetBitContext *gb,
 
     /* bits per sample */
     bps_code = get_bits(gb, 3);
-    if (bps_code == 3 || bps_code == 7) {
+    if (bps_code == 3 || bps_code == 7)
+    {
         av_log(avctx, AV_LOG_ERROR + log_level_offset,
                "invalid sample size code (%d)\n",
                bps_code);
@@ -74,7 +81,8 @@ int ff_flac_decode_frame_header(AVCodecContext *avctx, GetBitContext *gb,
     fi->bps = sample_size_table[bps_code];
 
     /* reserved bit */
-    if (get_bits1(gb)) {
+    if (get_bits1(gb))
+    {
         av_log(avctx, AV_LOG_ERROR + log_level_offset,
                "broken stream, invalid padding\n");
         return -1;
@@ -82,35 +90,52 @@ int ff_flac_decode_frame_header(AVCodecContext *avctx, GetBitContext *gb,
 
     /* sample or frame count */
     fi->frame_or_sample_num = get_utf8(gb);
-    if (fi->frame_or_sample_num < 0) {
+    if (fi->frame_or_sample_num < 0)
+    {
         av_log(avctx, AV_LOG_ERROR + log_level_offset,
                "sample/frame number invalid; utf8 fscked\n");
         return -1;
     }
 
     /* blocksize */
-    if (bs_code == 0) {
+    if (bs_code == 0)
+    {
         av_log(avctx, AV_LOG_ERROR + log_level_offset,
                "reserved blocksize code: 0\n");
         return -1;
-    } else if (bs_code == 6) {
+    }
+    else if (bs_code == 6)
+    {
         fi->blocksize = get_bits(gb, 8) + 1;
-    } else if (bs_code == 7) {
+    }
+    else if (bs_code == 7)
+    {
         fi->blocksize = get_bits(gb, 16) + 1;
-    } else {
+    }
+    else
+    {
         fi->blocksize = ff_flac_blocksize_table[bs_code];
     }
 
     /* sample rate */
-    if (sr_code < 12) {
+    if (sr_code < 12)
+    {
         fi->samplerate = ff_flac_sample_rate_table[sr_code];
-    } else if (sr_code == 12) {
+    }
+    else if (sr_code == 12)
+    {
         fi->samplerate = get_bits(gb, 8) * 1000;
-    } else if (sr_code == 13) {
+    }
+    else if (sr_code == 13)
+    {
         fi->samplerate = get_bits(gb, 16);
-    } else if (sr_code == 14) {
+    }
+    else if (sr_code == 14)
+    {
         fi->samplerate = get_bits(gb, 16) * 10;
-    } else {
+    }
+    else
+    {
         av_log(avctx, AV_LOG_ERROR + log_level_offset,
                "illegal sample rate code %d\n",
                sr_code);
@@ -120,7 +145,8 @@ int ff_flac_decode_frame_header(AVCodecContext *avctx, GetBitContext *gb,
     /* header CRC-8 check */
     skip_bits(gb, 8);
     if (av_crc(av_crc_get_table(AV_CRC_8_ATM), 0, gb->buffer,
-               get_bits_count(gb)/8)) {
+               get_bits_count(gb) / 8))
+    {
         av_log(avctx, AV_LOG_ERROR + log_level_offset,
                "header crc mismatch\n");
         return -1;
@@ -138,12 +164,15 @@ int ff_flac_get_max_frame_size(int blocksize, int ch, int bps)
     int count;
 
     count = 16;                  /* frame header */
-    count += ch * ((7+bps+7)/8); /* subframe headers */
-    if (ch == 2) {
+    count += ch * ((7 + bps + 7) / 8); /* subframe headers */
+    if (ch == 2)
+    {
         /* for stereo, need to account for using decorrelation */
-        count += (( 2*bps+1) * blocksize + 7) / 8;
-    } else {
-        count += ( ch*bps    * blocksize + 7) / 8;
+        count += (( 2 * bps + 1) * blocksize + 7) / 8;
+    }
+    else
+    {
+        count += ( ch * bps    * blocksize + 7) / 8;
     }
     count += 2; /* frame footer */
 

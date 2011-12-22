@@ -29,7 +29,8 @@
 #include "vc1.h"
 #include "get_bits.h"
 
-typedef struct {
+typedef struct
+{
     ParseContext pc;
     VC1Context v;
 } VC1ParseContext;
@@ -46,7 +47,8 @@ static void vc1_extract_headers(AVCodecParserContext *s, AVCodecContext *avctx,
     vpc->v.parse_only = 1;
     next = buf;
 
-    for(start = buf, end = buf + buf_size; next < end; start = next){
+    for(start = buf, end = buf + buf_size; next < end; start = next)
+    {
         int buf2_size, size;
 
         next = find_next_marker(start + 4, end);
@@ -54,7 +56,8 @@ static void vc1_extract_headers(AVCodecParserContext *s, AVCodecContext *avctx,
         buf2_size = vc1_unescape_buffer(start + 4, size, buf2);
         init_get_bits(&gb, buf2, buf2_size * 8);
         if(size <= 0) continue;
-        switch(AV_RB32(start)){
+        switch(AV_RB32(start))
+        {
         case VC1_CODE_SEQHDR:
             vc1_decode_sequence_header(avctx, &vpc->v, &gb);
             break;
@@ -85,57 +88,68 @@ static void vc1_extract_headers(AVCodecParserContext *s, AVCodecContext *avctx,
  * @return the position of the first byte of the next frame, or -1
  */
 static int vc1_find_frame_end(ParseContext *pc, const uint8_t *buf,
-                               int buf_size) {
+                              int buf_size)
+{
     int pic_found, i;
     uint32_t state;
 
-    pic_found= pc->frame_start_found;
-    state= pc->state;
+    pic_found = pc->frame_start_found;
+    state = pc->state;
 
-    i=0;
-    if(!pic_found){
-        for(i=0; i<buf_size; i++){
-            state= (state<<8) | buf[i];
-            if(state == VC1_CODE_FRAME || state == VC1_CODE_FIELD){
+    i = 0;
+    if(!pic_found)
+    {
+        for(i = 0; i < buf_size; i++)
+        {
+            state = (state << 8) | buf[i];
+            if(state == VC1_CODE_FRAME || state == VC1_CODE_FIELD)
+            {
                 i++;
-                pic_found=1;
+                pic_found = 1;
                 break;
             }
         }
     }
 
-    if(pic_found){
+    if(pic_found)
+    {
         /* EOF considered as end of frame */
         if (buf_size == 0)
             return 0;
-        for(; i<buf_size; i++){
-            state= (state<<8) | buf[i];
-            if(IS_MARKER(state) && state != VC1_CODE_FIELD && state != VC1_CODE_SLICE){
-                pc->frame_start_found=0;
-                pc->state=-1;
-                return i-3;
+        for(; i < buf_size; i++)
+        {
+            state = (state << 8) | buf[i];
+            if(IS_MARKER(state) && state != VC1_CODE_FIELD && state != VC1_CODE_SLICE)
+            {
+                pc->frame_start_found = 0;
+                pc->state = -1;
+                return i - 3;
             }
         }
     }
-    pc->frame_start_found= pic_found;
-    pc->state= state;
+    pc->frame_start_found = pic_found;
+    pc->state = state;
     return END_NOT_FOUND;
 }
 
 static int vc1_parse(AVCodecParserContext *s,
-                           AVCodecContext *avctx,
-                           const uint8_t **poutbuf, int *poutbuf_size,
-                           const uint8_t *buf, int buf_size)
+                     AVCodecContext *avctx,
+                     const uint8_t **poutbuf, int *poutbuf_size,
+                     const uint8_t *buf, int buf_size)
 {
     VC1ParseContext *vpc = s->priv_data;
     int next;
 
-    if(s->flags & PARSER_FLAG_COMPLETE_FRAMES){
-        next= buf_size;
-    }else{
-        next= vc1_find_frame_end(&vpc->pc, buf, buf_size);
+    if(s->flags & PARSER_FLAG_COMPLETE_FRAMES)
+    {
+        next = buf_size;
+    }
+    else
+    {
+        next = vc1_find_frame_end(&vpc->pc, buf, buf_size);
 
-        if (ff_combine_frame(&vpc->pc, next, &buf, &buf_size) < 0) {
+        if (ff_combine_frame(&vpc->pc, next, &buf, &buf_size) < 0)
+        {
             *poutbuf = NULL;
             *poutbuf_size = 0;
             return buf_size;
@@ -150,26 +164,32 @@ static int vc1_parse(AVCodecParserContext *s,
 }
 
 static int vc1_split(AVCodecContext *avctx,
-                           const uint8_t *buf, int buf_size)
+                     const uint8_t *buf, int buf_size)
 {
     int i;
-    uint32_t state= -1;
-    int charged=0;
+    uint32_t state = -1;
+    int charged = 0;
 
-    for(i=0; i<buf_size; i++){
-        state= (state<<8) | buf[i];
-        if(IS_MARKER(state)){
-            if(state == VC1_CODE_SEQHDR || state == VC1_CODE_ENTRYPOINT){
-                charged=1;
-            }else if(charged){
-                return i-3;
+    for(i = 0; i < buf_size; i++)
+    {
+        state = (state << 8) | buf[i];
+        if(IS_MARKER(state))
+        {
+            if(state == VC1_CODE_SEQHDR || state == VC1_CODE_ENTRYPOINT)
+            {
+                charged = 1;
+            }
+            else if(charged)
+            {
+                return i - 3;
             }
         }
     }
     return 0;
 }
 
-AVCodecParser ff_vc1_parser = {
+AVCodecParser ff_vc1_parser =
+{
     { CODEC_ID_VC1 },
     sizeof(VC1ParseContext),
     NULL,

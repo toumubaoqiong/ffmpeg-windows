@@ -29,7 +29,8 @@ static void merge_ref(AVFilterFormats *ret, AVFilterFormats *a)
 {
     int i;
 
-    for(i = 0; i < a->refcount; i ++) {
+    for(i = 0; i < a->refcount; i ++)
+    {
         ret->refs[ret->refcount] = a->refs[i];
         *ret->refs[ret->refcount++] = ret;
     }
@@ -48,7 +49,7 @@ AVFilterFormats *avfilter_merge_formats(AVFilterFormats *a, AVFilterFormats *b)
 
     /* merge list of formats */
     ret->formats = av_malloc(sizeof(*ret->formats) * FFMIN(a->format_count,
-                                                           b->format_count));
+                             b->format_count));
     for(i = 0; i < a->format_count; i ++)
         for(j = 0; j < b->format_count; j ++)
             if(a->formats[i] == b->formats[j])
@@ -56,13 +57,14 @@ AVFilterFormats *avfilter_merge_formats(AVFilterFormats *a, AVFilterFormats *b)
 
     ret->format_count = k;
     /* check that there was at least one common format */
-    if(!ret->format_count) {
+    if(!ret->format_count)
+    {
         av_free(ret->formats);
         av_free(ret);
         return NULL;
     }
 
-    ret->refs = av_malloc(sizeof(AVFilterFormats**)*(a->refcount+b->refcount));
+    ret->refs = av_malloc(sizeof(AVFilterFormats **) * (a->refcount + b->refcount));
 
     merge_ref(ret, a);
     merge_ref(ret, b);
@@ -94,7 +96,7 @@ int avfilter_add_format(AVFilterFormats **avff, int fmt)
         return AVERROR(ENOMEM);
 
     fmts = av_realloc((*avff)->formats,
-                      sizeof((*avff)->formats) * ((*avff)->format_count+1));
+                      sizeof((*avff)->formats) * ((*avff)->format_count + 1));
     if (!fmts)
         return AVERROR(ENOMEM);
 
@@ -112,7 +114,7 @@ AVFilterFormats *avfilter_all_formats(enum AVMediaType type)
 
     for (fmt = 0; fmt < num_formats; fmt++)
         if ((type != AVMEDIA_TYPE_VIDEO) ||
-            (type == AVMEDIA_TYPE_VIDEO && !((av_getav_pix_fmt_descriptors())[fmt].flags & PIX_FMT_HWACCEL)))
+                (type == AVMEDIA_TYPE_VIDEO && !((av_getav_pix_fmt_descriptors())[fmt].flags & PIX_FMT_HWACCEL)))
             avfilter_add_format(&ret, fmt);
 
     return ret;
@@ -121,7 +123,7 @@ AVFilterFormats *avfilter_all_formats(enum AVMediaType type)
 void avfilter_formats_ref(AVFilterFormats *f, AVFilterFormats **ref)
 {
     *ref = f;
-    f->refs = av_realloc(f->refs, sizeof(AVFilterFormats**) * ++f->refcount);
+    f->refs = av_realloc(f->refs, sizeof(AVFilterFormats **) * ++f->refcount);
     f->refs[f->refcount-1] = ref;
 }
 
@@ -144,10 +146,11 @@ void avfilter_formats_unref(AVFilterFormats **ref)
     idx = find_ref_index(ref);
 
     if(idx >= 0)
-        memmove((*ref)->refs + idx, (*ref)->refs + idx+1,
-            sizeof(AVFilterFormats**) * ((*ref)->refcount-idx-1));
+        memmove((*ref)->refs + idx, (*ref)->refs + idx + 1,
+                sizeof(AVFilterFormats **) * ((*ref)->refcount - idx - 1));
 
-    if(!--(*ref)->refcount) {
+    if(!--(*ref)->refcount)
+    {
         av_free((*ref)->formats);
         av_free((*ref)->refs);
         av_free(*ref);
@@ -160,7 +163,8 @@ void avfilter_formats_changeref(AVFilterFormats **oldref,
 {
     int idx = find_ref_index(oldref);
 
-    if(idx >= 0) {
+    if(idx >= 0)
+    {
         (*oldref)->refs[idx] = newref;
         *newref = *oldref;
         *oldref = NULL;

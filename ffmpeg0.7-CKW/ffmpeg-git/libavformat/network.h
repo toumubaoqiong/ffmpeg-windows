@@ -33,9 +33,11 @@
 #define ECONNREFUSED    WSAECONNREFUSED
 #define EINPROGRESS     WSAEINPROGRESS
 
-static inline int ff_neterrno() {
+static inline int ff_neterrno()
+{
     int err = WSAGetLastError();
-    switch (err) {
+    switch (err)
+    {
     case WSAEWOULDBLOCK:
         return AVERROR(EAGAIN);
     case WSAEINTR:
@@ -66,7 +68,7 @@ static inline int ff_network_init(void)
 {
 #if HAVE_WINSOCK2_H
     WSADATA wsaData;
-    if (WSAStartup(MAKEWORD(1,1), &wsaData))
+    if (WSAStartup(MAKEWORD(1, 1), &wsaData))
         return 0;
 #endif
     return 1;
@@ -89,10 +91,11 @@ static inline void ff_network_close(void)
 #endif
 }
 
-int ff_inet_aton (const char * str, struct in_addr * add);
+int ff_inet_aton (const char *str, struct in_addr *add);
 
 #if !HAVE_STRUCT_SOCKADDR_STORAGE
-struct sockaddr_storage {
+struct sockaddr_storage
+{
 #if HAVE_STRUCT_SOCKADDR_SA_LEN
     uint8_t ss_len;
     uint8_t ss_family;
@@ -106,7 +109,8 @@ struct sockaddr_storage {
 #endif
 
 #if !HAVE_STRUCT_ADDRINFO
-struct addrinfo {
+struct addrinfo
+{
     int ai_flags;
     int ai_family;
     int ai_socktype;
@@ -190,11 +194,13 @@ const char *ff_gai_strerror(int ecode);
 
 static inline int ff_is_multicast_address(struct sockaddr *addr)
 {
-    if (addr->sa_family == AF_INET) {
+    if (addr->sa_family == AF_INET)
+    {
         return IN_MULTICAST(ntohl(((struct sockaddr_in *)addr)->sin_addr.s_addr));
     }
 #if HAVE_STRUCT_SOCKADDR_IN6
-    if (addr->sa_family == AF_INET6) {
+    if (addr->sa_family == AF_INET6)
+    {
         return IN6_IS_ADDR_MULTICAST(&((struct sockaddr_in6 *)addr)->sin6_addr);
     }
 #endif

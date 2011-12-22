@@ -37,7 +37,8 @@
 /**
  * Encode error from regular symbol
  */
-static inline void ls_encode_regular(JLSState *state, PutBitContext *pb, int Q, int err){
+static inline void ls_encode_regular(JLSState *state, PutBitContext *pb, int Q, int err)
+{
     int k;
     int val;
     int map;
@@ -48,10 +49,12 @@ static inline void ls_encode_regular(JLSState *state, PutBitContext *pb, int Q, 
 
     if(err < 0)
         err += state->range;
-    if(err >= ((state->range + 1) >> 1)) {
+    if(err >= ((state->range + 1) >> 1))
+    {
         err -= state->range;
         val = 2 * FFABS(err) - 1 - map;
-    } else
+    }
+    else
         val = 2 * err + map;
 
     set_ur_golomb_jpegls(pb, val, k, state->limit, state->qbpp);
@@ -62,7 +65,8 @@ static inline void ls_encode_regular(JLSState *state, PutBitContext *pb, int Q, 
 /**
  * Encode error from run termination
  */
-static inline void ls_encode_runterm(JLSState *state, PutBitContext *pb, int RItype, int err, int limit_add){
+static inline void ls_encode_runterm(JLSState *state, PutBitContext *pb, int RItype, int err, int limit_add)
+{
     int k;
     int val, map;
     int Q = 365 + RItype;
@@ -92,17 +96,22 @@ static inline void ls_encode_runterm(JLSState *state, PutBitContext *pb, int RIt
 /**
  * Encode run value as specified by JPEG-LS standard
  */
-static inline void ls_encode_run(JLSState *state, PutBitContext *pb, int run, int comp, int trail){
-    while(run >= (1 << ff_log2_run[state->run_index[comp]])){
+static inline void ls_encode_run(JLSState *state, PutBitContext *pb, int run, int comp, int trail)
+{
+    while(run >= (1 << ff_log2_run[state->run_index[comp]]))
+    {
         put_bits(pb, 1, 1);
         run -= 1 << ff_log2_run[state->run_index[comp]];
         if(state->run_index[comp] < 31)
             state->run_index[comp]++;
     }
     /* if hit EOL, encode another full run, else encode aborted run */
-    if(!trail && run) {
+    if(!trail && run)
+    {
         put_bits(pb, 1, 1);
-    }else if(trail){
+    }
+    else if(trail)
+    {
         put_bits(pb, 1, 0);
         if(ff_log2_run[state->run_index[comp]])
             put_bits(pb, ff_log2_run[state->run_index[comp]], run);
@@ -112,12 +121,14 @@ static inline void ls_encode_run(JLSState *state, PutBitContext *pb, int run, in
 /**
  * Encode one line of image
  */
-static inline void ls_encode_line(JLSState *state, PutBitContext *pb, void *last, void *cur, int last2, int w, int stride, int comp, int bits){
+static inline void ls_encode_line(JLSState *state, PutBitContext *pb, void *last, void *cur, int last2, int w, int stride, int comp, int bits)
+{
     int x = 0;
     int Ra, Rb, Rc, Rd;
     int D0, D1, D2;
 
-    while(x < w) {
+    while(x < w)
+    {
         int err, pred, sign;
 
         /* compute gradients */
@@ -130,12 +141,14 @@ static inline void ls_encode_line(JLSState *state, PutBitContext *pb, void *last
         D2 = Rc - Ra;
 
         /* run mode */
-        if((FFABS(D0) <= state->near) && (FFABS(D1) <= state->near) && (FFABS(D2) <= state->near)) {
+        if((FFABS(D0) <= state->near) && (FFABS(D1) <= state->near) && (FFABS(D2) <= state->near))
+        {
             int RUNval, RItype, run;
 
             run = 0;
             RUNval = Ra;
-            while(x < w && (FFABS(R(cur, x) - RUNval) <= state->near)){
+            while(x < w && (FFABS(R(cur, x) - RUNval) <= state->near))
+            {
                 run++;
                 W(cur, x, Ra);
                 x += stride;
@@ -151,7 +164,8 @@ static inline void ls_encode_line(JLSState *state, PutBitContext *pb, void *last
             if(!RItype && Ra > Rb)
                 err = -err;
 
-            if(state->near){
+            if(state->near)
+            {
                 if(err > 0)
                     err = (state->near + err) / state->twonear;
                 else
@@ -172,24 +186,30 @@ static inline void ls_encode_line(JLSState *state, PutBitContext *pb, void *last
 
             if(state->run_index[comp] > 0)
                 state->run_index[comp]--;
-        } else { /* regular mode */
+        }
+        else     /* regular mode */
+        {
             int context;
 
             context = ff_jpegls_quantize(state, D0) * 81 + ff_jpegls_quantize(state, D1) * 9 + ff_jpegls_quantize(state, D2);
             pred = mid_pred(Ra, Ra + Rb - Rc, Rb);
 
-            if(context < 0){
+            if(context < 0)
+            {
                 context = -context;
                 sign = 1;
                 pred = av_clip(pred - state->C[context], 0, state->maxval);
                 err = pred - R(cur, x);
-            }else{
+            }
+            else
+            {
                 sign = 0;
                 pred = av_clip(pred + state->C[context], 0, state->maxval);
                 err = R(cur, x) - pred;
             }
 
-            if(state->near){
+            if(state->near)
+            {
                 if(err > 0)
                     err = (state->near + err) / state->twonear;
                 else
@@ -207,7 +227,8 @@ static inline void ls_encode_line(JLSState *state, PutBitContext *pb, void *last
     }
 }
 
-static void ls_store_lse(JLSState *state, PutBitContext *pb){
+static void ls_store_lse(JLSState *state, PutBitContext *pb)
+{
     /* Test if we have default params and don't need to store LSE */
     JLSState state2;
     memset(&state2, 0, sizeof(JLSState));
@@ -227,10 +248,11 @@ static void ls_store_lse(JLSState *state, PutBitContext *pb){
     put_bits(pb, 16, state->reset);
 }
 
-static int encode_picture_ls(AVCodecContext *avctx, unsigned char *buf, int buf_size, void *data){
-    JpeglsContext * const s = avctx->priv_data;
+static int encode_picture_ls(AVCodecContext *avctx, unsigned char *buf, int buf_size, void *data)
+{
+    JpeglsContext *const s = avctx->priv_data;
     AVFrame *pict = data;
-    AVFrame * const p= (AVFrame*)&s->picture;
+    AVFrame *const p = (AVFrame *)&s->picture;
     const int near = avctx->prediction_method;
     PutBitContext pb, pb2;
     GetBitContext gb;
@@ -245,8 +267,8 @@ static int encode_picture_ls(AVCodecContext *avctx, unsigned char *buf, int buf_
     init_put_bits(&pb2, buf2, buf_size);
 
     *p = *pict;
-    p->pict_type= FF_I_TYPE;
-    p->key_frame= 1;
+    p->pict_type = FF_I_TYPE;
+    p->key_frame = 1;
 
     if(avctx->pix_fmt == PIX_FMT_GRAY8 || avctx->pix_fmt == PIX_FMT_GRAY16)
         comps = 1;
@@ -261,7 +283,8 @@ static int encode_picture_ls(AVCodecContext *avctx, unsigned char *buf, int buf_
     put_bits(&pb, 16, avctx->height);
     put_bits(&pb, 16, avctx->width);
     put_bits(&pb,  8, comps);         // components
-    for(i = 1; i <= comps; i++) {
+    for(i = 1; i <= comps; i++)
+    {
         put_bits(&pb,  8, i);    // component ID
         put_bits(&pb,  8, 0x11); // subsampling: none
         put_bits(&pb,  8, 0);    // Tiq, used by JPEG-LS ext
@@ -270,7 +293,8 @@ static int encode_picture_ls(AVCodecContext *avctx, unsigned char *buf, int buf_
     put_marker(&pb, SOS);
     put_bits(&pb, 16, 6 + comps * 2);
     put_bits(&pb,  8, comps);
-    for(i = 1; i <= comps; i++) {
+    for(i = 1; i <= comps; i++)
+    {
         put_bits(&pb,  8, i);  // component ID
         put_bits(&pb,  8, 0);  // mapping index: none
     }
@@ -290,44 +314,57 @@ static int encode_picture_ls(AVCodecContext *avctx, unsigned char *buf, int buf_
     zero = av_mallocz(p->linesize[0]);
     last = zero;
     cur = p->data[0];
-    if(avctx->pix_fmt == PIX_FMT_GRAY8){
+    if(avctx->pix_fmt == PIX_FMT_GRAY8)
+    {
         int t = 0;
 
-        for(i = 0; i < avctx->height; i++) {
+        for(i = 0; i < avctx->height; i++)
+        {
             ls_encode_line(state, &pb2, last, cur, t, avctx->width, 1, 0,  8);
             t = last[0];
             last = cur;
             cur += p->linesize[0];
         }
-    }else if(avctx->pix_fmt == PIX_FMT_GRAY16){
+    }
+    else if(avctx->pix_fmt == PIX_FMT_GRAY16)
+    {
         int t = 0;
 
-        for(i = 0; i < avctx->height; i++) {
+        for(i = 0; i < avctx->height; i++)
+        {
             ls_encode_line(state, &pb2, last, cur, t, avctx->width, 1, 0, 16);
-            t = *((uint16_t*)last);
+            t = *((uint16_t *)last);
             last = cur;
             cur += p->linesize[0];
         }
-    }else if(avctx->pix_fmt == PIX_FMT_RGB24){
+    }
+    else if(avctx->pix_fmt == PIX_FMT_RGB24)
+    {
         int j, width;
         int Rc[3] = {0, 0, 0};
 
         width = avctx->width * 3;
-        for(i = 0; i < avctx->height; i++) {
-            for(j = 0; j < 3; j++) {
+        for(i = 0; i < avctx->height; i++)
+        {
+            for(j = 0; j < 3; j++)
+            {
                 ls_encode_line(state, &pb2, last + j, cur + j, Rc[j], width, 3, j, 8);
                 Rc[j] = last[j];
             }
             last = cur;
             cur += s->picture.linesize[0];
         }
-    }else if(avctx->pix_fmt == PIX_FMT_BGR24){
+    }
+    else if(avctx->pix_fmt == PIX_FMT_BGR24)
+    {
         int j, width;
         int Rc[3] = {0, 0, 0};
 
         width = avctx->width * 3;
-        for(i = 0; i < avctx->height; i++) {
-            for(j = 2; j >= 0; j--) {
+        for(i = 0; i < avctx->height; i++)
+        {
+            for(j = 2; j >= 0; j--)
+            {
                 ls_encode_line(state, &pb2, last + j, cur + j, Rc[j], width, 3, j, 8);
                 Rc[j] = last[j];
             }
@@ -348,11 +385,13 @@ static int encode_picture_ls(AVCodecContext *avctx, unsigned char *buf, int buf_
     /* do escape coding */
     init_get_bits(&gb, buf2, size);
     size -= 7;
-    while(get_bits_count(&gb) < size){
+    while(get_bits_count(&gb) < size)
+    {
         int v;
         v = get_bits(&gb, 8);
         put_bits(&pb, 8, v);
-        if(v == 0xFF){
+        if(v == 0xFF)
+        {
             v = get_bits(&gb, 7);
             put_bits(&pb, 8, v);
         }
@@ -369,20 +408,23 @@ static int encode_picture_ls(AVCodecContext *avctx, unsigned char *buf, int buf_
     return put_bits_count(&pb) >> 3;
 }
 
-static av_cold int encode_init_ls(AVCodecContext *ctx) {
-    JpeglsContext *c = (JpeglsContext*)ctx->priv_data;
+static av_cold int encode_init_ls(AVCodecContext *ctx)
+{
+    JpeglsContext *c = (JpeglsContext *)ctx->priv_data;
 
     c->avctx = ctx;
     ctx->coded_frame = &c->picture;
 
-    if(ctx->pix_fmt != PIX_FMT_GRAY8 && ctx->pix_fmt != PIX_FMT_GRAY16 && ctx->pix_fmt != PIX_FMT_RGB24 && ctx->pix_fmt != PIX_FMT_BGR24){
+    if(ctx->pix_fmt != PIX_FMT_GRAY8 && ctx->pix_fmt != PIX_FMT_GRAY16 && ctx->pix_fmt != PIX_FMT_RGB24 && ctx->pix_fmt != PIX_FMT_BGR24)
+    {
         av_log(ctx, AV_LOG_ERROR, "Only grayscale and RGB24/BGR24 images are supported\n");
         return -1;
     }
     return 0;
 }
 
-AVCodec ff_jpegls_encoder = { //FIXME avoid MPV_* lossless JPEG should not need them
+AVCodec ff_jpegls_encoder =   //FIXME avoid MPV_* lossless JPEG should not need them
+{
     "jpegls",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_JPEGLS,
@@ -390,6 +432,9 @@ AVCodec ff_jpegls_encoder = { //FIXME avoid MPV_* lossless JPEG should not need 
     encode_init_ls,
     encode_picture_ls,
     NULL,
-    .pix_fmts= (const enum PixelFormat[]){PIX_FMT_BGR24, PIX_FMT_RGB24, PIX_FMT_GRAY8, PIX_FMT_GRAY16, PIX_FMT_NONE},
-    .long_name= NULL_IF_CONFIG_SMALL("JPEG-LS"),
+    .pix_fmts = (const enum PixelFormat[])
+    {
+        PIX_FMT_BGR24, PIX_FMT_RGB24, PIX_FMT_GRAY8, PIX_FMT_GRAY16, PIX_FMT_NONE
+    },
+    .long_name = NULL_IF_CONFIG_SMALL("JPEG-LS"),
 };

@@ -104,7 +104,7 @@ static void vc1_put_ver_16b_shift2_mmx(int16_t *dst,
         "jnz 1b                            \n\t"
         : "+r"(src), "+r"(dst)
         : "r"(stride), "r"(-2*stride),
-          "m"(shift), "m"(rnd), "r"(9*stride-4)
+        "m"(shift), "m"(rnd), "r"(9*stride-4)
         : "%"REG_c, "memory"
     );
 }
@@ -515,10 +515,10 @@ static void vc1_inv_trans_4x4_dc_mmx2(uint8_t *dest, int linesize, DCTELEM *bloc
         "movd       %%mm3, %1    \n\t"
         "movd       %%mm4, %2    \n\t"
         "movd       %%mm5, %3    \n\t"
-        :"+m"(*(uint32_t*)(dest+0*linesize)),
-         "+m"(*(uint32_t*)(dest+1*linesize)),
-         "+m"(*(uint32_t*)(dest+2*linesize)),
-         "+m"(*(uint32_t*)(dest+3*linesize))
+        :"+m"(*(uint32_t *)(dest+0*linesize)),
+        "+m"(*(uint32_t *)(dest+1*linesize)),
+        "+m"(*(uint32_t *)(dest+2*linesize)),
+        "+m"(*(uint32_t *)(dest+3*linesize))
     );
 }
 
@@ -553,12 +553,12 @@ static void vc1_inv_trans_4x8_dc_mmx2(uint8_t *dest, int linesize, DCTELEM *bloc
         "movd       %%mm3, %1    \n\t"
         "movd       %%mm4, %2    \n\t"
         "movd       %%mm5, %3    \n\t"
-        :"+m"(*(uint32_t*)(dest+0*linesize)),
-         "+m"(*(uint32_t*)(dest+1*linesize)),
-         "+m"(*(uint32_t*)(dest+2*linesize)),
-         "+m"(*(uint32_t*)(dest+3*linesize))
+        :"+m"(*(uint32_t *)(dest+0*linesize)),
+        "+m"(*(uint32_t *)(dest+1*linesize)),
+        "+m"(*(uint32_t *)(dest+2*linesize)),
+        "+m"(*(uint32_t *)(dest+3*linesize))
     );
-    dest += 4*linesize;
+    dest += 4 * linesize;
     __asm__ volatile(
         "movd          %0, %%mm2 \n\t"
         "movd          %1, %%mm3 \n\t"
@@ -576,10 +576,10 @@ static void vc1_inv_trans_4x8_dc_mmx2(uint8_t *dest, int linesize, DCTELEM *bloc
         "movd       %%mm3, %1    \n\t"
         "movd       %%mm4, %2    \n\t"
         "movd       %%mm5, %3    \n\t"
-        :"+m"(*(uint32_t*)(dest+0*linesize)),
-         "+m"(*(uint32_t*)(dest+1*linesize)),
-         "+m"(*(uint32_t*)(dest+2*linesize)),
-         "+m"(*(uint32_t*)(dest+3*linesize))
+        :"+m"(*(uint32_t *)(dest+0*linesize)),
+        "+m"(*(uint32_t *)(dest+1*linesize)),
+        "+m"(*(uint32_t *)(dest+2*linesize)),
+        "+m"(*(uint32_t *)(dest+3*linesize))
     );
 }
 
@@ -614,10 +614,10 @@ static void vc1_inv_trans_8x4_dc_mmx2(uint8_t *dest, int linesize, DCTELEM *bloc
         "movq       %%mm3, %1    \n\t"
         "movq       %%mm4, %2    \n\t"
         "movq       %%mm5, %3    \n\t"
-        :"+m"(*(uint32_t*)(dest+0*linesize)),
-         "+m"(*(uint32_t*)(dest+1*linesize)),
-         "+m"(*(uint32_t*)(dest+2*linesize)),
-         "+m"(*(uint32_t*)(dest+3*linesize))
+        :"+m"(*(uint32_t *)(dest+0*linesize)),
+        "+m"(*(uint32_t *)(dest+1*linesize)),
+        "+m"(*(uint32_t *)(dest+2*linesize)),
+        "+m"(*(uint32_t *)(dest+3*linesize))
     );
 }
 
@@ -652,12 +652,12 @@ static void vc1_inv_trans_8x8_dc_mmx2(uint8_t *dest, int linesize, DCTELEM *bloc
         "movq       %%mm3, %1    \n\t"
         "movq       %%mm4, %2    \n\t"
         "movq       %%mm5, %3    \n\t"
-        :"+m"(*(uint32_t*)(dest+0*linesize)),
-         "+m"(*(uint32_t*)(dest+1*linesize)),
-         "+m"(*(uint32_t*)(dest+2*linesize)),
-         "+m"(*(uint32_t*)(dest+3*linesize))
+        :"+m"(*(uint32_t *)(dest+0*linesize)),
+        "+m"(*(uint32_t *)(dest+1*linesize)),
+        "+m"(*(uint32_t *)(dest+2*linesize)),
+        "+m"(*(uint32_t *)(dest+3*linesize))
     );
-    dest += 4*linesize;
+    dest += 4 * linesize;
     __asm__ volatile(
         "movq          %0, %%mm2 \n\t"
         "movq          %1, %%mm3 \n\t"
@@ -675,10 +675,10 @@ static void vc1_inv_trans_8x8_dc_mmx2(uint8_t *dest, int linesize, DCTELEM *bloc
         "movq       %%mm3, %1    \n\t"
         "movq       %%mm4, %2    \n\t"
         "movq       %%mm5, %3    \n\t"
-        :"+m"(*(uint32_t*)(dest+0*linesize)),
-         "+m"(*(uint32_t*)(dest+1*linesize)),
-         "+m"(*(uint32_t*)(dest+2*linesize)),
-         "+m"(*(uint32_t*)(dest+3*linesize))
+        :"+m"(*(uint32_t *)(dest+0*linesize)),
+        "+m"(*(uint32_t *)(dest+1*linesize)),
+        "+m"(*(uint32_t *)(dest+2*linesize)),
+        "+m"(*(uint32_t *)(dest+3*linesize))
     );
 }
 
@@ -711,7 +711,7 @@ void ff_vc1_h_loop_filter8_sse4(uint8_t *src, int stride, int pq);
 static void vc1_h_loop_filter16_sse4(uint8_t *src, int stride, int pq)
 {
     ff_vc1_h_loop_filter8_sse4(src,          stride, pq);
-    ff_vc1_h_loop_filter8_sse4(src+8*stride, stride, pq);
+    ff_vc1_h_loop_filter8_sse4(src + 8 * stride, stride, pq);
 }
 
 #endif
@@ -731,7 +731,8 @@ void ff_vc1dsp_init_mmx(VC1DSPContext *dsp)
 {
     int mm_flags = av_get_cpu_flags();
 
-    if (mm_flags & AV_CPU_FLAG_MMX) {
+    if (mm_flags & AV_CPU_FLAG_MMX)
+    {
         dsp->put_vc1_mspel_pixels_tab[ 0] = ff_put_vc1_mspel_mc00_mmx;
         dsp->put_vc1_mspel_pixels_tab[ 4] = put_vc1_mspel_mc01_mmx;
         dsp->put_vc1_mspel_pixels_tab[ 8] = put_vc1_mspel_mc02_mmx;
@@ -753,7 +754,8 @@ void ff_vc1dsp_init_mmx(VC1DSPContext *dsp)
         dsp->put_vc1_mspel_pixels_tab[15] = put_vc1_mspel_mc33_mmx;
     }
 
-    if (mm_flags & AV_CPU_FLAG_MMX2){
+    if (mm_flags & AV_CPU_FLAG_MMX2)
+    {
         dsp->avg_vc1_mspel_pixels_tab[ 0] = ff_avg_vc1_mspel_mc00_mmx2;
         dsp->avg_vc1_mspel_pixels_tab[ 4] = avg_vc1_mspel_mc01_mmx2;
         dsp->avg_vc1_mspel_pixels_tab[ 8] = avg_vc1_mspel_mc02_mmx2;
@@ -789,30 +791,37 @@ void ff_vc1dsp_init_mmx(VC1DSPContext *dsp)
         dsp->vc1_h_loop_filter16 = vc1_h_loop_filter16_ ## EXT
 
 #if HAVE_YASM
-    if (mm_flags & AV_CPU_FLAG_MMX) {
+    if (mm_flags & AV_CPU_FLAG_MMX)
+    {
         ASSIGN_LF(mmx);
-        dsp->put_no_rnd_vc1_chroma_pixels_tab[0]= ff_put_vc1_chroma_mc8_mmx_nornd;
+        dsp->put_no_rnd_vc1_chroma_pixels_tab[0] = ff_put_vc1_chroma_mc8_mmx_nornd;
     }
     return;
-    if (mm_flags & AV_CPU_FLAG_MMX2) {
+    if (mm_flags & AV_CPU_FLAG_MMX2)
+    {
         ASSIGN_LF(mmx2);
-        dsp->avg_no_rnd_vc1_chroma_pixels_tab[0]= ff_avg_vc1_chroma_mc8_mmx2_nornd;
-    } else if (mm_flags & AV_CPU_FLAG_3DNOW) {
-        dsp->avg_no_rnd_vc1_chroma_pixels_tab[0]= ff_avg_vc1_chroma_mc8_3dnow_nornd;
+        dsp->avg_no_rnd_vc1_chroma_pixels_tab[0] = ff_avg_vc1_chroma_mc8_mmx2_nornd;
+    }
+    else if (mm_flags & AV_CPU_FLAG_3DNOW)
+    {
+        dsp->avg_no_rnd_vc1_chroma_pixels_tab[0] = ff_avg_vc1_chroma_mc8_3dnow_nornd;
     }
 
-    if (mm_flags & AV_CPU_FLAG_SSE2) {
+    if (mm_flags & AV_CPU_FLAG_SSE2)
+    {
         dsp->vc1_v_loop_filter8  = ff_vc1_v_loop_filter8_sse2;
         dsp->vc1_h_loop_filter8  = ff_vc1_h_loop_filter8_sse2;
         dsp->vc1_v_loop_filter16 = vc1_v_loop_filter16_sse2;
         dsp->vc1_h_loop_filter16 = vc1_h_loop_filter16_sse2;
     }
-    if (mm_flags & AV_CPU_FLAG_SSSE3) {
+    if (mm_flags & AV_CPU_FLAG_SSSE3)
+    {
         ASSIGN_LF(ssse3);
-        dsp->put_no_rnd_vc1_chroma_pixels_tab[0]= ff_put_vc1_chroma_mc8_ssse3_nornd;
-        dsp->avg_no_rnd_vc1_chroma_pixels_tab[0]= ff_avg_vc1_chroma_mc8_ssse3_nornd;
+        dsp->put_no_rnd_vc1_chroma_pixels_tab[0] = ff_put_vc1_chroma_mc8_ssse3_nornd;
+        dsp->avg_no_rnd_vc1_chroma_pixels_tab[0] = ff_avg_vc1_chroma_mc8_ssse3_nornd;
     }
-    if (mm_flags & AV_CPU_FLAG_SSE4) {
+    if (mm_flags & AV_CPU_FLAG_SSE4)
+    {
         dsp->vc1_h_loop_filter8  = ff_vc1_h_loop_filter8_sse4;
         dsp->vc1_h_loop_filter16 = vc1_h_loop_filter16_sse4;
     }

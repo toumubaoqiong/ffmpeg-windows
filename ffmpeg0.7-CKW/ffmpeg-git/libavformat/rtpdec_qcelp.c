@@ -21,11 +21,13 @@
 
 #include "rtpdec_formats.h"
 
-static const uint8_t frame_sizes[] = {
+static const uint8_t frame_sizes[] =
+{
     1, 4, 8, 17, 35
 };
 
-typedef struct {
+typedef struct
+{
     int pos;
     int size;
     /* The largest frame is 35 bytes, only 10 frames are allowed per
@@ -34,7 +36,8 @@ typedef struct {
     uint8_t data[35*9];
 } InterleavePacket;
 
-struct PayloadContext {
+struct PayloadContext
+{
     int interleave_size;
     int interleave_index;
     InterleavePacket group[6];
@@ -67,7 +70,7 @@ static int store_packet(AVFormatContext *ctx, PayloadContext *data,
 {
     int interleave_size, interleave_index;
     int frame_size, ret;
-    InterleavePacket* ip;
+    InterleavePacket *ip;
 
     if (len < 2)
         return AVERROR_INVALIDDATA;
@@ -75,17 +78,20 @@ static int store_packet(AVFormatContext *ctx, PayloadContext *data,
     interleave_size  = buf[0] >> 3 & 7;
     interleave_index = buf[0]      & 7;
 
-    if (interleave_size > 5) {
+    if (interleave_size > 5)
+    {
         av_log(ctx, AV_LOG_ERROR, "Invalid interleave size %d\n",
-                                   interleave_size);
+               interleave_size);
         return AVERROR_INVALIDDATA;
     }
-    if (interleave_index > interleave_size) {
+    if (interleave_index > interleave_size)
+    {
         av_log(ctx, AV_LOG_ERROR, "Invalid interleave index %d/%d\n",
-                                   interleave_index, interleave_size);
+               interleave_index, interleave_size);
         return AVERROR_INVALIDDATA;
     }
-    if (interleave_size != data->interleave_size) {
+    if (interleave_size != data->interleave_size)
+    {
         int i;
         /* First packet, or changed interleave size */
         data->interleave_size = interleave_size;
@@ -94,17 +100,21 @@ static int store_packet(AVFormatContext *ctx, PayloadContext *data,
             data->group[i].size = 0;
     }
 
-    if (interleave_index < data->interleave_index) {
+    if (interleave_index < data->interleave_index)
+    {
         /* Wrapped around - missed the last packet of the previous group. */
-        if (data->group_finished) {
+        if (data->group_finished)
+        {
             /* No more data in the packets in this interleaving group, just
              * start processing the next one */
             data->interleave_index = 0;
-        } else {
+        }
+        else
+        {
             /* Stash away the current packet, emit everything we have of the
              * previous group. */
             for (; data->interleave_index <= interleave_size;
-                 data->interleave_index++)
+                    data->interleave_index++)
                 data->group[data->interleave_index].size = 0;
 
             if (len > sizeof(data->next_data))
@@ -118,10 +128,11 @@ static int store_packet(AVFormatContext *ctx, PayloadContext *data,
             return return_stored_frame(ctx, data, st, pkt, timestamp, buf, len);
         }
     }
-    if (interleave_index > data->interleave_index) {
+    if (interleave_index > data->interleave_index)
+    {
         /* We missed a packet */
         for (; data->interleave_index < interleave_index;
-             data->interleave_index++)
+                data->interleave_index++)
             data->group[data->interleave_index].size = 0;
     }
     data->interleave_index = interleave_index;
@@ -149,10 +160,13 @@ static int store_packet(AVFormatContext *ctx, PayloadContext *data,
      * in any of the other frames in the interleaving group either. */
     data->group_finished = ip->size == 0;
 
-    if (interleave_index == interleave_size) {
+    if (interleave_index == interleave_size)
+    {
         data->interleave_index = 0;
         return !data->group_finished;
-    } else {
+    }
+    else
+    {
         data->interleave_index++;
         return 0;
     }
@@ -162,10 +176,11 @@ static int return_stored_frame(AVFormatContext *ctx, PayloadContext *data,
                                AVStream *st, AVPacket *pkt, uint32_t *timestamp,
                                const uint8_t *buf, int len)
 {
-    InterleavePacket* ip = &data->group[data->interleave_index];
+    InterleavePacket *ip = &data->group[data->interleave_index];
     int frame_size, ret;
 
-    if (data->group_finished && data->interleave_index == 0) {
+    if (data->group_finished && data->interleave_index == 0)
+    {
         *timestamp = data->next_timestamp;
         ret = store_packet(ctx, data, st, pkt, timestamp, data->next_data,
                            data->next_size);
@@ -173,12 +188,15 @@ static int return_stored_frame(AVFormatContext *ctx, PayloadContext *data,
         return ret;
     }
 
-    if (ip->size == 0) {
+    if (ip->size == 0)
+    {
         /* No stored data for this interleave block, output an empty packet */
         if ((ret = av_new_packet(pkt, 1)) < 0)
             return ret;
         pkt->data[0] = 0; // Blank - could also be 14, Erasure
-    } else {
+    }
+    else
+    {
         if (ip->pos >= ip->size)
             return AVERROR_INVALIDDATA;
         if (ip->data[ip->pos] >= FF_ARRAY_ELEMS(frame_sizes))
@@ -196,13 +214,16 @@ static int return_stored_frame(AVFormatContext *ctx, PayloadContext *data,
     }
     pkt->stream_index = st->index;
 
-    if (data->interleave_index == data->interleave_size) {
+    if (data->interleave_index == data->interleave_size)
+    {
         data->interleave_index = 0;
         if (!data->group_finished)
             return 1;
         else
             return data->next_size > 0;
-    } else {
+    }
+    else
+    {
         data->interleave_index++;
         return 1;
     }
@@ -218,7 +239,8 @@ static int qcelp_parse_packet(AVFormatContext *ctx, PayloadContext *data,
         return return_stored_frame(ctx, data, st, pkt, timestamp, buf, len);
 }
 
-RTPDynamicProtocolHandler ff_qcelp_dynamic_handler = {
+RTPDynamicProtocolHandler ff_qcelp_dynamic_handler =
+{
     .enc_name           = "x-Purevoice",
     .codec_type         = AVMEDIA_TYPE_AUDIO,
     .codec_id           = CODEC_ID_QCELP,

@@ -147,7 +147,7 @@ static void vc1_inv_trans_8x8_altivec(DCTELEM block[64],
     const vector unsigned int vec_1 = vec_splat_u32(1);
     const vector unsigned short rangered_shift = vec_splat_u16(1);
     const vector   signed short signed_bias = vec_sl(vec_splat_s16(4),
-                                                     vec_splat_u16(4));
+            vec_splat_u16(4));
 
     src0 = vec_ld(  0, block);
     src1 = vec_ld( 16, block);
@@ -217,8 +217,10 @@ static void vc1_inv_trans_8x8_altivec(DCTELEM block[64],
     src6 = vec_pack(sE, s6);
     src7 = vec_pack(sF, s7);
 
-    if (rangered) {
-        if (!sign) {
+    if (rangered)
+    {
+        if (!sign)
+        {
             src0 = vec_sub(src0, signed_bias);
             src1 = vec_sub(src1, signed_bias);
             src2 = vec_sub(src2, signed_bias);
@@ -245,7 +247,7 @@ static void vc1_inv_trans_8x8_altivec(DCTELEM block[64],
     vec_st(src4, 64, block);
     vec_st(src5, 80, block);
     vec_st(src6, 96, block);
-    vec_st(src7,112, block);
+    vec_st(src7, 112, block);
 }
 
 static void vc1_inv_trans_8x8_add_altivec(uint8_t *dest, int stride, DCTELEM *b)
@@ -391,7 +393,7 @@ static void vc1_inv_trans_8x4_altivec(uint8_t *dest, int stride, DCTELEM *block)
 #undef OP_U8_ALTIVEC
 #undef PREFIX_no_rnd_vc1_chroma_mc8_altivec
 
-void ff_vc1dsp_init_altivec(VC1DSPContext* dsp)
+void ff_vc1dsp_init_altivec(VC1DSPContext *dsp)
 {
     if (!(av_get_cpu_flags() & AV_CPU_FLAG_ALTIVEC))
         return;

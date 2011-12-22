@@ -34,10 +34,10 @@ static int sol_probe(AVProbeData *p)
 {
     /* check file header */
     uint16_t magic;
-    magic=av_le2ne16(*((uint16_t*)p->buf));
+    magic = av_le2ne16(*((uint16_t *)p->buf));
     if ((magic == 0x0B8D || magic == 0x0C0D || magic == 0x0C8D) &&
-        p->buf[2] == 'S' && p->buf[3] == 'O' &&
-        p->buf[4] == 'L' && p->buf[5] == 0)
+            p->buf[2] == 'S' && p->buf[3] == 'O' &&
+            p->buf[4] == 'L' && p->buf[5] == 0)
         return AVPROBE_SCORE_MAX;
     else
         return 0;
@@ -83,10 +83,10 @@ static int sol_channels(int magic, int type)
 }
 
 static int sol_read_header(AVFormatContext *s,
-                          AVFormatParameters *ap)
+                           AVFormatParameters *ap)
 {
     int size;
-    unsigned int magic,tag;
+    unsigned int magic, tag;
     AVIOContext *pb = s->pb;
     unsigned int id, channels, rate, type;
     enum CodecID codec;
@@ -126,13 +126,13 @@ static int sol_read_header(AVFormatContext *s,
 #define MAX_SIZE 4096
 
 static int sol_read_packet(AVFormatContext *s,
-                          AVPacket *pkt)
+                           AVPacket *pkt)
 {
     int ret;
 
     if (url_feof(s->pb))
         return AVERROR(EIO);
-    ret= av_get_packet(s->pb, pkt, MAX_SIZE);
+    ret = av_get_packet(s->pb, pkt, MAX_SIZE);
     pkt->stream_index = 0;
 
     /* note: we need to modify the packet size here to handle the last
@@ -141,7 +141,8 @@ static int sol_read_packet(AVFormatContext *s,
     return 0;
 }
 
-AVInputFormat ff_sol_demuxer = {
+AVInputFormat ff_sol_demuxer =
+{
     "sol",
     NULL_IF_CONFIG_SMALL("Sierra SOL format"),
     0,

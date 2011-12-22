@@ -23,7 +23,8 @@
 #include "avcodec.h"
 
 /* parser definition */
-typedef struct DVDSubParseContext {
+typedef struct DVDSubParseContext
+{
     uint8_t *packet;
     int packet_len;
     int packet_index;
@@ -41,26 +42,32 @@ static int dvdsub_parse(AVCodecParserContext *s,
 {
     DVDSubParseContext *pc = s->priv_data;
 
-    if (pc->packet_index == 0) {
+    if (pc->packet_index == 0)
+    {
         if (buf_size < 2)
             return 0;
         pc->packet_len = AV_RB16(buf);
         if (pc->packet_len == 0) /* HD-DVD subpicture packet */
-            pc->packet_len = AV_RB32(buf+2);
+            pc->packet_len = AV_RB32(buf + 2);
         av_freep(&pc->packet);
         pc->packet = av_malloc(pc->packet_len);
     }
-    if (pc->packet) {
-        if (pc->packet_index + buf_size <= pc->packet_len) {
+    if (pc->packet)
+    {
+        if (pc->packet_index + buf_size <= pc->packet_len)
+        {
             memcpy(pc->packet + pc->packet_index, buf, buf_size);
             pc->packet_index += buf_size;
-            if (pc->packet_index >= pc->packet_len) {
+            if (pc->packet_index >= pc->packet_len)
+            {
                 *poutbuf = pc->packet;
                 *poutbuf_size = pc->packet_len;
                 pc->packet_index = 0;
                 return buf_size;
             }
-        } else {
+        }
+        else
+        {
             /* erroneous size */
             pc->packet_index = 0;
         }
@@ -76,7 +83,8 @@ static av_cold void dvdsub_parse_close(AVCodecParserContext *s)
     av_freep(&pc->packet);
 }
 
-AVCodecParser ff_dvdsub_parser = {
+AVCodecParser ff_dvdsub_parser =
+{
     { CODEC_ID_DVD_SUBTITLE },
     sizeof(DVDSubParseContext),
     dvdsub_parse_init,

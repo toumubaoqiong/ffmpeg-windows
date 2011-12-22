@@ -35,10 +35,13 @@ static int dnxhd_find_frame_end(ParseContext *pc,
     int pic_found = pc->frame_start_found;
     int i = 0;
 
-    if (!pic_found) {
-        for (i = 0; i < buf_size; i++) {
-            state = (state<<8) | buf[i];
-            if ((state & 0xffffffffffLL) == DNXHD_HEADER_PREFIX) {
+    if (!pic_found)
+    {
+        for (i = 0; i < buf_size; i++)
+        {
+            state = (state << 8) | buf[i];
+            if ((state & 0xffffffffffLL) == DNXHD_HEADER_PREFIX)
+            {
                 i++;
                 pic_found = 1;
                 break;
@@ -46,15 +49,18 @@ static int dnxhd_find_frame_end(ParseContext *pc,
         }
     }
 
-    if (pic_found) {
+    if (pic_found)
+    {
         if (!buf_size) /* EOF considered as end of frame */
             return 0;
-        for (; i < buf_size; i++) {
-            state = (state<<8) | buf[i];
-            if ((state & 0xffffffffffLL) == DNXHD_HEADER_PREFIX) {
+        for (; i < buf_size; i++)
+        {
+            state = (state << 8) | buf[i];
+            if ((state & 0xffffffffffLL) == DNXHD_HEADER_PREFIX)
+            {
                 pc->frame_start_found = 0;
                 pc->state64 = -1;
-                return i-4;
+                return i - 4;
             }
         }
     }
@@ -71,11 +77,15 @@ static int dnxhd_parse(AVCodecParserContext *s,
     ParseContext *pc = s->priv_data;
     int next;
 
-    if (s->flags & PARSER_FLAG_COMPLETE_FRAMES) {
+    if (s->flags & PARSER_FLAG_COMPLETE_FRAMES)
+    {
         next = buf_size;
-    } else {
+    }
+    else
+    {
         next = dnxhd_find_frame_end(pc, buf, buf_size);
-        if (ff_combine_frame(pc, next, &buf, &buf_size) < 0) {
+        if (ff_combine_frame(pc, next, &buf, &buf_size) < 0)
+        {
             *poutbuf = NULL;
             *poutbuf_size = 0;
             return buf_size;
@@ -86,7 +96,8 @@ static int dnxhd_parse(AVCodecParserContext *s,
     return next;
 }
 
-AVCodecParser ff_dnxhd_parser = {
+AVCodecParser ff_dnxhd_parser =
+{
     { CODEC_ID_DNXHD },
     sizeof(ParseContext),
     NULL,

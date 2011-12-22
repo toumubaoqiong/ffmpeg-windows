@@ -61,36 +61,45 @@ int ff_sauce_read(AVFormatContext *avctx, uint64_t *fsize, int *got_width, int g
     avio_skip(pb, 4);
     GET_SAUCE_META("encoder",   22);
 
-    if (got_width && datatype && filetype) {
-        if ((datatype == 1 && filetype <=2) || (datatype == 5 && filetype == 255) || datatype == 6) {
-            if (t1) {
-                avctx->streams[0]->codec->width = t1<<3;
+    if (got_width && datatype && filetype)
+    {
+        if ((datatype == 1 && filetype <= 2) || (datatype == 5 && filetype == 255) || datatype == 6)
+        {
+            if (t1)
+            {
+                avctx->streams[0]->codec->width = t1 << 3;
                 *got_width = 1;
             }
             if (get_height && t2)
-                avctx->streams[0]->codec->height = t2<<4;
-        } else if (datatype == 5) {
-            if (filetype > 1) {
+                avctx->streams[0]->codec->height = t2 << 4;
+        }
+        else if (datatype == 5)
+        {
+            if (filetype > 1)
+            {
                 avctx->streams[0]->codec->width = (filetype == 1 ? t1 : filetype) << 4;
                 *got_width = 1;
             }
             if (get_height && t2)
-                avctx->streams[0]->codec->height = t2<<4;
+                avctx->streams[0]->codec->height = t2 << 4;
         }
     }
 
     *fsize -= 128;
 
-    if (nb_comments > 0) {
-        avio_seek(pb, start_pos - 64*nb_comments - 5, SEEK_SET);
-        if (avio_read(pb, buf, 5) == 5 && !memcmp(buf, "COMNT", 5)) {
+    if (nb_comments > 0)
+    {
+        avio_seek(pb, start_pos - 64 * nb_comments - 5, SEEK_SET);
+        if (avio_read(pb, buf, 5) == 5 && !memcmp(buf, "COMNT", 5))
+        {
             int i;
-            char *str = av_malloc(65*nb_comments + 1);
-            *fsize -= 64*nb_comments + 5;
+            char *str = av_malloc(65 * nb_comments + 1);
+            *fsize -= 64 * nb_comments + 5;
             if (!str)
                 return 0;
-            for (i = 0; i < nb_comments; i++) {
-                if (avio_read(pb, str + 65*i, 64) != 64)
+            for (i = 0; i < nb_comments; i++)
+            {
+                if (avio_read(pb, str + 65 * i, 64) != 64)
                     break;
                 str[65*i + 64] = '\n';
             }

@@ -26,7 +26,8 @@
 
 #include "rdft.h"
 
-struct DCTContext {
+struct DCTContext
+{
     int nbits;
     int inverse;
     RDFTContext rdft;

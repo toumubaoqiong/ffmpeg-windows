@@ -27,7 +27,8 @@ void ff_vp6_edge_filter_ver_neon(uint8_t *yuv, int stride, int t);
 
 void ff_vp56dsp_init_arm(VP56DSPContext *s, enum CodecID codec)
 {
-    if (codec != CODEC_ID_VP5 && HAVE_NEON) {
+    if (codec != CODEC_ID_VP5 && HAVE_NEON)
+    {
         s->edge_filter_hor = ff_vp6_edge_filter_hor_neon;
         s->edge_filter_ver = ff_vp6_edge_filter_ver_neon;
     }

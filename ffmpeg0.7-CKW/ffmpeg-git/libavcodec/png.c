@@ -26,22 +26,26 @@ const uint8_t ff_pngsig[8] = {137, 80, 78, 71, 13, 10, 26, 10};
 const uint8_t ff_mngsig[8] = {138, 77, 78, 71, 13, 10, 26, 10};
 
 /* Mask to determine which y pixels are valid in a pass */
-const uint8_t ff_png_pass_ymask[NB_PASSES] = {
+const uint8_t ff_png_pass_ymask[NB_PASSES] =
+{
     0x80, 0x80, 0x08, 0x88, 0x22, 0xaa, 0x55,
 };
 
 /* minimum x value */
-static const uint8_t ff_png_pass_xmin[NB_PASSES] = {
+static const uint8_t ff_png_pass_xmin[NB_PASSES] =
+{
     0, 4, 0, 2, 0, 1, 0
 };
 
 /* x shift to get row width */
-static const uint8_t ff_png_pass_xshift[NB_PASSES] = {
+static const uint8_t ff_png_pass_xshift[NB_PASSES] =
+{
     3, 3, 2, 2, 1, 1, 0
 };
 
 /* Mask to determine which pixels are valid in a pass */
-const uint8_t ff_png_pass_mask[NB_PASSES] = {
+const uint8_t ff_png_pass_mask[NB_PASSES] =
+{
     0x80, 0x08, 0x88, 0x22, 0xaa, 0x55, 0xff
 };
 
@@ -62,7 +66,7 @@ int ff_png_get_nb_channels(int color_type)
     int channels;
     channels = 1;
     if ((color_type & (PNG_COLOR_MASK_COLOR | PNG_COLOR_MASK_PALETTE)) ==
-        PNG_COLOR_MASK_COLOR)
+            PNG_COLOR_MASK_COLOR)
         channels = 3;
     if (color_type & PNG_COLOR_MASK_ALPHA)
         channels++;

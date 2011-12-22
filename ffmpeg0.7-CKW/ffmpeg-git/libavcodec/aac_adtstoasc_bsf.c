@@ -26,7 +26,8 @@
 #include "mpeg4audio.h"
 #include "internal.h"
 
-typedef struct AACBSFContext {
+typedef struct AACBSFContext
+{
     int first_frame_done;
 } AACBSFContext;
 
@@ -46,42 +47,47 @@ static int aac_adtstoasc_filter(AVBitStreamFilterContext *bsfc,
 
     AACBSFContext *ctx = bsfc->priv_data;
 
-    init_get_bits(&gb, buf, AAC_ADTS_HEADER_SIZE*8);
+    init_get_bits(&gb, buf, AAC_ADTS_HEADER_SIZE * 8);
 
-    *poutbuf = (uint8_t*) buf;
+    *poutbuf = (uint8_t *) buf;
     *poutbuf_size = buf_size;
 
     if (avctx->extradata)
         if (show_bits(&gb, 12) != 0xfff)
             return 0;
 
-    if (ff_aac_parse_header(&gb, &hdr) < 0) {
+    if (ff_aac_parse_header(&gb, &hdr) < 0)
+    {
         av_log(avctx, AV_LOG_ERROR, "Error parsing ADTS frame header!\n");
         return -1;
     }
 
-    if (!hdr.crc_absent && hdr.num_aac_frames > 1) {
+    if (!hdr.crc_absent && hdr.num_aac_frames > 1)
+    {
         av_log_missing_feature(avctx, "Multiple RDBs per frame with CRC is", 0);
         return -1;
     }
 
-    buf      += AAC_ADTS_HEADER_SIZE + 2*!hdr.crc_absent;
-    buf_size -= AAC_ADTS_HEADER_SIZE + 2*!hdr.crc_absent;
+    buf      += AAC_ADTS_HEADER_SIZE + 2 * !hdr.crc_absent;
+    buf_size -= AAC_ADTS_HEADER_SIZE + 2 * !hdr.crc_absent;
 
-    if (!ctx->first_frame_done) {
+    if (!ctx->first_frame_done)
+    {
         int            pce_size = 0;
         uint8_t        pce_data[MAX_PCE_SIZE];
-        if (!hdr.chan_config) {
+        if (!hdr.chan_config)
+        {
             init_get_bits(&gb, buf, buf_size);
-            if (get_bits(&gb, 3) != 5) {
+            if (get_bits(&gb, 3) != 5)
+            {
                 av_log_missing_feature(avctx, "PCE based channel configuration, where the PCE is not the first syntax element is", 0);
                 return -1;
             }
             init_put_bits(&pb, pce_data, MAX_PCE_SIZE);
-            pce_size = ff_copy_pce_data(&pb, &gb)/8;
+            pce_size = ff_copy_pce_data(&pb, &gb) / 8;
             flush_put_bits(&pb);
-            buf_size -= get_bits_count(&gb)/8;
-            buf      += get_bits_count(&gb)/8;
+            buf_size -= get_bits_count(&gb) / 8;
+            buf      += get_bits_count(&gb) / 8;
         }
         avctx->extradata_size = 2 + pce_size;
         avctx->extradata = av_mallocz(avctx->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE);
@@ -94,20 +100,22 @@ static int aac_adtstoasc_filter(AVBitStreamFilterContext *bsfc,
         put_bits(&pb, 1, 0); //does not depend on core coder
         put_bits(&pb, 1, 0); //is not extension
         flush_put_bits(&pb);
-        if (pce_size) {
+        if (pce_size)
+        {
             memcpy(avctx->extradata + 2, pce_data, pce_size);
         }
 
         ctx->first_frame_done = 1;
     }
 
-    *poutbuf = (uint8_t*) buf;
+    *poutbuf = (uint8_t *) buf;
     *poutbuf_size = buf_size;
 
     return 0;
 }
 
-AVBitStreamFilter ff_aac_adtstoasc_bsf = {
+AVBitStreamFilter ff_aac_adtstoasc_bsf =
+{
     "aac_adtstoasc",
     sizeof(AACBSFContext),
     aac_adtstoasc_filter,

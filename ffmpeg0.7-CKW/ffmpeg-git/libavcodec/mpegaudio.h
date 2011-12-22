@@ -102,7 +102,8 @@ typedef int32_t MPA_INT;
 #define EXTRABYTES 24
 
 /* layer 3 "granule" */
-typedef struct GranuleDef {
+typedef struct GranuleDef
+{
     uint8_t scfsi;
     int part2_3_length;
     int big_values;
@@ -133,11 +134,13 @@ typedef struct GranuleDef {
     int mode_ext; \
     int lsf;
 
-typedef struct MPADecodeHeader {
-  MPA_DECODE_HEADER
+typedef struct MPADecodeHeader
+{
+    MPA_DECODE_HEADER
 } MPADecodeHeader;
 
-typedef struct MPADecodeContext {
+typedef struct MPADecodeContext
+{
     MPA_DECODE_HEADER
     uint8_t last_buf[2*BACKSTEP_SIZE + EXTRABYTES];
     int last_buf_size;
@@ -156,7 +159,7 @@ typedef struct MPADecodeContext {
     int adu_mode; ///< 0 for standard mp3, 1 for adu formatted mp3
     int dither_state;
     int error_recognition;
-    AVCodecContext* avctx;
+    AVCodecContext *avctx;
 #if CONFIG_FLOAT
     DCTContext dct;
 #endif
@@ -165,7 +168,8 @@ typedef struct MPADecodeContext {
 } MPADecodeContext;
 
 /* layer 3 huffman tables */
-typedef struct HuffTable {
+typedef struct HuffTable
+{
     int xsize;
     const uint8_t *bits;
     const uint16_t *codes;
@@ -176,33 +180,34 @@ FFMPEGLIB_API int ff_mpa_decode_header(AVCodecContext *avctx, uint32_t head, int
 extern MPA_INT ff_mpa_synth_window[];
 FFMPEGLIB_API void ff_mpa_synth_init(MPA_INT *window);
 FFMPEGLIB_API void ff_mpa_synth_filter(MPA_INT *synth_buf_ptr, int *synth_buf_offset,
-                         MPA_INT *window, int *dither_state,
-                         OUT_INT *samples, int incr,
-                         INTFLOAT sb_samples[SBLIMIT]);
+                                       MPA_INT *window, int *dither_state,
+                                       OUT_INT *samples, int incr,
+                                       INTFLOAT sb_samples[SBLIMIT]);
 
 FFMPEGLIB_API void ff_mpa_synth_init_float(MPA_INT *window);
 FFMPEGLIB_API void ff_mpa_synth_filter_float(MPADecodeContext *s,
-                         MPA_INT *synth_buf_ptr, int *synth_buf_offset,
-                         MPA_INT *window, int *dither_state,
-                         OUT_INT *samples, int incr,
-                         INTFLOAT sb_samples[SBLIMIT]);
+        MPA_INT *synth_buf_ptr, int *synth_buf_offset,
+        MPA_INT *window, int *dither_state,
+        OUT_INT *samples, int incr,
+        INTFLOAT sb_samples[SBLIMIT]);
 
 FFMPEGLIB_API void ff_mpegaudiodec_init_mmx(MPADecodeContext *s);
 FFMPEGLIB_API void ff_mpegaudiodec_init_altivec(MPADecodeContext *s);
 
 /* fast header check for resync */
-static inline int ff_mpa_check_header(uint32_t header){
+static inline int ff_mpa_check_header(uint32_t header)
+{
     /* header */
     if ((header & 0xffe00000) != 0xffe00000)
         return -1;
     /* layer check */
-    if ((header & (3<<17)) == 0)
+    if ((header & (3 << 17)) == 0)
         return -1;
     /* bit rate */
-    if ((header & (0xf<<12)) == 0xf<<12)
+    if ((header & (0xf << 12)) == 0xf << 12)
         return -1;
     /* frequency */
-    if ((header & (3<<10)) == 3<<10)
+    if ((header & (3 << 10)) == 3 << 10)
         return -1;
     return 0;
 }

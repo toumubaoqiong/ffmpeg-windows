@@ -26,7 +26,8 @@
 #include "libavutil/fifo.h"
 #include "avformat.h"
 
-typedef struct {
+typedef struct
+{
     AVFifoBuffer *fifo;
     unsigned fifo_size;           ///< size of currently allocated FIFO
     uint64_t dts;                 ///< current dts
@@ -49,7 +50,7 @@ void ff_audio_interleave_close(AVFormatContext *s);
  * @param compare_ts function will compare AVPackets and decide interleaving order.
  */
 int ff_audio_rechunk_interleave(AVFormatContext *s, AVPacket *out, AVPacket *pkt, int flush,
-                        int (*get_packet)(AVFormatContext *, AVPacket *, AVPacket *, int),
-                        int (*compare_ts)(AVFormatContext *, AVPacket *, AVPacket *));
+                                int (*get_packet)(AVFormatContext *, AVPacket *, AVPacket *, int),
+                                int (*compare_ts)(AVFormatContext *, AVPacket *, AVPacket *));
 
 #endif /* AVFORMAT_AUDIOINTERLEAVE_H */

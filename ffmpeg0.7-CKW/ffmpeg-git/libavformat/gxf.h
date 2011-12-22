@@ -22,7 +22,8 @@
 #ifndef AVFORMAT_GXF_H
 #define AVFORMAT_GXF_H
 
-typedef enum {
+typedef enum
+{
     PKT_MAP         = 0xbc,
     PKT_MEDIA       = 0xbf,
     PKT_EOS         = 0xfb,
@@ -30,7 +31,8 @@ typedef enum {
     PKT_UMF         = 0xfd,
 } GXFPktType;
 
-typedef enum {
+typedef enum
+{
     MAT_NAME        = 0x40,
     MAT_FIRST_FIELD = 0x41,
     MAT_LAST_FIELD  = 0x42,
@@ -39,7 +41,8 @@ typedef enum {
     MAT_SIZE        = 0x45,
 } GXFMatTag;
 
-typedef enum {
+typedef enum
+{
     TRACK_NAME      = 0x4c,
     TRACK_AUX       = 0x4d,
     TRACK_VER       = 0x4e,

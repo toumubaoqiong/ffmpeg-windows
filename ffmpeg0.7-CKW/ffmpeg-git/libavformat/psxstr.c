@@ -48,7 +48,8 @@
 
 #define STR_MAGIC (0x80010160)
 
-typedef struct StrChannel {
+typedef struct StrChannel
+{
     /* video parameters */
     int video_stream_index;
     AVPacket tmp_pkt;
@@ -57,37 +58,39 @@ typedef struct StrChannel {
     int audio_stream_index;
 } StrChannel;
 
-typedef struct StrDemuxContext {
+typedef struct StrDemuxContext
+{
 
     /* a STR file can contain up to 32 channels of data */
     StrChannel channels[32];
 } StrDemuxContext;
 
-static const char sync_header[12] = {0x00,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0x00};
+static const char sync_header[12] = {0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00};
 
 static int str_probe(AVProbeData *p)
 {
-    uint8_t *sector= p->buf;
+    uint8_t *sector = p->buf;
 
     if (p->buf_size < RAW_CD_SECTOR_SIZE)
         return 0;
 
     if ((AV_RL32(&p->buf[0]) == RIFF_TAG) &&
-        (AV_RL32(&p->buf[8]) == CDXA_TAG)) {
+            (AV_RL32(&p->buf[8]) == CDXA_TAG))
+    {
 
         /* RIFF header seen; skip 0x2C bytes */
         sector += RIFF_HEADER_SIZE;
     }
 
     /* look for CD sync header (00, 0xFF x 10, 00) */
-    if (memcmp(sector,sync_header,sizeof(sync_header)))
+    if (memcmp(sector, sync_header, sizeof(sync_header)))
         return 0;
 
     if(sector[0x11] >= 32)
         return 0;
     if(   (sector[0x12] & CDXA_TYPE_MASK) != CDXA_TYPE_VIDEO
-       && (sector[0x12] & CDXA_TYPE_MASK) != CDXA_TYPE_AUDIO
-       && (sector[0x12] & CDXA_TYPE_MASK) != CDXA_TYPE_DATA)
+            && (sector[0x12] & CDXA_TYPE_MASK) != CDXA_TYPE_AUDIO
+            && (sector[0x12] & CDXA_TYPE_MASK) != CDXA_TYPE_DATA)
         return 0;
 
     /* MPEG files (like those ripped from VCDs) can also look like this;
@@ -114,9 +117,10 @@ static int str_read_header(AVFormatContext *s,
 
     avio_seek(pb, start, SEEK_SET);
 
-    for(i=0; i<32; i++){
-        str->channels[i].video_stream_index=
-        str->channels[i].audio_stream_index= -1;
+    for(i = 0; i < 32; i++)
+    {
+        str->channels[i].video_stream_index =
+            str->channels[i].audio_stream_index = -1;
     }
 
     s->ctx_flags |= AVFMTCTX_NOHEADER;
@@ -134,7 +138,8 @@ static int str_read_packet(AVFormatContext *s,
     AVPacket *pkt;
     AVStream *st;
 
-    while (1) {
+    while (1)
+    {
 
         if (avio_read(pb, sector, RAW_CD_SECTOR_SIZE) != RAW_CD_SECTOR_SIZE)
             return AVERROR(EIO);
@@ -143,71 +148,77 @@ static int str_read_packet(AVFormatContext *s,
         if (channel >= 32)
             return AVERROR_INVALIDDATA;
 
-        switch (sector[0x12] & CDXA_TYPE_MASK) {
+        switch (sector[0x12] & CDXA_TYPE_MASK)
+        {
 
         case CDXA_TYPE_DATA:
         case CDXA_TYPE_VIDEO:
+        {
+
+            int current_sector = AV_RL16(&sector[0x1C]);
+            int sector_count   = AV_RL16(&sector[0x1E]);
+            int frame_size = AV_RL32(&sector[0x24]);
+
+            if(!(   frame_size >= 0
+                    && current_sector < sector_count
+                    && sector_count *VIDEO_DATA_CHUNK_SIZE >= frame_size))
             {
-
-                int current_sector = AV_RL16(&sector[0x1C]);
-                int sector_count   = AV_RL16(&sector[0x1E]);
-                int frame_size = AV_RL32(&sector[0x24]);
-
-                if(!(   frame_size>=0
-                     && current_sector < sector_count
-                     && sector_count*VIDEO_DATA_CHUNK_SIZE >=frame_size)){
-                    av_log(s, AV_LOG_ERROR, "Invalid parameters %d %d %d\n", current_sector, sector_count, frame_size);
-                    break;
-                }
-
-                if(str->channels[channel].video_stream_index < 0){
-                    /* allocate a new AVStream */
-                    st = av_new_stream(s, 0);
-                    if (!st)
-                        return AVERROR(ENOMEM);
-                    av_set_pts_info(st, 64, 1, 15);
-
-                    str->channels[channel].video_stream_index = st->index;
-
-                    st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
-                    st->codec->codec_id   = CODEC_ID_MDEC;
-                    st->codec->codec_tag  = 0;  /* no fourcc */
-                    st->codec->width      = AV_RL16(&sector[0x28]);
-                    st->codec->height     = AV_RL16(&sector[0x2A]);
-                }
-
-                /* if this is the first sector of the frame, allocate a pkt */
-                pkt = &str->channels[channel].tmp_pkt;
-
-                if(pkt->size != sector_count*VIDEO_DATA_CHUNK_SIZE){
-                    if(pkt->data)
-                        av_log(s, AV_LOG_ERROR, "missmatching sector_count\n");
-                    av_free_packet(pkt);
-                    if (av_new_packet(pkt, sector_count*VIDEO_DATA_CHUNK_SIZE))
-                        return AVERROR(EIO);
-
-                    pkt->pos= avio_tell(pb) - RAW_CD_SECTOR_SIZE;
-                    pkt->stream_index =
-                        str->channels[channel].video_stream_index;
-                }
-
-                memcpy(pkt->data + current_sector*VIDEO_DATA_CHUNK_SIZE,
-                       sector + VIDEO_DATA_HEADER_SIZE,
-                       VIDEO_DATA_CHUNK_SIZE);
-
-                if (current_sector == sector_count-1) {
-                    pkt->size= frame_size;
-                    *ret_pkt = *pkt;
-                    pkt->data= NULL;
-                    pkt->size= -1;
-                    return 0;
-                }
-
+                av_log(s, AV_LOG_ERROR, "Invalid parameters %d %d %d\n", current_sector, sector_count, frame_size);
+                break;
             }
-            break;
+
+            if(str->channels[channel].video_stream_index < 0)
+            {
+                /* allocate a new AVStream */
+                st = av_new_stream(s, 0);
+                if (!st)
+                    return AVERROR(ENOMEM);
+                av_set_pts_info(st, 64, 1, 15);
+
+                str->channels[channel].video_stream_index = st->index;
+
+                st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
+                st->codec->codec_id   = CODEC_ID_MDEC;
+                st->codec->codec_tag  = 0;  /* no fourcc */
+                st->codec->width      = AV_RL16(&sector[0x28]);
+                st->codec->height     = AV_RL16(&sector[0x2A]);
+            }
+
+            /* if this is the first sector of the frame, allocate a pkt */
+            pkt = &str->channels[channel].tmp_pkt;
+
+            if(pkt->size != sector_count * VIDEO_DATA_CHUNK_SIZE)
+            {
+                if(pkt->data)
+                    av_log(s, AV_LOG_ERROR, "missmatching sector_count\n");
+                av_free_packet(pkt);
+                if (av_new_packet(pkt, sector_count * VIDEO_DATA_CHUNK_SIZE))
+                    return AVERROR(EIO);
+
+                pkt->pos = avio_tell(pb) - RAW_CD_SECTOR_SIZE;
+                pkt->stream_index =
+                    str->channels[channel].video_stream_index;
+            }
+
+            memcpy(pkt->data + current_sector * VIDEO_DATA_CHUNK_SIZE,
+                   sector + VIDEO_DATA_HEADER_SIZE,
+                   VIDEO_DATA_CHUNK_SIZE);
+
+            if (current_sector == sector_count - 1)
+            {
+                pkt->size = frame_size;
+                *ret_pkt = *pkt;
+                pkt->data = NULL;
+                pkt->size = -1;
+                return 0;
+            }
+
+        }
+        break;
 
         case CDXA_TYPE_AUDIO:
-            if(str->channels[channel].audio_stream_index < 0){
+            if(str->channels[channel].audio_stream_index < 0)
+            {
                 int fmt = sector[0x13];
                 /* allocate a new AVStream */
                 st = av_new_stream(s, 0);
@@ -219,9 +230,9 @@ static int str_read_packet(AVFormatContext *s,
                 st->codec->codec_type  = AVMEDIA_TYPE_AUDIO;
                 st->codec->codec_id    = CODEC_ID_ADPCM_XA;
                 st->codec->codec_tag   = 0;  /* no fourcc */
-                st->codec->channels    = (fmt&1)?2:1;
-                st->codec->sample_rate = (fmt&4)?18900:37800;
-            //    st->codec->bit_rate = 0; //FIXME;
+                st->codec->channels    = (fmt & 1) ? 2 : 1;
+                st->codec->sample_rate = (fmt & 4) ? 18900 : 37800;
+                //    st->codec->bit_rate = 0; //FIXME;
                 st->codec->block_align = 128;
 
                 av_set_pts_info(st, 64, 128, st->codec->sample_rate);
@@ -229,7 +240,7 @@ static int str_read_packet(AVFormatContext *s,
             pkt = ret_pkt;
             if (av_new_packet(pkt, 2304))
                 return AVERROR(EIO);
-            memcpy(pkt->data,sector+24,2304);
+            memcpy(pkt->data, sector + 24, 2304);
 
             pkt->stream_index =
                 str->channels[channel].audio_stream_index;
@@ -250,7 +261,8 @@ static int str_read_close(AVFormatContext *s)
 {
     StrDemuxContext *str = s->priv_data;
     int i;
-    for(i=0; i<32; i++){
+    for(i = 0; i < 32; i++)
+    {
         if(str->channels[i].tmp_pkt.data)
             av_free_packet(&str->channels[i].tmp_pkt);
     }
@@ -258,7 +270,8 @@ static int str_read_close(AVFormatContext *s)
     return 0;
 }
 
-AVInputFormat ff_str_demuxer = {
+AVInputFormat ff_str_demuxer =
+{
     "psxstr",
     NULL_IF_CONFIG_SMALL("Sony Playstation STR format"),
     sizeof(StrDemuxContext),

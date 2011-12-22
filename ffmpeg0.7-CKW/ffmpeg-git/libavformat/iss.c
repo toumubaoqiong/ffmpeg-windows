@@ -34,7 +34,8 @@
 #define ISS_SIG_LEN 15
 #define MAX_TOKEN_SIZE 20
 
-typedef struct {
+typedef struct
+{
     int packet_size;
     int sample_start_pos;
 } IssDemuxContext;
@@ -44,10 +45,11 @@ static void get_token(AVIOContext *s, char *buf, int maxlen)
     int i = 0;
     char c;
 
-    while ((c = avio_r8(s))) {
+    while ((c = avio_r8(s)))
+    {
         if(c == ' ')
             break;
-        if (i < maxlen-1)
+        if (i < maxlen - 1)
             buf[i++] = c;
     }
 
@@ -97,10 +99,10 @@ static av_cold int iss_read_header(AVFormatContext *s, AVFormatParameters *ap)
     st->codec->channels = stereo ? 2 : 1;
     st->codec->sample_rate = 44100;
     if(rate_divisor > 0)
-         st->codec->sample_rate /= rate_divisor;
+        st->codec->sample_rate /= rate_divisor;
     st->codec->bits_per_coded_sample = 4;
     st->codec->bit_rate = st->codec->channels * st->codec->sample_rate
-                                      * st->codec->bits_per_coded_sample;
+                          * st->codec->bits_per_coded_sample;
     st->codec->block_align = iss->packet_size;
     av_set_pts_info(st, 32, 1, st->codec->sample_rate);
 
@@ -118,11 +120,12 @@ static int iss_read_packet(AVFormatContext *s, AVPacket *pkt)
     pkt->stream_index = 0;
     pkt->pts = avio_tell(s->pb) - iss->sample_start_pos;
     if(s->streams[0]->codec->channels > 0)
-        pkt->pts /= s->streams[0]->codec->channels*2;
+        pkt->pts /= s->streams[0]->codec->channels * 2;
     return 0;
 }
 
-AVInputFormat ff_iss_demuxer = {
+AVInputFormat ff_iss_demuxer =
+{
     "ISS",
     NULL_IF_CONFIG_SMALL("Funcom ISS format"),
     sizeof(IssDemuxContext),

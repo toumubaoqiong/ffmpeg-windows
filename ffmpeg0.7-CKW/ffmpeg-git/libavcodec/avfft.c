@@ -46,7 +46,8 @@ void av_fft_calc(FFTContext *s, FFTComplex *z)
 
 void av_fft_end(FFTContext *s)
 {
-    if (s) {
+    if (s)
+    {
         ff_fft_end(s);
         av_free(s);
     }
@@ -81,7 +82,8 @@ void av_mdct_calc(FFTContext *s, FFTSample *output, const FFTSample *input)
 
 void av_mdct_end(FFTContext *s)
 {
-    if (s) {
+    if (s)
+    {
         ff_mdct_end(s);
         av_free(s);
     }
@@ -108,7 +110,8 @@ void av_rdft_calc(RDFTContext *s, FFTSample *data)
 
 void av_rdft_end(RDFTContext *s)
 {
-    if (s) {
+    if (s)
+    {
         ff_rdft_end(s);
         av_free(s);
     }
@@ -135,7 +138,8 @@ void av_dct_calc(DCTContext *s, FFTSample *data)
 
 void av_dct_end(DCTContext *s)
 {
-    if (s) {
+    if (s)
+    {
         ff_dct_end(s);
         av_free(s);
     }

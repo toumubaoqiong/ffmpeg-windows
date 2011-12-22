@@ -74,7 +74,8 @@
 #define VERBATIM_BYTE_SIZE 8
 #define CANONICAL_HEADER_SIZE 44
 
-typedef struct ShortenContext {
+typedef struct ShortenContext
+{
     AVCodecContext *avctx;
     GetBitContext gb;
 
@@ -101,7 +102,7 @@ typedef struct ShortenContext {
     int32_t lpcqoffset;
 } ShortenContext;
 
-static av_cold int shorten_decode_init(AVCodecContext * avctx)
+static av_cold int shorten_decode_init(AVCodecContext *avctx)
 {
     ShortenContext *s = avctx->priv_data;
     s->avctx = avctx;
@@ -115,20 +116,23 @@ static int allocate_buffers(ShortenContext *s)
     int i, chan;
     int *coeffs;
 
-    for (chan=0; chan<s->channels; chan++) {
-        if(FFMAX(1, s->nmean) >= UINT_MAX/sizeof(int32_t)){
+    for (chan = 0; chan < s->channels; chan++)
+    {
+        if(FFMAX(1, s->nmean) >= UINT_MAX / sizeof(int32_t))
+        {
             av_log(s->avctx, AV_LOG_ERROR, "nmean too large\n");
             return -1;
         }
-        if(s->blocksize + s->nwrap >= UINT_MAX/sizeof(int32_t) || s->blocksize + s->nwrap <= (unsigned)s->nwrap){
+        if(s->blocksize + s->nwrap >= UINT_MAX / sizeof(int32_t) || s->blocksize + s->nwrap <= (unsigned)s->nwrap)
+        {
             av_log(s->avctx, AV_LOG_ERROR, "s->blocksize + s->nwrap too large\n");
             return -1;
         }
 
-        s->offset[chan] = av_realloc(s->offset[chan], sizeof(int32_t)*FFMAX(1, s->nmean));
+        s->offset[chan] = av_realloc(s->offset[chan], sizeof(int32_t) * FFMAX(1, s->nmean));
 
-        s->decoded[chan] = av_realloc(s->decoded[chan], sizeof(int32_t)*(s->blocksize + s->nwrap));
-        for (i=0; i<s->nwrap; i++)
+        s->decoded[chan] = av_realloc(s->decoded[chan], sizeof(int32_t) * (s->blocksize + s->nwrap));
+        for (i = 0; i < s->nwrap; i++)
             s->decoded[chan][i] = 0;
         s->decoded[chan] += s->nwrap;
     }
@@ -168,13 +172,13 @@ static void init_offset(ShortenContext *s)
     /* initialise offset */
     switch (s->internal_ftype)
     {
-        case TYPE_S16HL:
-        case TYPE_S16LH:
-            mean = 0;
-            break;
-        default:
-            av_log(s->avctx, AV_LOG_ERROR, "unknown audio type");
-            abort();
+    case TYPE_S16HL:
+    case TYPE_S16LH:
+        mean = 0;
+        break;
+    default:
+        av_log(s->avctx, AV_LOG_ERROR, "unknown audio type");
+        abort();
     }
 
     for (chan = 0; chan < s->channels; chan++)
@@ -199,38 +203,43 @@ static int decode_wave_header(AVCodecContext *avctx, uint8_t *header, int header
     int chunk_size;
     short wave_format;
 
-    init_get_bits(&hb, header, header_size*8);
-    if (get_le32(&hb) != MKTAG('R','I','F','F')) {
+    init_get_bits(&hb, header, header_size * 8);
+    if (get_le32(&hb) != MKTAG('R', 'I', 'F', 'F'))
+    {
         av_log(avctx, AV_LOG_ERROR, "missing RIFF tag\n");
         return -1;
     }
 
     chunk_size = get_le32(&hb);
 
-    if (get_le32(&hb) != MKTAG('W','A','V','E')) {
+    if (get_le32(&hb) != MKTAG('W', 'A', 'V', 'E'))
+    {
         av_log(avctx, AV_LOG_ERROR, "missing WAVE tag\n");
         return -1;
     }
 
-    while (get_le32(&hb) != MKTAG('f','m','t',' ')) {
+    while (get_le32(&hb) != MKTAG('f', 'm', 't', ' '))
+    {
         len = get_le32(&hb);
-        skip_bits(&hb, 8*len);
+        skip_bits(&hb, 8 * len);
     }
     len = get_le32(&hb);
 
-    if (len < 16) {
+    if (len < 16)
+    {
         av_log(avctx, AV_LOG_ERROR, "fmt chunk was too short\n");
         return -1;
     }
 
     wave_format = get_le16(&hb);
 
-    switch (wave_format) {
-        case WAVE_FORMAT_PCM:
-            break;
-        default:
-            av_log(avctx, AV_LOG_ERROR, "unsupported wave format\n");
-            return -1;
+    switch (wave_format)
+    {
+    case WAVE_FORMAT_PCM:
+        break;
+    default:
+        av_log(avctx, AV_LOG_ERROR, "unsupported wave format\n");
+        return -1;
     }
 
     avctx->channels = get_le16(&hb);
@@ -239,7 +248,8 @@ static int decode_wave_header(AVCodecContext *avctx, uint8_t *header, int header
     avctx->block_align = get_le16(&hb);
     avctx->bits_per_coded_sample = get_le16(&hb);
 
-    if (avctx->bits_per_coded_sample != 16) {
+    if (avctx->bits_per_coded_sample != 16)
+    {
         av_log(avctx, AV_LOG_ERROR, "unsupported number of bits per sample\n");
         return -1;
     }
@@ -251,10 +261,11 @@ static int decode_wave_header(AVCodecContext *avctx, uint8_t *header, int header
     return 0;
 }
 
-static int16_t * interleave_buffer(int16_t *samples, int nchan, int blocksize, int32_t **buffer) {
+static int16_t *interleave_buffer(int16_t *samples, int nchan, int blocksize, int32_t **buffer)
+{
     int i, chan;
-    for (i=0; i<blocksize; i++)
-        for (chan=0; chan < nchan; chan++)
+    for (i = 0; i < blocksize; i++)
+        for (chan = 0; chan < nchan; chan++)
             *samples++ = FFMIN(buffer[chan][i], 32768);
     return samples;
 }
@@ -264,12 +275,13 @@ static void decode_subframe_lpc(ShortenContext *s, int channel, int residual_siz
     int sum, i, j;
     int *coeffs = s->coeffs;
 
-    for (i=0; i<pred_order; i++)
+    for (i = 0; i < pred_order; i++)
         coeffs[i] = get_sr_golomb_shorten(&s->gb, LPCQUANT);
 
-    for (i=0; i < s->blocksize; i++) {
+    for (i = 0; i < s->blocksize; i++)
+    {
         sum = s->lpcqoffset;
-        for (j=0; j<pred_order; j++)
+        for (j = 0; j < pred_order; j++)
             sum += coeffs[j] * s->decoded[channel][i-j-1];
         s->decoded[channel][i] = get_sr_golomb_shorten(&s->gb, residual_size) + (sum >> LPCQUANT);
     }
@@ -277,46 +289,51 @@ static void decode_subframe_lpc(ShortenContext *s, int channel, int residual_siz
 
 
 static int shorten_decode_frame(AVCodecContext *avctx,
-        void *data, int *data_size,
-        AVPacket *avpkt)
+                                void *data, int *data_size,
+                                AVPacket *avpkt)
 {
     const uint8_t *buf = avpkt->data;
     int buf_size = avpkt->size;
     ShortenContext *s = avctx->priv_data;
     int i, input_buf_size = 0;
     int16_t *samples = data;
-    if(s->max_framesize == 0){
-        s->max_framesize= 1024; // should hopefully be enough for the first header
-        s->bitstream= av_fast_realloc(s->bitstream, &s->allocated_bitstream_size, s->max_framesize);
+    if(s->max_framesize == 0)
+    {
+        s->max_framesize = 1024; // should hopefully be enough for the first header
+        s->bitstream = av_fast_realloc(s->bitstream, &s->allocated_bitstream_size, s->max_framesize);
     }
 
-    if(1 && s->max_framesize){//FIXME truncated
-        buf_size= FFMIN(buf_size, s->max_framesize - s->bitstream_size);
-        input_buf_size= buf_size;
+    if(1 && s->max_framesize) //FIXME truncated
+    {
+        buf_size = FFMIN(buf_size, s->max_framesize - s->bitstream_size);
+        input_buf_size = buf_size;
 
-        if(s->bitstream_index + s->bitstream_size + buf_size > s->allocated_bitstream_size){
+        if(s->bitstream_index + s->bitstream_size + buf_size > s->allocated_bitstream_size)
+        {
             //                printf("memmove\n");
             memmove(s->bitstream, &s->bitstream[s->bitstream_index], s->bitstream_size);
-            s->bitstream_index=0;
+            s->bitstream_index = 0;
         }
         memcpy(&s->bitstream[s->bitstream_index + s->bitstream_size], buf, buf_size);
-        buf= &s->bitstream[s->bitstream_index];
+        buf = &s->bitstream[s->bitstream_index];
         buf_size += s->bitstream_size;
-        s->bitstream_size= buf_size;
+        s->bitstream_size = buf_size;
 
-        if(buf_size < s->max_framesize){
+        if(buf_size < s->max_framesize)
+        {
             //av_dlog(avctx, "wanna more data ... %d\n", buf_size);
             *data_size = 0;
             return input_buf_size;
         }
     }
-    init_get_bits(&s->gb, buf, buf_size*8);
+    init_get_bits(&s->gb, buf, buf_size * 8);
     skip_bits(&s->gb, s->bitindex);
     if (!s->blocksize)
     {
         int maxnlpc = 0;
         /* shorten signature */
-        if (get_bits_long(&s->gb, 32) != AV_RB32("ajkg")) {
+        if (get_bits_long(&s->gb, 32) != AV_RB32("ajkg"))
+        {
             av_log(s->avctx, AV_LOG_ERROR, "missing shorten magic 'ajkg'\n");
             return -1;
         }
@@ -329,20 +346,23 @@ static int shorten_decode_frame(AVCodecContext *avctx,
         s->internal_ftype = get_uint(s, TYPESIZE);
 
         s->channels = get_uint(s, CHANSIZE);
-        if (s->channels > MAX_CHANNELS) {
+        if (s->channels > MAX_CHANNELS)
+        {
             av_log(s->avctx, AV_LOG_ERROR, "too many channels: %d\n", s->channels);
             return -1;
         }
 
         /* get blocksize if version > 0 */
-        if (s->version > 0) {
+        if (s->version > 0)
+        {
             int skip_bytes;
             s->blocksize = get_uint(s, av_log2(DEFAULT_BLOCK_SIZE));
             maxnlpc = get_uint(s, LPCQSIZE);
             s->nmean = get_uint(s, 0);
 
             skip_bytes = get_uint(s, NSKIPSIZE);
-            for (i=0; i<skip_bytes; i++) {
+            for (i = 0; i < skip_bytes; i++)
+            {
                 skip_bits(&s->gb, 8);
             }
         }
@@ -356,18 +376,20 @@ static int shorten_decode_frame(AVCodecContext *avctx,
         if (s->version > 1)
             s->lpcqoffset = V2LPCQOFFSET;
 
-        if (get_ur_golomb_shorten(&s->gb, FNSIZE) != FN_VERBATIM) {
+        if (get_ur_golomb_shorten(&s->gb, FNSIZE) != FN_VERBATIM)
+        {
             av_log(s->avctx, AV_LOG_ERROR, "missing verbatim section at beginning of stream\n");
             return -1;
         }
 
         s->header_size = get_ur_golomb_shorten(&s->gb, VERBATIM_CKSIZE_SIZE);
-        if (s->header_size >= OUT_BUFFER_SIZE || s->header_size < CANONICAL_HEADER_SIZE) {
+        if (s->header_size >= OUT_BUFFER_SIZE || s->header_size < CANONICAL_HEADER_SIZE)
+        {
             av_log(s->avctx, AV_LOG_ERROR, "header is wrong size: %d\n", s->header_size);
             return -1;
         }
 
-        for (i=0; i<s->header_size; i++)
+        for (i = 0; i < s->header_size; i++)
             s->header[i] = (char)get_ur_golomb_shorten(&s->gb, VERBATIM_BYTE_SIZE);
 
         if (decode_wave_header(avctx, s->header, s->header_size) < 0)
@@ -381,141 +403,152 @@ static int shorten_decode_frame(AVCodecContext *avctx,
         int cmd;
         int len;
         cmd = get_ur_golomb_shorten(&s->gb, FNSIZE);
-        switch (cmd) {
+        switch (cmd)
+        {
+        case FN_ZERO:
+        case FN_DIFF0:
+        case FN_DIFF1:
+        case FN_DIFF2:
+        case FN_DIFF3:
+        case FN_QLPC:
+        {
+            int residual_size = 0;
+            int channel = s->cur_chan;
+            int32_t coffset;
+            if (cmd != FN_ZERO)
+            {
+                residual_size = get_ur_golomb_shorten(&s->gb, ENERGYSIZE);
+                /* this is a hack as version 0 differed in defintion of get_sr_golomb_shorten */
+                if (s->version == 0)
+                    residual_size--;
+            }
+
+            if (s->nmean == 0)
+                coffset = s->offset[channel][0];
+            else
+            {
+                int32_t sum = (s->version < 2) ? 0 : s->nmean / 2;
+                for (i = 0; i < s->nmean; i++)
+                    sum += s->offset[channel][i];
+                coffset = sum / s->nmean;
+                if (s->version >= 2)
+                    coffset >>= FFMIN(1, s->bitshift);
+            }
+            switch (cmd)
+            {
             case FN_ZERO:
+                for (i = 0; i < s->blocksize; i++)
+                    s->decoded[channel][i] = 0;
+                break;
             case FN_DIFF0:
+                for (i = 0; i < s->blocksize; i++)
+                    s->decoded[channel][i] = get_sr_golomb_shorten(&s->gb, residual_size) + coffset;
+                break;
             case FN_DIFF1:
+                for (i = 0; i < s->blocksize; i++)
+                    s->decoded[channel][i] = get_sr_golomb_shorten(&s->gb, residual_size) + s->decoded[channel][i - 1];
+                break;
             case FN_DIFF2:
+                for (i = 0; i < s->blocksize; i++)
+                    s->decoded[channel][i] = get_sr_golomb_shorten(&s->gb, residual_size) + 2 * s->decoded[channel][i-1]
+                                             -   s->decoded[channel][i-2];
+                break;
             case FN_DIFF3:
+                for (i = 0; i < s->blocksize; i++)
+                    s->decoded[channel][i] = get_sr_golomb_shorten(&s->gb, residual_size) + 3 * s->decoded[channel][i-1]
+                                             - 3 * s->decoded[channel][i-2]
+                                             +   s->decoded[channel][i-3];
+                break;
             case FN_QLPC:
+            {
+                int pred_order = get_ur_golomb_shorten(&s->gb, LPCQSIZE);
+                if (pred_order > s->nwrap)
                 {
-                    int residual_size = 0;
-                    int channel = s->cur_chan;
-                    int32_t coffset;
-                    if (cmd != FN_ZERO) {
-                        residual_size = get_ur_golomb_shorten(&s->gb, ENERGYSIZE);
-                        /* this is a hack as version 0 differed in defintion of get_sr_golomb_shorten */
-                        if (s->version == 0)
-                            residual_size--;
-                    }
-
-                    if (s->nmean == 0)
-                        coffset = s->offset[channel][0];
-                    else {
-                        int32_t sum = (s->version < 2) ? 0 : s->nmean / 2;
-                        for (i=0; i<s->nmean; i++)
-                            sum += s->offset[channel][i];
-                        coffset = sum / s->nmean;
-                        if (s->version >= 2)
-                            coffset >>= FFMIN(1, s->bitshift);
-                    }
-                    switch (cmd) {
-                        case FN_ZERO:
-                            for (i=0; i<s->blocksize; i++)
-                                s->decoded[channel][i] = 0;
-                            break;
-                        case FN_DIFF0:
-                            for (i=0; i<s->blocksize; i++)
-                                s->decoded[channel][i] = get_sr_golomb_shorten(&s->gb, residual_size) + coffset;
-                            break;
-                        case FN_DIFF1:
-                            for (i=0; i<s->blocksize; i++)
-                                s->decoded[channel][i] = get_sr_golomb_shorten(&s->gb, residual_size) + s->decoded[channel][i - 1];
-                            break;
-                        case FN_DIFF2:
-                            for (i=0; i<s->blocksize; i++)
-                                s->decoded[channel][i] = get_sr_golomb_shorten(&s->gb, residual_size) + 2*s->decoded[channel][i-1]
-                                                                                                      -   s->decoded[channel][i-2];
-                            break;
-                        case FN_DIFF3:
-                            for (i=0; i<s->blocksize; i++)
-                                s->decoded[channel][i] = get_sr_golomb_shorten(&s->gb, residual_size) + 3*s->decoded[channel][i-1]
-                                                                                                      - 3*s->decoded[channel][i-2]
-                                                                                                      +   s->decoded[channel][i-3];
-                            break;
-                        case FN_QLPC:
-                            {
-                                int pred_order = get_ur_golomb_shorten(&s->gb, LPCQSIZE);
-                                if (pred_order > s->nwrap) {
-                                    av_log(avctx, AV_LOG_ERROR,
-                                           "invalid pred_order %d\n",
-                                           pred_order);
-                                    return -1;
-                                }
-                                for (i=0; i<pred_order; i++)
-                                    s->decoded[channel][i - pred_order] -= coffset;
-                                decode_subframe_lpc(s, channel, residual_size, pred_order);
-                                if (coffset != 0)
-                                    for (i=0; i < s->blocksize; i++)
-                                        s->decoded[channel][i] += coffset;
-                            }
-                    }
-                    if (s->nmean > 0) {
-                        int32_t sum = (s->version < 2) ? 0 : s->blocksize / 2;
-                        for (i=0; i<s->blocksize; i++)
-                            sum += s->decoded[channel][i];
-
-                        for (i=1; i<s->nmean; i++)
-                            s->offset[channel][i-1] = s->offset[channel][i];
-
-                        if (s->version < 2)
-                            s->offset[channel][s->nmean - 1] = sum / s->blocksize;
-                        else
-                            s->offset[channel][s->nmean - 1] = (sum / s->blocksize) << s->bitshift;
-                    }
-                    for (i=-s->nwrap; i<0; i++)
-                        s->decoded[channel][i] = s->decoded[channel][i + s->blocksize];
-
-                    fix_bitshift(s, s->decoded[channel]);
-
-                    s->cur_chan++;
-                    if (s->cur_chan == s->channels) {
-                        samples = interleave_buffer(samples, s->channels, s->blocksize, s->decoded);
-                        s->cur_chan = 0;
-                        goto frame_done;
-                    }
-                    break;
+                    av_log(avctx, AV_LOG_ERROR,
+                           "invalid pred_order %d\n",
+                           pred_order);
+                    return -1;
                 }
-                break;
-            case FN_VERBATIM:
-                len = get_ur_golomb_shorten(&s->gb, VERBATIM_CKSIZE_SIZE);
-                while (len--) {
-                    get_ur_golomb_shorten(&s->gb, VERBATIM_BYTE_SIZE);
-                }
-                break;
-            case FN_BITSHIFT:
-                s->bitshift = get_ur_golomb_shorten(&s->gb, BITSHIFTSIZE);
-                break;
-            case FN_BLOCKSIZE:
-                s->blocksize = get_uint(s, av_log2(s->blocksize));
-                break;
-            case FN_QUIT:
-                *data_size = 0;
-                return buf_size;
-                break;
-            default:
-                av_log(avctx, AV_LOG_ERROR, "unknown shorten function %d\n", cmd);
-                return -1;
-                break;
+                for (i = 0; i < pred_order; i++)
+                    s->decoded[channel][i - pred_order] -= coffset;
+                decode_subframe_lpc(s, channel, residual_size, pred_order);
+                if (coffset != 0)
+                    for (i = 0; i < s->blocksize; i++)
+                        s->decoded[channel][i] += coffset;
+            }
+            }
+            if (s->nmean > 0)
+            {
+                int32_t sum = (s->version < 2) ? 0 : s->blocksize / 2;
+                for (i = 0; i < s->blocksize; i++)
+                    sum += s->decoded[channel][i];
+
+                for (i = 1; i < s->nmean; i++)
+                    s->offset[channel][i-1] = s->offset[channel][i];
+
+                if (s->version < 2)
+                    s->offset[channel][s->nmean - 1] = sum / s->blocksize;
+                else
+                    s->offset[channel][s->nmean - 1] = (sum / s->blocksize) << s->bitshift;
+            }
+            for (i = -s->nwrap; i < 0; i++)
+                s->decoded[channel][i] = s->decoded[channel][i + s->blocksize];
+
+            fix_bitshift(s, s->decoded[channel]);
+
+            s->cur_chan++;
+            if (s->cur_chan == s->channels)
+            {
+                samples = interleave_buffer(samples, s->channels, s->blocksize, s->decoded);
+                s->cur_chan = 0;
+                goto frame_done;
+            }
+            break;
+        }
+        break;
+        case FN_VERBATIM:
+            len = get_ur_golomb_shorten(&s->gb, VERBATIM_CKSIZE_SIZE);
+            while (len--)
+            {
+                get_ur_golomb_shorten(&s->gb, VERBATIM_BYTE_SIZE);
+            }
+            break;
+        case FN_BITSHIFT:
+            s->bitshift = get_ur_golomb_shorten(&s->gb, BITSHIFTSIZE);
+            break;
+        case FN_BLOCKSIZE:
+            s->blocksize = get_uint(s, av_log2(s->blocksize));
+            break;
+        case FN_QUIT:
+            *data_size = 0;
+            return buf_size;
+            break;
+        default:
+            av_log(avctx, AV_LOG_ERROR, "unknown shorten function %d\n", cmd);
+            return -1;
+            break;
         }
     }
 frame_done:
     *data_size = (int8_t *)samples - (int8_t *)data;
 
     //    s->last_blocksize = s->blocksize;
-    s->bitindex = get_bits_count(&s->gb) - 8*((get_bits_count(&s->gb))/8);
-    i= (get_bits_count(&s->gb))/8;
-    if (i > buf_size) {
+    s->bitindex = get_bits_count(&s->gb) - 8 * ((get_bits_count(&s->gb)) / 8);
+    i = (get_bits_count(&s->gb)) / 8;
+    if (i > buf_size)
+    {
         av_log(s->avctx, AV_LOG_ERROR, "overread: %d\n", i - buf_size);
-        s->bitstream_size=0;
-        s->bitstream_index=0;
+        s->bitstream_size = 0;
+        s->bitstream_index = 0;
         return -1;
     }
-    if (s->bitstream_size) {
+    if (s->bitstream_size)
+    {
         s->bitstream_index += i;
         s->bitstream_size  -= i;
         return input_buf_size;
-    } else
+    }
+    else
         return i;
 }
 
@@ -524,7 +557,8 @@ static av_cold int shorten_decode_close(AVCodecContext *avctx)
     ShortenContext *s = avctx->priv_data;
     int i;
 
-    for (i = 0; i < s->channels; i++) {
+    for (i = 0; i < s->channels; i++)
+    {
         s->decoded[i] -= s->nwrap;
         av_freep(&s->decoded[i]);
         av_freep(&s->offset[i]);
@@ -534,14 +568,16 @@ static av_cold int shorten_decode_close(AVCodecContext *avctx)
     return 0;
 }
 
-static void shorten_flush(AVCodecContext *avctx){
+static void shorten_flush(AVCodecContext *avctx)
+{
     ShortenContext *s = avctx->priv_data;
 
-    s->bitstream_size=
-        s->bitstream_index= 0;
+    s->bitstream_size =
+        s->bitstream_index = 0;
 }
 
-AVCodec ff_shorten_decoder = {
+AVCodec ff_shorten_decoder =
+{
     "shorten",
     AVMEDIA_TYPE_AUDIO,
     CODEC_ID_SHORTEN,
@@ -550,6 +586,6 @@ AVCodec ff_shorten_decoder = {
     NULL,
     shorten_decode_close,
     shorten_decode_frame,
-    .flush= shorten_flush,
-    .long_name= NULL_IF_CONFIG_SMALL("Shorten"),
+    .flush = shorten_flush,
+    .long_name = NULL_IF_CONFIG_SMALL("Shorten"),
 };

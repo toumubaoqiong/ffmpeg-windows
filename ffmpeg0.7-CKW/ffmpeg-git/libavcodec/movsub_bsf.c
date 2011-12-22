@@ -23,8 +23,9 @@
 
 
 static int text2movsub(AVBitStreamFilterContext *bsfc, AVCodecContext *avctx, const char *args,
-                     uint8_t **poutbuf, int *poutbuf_size,
-                     const uint8_t *buf, int buf_size, int keyframe){
+                       uint8_t **poutbuf, int *poutbuf_size,
+                       const uint8_t *buf, int buf_size, int keyframe)
+{
     if (buf_size > 0xffff) return 0;
     *poutbuf_size = buf_size + 2;
     *poutbuf = av_malloc(*poutbuf_size + FF_INPUT_BUFFER_PADDING_SIZE);
@@ -33,15 +34,17 @@ static int text2movsub(AVBitStreamFilterContext *bsfc, AVCodecContext *avctx, co
     return 1;
 }
 
-AVBitStreamFilter ff_text2movsub_bsf={
+AVBitStreamFilter ff_text2movsub_bsf =
+{
     "text2movsub",
     0,
     text2movsub,
 };
 
 static int mov2textsub(AVBitStreamFilterContext *bsfc, AVCodecContext *avctx, const char *args,
-                     uint8_t **poutbuf, int *poutbuf_size,
-                     const uint8_t *buf, int buf_size, int keyframe){
+                       uint8_t **poutbuf, int *poutbuf_size,
+                       const uint8_t *buf, int buf_size, int keyframe)
+{
     if (buf_size < 2) return 0;
     *poutbuf_size = FFMIN(buf_size - 2, AV_RB16(buf));
     *poutbuf = av_malloc(*poutbuf_size + FF_INPUT_BUFFER_PADDING_SIZE);
@@ -49,7 +52,8 @@ static int mov2textsub(AVBitStreamFilterContext *bsfc, AVCodecContext *avctx, co
     return 1;
 }
 
-AVBitStreamFilter ff_mov2textsub_bsf={
+AVBitStreamFilter ff_mov2textsub_bsf =
+{
     "mov2textsub",
     0,
     mov2textsub,

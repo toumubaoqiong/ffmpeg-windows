@@ -50,15 +50,19 @@ static int id3v1_create_tag(AVFormatContext *s, uint8_t *buf)
     count += id3v1_set_string(s, "TALB",    buf + 63, 30);       //album
     count += id3v1_set_string(s, "TDRL",    buf + 93,  4);       //date
     count += id3v1_set_string(s, "comment", buf + 97, 30);
-    if ((tag = av_metadata_get(s->metadata, "TRCK", NULL, 0))) { //track
+    if ((tag = av_metadata_get(s->metadata, "TRCK", NULL, 0)))   //track
+    {
         buf[125] = 0;
         buf[126] = atoi(tag->value);
         count++;
     }
     buf[127] = 0xFF; /* default to unknown genre */
-    if ((tag = av_metadata_get(s->metadata, "TCON", NULL, 0))) { //genre
-        for(i = 0; i <= ID3v1_GENRE_MAX; i++) {
-            if (!strcasecmp(tag->value, ff_id3v1_genre_str[i])) {
+    if ((tag = av_metadata_get(s->metadata, "TCON", NULL, 0)))   //genre
+    {
+        for(i = 0; i <= ID3v1_GENRE_MAX; i++)
+        {
+            if (!strcasecmp(tag->value, ff_id3v1_genre_str[i]))
+            {
                 buf[127] = i;
                 count++;
                 break;
@@ -94,7 +98,7 @@ static int id3v2_put_ttag(AVFormatContext *s, const char *str1, const char *str2
 {
     int len;
     uint8_t *pb;
-    int (*put)(AVIOContext*, const char*);
+    int (*put)(AVIOContext *, const char *);
     AVIOContext *dyn_buf;
     if (avio_open_dyn_buf(&dyn_buf) < 0)
         return AVERROR(ENOMEM);
@@ -102,14 +106,16 @@ static int id3v2_put_ttag(AVFormatContext *s, const char *str1, const char *str2
     /* check if the strings are ASCII-only and use UTF16 only if
      * they're not */
     if (enc == ID3v2_ENCODING_UTF16BOM && string_is_ascii(str1) &&
-        (!str2 || string_is_ascii(str2)))
+            (!str2 || string_is_ascii(str2)))
         enc = ID3v2_ENCODING_ISO8859;
 
     avio_w8(dyn_buf, enc);
-    if (enc == ID3v2_ENCODING_UTF16BOM) {
+    if (enc == ID3v2_ENCODING_UTF16BOM)
+    {
         avio_wl16(dyn_buf, 0xFEFF);      /* BOM */
         put = avio_put_str16le;
-    } else
+    }
+    else
         put = avio_put_str;
 
     put(dyn_buf, str1);
@@ -131,7 +137,8 @@ static int mp3_write_trailer(struct AVFormatContext *s)
     uint8_t buf[ID3v1_TAG_SIZE];
 
     /* write the id3v1 tag */
-    if (id3v1_create_tag(s, buf) > 0) {
+    if (id3v1_create_tag(s, buf) > 0)
+    {
         avio_write(s->pb, buf, ID3v1_TAG_SIZE);
         avio_flush(s->pb);
     }
@@ -139,7 +146,8 @@ static int mp3_write_trailer(struct AVFormatContext *s)
 }
 
 #if CONFIG_MP2_MUXER
-AVOutputFormat ff_mp2_muxer = {
+AVOutputFormat ff_mp2_muxer =
+{
     "mp2",
     NULL_IF_CONFIG_SMALL("MPEG audio layer 2"),
     "audio/x-mpeg",
@@ -154,18 +162,23 @@ AVOutputFormat ff_mp2_muxer = {
 #endif
 
 #if CONFIG_MP3_MUXER
-typedef struct MP3Context {
+typedef struct MP3Context
+{
     const AVClass *class;
     int id3v2_version;
 } MP3Context;
 
-static const AVOption options[] = {
-    { "id3v2_version", "Select ID3v2 version to write. Currently 3 and 4 are supported.",
-      offsetof(MP3Context, id3v2_version), FF_OPT_TYPE_INT, 4, 3, 4, AV_OPT_FLAG_ENCODING_PARAM},
+static const AVOption options[] =
+{
+    {
+        "id3v2_version", "Select ID3v2 version to write. Currently 3 and 4 are supported.",
+        offsetof(MP3Context, id3v2_version), FF_OPT_TYPE_INT, 4, 3, 4, AV_OPT_FLAG_ENCODING_PARAM
+    },
     { NULL },
 };
 
-static const AVClass mp3_muxer_class = {
+static const AVClass mp3_muxer_class =
+{
     "MP3 muxer",
     av_default_item_name,
     options,
@@ -196,7 +209,7 @@ static int mp3_write_header(struct AVFormatContext *s)
     MP3Context  *mp3 = s->priv_data;
     AVMetadataTag *t = NULL;
     int totlen = 0, enc = mp3->id3v2_version == 3 ? ID3v2_ENCODING_UTF16BOM :
-                                                    ID3v2_ENCODING_UTF8;
+                          ID3v2_ENCODING_UTF8;
     int64_t size_pos, cur_pos;
 
     avio_wb32(s->pb, MKBETAG('I', 'D', '3', mp3->id3v2_version));
@@ -211,15 +224,18 @@ static int mp3_write_header(struct AVFormatContext *s)
     if (mp3->id3v2_version == 4)
         ff_metadata_conv(&s->metadata, ff_id3v2_4_metadata_conv, NULL);
 
-    while ((t = av_metadata_get(s->metadata, "", t, AV_METADATA_IGNORE_SUFFIX))) {
+    while ((t = av_metadata_get(s->metadata, "", t, AV_METADATA_IGNORE_SUFFIX)))
+    {
         int ret;
 
-        if ((ret = id3v2_check_write_tag(s, t, ff_id3v2_tags, enc)) > 0) {
+        if ((ret = id3v2_check_write_tag(s, t, ff_id3v2_tags, enc)) > 0)
+        {
             totlen += ret;
             continue;
         }
         if ((ret = id3v2_check_write_tag(s, t, mp3->id3v2_version == 3 ?
-                                               ff_id3v2_3_tags : ff_id3v2_4_tags, enc)) > 0) {
+                                         ff_id3v2_3_tags : ff_id3v2_4_tags, enc)) > 0)
+        {
             totlen += ret;
             continue;
         }
@@ -238,7 +254,8 @@ static int mp3_write_header(struct AVFormatContext *s)
     return 0;
 }
 
-AVOutputFormat ff_mp3_muxer = {
+AVOutputFormat ff_mp3_muxer =
+{
     "mp3",
     NULL_IF_CONFIG_SMALL("MPEG audio layer 3"),
     "audio/x-mpeg",

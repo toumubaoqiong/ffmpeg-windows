@@ -40,7 +40,8 @@ AVFormatContext *ff_rtp_chain_mux_open(AVFormatContext *s, AVStream *st,
         return NULL;
 
     rtpctx->oformat = rtp_format;
-    if (!av_new_stream(rtpctx, 0)) {
+    if (!av_new_stream(rtpctx, 0))
+    {
         av_free(rtpctx);
         return NULL;
     }
@@ -54,16 +55,22 @@ AVFormatContext *ff_rtp_chain_mux_open(AVFormatContext *s, AVStream *st,
 
     avcodec_copy_context(rtpctx->streams[0]->codec, st->codec);
 
-    if (handle) {
+    if (handle)
+    {
         ffio_fdopen(&rtpctx->pb, handle);
-    } else
+    }
+    else
         ffio_open_dyn_packet_buf(&rtpctx->pb, packet_size);
     ret = av_write_header(rtpctx);
 
-    if (ret) {
-        if (handle) {
+    if (ret)
+    {
+        if (handle)
+        {
             avio_close(rtpctx->pb);
-        } else {
+        }
+        else
+        {
             uint8_t *ptr;
             avio_close_dyn_buf(rtpctx->pb, &ptr);
             av_free(ptr);

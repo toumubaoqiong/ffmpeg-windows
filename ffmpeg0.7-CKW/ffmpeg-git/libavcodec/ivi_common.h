@@ -40,7 +40,8 @@
 /**
  *  huffman codebook descriptor
  */
-typedef struct {
+typedef struct
+{
     int32_t     num_rows;
     uint8_t     xbits[16];
 } IVIHuffDesc;
@@ -48,9 +49,10 @@ typedef struct {
 /**
  *  macroblock/block huffman table descriptor
  */
-typedef struct {
+typedef struct
+{
     int32_t     tab_sel;    /// index of one of the predefined tables
-                            /// or "7" for custom one
+    /// or "7" for custom one
     VLC         *tab;       /// pointer to the table associated with tab_sel
 
     //! the following are used only when tab_sel == 7
@@ -58,7 +60,8 @@ typedef struct {
     VLC         cust_tab;   /// vlc table for custom codebook
 } IVIHuffTab;
 
-enum {
+enum
+{
     IVI_MB_HUFF   = 0,      /// Huffman table is used for coding macroblocks
     IVI_BLK_HUFF  = 1       /// Huffman table is used for coding blocks
 };
@@ -85,7 +88,8 @@ typedef void (DCTransformPtr) (const int32_t *in, int16_t *out, uint32_t pitch, 
 /**
  *  run-value (RLE) table descriptor
  */
-typedef struct {
+typedef struct
+{
     uint8_t     eob_sym; ///< end of block symbol
     uint8_t     esc_sym; ///< escape symbol
     uint8_t     runtab[256];
@@ -98,7 +102,8 @@ extern const RVMapDesc ff_ivi_rvmap_tabs[9];
 /**
  *  information for Indeo macroblock (16x16, 8x8 or 4x4)
  */
-typedef struct {
+typedef struct
+{
     int16_t     xpos;
     int16_t     ypos;
     uint32_t    buf_offs; ///< address in the output buffer for this mb
@@ -113,7 +118,8 @@ typedef struct {
 /**
  *  information for Indeo tile
  */
-typedef struct {
+typedef struct
+{
     int         xpos;
     int         ypos;
     int         width;
@@ -129,7 +135,8 @@ typedef struct {
 /**
  *  information for Indeo wavelet band
  */
-typedef struct {
+typedef struct
+{
     int             plane;          ///< plane number this band belongs to
     int             band_num;       ///< band number
     int             width;
@@ -175,7 +182,8 @@ typedef struct {
 /**
  *  color plane (luma or chroma) information
  */
-typedef struct {
+typedef struct
+{
     uint16_t    width;
     uint16_t    height;
     uint8_t     num_bands;  ///< number of bands this plane subdivided into
@@ -183,7 +191,8 @@ typedef struct {
 } IVIPlaneDesc;
 
 
-typedef struct {
+typedef struct
+{
     uint16_t    pic_width;
     uint16_t    pic_height;
     uint16_t    chroma_width;

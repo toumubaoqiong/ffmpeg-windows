@@ -36,7 +36,8 @@
 #include "dsputil.h"
 
 
-typedef struct CyuvDecodeContext {
+typedef struct CyuvDecodeContext
+{
     AVCodecContext *avctx;
     int width, height;
     AVFrame frame;
@@ -63,7 +64,7 @@ static int cyuv_decode_frame(AVCodecContext *avctx,
 {
     const uint8_t *buf = avpkt->data;
     int buf_size = avpkt->size;
-    CyuvDecodeContext *s=avctx->priv_data;
+    CyuvDecodeContext *s = avctx->priv_data;
 
     unsigned char *y_plane;
     unsigned char *u_plane;
@@ -73,16 +74,17 @@ static int cyuv_decode_frame(AVCodecContext *avctx,
     int v_ptr;
 
     /* prediction error tables (make it clear that they are signed values) */
-    const signed char *y_table = (const signed char*)buf +  0;
-    const signed char *u_table = (const signed char*)buf + 16;
-    const signed char *v_table = (const signed char*)buf + 32;
+    const signed char *y_table = (const signed char *)buf +  0;
+    const signed char *u_table = (const signed char *)buf + 16;
+    const signed char *v_table = (const signed char *)buf + 32;
 
     unsigned char y_pred, u_pred, v_pred;
     int stream_ptr;
     unsigned char cur_byte;
     int pixel_groups;
 
-    if (avctx->codec_id == CODEC_ID_AURA) {
+    if (avctx->codec_id == CODEC_ID_AURA)
+    {
         y_table = u_table;
         u_table = v_table;
     }
@@ -90,7 +92,8 @@ static int cyuv_decode_frame(AVCodecContext *avctx,
      * followed by (height) lines each with 3 bytes to represent groups
      * of 4 pixels. Thus, the total size of the buffer ought to be:
      *    (3 * 16) + height * (width * 3 / 4) */
-    if (buf_size != 48 + s->height * (s->width * 3 / 4)) {
+    if (buf_size != 48 + s->height * (s->width * 3 / 4))
+    {
         av_log(avctx, AV_LOG_ERROR, "got a buffer with %d bytes when %d were expected\n",
                buf_size, 48 + s->height * (s->width * 3 / 4));
         return -1;
@@ -104,7 +107,8 @@ static int cyuv_decode_frame(AVCodecContext *avctx,
 
     s->frame.buffer_hints = FF_BUFFER_HINTS_VALID;
     s->frame.reference = 0;
-    if (avctx->get_buffer(avctx, &s->frame) < 0) {
+    if (avctx->get_buffer(avctx, &s->frame) < 0)
+    {
         av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
         return -1;
     }
@@ -115,10 +119,11 @@ static int cyuv_decode_frame(AVCodecContext *avctx,
 
     /* iterate through each line in the height */
     for (y_ptr = 0, u_ptr = 0, v_ptr = 0;
-         y_ptr < (s->height * s->frame.linesize[0]);
-         y_ptr += s->frame.linesize[0] - s->width,
-         u_ptr += s->frame.linesize[1] - s->width / 4,
-         v_ptr += s->frame.linesize[2] - s->width / 4) {
+            y_ptr < (s->height * s->frame.linesize[0]);
+            y_ptr += s->frame.linesize[0] - s->width,
+            u_ptr += s->frame.linesize[1] - s->width / 4,
+            v_ptr += s->frame.linesize[2] - s->width / 4)
+    {
 
         /* reset predictors */
         cur_byte = buf[stream_ptr++];
@@ -138,7 +143,8 @@ static int cyuv_decode_frame(AVCodecContext *avctx,
 
         /* iterate through the remaining pixel groups (4 pixels/group) */
         pixel_groups = s->width / 4 - 1;
-        while (pixel_groups--) {
+        while (pixel_groups--)
+        {
 
             cur_byte = buf[stream_ptr++];
             u_pred += u_table[(cur_byte & 0xF0) >> 4];
@@ -161,8 +167,8 @@ static int cyuv_decode_frame(AVCodecContext *avctx,
         }
     }
 
-    *data_size=sizeof(AVFrame);
-    *(AVFrame*)data= s->frame;
+    *data_size = sizeof(AVFrame);
+    *(AVFrame *)data = s->frame;
 
     return buf_size;
 }
@@ -178,7 +184,8 @@ static av_cold int cyuv_decode_end(AVCodecContext *avctx)
 }
 
 #if CONFIG_AURA_DECODER
-AVCodec ff_aura_decoder = {
+AVCodec ff_aura_decoder =
+{
     "aura",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_AURA,
@@ -194,7 +201,8 @@ AVCodec ff_aura_decoder = {
 #endif
 
 #if CONFIG_CYUV_DECODER
-AVCodec ff_cyuv_decoder = {
+AVCodec ff_cyuv_decoder =
+{
     "cyuv",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_CYUV,

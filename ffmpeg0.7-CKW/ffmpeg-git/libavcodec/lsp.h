@@ -37,7 +37,7 @@
  * \param lsfq_max maximum allowed LSF value
  * \param lp_order LP filter order
  */
-void ff_acelp_reorder_lsf(int16_t* lsfq, int lsfq_min_distance, int lsfq_min, int lsfq_max, int lp_order);
+void ff_acelp_reorder_lsf(int16_t *lsfq, int lsfq_min_distance, int lsfq_min, int lsfq_max, int lp_order);
 
 /**
  * Adjust the quantized LSFs so they are increasing and not too close.
@@ -73,7 +73,7 @@ void ff_acelp_lsf2lspd(double *lsp, const float *lsf, int lp_order);
  * \param lsp LSP coefficients (-0x8000 <= (0.15) < 0x8000)
  * \param lp_half_order LP filter order, divided by 2
  */
-void ff_acelp_lsp2lpc(int16_t* lp, const int16_t* lsp, int lp_half_order);
+void ff_acelp_lsp2lpc(int16_t *lp, const int16_t *lsp, int lp_half_order);
 
 /**
  * LSP to LP conversion (5.2.4 of AMR-WB)
@@ -88,7 +88,7 @@ void ff_amrwb_lsp2lpc(const double *lsp, float *lp, int lp_order);
  * \param lsp_prev LSP coefficients from the second subframe of the previous frame (-0x8000 <= (0.15) < 0x8000)
  * \param lp_order LP filter order
  */
-void ff_acelp_lp_decode(int16_t* lp_1st, int16_t* lp_2nd, const int16_t* lsp_2nd, const int16_t* lsp_prev, int lp_order);
+void ff_acelp_lp_decode(int16_t *lp_1st, int16_t *lp_2nd, const int16_t *lsp_2nd, const int16_t *lsp_prev, int lp_order);
 
 
 #define MAX_LP_HALF_ORDER 8

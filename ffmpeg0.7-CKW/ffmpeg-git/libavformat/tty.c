@@ -31,7 +31,8 @@
 
 #define LINE_RATE 6000 /* characters per second */
 
-typedef struct {
+typedef struct
+{
     int chars_per_frame;
     uint64_t fsize;  /**< file size less metadata buffer */
 } TtyDemuxContext;
@@ -79,16 +80,20 @@ static int read_header(AVFormatContext *avctx,
     if (ap->width)  st->codec->width  = ap->width;
     if (ap->height) st->codec->height = ap->height;
 
-    if (!ap->time_base.num) {
+    if (!ap->time_base.num)
+    {
         av_set_pts_info(st, 60, 1, 25);
-    } else {
+    }
+    else
+    {
         av_set_pts_info(st, 60, ap->time_base.num, ap->time_base.den);
     }
 
     /* simulate tty display speed */
     s->chars_per_frame = FFMAX(av_q2d(st->time_base) * (ap->sample_rate ? ap->sample_rate : LINE_RATE), 1);
 
-    if (avctx->pb->seekable) {
+    if (avctx->pb->seekable)
+    {
         s->fsize = avio_size(avctx->pb);
         st->duration = (s->fsize + s->chars_per_frame - 1) / s->chars_per_frame;
 
@@ -110,7 +115,8 @@ static int read_packet(AVFormatContext *avctx, AVPacket *pkt)
         return AVERROR_EOF;
 
     n = s->chars_per_frame;
-    if (s->fsize) {
+    if (s->fsize)
+    {
         // ignore metadata buffer
         uint64_t p = avio_tell(avctx->pb);
         if (p + s->chars_per_frame > s->fsize)
@@ -124,7 +130,8 @@ static int read_packet(AVFormatContext *avctx, AVPacket *pkt)
     return 0;
 }
 
-AVInputFormat ff_tty_demuxer = {
+AVInputFormat ff_tty_demuxer =
+{
     .name           = "tty",
     .long_name      = NULL_IF_CONFIG_SMALL("Tele-typewriter"),
     .priv_data_size = sizeof(TtyDemuxContext),

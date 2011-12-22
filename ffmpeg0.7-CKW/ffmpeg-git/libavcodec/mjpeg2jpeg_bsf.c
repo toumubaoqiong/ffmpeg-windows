@@ -28,11 +28,12 @@
 #include "avcodec.h"
 #include "mjpeg.h"
 
-static const uint8_t jpeg_header[] = {
+static const uint8_t jpeg_header[] =
+{
     0xff, 0xd8,                     // SOI
     0xff, 0xe0,                     // APP0
     0x00, 0x10,                     // APP0 header size (including
-                                    // this field, but excluding preceding)
+    // this field, but excluding preceding)
     0x4a, 0x46, 0x49, 0x46, 0x00,   // ID string 'JFIF\0'
     0x01, 0x01,                     // version
     0x00,                           // bits per type
@@ -44,7 +45,8 @@ static const uint8_t jpeg_header[] = {
 
 static const int dht_segment_size = 420;
 static const uint8_t dht_segment_head[] = { 0xFF, 0xC4, 0x01, 0xA2, 0x00 };
-static const uint8_t dht_segment_frag[] = {
+static const uint8_t dht_segment_frag[] =
+{
     0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09,
     0x0a, 0x0b, 0x01, 0x00, 0x03, 0x01, 0x01, 0x01, 0x01, 0x01,
     0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -80,16 +82,19 @@ static int mjpeg2jpeg_filter(AVBitStreamFilterContext *bsfc,
     int input_skip, output_size;
     uint8_t *output, *out;
 
-    if (buf_size < 12) {
+    if (buf_size < 12)
+    {
         av_log(avctx, AV_LOG_ERROR, "input is truncated\n");
         return AVERROR_INVALIDDATA;
     }
-    if (memcmp("AVI1", buf + 6, 4)) {
+    if (memcmp("AVI1", buf + 6, 4))
+    {
         av_log(avctx, AV_LOG_ERROR, "input is not MJPEG/AVI1\n");
         return AVERROR_INVALIDDATA;
     }
     input_skip = (buf[4] << 8) + buf[5] + 4;
-    if (buf_size < input_skip) {
+    if (buf_size < input_skip)
+    {
         av_log(avctx, AV_LOG_ERROR, "input is truncated\n");
         return AVERROR_INVALIDDATA;
     }
@@ -106,7 +111,8 @@ static int mjpeg2jpeg_filter(AVBitStreamFilterContext *bsfc,
     return 1;
 }
 
-AVBitStreamFilter ff_mjpeg2jpeg_bsf = {
+AVBitStreamFilter ff_mjpeg2jpeg_bsf =
+{
     .name           = "mjpeg2jpeg",
     .priv_data_size = 0,
     .filter         = mjpeg2jpeg_filter,

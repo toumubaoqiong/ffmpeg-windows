@@ -37,7 +37,8 @@
 /*
  * Decoder context
  */
-typedef struct KmvcContext {
+typedef struct KmvcContext
+{
     AVCodecContext *avctx;
     AVFrame pic;
 
@@ -48,7 +49,8 @@ typedef struct KmvcContext {
     uint8_t *frm0, *frm1;
 } KmvcContext;
 
-typedef struct BitBuf {
+typedef struct BitBuf
+{
     int bits;
     int bitbuf;
 } BitBuf;
@@ -67,7 +69,7 @@ typedef struct BitBuf {
     } \
 }
 
-static void kmvc_decode_intra_8x8(KmvcContext * ctx, const uint8_t * src, int w, int h)
+static void kmvc_decode_intra_8x8(KmvcContext *ctx, const uint8_t *src, int w, int h)
 {
     BitBuf bb;
     int res, val;
@@ -79,24 +81,33 @@ static void kmvc_decode_intra_8x8(KmvcContext * ctx, const uint8_t * src, int w,
     kmvc_init_getbits(bb, src);
 
     for (by = 0; by < h; by += 8)
-        for (bx = 0; bx < w; bx += 8) {
+        for (bx = 0; bx < w; bx += 8)
+        {
             kmvc_getbit(bb, src, res);
-            if (!res) {         // fill whole 8x8 block
+            if (!res)           // fill whole 8x8 block
+            {
                 val = *src++;
                 for (i = 0; i < 64; i++)
                     BLK(ctx->cur, bx + (i & 0x7), by + (i >> 3)) = val;
-            } else {            // handle four 4x4 subblocks
-                for (i = 0; i < 4; i++) {
+            }
+            else                // handle four 4x4 subblocks
+            {
+                for (i = 0; i < 4; i++)
+                {
                     l0x = bx + (i & 1) * 4;
                     l0y = by + (i & 2) * 2;
                     kmvc_getbit(bb, src, res);
-                    if (!res) {
+                    if (!res)
+                    {
                         kmvc_getbit(bb, src, res);
-                        if (!res) {     // fill whole 4x4 block
+                        if (!res)       // fill whole 4x4 block
+                        {
                             val = *src++;
                             for (j = 0; j < 16; j++)
                                 BLK(ctx->cur, l0x + (j & 3), l0y + (j >> 2)) = val;
-                        } else {        // copy block from already decoded place
+                        }
+                        else            // copy block from already decoded place
+                        {
                             val = *src++;
                             mx = val & 0xF;
                             my = val >> 4;
@@ -104,20 +115,27 @@ static void kmvc_decode_intra_8x8(KmvcContext * ctx, const uint8_t * src, int w,
                                 BLK(ctx->cur, l0x + (j & 3), l0y + (j >> 2)) =
                                     BLK(ctx->cur, l0x + (j & 3) - mx, l0y + (j >> 2) - my);
                         }
-                    } else {    // descend to 2x2 sub-sub-blocks
-                        for (j = 0; j < 4; j++) {
+                    }
+                    else        // descend to 2x2 sub-sub-blocks
+                    {
+                        for (j = 0; j < 4; j++)
+                        {
                             l1x = l0x + (j & 1) * 2;
                             l1y = l0y + (j & 2);
                             kmvc_getbit(bb, src, res);
-                            if (!res) {
+                            if (!res)
+                            {
                                 kmvc_getbit(bb, src, res);
-                                if (!res) {     // fill whole 2x2 block
+                                if (!res)       // fill whole 2x2 block
+                                {
                                     val = *src++;
                                     BLK(ctx->cur, l1x, l1y) = val;
                                     BLK(ctx->cur, l1x + 1, l1y) = val;
                                     BLK(ctx->cur, l1x, l1y + 1) = val;
                                     BLK(ctx->cur, l1x + 1, l1y + 1) = val;
-                                } else {        // copy block from already decoded place
+                                }
+                                else            // copy block from already decoded place
+                                {
                                     val = *src++;
                                     mx = val & 0xF;
                                     my = val >> 4;
@@ -129,7 +147,9 @@ static void kmvc_decode_intra_8x8(KmvcContext * ctx, const uint8_t * src, int w,
                                     BLK(ctx->cur, l1x + 1, l1y + 1) =
                                         BLK(ctx->cur, l1x + 1 - mx, l1y + 1 - my);
                                 }
-                            } else {    // read values for block
+                            }
+                            else        // read values for block
+                            {
                                 BLK(ctx->cur, l1x, l1y) = *src++;
                                 BLK(ctx->cur, l1x + 1, l1y) = *src++;
                                 BLK(ctx->cur, l1x, l1y + 1) = *src++;
@@ -142,7 +162,7 @@ static void kmvc_decode_intra_8x8(KmvcContext * ctx, const uint8_t * src, int w,
         }
 }
 
-static void kmvc_decode_inter_8x8(KmvcContext * ctx, const uint8_t * src, int w, int h)
+static void kmvc_decode_inter_8x8(KmvcContext *ctx, const uint8_t *src, int w, int h)
 {
     BitBuf bb;
     int res, val;
@@ -154,31 +174,43 @@ static void kmvc_decode_inter_8x8(KmvcContext * ctx, const uint8_t * src, int w,
     kmvc_init_getbits(bb, src);
 
     for (by = 0; by < h; by += 8)
-        for (bx = 0; bx < w; bx += 8) {
+        for (bx = 0; bx < w; bx += 8)
+        {
             kmvc_getbit(bb, src, res);
-            if (!res) {
+            if (!res)
+            {
                 kmvc_getbit(bb, src, res);
-                if (!res) {     // fill whole 8x8 block
+                if (!res)       // fill whole 8x8 block
+                {
                     val = *src++;
                     for (i = 0; i < 64; i++)
                         BLK(ctx->cur, bx + (i & 0x7), by + (i >> 3)) = val;
-                } else {        // copy block from previous frame
+                }
+                else            // copy block from previous frame
+                {
                     for (i = 0; i < 64; i++)
                         BLK(ctx->cur, bx + (i & 0x7), by + (i >> 3)) =
                             BLK(ctx->prev, bx + (i & 0x7), by + (i >> 3));
                 }
-            } else {            // handle four 4x4 subblocks
-                for (i = 0; i < 4; i++) {
+            }
+            else                // handle four 4x4 subblocks
+            {
+                for (i = 0; i < 4; i++)
+                {
                     l0x = bx + (i & 1) * 4;
                     l0y = by + (i & 2) * 2;
                     kmvc_getbit(bb, src, res);
-                    if (!res) {
+                    if (!res)
+                    {
                         kmvc_getbit(bb, src, res);
-                        if (!res) {     // fill whole 4x4 block
+                        if (!res)       // fill whole 4x4 block
+                        {
                             val = *src++;
                             for (j = 0; j < 16; j++)
                                 BLK(ctx->cur, l0x + (j & 3), l0y + (j >> 2)) = val;
-                        } else {        // copy block
+                        }
+                        else            // copy block
+                        {
                             val = *src++;
                             mx = (val & 0xF) - 8;
                             my = (val >> 4) - 8;
@@ -186,20 +218,27 @@ static void kmvc_decode_inter_8x8(KmvcContext * ctx, const uint8_t * src, int w,
                                 BLK(ctx->cur, l0x + (j & 3), l0y + (j >> 2)) =
                                     BLK(ctx->prev, l0x + (j & 3) + mx, l0y + (j >> 2) + my);
                         }
-                    } else {    // descend to 2x2 sub-sub-blocks
-                        for (j = 0; j < 4; j++) {
+                    }
+                    else        // descend to 2x2 sub-sub-blocks
+                    {
+                        for (j = 0; j < 4; j++)
+                        {
                             l1x = l0x + (j & 1) * 2;
                             l1y = l0y + (j & 2);
                             kmvc_getbit(bb, src, res);
-                            if (!res) {
+                            if (!res)
+                            {
                                 kmvc_getbit(bb, src, res);
-                                if (!res) {     // fill whole 2x2 block
+                                if (!res)       // fill whole 2x2 block
+                                {
                                     val = *src++;
                                     BLK(ctx->cur, l1x, l1y) = val;
                                     BLK(ctx->cur, l1x + 1, l1y) = val;
                                     BLK(ctx->cur, l1x, l1y + 1) = val;
                                     BLK(ctx->cur, l1x + 1, l1y + 1) = val;
-                                } else {        // copy block
+                                }
+                                else            // copy block
+                                {
                                     val = *src++;
                                     mx = (val & 0xF) - 8;
                                     my = (val >> 4) - 8;
@@ -211,7 +250,9 @@ static void kmvc_decode_inter_8x8(KmvcContext * ctx, const uint8_t * src, int w,
                                     BLK(ctx->cur, l1x + 1, l1y + 1) =
                                         BLK(ctx->prev, l1x + 1 + mx, l1y + 1 + my);
                                 }
-                            } else {    // read values for block
+                            }
+                            else        // read values for block
+                            {
                                 BLK(ctx->cur, l1x, l1y) = *src++;
                                 BLK(ctx->cur, l1x + 1, l1y) = *src++;
                                 BLK(ctx->cur, l1x, l1y + 1) = *src++;
@@ -224,7 +265,7 @@ static void kmvc_decode_inter_8x8(KmvcContext * ctx, const uint8_t * src, int w,
         }
 }
 
-static int decode_frame(AVCodecContext * avctx, void *data, int *data_size, AVPacket *avpkt)
+static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPacket *avpkt)
 {
     const uint8_t *buf = avpkt->data;
     int buf_size = avpkt->size;
@@ -240,7 +281,8 @@ static int decode_frame(AVCodecContext * avctx, void *data, int *data_size, AVPa
 
     ctx->pic.reference = 1;
     ctx->pic.buffer_hints = FF_BUFFER_HINTS_VALID;
-    if (avctx->get_buffer(avctx, &ctx->pic) < 0) {
+    if (avctx->get_buffer(avctx, &ctx->pic) < 0)
+    {
         av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
         return -1;
     }
@@ -248,37 +290,46 @@ static int decode_frame(AVCodecContext * avctx, void *data, int *data_size, AVPa
     header = *buf++;
 
     /* blocksize 127 is really palette change event */
-    if (buf[0] == 127) {
+    if (buf[0] == 127)
+    {
         buf += 3;
-        for (i = 0; i < 127; i++) {
+        for (i = 0; i < 127; i++)
+        {
             ctx->pal[i + (header & 0x81)] = AV_RB24(buf);
             buf += 4;
         }
         buf -= 127 * 4 + 3;
     }
 
-    if (header & KMVC_KEYFRAME) {
+    if (header & KMVC_KEYFRAME)
+    {
         ctx->pic.key_frame = 1;
         ctx->pic.pict_type = FF_I_TYPE;
-    } else {
+    }
+    else
+    {
         ctx->pic.key_frame = 0;
         ctx->pic.pict_type = FF_P_TYPE;
     }
 
-    if (header & KMVC_PALETTE) {
+    if (header & KMVC_PALETTE)
+    {
         ctx->pic.palette_has_changed = 1;
         // palette starts from index 1 and has 127 entries
-        for (i = 1; i <= ctx->palsize; i++) {
+        for (i = 1; i <= ctx->palsize; i++)
+        {
             ctx->pal[i] = bytestream_get_be24(&buf);
         }
     }
 
-    if (pal) {
+    if (pal)
+    {
         ctx->pic.palette_has_changed = 1;
         memcpy(ctx->pal, pal, AVPALETTE_SIZE);
     }
 
-    if (ctx->setpal) {
+    if (ctx->setpal)
+    {
         ctx->setpal = 0;
         ctx->pic.palette_has_changed = 1;
     }
@@ -288,12 +339,14 @@ static int decode_frame(AVCodecContext * avctx, void *data, int *data_size, AVPa
 
     blocksize = *buf++;
 
-    if (blocksize != 8 && blocksize != 127) {
+    if (blocksize != 8 && blocksize != 127)
+    {
         av_log(avctx, AV_LOG_ERROR, "Block size = %i\n", blocksize);
         return -1;
     }
     memset(ctx->cur, 0, 320 * 200);
-    switch (header & KMVC_METHOD) {
+    switch (header & KMVC_METHOD)
+    {
     case 0:
     case 1: // used in palette changed event
         memcpy(ctx->cur, ctx->prev, 320 * 200);
@@ -311,17 +364,21 @@ static int decode_frame(AVCodecContext * avctx, void *data, int *data_size, AVPa
 
     out = ctx->pic.data[0];
     src = ctx->cur;
-    for (i = 0; i < avctx->height; i++) {
+    for (i = 0; i < avctx->height; i++)
+    {
         memcpy(out, src, avctx->width);
         src += 320;
         out += ctx->pic.linesize[0];
     }
 
     /* flip buffers */
-    if (ctx->cur == ctx->frm0) {
+    if (ctx->cur == ctx->frm0)
+    {
         ctx->cur = ctx->frm1;
         ctx->prev = ctx->frm0;
-    } else {
+    }
+    else
+    {
         ctx->cur = ctx->frm0;
         ctx->prev = ctx->frm1;
     }
@@ -338,14 +395,15 @@ static int decode_frame(AVCodecContext * avctx, void *data, int *data_size, AVPa
 /*
  * Init kmvc decoder
  */
-static av_cold int decode_init(AVCodecContext * avctx)
+static av_cold int decode_init(AVCodecContext *avctx)
 {
     KmvcContext *const c = avctx->priv_data;
     int i;
 
     c->avctx = avctx;
 
-    if (avctx->width > 320 || avctx->height > 200) {
+    if (avctx->width > 320 || avctx->height > 200)
+    {
         av_log(avctx, AV_LOG_ERROR, "KMVC supports frames <= 320x200\n");
         return -1;
     }
@@ -355,20 +413,26 @@ static av_cold int decode_init(AVCodecContext * avctx)
     c->cur = c->frm0;
     c->prev = c->frm1;
 
-    for (i = 0; i < 256; i++) {
+    for (i = 0; i < 256; i++)
+    {
         c->pal[i] = i * 0x10101;
     }
 
-    if (avctx->extradata_size < 12) {
+    if (avctx->extradata_size < 12)
+    {
         av_log(NULL, 0, "Extradata missing, decoding may not work properly...\n");
         c->palsize = 127;
-    } else {
+    }
+    else
+    {
         c->palsize = AV_RL16(avctx->extradata + 10);
     }
 
-    if (avctx->extradata_size == 1036) {        // palette in extradata
+    if (avctx->extradata_size == 1036)          // palette in extradata
+    {
         uint8_t *src = avctx->extradata + 12;
-        for (i = 0; i < 256; i++) {
+        for (i = 0; i < 256; i++)
+        {
             c->pal[i] = AV_RL32(src);
             src += 4;
         }
@@ -385,7 +449,7 @@ static av_cold int decode_init(AVCodecContext * avctx)
 /*
  * Uninit kmvc decoder
  */
-static av_cold int decode_end(AVCodecContext * avctx)
+static av_cold int decode_end(AVCodecContext *avctx)
 {
     KmvcContext *const c = avctx->priv_data;
 
@@ -397,7 +461,8 @@ static av_cold int decode_end(AVCodecContext * avctx)
     return 0;
 }
 
-AVCodec ff_kmvc_decoder = {
+AVCodec ff_kmvc_decoder =
+{
     "kmvc",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_KMVC,

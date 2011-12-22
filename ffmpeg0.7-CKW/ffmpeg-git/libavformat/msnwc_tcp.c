@@ -39,16 +39,17 @@ static int msnwc_tcp_probe(AVProbeData *p)
 {
     int i;
 
-    for(i = 0 ; i + HEADER_SIZE <= p->buf_size ; i++) {
+    for(i = 0 ; i + HEADER_SIZE <= p->buf_size ; i++)
+    {
         uint16_t width, height;
         uint32_t fourcc;
-        const uint8_t *bytestream = p->buf+i;
+        const uint8_t *bytestream = p->buf + i;
 
         if(bytestream_get_le16(&bytestream) != HEADER_SIZE)
             continue;
         width  = bytestream_get_le16(&bytestream);
         height = bytestream_get_le16(&bytestream);
-        if(!(width==320 && height==240) && !(width==160 && height==120))
+        if(!(width == 320 && height == 240) && !(width == 160 && height == 120))
             continue;
         bytestream += 2; // keyframe
         bytestream += 4; // size
@@ -56,12 +57,15 @@ static int msnwc_tcp_probe(AVProbeData *p)
         if(fourcc != MKTAG('M', 'L', '2', '0'))
             continue;
 
-        if(i) {
+        if(i)
+        {
             if(i < 14)  /* starts with SwitchBoard connection info */
                 return AVPROBE_SCORE_MAX / 2;
             else        /* starts in the middle of stream */
                 return AVPROBE_SCORE_MAX / 3;
-        } else {
+        }
+        else
+        {
             return AVPROBE_SCORE_MAX;
         }
     }
@@ -90,7 +94,8 @@ static int msnwc_tcp_read_header(AVFormatContext *ctx, AVFormatParameters *ap)
      * So skip until we find the first byte of struct size */
     while(avio_r8(pb) != HEADER_SIZE && !url_feof(pb));
 
-    if(url_feof(pb)) {
+    if(url_feof(pb))
+    {
         av_log(ctx, AV_LOG_ERROR, "Could not find valid start.");
         return -1;
     }
@@ -124,13 +129,14 @@ static int msnwc_tcp_read_packet(AVFormatContext *ctx, AVPacket *pkt)
 
     /* Some aMsn generated videos (or was it Mercury Messenger?) don't set
      * this bit and rely on the codec to get keyframe information */
-    if(keyframe&1)
+    if(keyframe & 1)
         pkt->flags |= AV_PKT_FLAG_KEY;
 
     return HEADER_SIZE + size;
 }
 
-AVInputFormat ff_msnwc_tcp_demuxer = {
+AVInputFormat ff_msnwc_tcp_demuxer =
+{
     "msnwctcp",
     NULL_IF_CONFIG_SMALL("MSN TCP Webcam stream"),
     0,

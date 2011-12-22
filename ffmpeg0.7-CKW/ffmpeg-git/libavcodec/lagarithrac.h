@@ -36,7 +36,8 @@
 #include "avcodec.h"
 #include "get_bits.h"
 
-typedef struct lag_rac {
+typedef struct lag_rac
+{
     AVCodecContext *avctx;
     unsigned low;
     unsigned range;
@@ -56,7 +57,8 @@ void lag_rac_init(lag_rac *l, GetBitContext *gb, int length);
 /* TODO: Optimize */
 static inline void lag_rac_refill(lag_rac *l)
 {
-    while (l->range <= 0x800000) {
+    while (l->range <= 0x800000)
+    {
         l->low   <<= 8;
         l->range <<= 8;
         l->low |= 0xff & (AV_RB16(l->bytestream) >> 1);
@@ -80,11 +82,15 @@ static inline uint8_t lag_get_rac(lag_rac *l)
 
     range_scaled = l->range >> l->scale;
 
-    if (l->low < range_scaled * l->prob[255]) {
+    if (l->low < range_scaled * l->prob[255])
+    {
         /* val = 0 is frequent enough to deserve a shortcut */
-        if (l->low < range_scaled * l->prob[1]) {
+        if (l->low < range_scaled * l->prob[1])
+        {
             val = 0;
-        } else {
+        }
+        else
+        {
             /* FIXME __builtin_clz is ~20% faster here, but not allowed in generic code. */
             shift = 30 - av_log2(range_scaled);
             div = ((range_scaled << shift) + (1 << 23) - 1) >> 23;
@@ -102,7 +108,9 @@ static inline uint8_t lag_get_rac(lag_rac *l)
         }
 
         l->range = range_scaled * (l->prob[val + 1] - l->prob[val]);
-    } else {
+    }
+    else
+    {
         val = 255;
         l->range -= range_scaled * l->prob[255];
     }

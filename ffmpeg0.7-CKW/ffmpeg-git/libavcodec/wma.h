@@ -55,7 +55,8 @@
 
 typedef float WMACoef;          ///< type for decoded coefficients, int16_t would be enough for wma 1/2
 
-typedef struct CoefVLCTable {
+typedef struct CoefVLCTable
+{
     int n;                      ///< total number of codes
     int max_level;
     const uint32_t *huffcodes;  ///< VLC bit values
@@ -63,8 +64,9 @@ typedef struct CoefVLCTable {
     const uint16_t *levels;     ///< table to build run/level tables
 } CoefVLCTable;
 
-typedef struct WMACodecContext {
-    AVCodecContext* avctx;
+typedef struct WMACodecContext
+{
+    AVCodecContext *avctx;
     GetBitContext gb;
     PutBitContext pb;
     int sample_rate;
@@ -92,7 +94,7 @@ typedef struct WMACodecContext {
     int high_band_values[MAX_CHANNELS][HIGH_BAND_MAX_SIZE];
 
     /* there are two possible tables for spectral coefficients */
-//FIXME the following 3 tables should be shared between decoders
+    //FIXME the following 3 tables should be shared between decoders
     VLC coef_vlc[2];
     uint16_t *run_table[2];
     float *level_table[2];
@@ -151,11 +153,11 @@ extern const uint8_t  ff_aac_scalefactor_bits[121];
 
 int av_cold ff_wma_get_frame_len_bits(int sample_rate, int version,
                                       unsigned int decode_flags);
-int ff_wma_init(AVCodecContext * avctx, int flags2);
+int ff_wma_init(AVCodecContext *avctx, int flags2);
 int ff_wma_total_gain_to_bits(int total_gain);
 int ff_wma_end(AVCodecContext *avctx);
-unsigned int ff_wma_get_large_val(GetBitContext* gb);
-int ff_wma_run_level_decode(AVCodecContext* avctx, GetBitContext* gb,
+unsigned int ff_wma_get_large_val(GetBitContext *gb);
+int ff_wma_run_level_decode(AVCodecContext *avctx, GetBitContext *gb,
                             VLC *vlc,
                             const float *level_table, const uint16_t *run_table,
                             int version, WMACoef *ptr, int offset,

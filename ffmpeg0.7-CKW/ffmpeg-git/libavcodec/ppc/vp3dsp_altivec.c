@@ -24,9 +24,9 @@
 #include "dsputil_altivec.h"
 
 static const vec_s16 constants =
-    {0, 64277, 60547, 54491, 46341, 36410, 25080, 12785};
+{0, 64277, 60547, 54491, 46341, 36410, 25080, 12785};
 static const vec_u8 interleave_high =
-    {0, 1, 16, 17, 4, 5, 20, 21, 8, 9, 24, 25, 12, 13, 28, 29};
+{0, 1, 16, 17, 4, 5, 20, 21, 8, 9, 24, 25, 12, 13, 28, 29};
 
 #define IDCT_START \
     vec_s16 A, B, C, D, Ad, Bd, Cd, Dd, E, F, G, H;\
@@ -57,7 +57,7 @@ static const vec_u8 interleave_high =
 // M16 is used if C requires 16 bits unsigned
 static inline vec_s16 M15(vec_s16 a, vec_s16 C)
 {
-    return (vec_s16)vec_perm(vec_mule(a,C), vec_mulo(a,C), interleave_high);
+    return (vec_s16)vec_perm(vec_mule(a, C), vec_mulo(a, C), interleave_high);
 }
 static inline vec_s16 M16(vec_s16 a, vec_s16 C)
 {

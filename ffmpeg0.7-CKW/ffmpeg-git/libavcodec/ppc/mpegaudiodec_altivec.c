@@ -62,7 +62,8 @@ static void apply_window(const float *buf, const float *win1,
         v4 = vec_madd(v2, v3, v4);         \
     }
 
-    while (len--) {
+    while (len--)
+    {
         v0 = vec_xor(v0, v0);
         v4 = vec_xor(v4, v4);
 
@@ -112,7 +113,8 @@ static void apply_window_mp3(float *in, float *win, int *unused, float *out,
     out[0  ]  = suma[   0];
     out += incr;
     out2 -= incr;
-    for(j=1;j<16;j++) {
+    for(j = 1; j < 16; j++)
+    {
         *out  =  suma[   j] - sumd[16-j];
         *out2 = -sumb[16-j] - sumc[   j];
         out  += incr;

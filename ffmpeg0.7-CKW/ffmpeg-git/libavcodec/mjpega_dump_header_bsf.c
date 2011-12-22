@@ -38,7 +38,8 @@ static int mjpega_dump_header(AVBitStreamFilterContext *bsfc, AVCodecContext *av
     unsigned dqt = 0, dht = 0, sof0 = 0;
     int i;
 
-    if (avctx->codec_id != CODEC_ID_MJPEG) {
+    if (avctx->codec_id != CODEC_ID_MJPEG)
+    {
         av_log(avctx, AV_LOG_ERROR, "mjpega bitstream filter only applies to mjpeg codec\n");
         return 0;
     }
@@ -57,12 +58,21 @@ static int mjpega_dump_header(AVBitStreamFilterContext *bsfc, AVCodecContext *av
     bytestream_put_be32(&poutbufp, buf_size + 44); /* pad field size */
     bytestream_put_be32(&poutbufp, 0);             /* next ptr */
 
-    for (i = 0; i < buf_size - 1; i++) {
-        if (buf[i] == 0xff) {
-            switch (buf[i + 1]) {
-            case DQT:  dqt  = i + 46; break;
-            case DHT:  dht  = i + 46; break;
-            case SOF0: sof0 = i + 46; break;
+    for (i = 0; i < buf_size - 1; i++)
+    {
+        if (buf[i] == 0xff)
+        {
+            switch (buf[i + 1])
+            {
+            case DQT:
+                dqt  = i + 46;
+                break;
+            case DHT:
+                dht  = i + 46;
+                break;
+            case SOF0:
+                sof0 = i + 46;
+                break;
             case SOS:
                 bytestream_put_be32(&poutbufp, dqt); /* quant off */
                 bytestream_put_be32(&poutbufp, dht); /* huff off */
@@ -73,7 +83,8 @@ static int mjpega_dump_header(AVBitStreamFilterContext *bsfc, AVCodecContext *av
                 *poutbuf_size = poutbufp - *poutbuf;
                 return 1;
             case APP1:
-                if (i + 8 < buf_size && AV_RL32(buf + i + 8) == AV_RL32("mjpg")) {
+                if (i + 8 < buf_size && AV_RL32(buf + i + 8) == AV_RL32("mjpg"))
+                {
                     av_log(avctx, AV_LOG_ERROR, "bitstream already formatted\n");
                     memcpy(*poutbuf, buf, buf_size);
                     *poutbuf_size = buf_size;
@@ -87,7 +98,8 @@ static int mjpega_dump_header(AVBitStreamFilterContext *bsfc, AVCodecContext *av
     return 0;
 }
 
-AVBitStreamFilter ff_mjpega_dump_header_bsf = {
+AVBitStreamFilter ff_mjpega_dump_header_bsf =
+{
     "mjpegadump",
     0,
     mjpega_dump_header,

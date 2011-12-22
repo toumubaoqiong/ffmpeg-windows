@@ -37,7 +37,8 @@ static int dts_probe(AVProbeData *p)
 
     buf = p->buf;
 
-    for(; buf < (p->buf+p->buf_size)-2; buf+=2) {
+    for(; buf < (p->buf + p->buf_size) - 2; buf += 2)
+    {
         bufp = buf;
         state = (state << 16) | bytestream_get_be16(&bufp);
 
@@ -58,21 +59,22 @@ static int dts_probe(AVProbeData *p)
     sum = markers[0] + markers[1] + markers[2];
     max = markers[1] > markers[0];
     max = markers[2] > markers[max] ? 2 : max;
-    if (markers[max] > 3 && p->buf_size / markers[max] < 32*1024 &&
-        markers[max] * 4 > sum * 3)
-        return AVPROBE_SCORE_MAX/2+1;
+    if (markers[max] > 3 && p->buf_size / markers[max] < 32 * 1024 &&
+            markers[max] * 4 > sum * 3)
+        return AVPROBE_SCORE_MAX / 2 + 1;
 
     return 0;
 }
 
-AVInputFormat ff_dts_demuxer = {
+AVInputFormat ff_dts_demuxer =
+{
     "dts",
     NULL_IF_CONFIG_SMALL("raw DTS"),
     0,
     dts_probe,
     ff_raw_audio_read_header,
     ff_raw_read_partial_packet,
-    .flags= AVFMT_GENERIC_INDEX,
+    .flags = AVFMT_GENERIC_INDEX,
     .extensions = "dts",
     .value = CODEC_ID_DTS,
 };

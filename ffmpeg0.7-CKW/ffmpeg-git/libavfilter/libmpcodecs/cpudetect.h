@@ -28,7 +28,8 @@
 
 #include "libavutil/x86_cpu.h"
 
-typedef struct cpucaps_s {
+typedef struct cpucaps_s
+{
     int cpuType;
     int cpuModel;
     int cpuStepping;

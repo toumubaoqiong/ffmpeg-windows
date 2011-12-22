@@ -29,13 +29,14 @@
 #include "h263.h"
 #include "put_bits.h"
 
-void rv20_encode_picture_header(MpegEncContext *s, int picture_number){
+void rv20_encode_picture_header(MpegEncContext *s, int picture_number)
+{
     put_bits(&s->pb, 2, s->pict_type); //I 0 vs. 1 ?
     put_bits(&s->pb, 1, 0);     /* unknown bit */
     put_bits(&s->pb, 5, s->qscale);
 
     put_sbits(&s->pb, 8, picture_number); //FIXME wrong, but correct is not known
-    s->mb_x= s->mb_y= 0;
+    s->mb_x = s->mb_y = 0;
     ff_h263_encode_mba(s);
 
     put_bits(&s->pb, 1, s->no_rounding);
@@ -44,20 +45,24 @@ void rv20_encode_picture_header(MpegEncContext *s, int picture_number){
     assert(s->unrestricted_mv == 0);
     assert(s->alt_inter_vlc == 0);
     assert(s->umvplus == 0);
-    assert(s->modified_quant==1);
-    assert(s->loop_filter==1);
+    assert(s->modified_quant == 1);
+    assert(s->loop_filter == 1);
 
-    s->h263_aic= s->pict_type == FF_I_TYPE;
-    if(s->h263_aic){
-        s->y_dc_scale_table=
-        s->c_dc_scale_table= ff_aic_dc_scale_table;
-    }else{
-        s->y_dc_scale_table=
-        s->c_dc_scale_table= ff_mpeg1_dc_scale_table;
+    s->h263_aic = s->pict_type == FF_I_TYPE;
+    if(s->h263_aic)
+    {
+        s->y_dc_scale_table =
+            s->c_dc_scale_table = ff_aic_dc_scale_table;
+    }
+    else
+    {
+        s->y_dc_scale_table =
+            s->c_dc_scale_table = ff_mpeg1_dc_scale_table;
     }
 }
 
-AVCodec ff_rv20_encoder = {
+AVCodec ff_rv20_encoder =
+{
     "rv20",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_RV20,
@@ -65,6 +70,9 @@ AVCodec ff_rv20_encoder = {
     MPV_encode_init,
     MPV_encode_picture,
     MPV_encode_end,
-    .pix_fmts= (const enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
-    .long_name= NULL_IF_CONFIG_SMALL("RealVideo 2.0"),
+    .pix_fmts = (const enum PixelFormat[])
+    {
+        PIX_FMT_YUV420P, PIX_FMT_NONE
+    },
+    .long_name = NULL_IF_CONFIG_SMALL("RealVideo 2.0"),
 };

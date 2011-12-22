@@ -27,7 +27,8 @@
  * http://en.wikipedia.org/wiki/Truevision_TGA
  */
 
-enum TargaCompr {
+enum TargaCompr
+{
     TGA_NODATA = 0, // no image data
     TGA_PAL    = 1, // palettized
     TGA_RGB    = 2, // true-color

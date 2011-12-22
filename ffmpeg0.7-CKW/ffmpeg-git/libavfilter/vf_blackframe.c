@@ -29,7 +29,8 @@
 
 #include "avfilter.h"
 
-typedef struct {
+typedef struct
+{
     unsigned int bamount; ///< black amount
     unsigned int bthresh; ///< black threshold
     unsigned int frame;   ///< frame number
@@ -38,7 +39,8 @@ typedef struct {
 
 static int query_formats(AVFilterContext *ctx)
 {
-    static const enum PixelFormat pix_fmts[] = {
+    static const enum PixelFormat pix_fmts[] =
+    {
         PIX_FMT_YUV410P, PIX_FMT_YUV420P, PIX_FMT_GRAY8, PIX_FMT_NV12,
         PIX_FMT_NV21, PIX_FMT_YUV444P, PIX_FMT_YUV422P, PIX_FMT_YUV411P,
         PIX_FMT_NONE
@@ -63,7 +65,8 @@ static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
     av_log(ctx, AV_LOG_INFO, "bamount:%u bthresh:%u\n",
            blackframe->bamount, blackframe->bthresh);
 
-    if (blackframe->bamount > 100 || blackframe->bthresh > 255) {
+    if (blackframe->bamount > 100 || blackframe->bthresh > 255)
+    {
         av_log(ctx, AV_LOG_ERROR, "Too big value for bamount (max is 100) or bthresh (max is 255)\n");
         return AVERROR(EINVAL);
     }
@@ -79,7 +82,8 @@ static void draw_slice(AVFilterLink *inlink, int y, int h, int slice_dir)
     int x, i;
     uint8_t *p = picref->data[0] + y * picref->linesize[0];
 
-    for (i = 0; i < h; i++) {
+    for (i = 0; i < h; i++)
+    {
         for (x = 0; x < inlink->w; x++)
             blackframe->nblack += p[x] < blackframe->bthresh;
         p += picref->linesize[0];
@@ -106,7 +110,8 @@ static void end_frame(AVFilterLink *inlink)
     avfilter_end_frame(inlink->dst->outputs[0]);
 }
 
-AVFilter avfilter_vf_blackframe = {
+AVFilter avfilter_vf_blackframe =
+{
     .name        = "blackframe",
     .description = NULL_IF_CONFIG_SMALL("Detect frames that are (almost) black."),
 
@@ -115,15 +120,25 @@ AVFilter avfilter_vf_blackframe = {
 
     .query_formats = query_formats,
 
-    .inputs    = (AVFilterPad[]) {{ .name = "default",
-                                    .type             = AVMEDIA_TYPE_VIDEO,
-                                    .draw_slice       = draw_slice,
-                                    .get_video_buffer = avfilter_null_get_video_buffer,
-                                    .start_frame      = avfilter_null_start_frame,
-                                    .end_frame        = end_frame, },
-                                  { .name = NULL}},
+    .inputs    = (AVFilterPad[])
+    {
+        {
+            .name = "default",
+            .type             = AVMEDIA_TYPE_VIDEO,
+            .draw_slice       = draw_slice,
+            .get_video_buffer = avfilter_null_get_video_buffer,
+            .start_frame      = avfilter_null_start_frame,
+            .end_frame        = end_frame,
+        },
+        { .name = NULL}
+    },
 
-    .outputs   = (AVFilterPad[]) {{ .name             = "default",
-                                    .type             = AVMEDIA_TYPE_VIDEO },
-                                  { .name = NULL}},
+    .outputs   = (AVFilterPad[])
+    {
+        {
+            .name             = "default",
+            .type             = AVMEDIA_TYPE_VIDEO
+        },
+        { .name = NULL}
+    },
 };

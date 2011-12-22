@@ -24,7 +24,8 @@
 
 #include "avfilter.h"
 
-typedef struct AVFilterGraph {
+typedef struct AVFilterGraph
+{
     unsigned filter_count;
     AVFilterContext **filters;
 
@@ -66,8 +67,8 @@ FFMPEGLIB_API int avfilter_graph_add_filter(AVFilterGraph *graphctx, AVFilterCon
  * negative value otherwise
  */
 FFMPEGLIB_API int avfilter_graph_create_filter(AVFilterContext **filt_ctx, AVFilter *filt,
-                                 const char *name, const char *args, void *opaque,
-                                 AVFilterGraph *graph_ctx);
+        const char *name, const char *args, void *opaque,
+        AVFilterGraph *graph_ctx);
 
 /**
  * Check validity and configure all the links and formats in the graph.
@@ -93,7 +94,8 @@ FFMPEGLIB_API void avfilter_graph_free(AVFilterGraph **graph);
  * pad contained in the graph, the filter context and the pad index
  * required for establishing a link.
  */
-typedef struct AVFilterInOut {
+typedef struct AVFilterInOut
+{
     /** unique name for this input/output in the list */
     char *name;
 
@@ -117,7 +119,7 @@ typedef struct AVFilterInOut {
  * @return zero on success, a negative AVERROR code on error
  */
 FFMPEGLIB_API int avfilter_graph_parse(AVFilterGraph *graph, const char *filters,
-                         AVFilterInOut *inputs, AVFilterInOut *outputs,
-                         AVClass *log_ctx);
+                                       AVFilterInOut *inputs, AVFilterInOut *outputs,
+                                       AVClass *log_ctx);
 
 #endif  /* AVFILTER_AVFILTERGRAPH_H */

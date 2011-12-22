@@ -29,38 +29,47 @@
 #include "mp_image.h"
 #include "vf.h"
 
-struct vf_priv_s {
+struct vf_priv_s
+{
     double current;
     double step;
     int autostart;
     int autostep;
-    unsigned have_step:1;
-    unsigned print:1;
+    unsigned have_step: 1;
+    unsigned print: 1;
 };
 
 static int put_image(vf_instance_t *vf, mp_image_t *src, double pts)
 {
     struct vf_priv_s *p = vf->priv;
 
-    if (p->print) {
+    if (p->print)
+    {
         if (pts == MP_NOPTS_VALUE)
             mp_msg(MSGT_VFILTER, MSGL_INFO, "PTS: undef\n");
         else
             mp_msg(MSGT_VFILTER, MSGL_INFO, "PTS: %f\n", pts);
     }
-    if (pts != MP_NOPTS_VALUE && p->autostart != 0) {
+    if (pts != MP_NOPTS_VALUE && p->autostart != 0)
+    {
         p->current = pts;
         if (p->autostart > 0)
             p->autostart--;
-    } else if (pts != MP_NOPTS_VALUE && p->autostep > 0) {
+    }
+    else if (pts != MP_NOPTS_VALUE && p->autostep > 0)
+    {
         p->step = pts - p->current;
         p->current = pts;
         p->autostep--;
         p->have_step = 1;
-    } else if (p->have_step) {
+    }
+    else if (p->have_step)
+    {
         p->current += p->step;
         pts = p->current;
-    } else {
+    }
+    else
+    {
         pts = MP_NOPTS_VALUE;
     }
     return vf_next_put_image(vf, src, pts);
@@ -77,21 +86,33 @@ static int parse_args(struct vf_priv_s *p, const char *args)
     double num, denom = 1;
     int iarg;
 
-    while (*args != 0) {
+    while (*args != 0)
+    {
         pos = 0;
-        if (sscanf(args, "print%n", &pos) == 0 && pos > 0) {
+        if (sscanf(args, "print%n", &pos) == 0 && pos > 0)
+        {
             p->print = 1;
-        } else if (sscanf(args, "fps=%lf%n/%lf%n", &num, &pos, &denom, &pos) >=
-                   1 && pos > 0) {
+        }
+        else if (sscanf(args, "fps=%lf%n/%lf%n", &num, &pos, &denom, &pos) >=
+                 1 && pos > 0)
+        {
             p->step = denom / num;
             p->have_step = 1;
-        } else if (sscanf(args, "start=%lf%n", &num, &pos) >= 1 && pos > 0) {
+        }
+        else if (sscanf(args, "start=%lf%n", &num, &pos) >= 1 && pos > 0)
+        {
             p->current = num;
-        } else if (sscanf(args, "autostart=%d%n", &iarg, &pos) == 1 && pos > 0) {
+        }
+        else if (sscanf(args, "autostart=%d%n", &iarg, &pos) == 1 && pos > 0)
+        {
             p->autostart = iarg;
-        } else if (sscanf(args, "autofps=%d%n", &iarg, &pos) == 1 && pos > 0) {
+        }
+        else if (sscanf(args, "autofps=%d%n", &iarg, &pos) == 1 && pos > 0)
+        {
             p->autostep = iarg;
-        } else {
+        }
+        else
+        {
             mp_msg(MSGT_VFILTER, MSGL_FATAL,
                    "fixpts: unknown suboption: %s\n", args);
             return 0;
@@ -106,7 +127,8 @@ static int parse_args(struct vf_priv_s *p, const char *args)
 static int open(vf_instance_t *vf, char *args)
 {
     struct vf_priv_s *p;
-    struct vf_priv_s ptmp = {
+    struct vf_priv_s ptmp =
+    {
         .current = 0,
         .step = 0,
         .autostart = 0,
@@ -127,7 +149,8 @@ static int open(vf_instance_t *vf, char *args)
     return 1;
 }
 
-const vf_info_t vf_info_fixpts = {
+const vf_info_t vf_info_fixpts =
+{
     "Fix presentation timestamps",
     "fixpts",
     "Nicolas George",

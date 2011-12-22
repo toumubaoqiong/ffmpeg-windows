@@ -23,18 +23,21 @@
 #include "get_bits.h"
 
 
-typedef struct {
+typedef struct
+{
     AVFrame picture;
 } AvsContext;
 
-typedef enum {
+typedef enum
+{
     AVS_VIDEO     = 0x01,
     AVS_AUDIO     = 0x02,
     AVS_PALETTE   = 0x03,
     AVS_GAME_DATA = 0x04,
 } AvsBlockType;
 
-typedef enum {
+typedef enum
+{
     AVS_I_FRAME     = 0x00,
     AVS_P_FRAME_3X3 = 0x01,
     AVS_P_FRAME_2X2 = 0x02,
@@ -43,7 +46,7 @@ typedef enum {
 
 
 static int
-avs_decode_frame(AVCodecContext * avctx,
+avs_decode_frame(AVCodecContext *avctx,
                  void *data, int *data_size, AVPacket *avpkt)
 {
     const uint8_t *buf = avpkt->data;
@@ -58,7 +61,8 @@ avs_decode_frame(AVCodecContext * avctx,
     AvsBlockType type;
     GetBitContext change_map;
 
-    if (avctx->reget_buffer(avctx, p)) {
+    if (avctx->reget_buffer(avctx, p))
+    {
         av_log(avctx, AV_LOG_ERROR, "reget_buffer() failed\n");
         return -1;
     }
@@ -73,14 +77,15 @@ avs_decode_frame(AVCodecContext * avctx,
     type = buf[1];
     buf += 4;
 
-    if (type == AVS_PALETTE) {
+    if (type == AVS_PALETTE)
+    {
         int first, last;
         uint32_t *pal = (uint32_t *) avs->picture.data[1];
 
         first = AV_RL16(buf);
         last = first + AV_RL16(buf + 2);
         buf += 4;
-        for (i=first; i<last; i++, buf+=3)
+        for (i = first; i < last; i++, buf += 3)
             pal[i] = (buf[0] << 18) | (buf[1] << 10) | (buf[2] << 2);
 
         sub_type = buf[0];
@@ -91,7 +96,8 @@ avs_decode_frame(AVCodecContext * avctx,
     if (type != AVS_VIDEO)
         return -1;
 
-    switch (sub_type) {
+    switch (sub_type)
+    {
     case AVS_I_FRAME:
         p->pict_type = FF_I_TYPE;
         p->key_frame = 1;
@@ -111,21 +117,26 @@ avs_decode_frame(AVCodecContext * avctx,
         break;
 
     default:
-      return -1;
+        return -1;
     }
 
     table = buf + (256 * vect_w * vect_h);
-    if (sub_type != AVS_I_FRAME) {
+    if (sub_type != AVS_I_FRAME)
+    {
         int map_size = ((318 / vect_w + 7) / 8) * (198 / vect_h);
         init_get_bits(&change_map, table, map_size);
         table += map_size;
     }
 
-    for (y=0; y<198; y+=vect_h) {
-        for (x=0; x<318; x+=vect_w) {
-            if (sub_type == AVS_I_FRAME || get_bits1(&change_map)) {
+    for (y = 0; y < 198; y += vect_h)
+    {
+        for (x = 0; x < 318; x += vect_w)
+        {
+            if (sub_type == AVS_I_FRAME || get_bits1(&change_map))
+            {
                 vect = &buf[*table++ * (vect_w * vect_h)];
-                for (j=0; j<vect_w; j++) {
+                for (j = 0; j < vect_w; j++)
+                {
                     out[(y + 0) * stride + x + j] = vect[(0 * vect_w) + j];
                     out[(y + 1) * stride + x + j] = vect[(1 * vect_w) + j];
                     if (vect_h == 3)
@@ -144,13 +155,14 @@ avs_decode_frame(AVCodecContext * avctx,
     return buf_size;
 }
 
-static av_cold int avs_decode_init(AVCodecContext * avctx)
+static av_cold int avs_decode_init(AVCodecContext *avctx)
 {
     avctx->pix_fmt = PIX_FMT_PAL8;
     return 0;
 }
 
-AVCodec ff_avs_decoder = {
+AVCodec ff_avs_decoder =
+{
     "avs",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_AVS,

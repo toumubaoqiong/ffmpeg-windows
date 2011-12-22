@@ -32,7 +32,8 @@ static void dct_unquantize_h263_axp(DCTELEM *block, int n_coeffs,
 
     qadd = WORD_VEC(qadd);
 
-    for(i = 0; i <= n_coeffs; block += 4, i += 4) {
+    for(i = 0; i <= n_coeffs; block += 4, i += 4)
+    {
         uint64_t levels, negmask, zeros, add, sub;
 
         levels = ldq(block);
@@ -70,19 +71,22 @@ static void dct_unquantize_h263_axp(DCTELEM *block, int n_coeffs,
 }
 
 static void dct_unquantize_h263_intra_axp(MpegEncContext *s, DCTELEM *block,
-                                    int n, int qscale)
+        int n, int qscale)
 {
     int n_coeffs;
     uint64_t qadd;
     DCTELEM block0 = block[0];
 
-    if (!s->h263_aic) {
+    if (!s->h263_aic)
+    {
         if (n < 4)
             block0 *= s->y_dc_scale;
         else
             block0 *= s->c_dc_scale;
         qadd = (qscale - 1) | 1;
-    } else {
+    }
+    else
+    {
         qadd = 0;
     }
 
@@ -97,7 +101,7 @@ static void dct_unquantize_h263_intra_axp(MpegEncContext *s, DCTELEM *block,
 }
 
 static void dct_unquantize_h263_inter_axp(MpegEncContext *s, DCTELEM *block,
-                                    int n, int qscale)
+        int n, int qscale)
 {
     int n_coeffs = s->inter_scantable.raster_end[s->block_last_index[n]];
     dct_unquantize_h263_axp(block, n_coeffs, qscale, (qscale - 1) | 1);

@@ -24,9 +24,9 @@
 
 static int probe(AVProbeData *p)
 {
-    if (AV_RL32(p->buf) == MKTAG('D','K','I','F')
-        && !AV_RL16(p->buf+4) && AV_RL16(p->buf+6) == 32)
-        return AVPROBE_SCORE_MAX-2;
+    if (AV_RL32(p->buf) == MKTAG('D', 'K', 'I', 'F')
+            && !AV_RL16(p->buf + 4) && AV_RL16(p->buf + 6) == 32)
+        return AVPROBE_SCORE_MAX - 2;
 
     return 0;
 }
@@ -56,7 +56,8 @@ static int read_header(AVFormatContext *s, AVFormatParameters *ap)
 
     st->need_parsing      = AVSTREAM_PARSE_HEADERS;
 
-    if (!time_base.den || !time_base.num) {
+    if (!time_base.den || !time_base.num)
+    {
         av_log(s, AV_LOG_ERROR, "Invalid frame rate\n");
         return AVERROR_INVALIDDATA;
     }
@@ -79,13 +80,17 @@ static int read_packet(AVFormatContext *s, AVPacket *pkt)
     return ret;
 }
 
-AVInputFormat ff_ivf_demuxer = {
+AVInputFormat ff_ivf_demuxer =
+{
     "ivf",
     NULL_IF_CONFIG_SMALL("On2 IVF"),
     0,
     probe,
     read_header,
     read_packet,
-    .flags= AVFMT_GENERIC_INDEX,
-    .codec_tag = (const AVCodecTag*[]){ff_codec_bmp_tags, 0},
+    .flags = AVFMT_GENERIC_INDEX,
+    .codec_tag = (const AVCodecTag * [])
+    {
+        ff_codec_bmp_tags, 0
+    },
 };

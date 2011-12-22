@@ -25,24 +25,25 @@
 
 av_cold void ff_kbd_window_init(float *window, float alpha, int n)
 {
-   int i, j;
-   double sum = 0.0, bessel, tmp;
-   double local_window[FF_KBD_WINDOW_MAX];
-   double alpha2 = (alpha * M_PI / n) * (alpha * M_PI / n);
+    int i, j;
+    double sum = 0.0, bessel, tmp;
+    double local_window[FF_KBD_WINDOW_MAX];
+    double alpha2 = (alpha * M_PI / n) * (alpha * M_PI / n);
 
-   assert(n <= FF_KBD_WINDOW_MAX);
+    assert(n <= FF_KBD_WINDOW_MAX);
 
-   for (i = 0; i < n; i++) {
-       tmp = i * (n - i) * alpha2;
-       bessel = 1.0;
-       for (j = BESSEL_I0_ITER; j > 0; j--)
-           bessel = bessel * tmp / (j * j) + 1;
-       sum += bessel;
-       local_window[i] = sum;
-   }
+    for (i = 0; i < n; i++)
+    {
+        tmp = i * (n - i) * alpha2;
+        bessel = 1.0;
+        for (j = BESSEL_I0_ITER; j > 0; j--)
+            bessel = bessel * tmp / (j * j) + 1;
+        sum += bessel;
+        local_window[i] = sum;
+    }
 
-   sum++;
-   for (i = 0; i < n; i++)
-       window[i] = sqrt(local_window[i] / sum);
+    sum++;
+    for (i = 0; i < n; i++)
+        window[i] = sqrt(local_window[i] / sum);
 }
 

@@ -40,7 +40,8 @@ static int ape_tag_read_field(AVFormatContext *s)
 
     size = avio_rl32(pb);  /* field size */
     flags = avio_rl32(pb); /* field flags */
-    for (i = 0; i < sizeof(key) - 1; i++) {
+    for (i = 0; i < sizeof(key) - 1; i++)
+    {
         c = avio_r8(pb);
         if (c < 0x20 || c > 0x7E)
             break;
@@ -48,13 +49,14 @@ static int ape_tag_read_field(AVFormatContext *s)
             key[i] = c;
     }
     key[i] = 0;
-    if (c != 0) {
+    if (c != 0)
+    {
         av_log(s, AV_LOG_WARNING, "Invalid APE tag key '%s'.\n", key);
         return -1;
     }
     if (size >= UINT_MAX)
         return -1;
-    value = av_malloc(size+1);
+    value = av_malloc(size + 1);
     if (!value)
         return AVERROR(ENOMEM);
     avio_read(pb, value, size);
@@ -77,36 +79,41 @@ void ff_ape_parse_tag(AVFormatContext *s)
     avio_seek(pb, file_size - APE_TAG_FOOTER_BYTES, SEEK_SET);
 
     avio_read(pb, buf, 8);     /* APETAGEX */
-    if (strncmp(buf, "APETAGEX", 8)) {
+    if (strncmp(buf, "APETAGEX", 8))
+    {
         return;
     }
 
     val = avio_rl32(pb);       /* APE tag version */
-    if (val > APE_TAG_VERSION) {
+    if (val > APE_TAG_VERSION)
+    {
         av_log(s, AV_LOG_ERROR, "Unsupported tag version. (>=%d)\n", APE_TAG_VERSION);
         return;
     }
 
     tag_bytes = avio_rl32(pb); /* tag size */
-    if (tag_bytes - APE_TAG_FOOTER_BYTES > (1024 * 1024 * 16)) {
+    if (tag_bytes - APE_TAG_FOOTER_BYTES > (1024 * 1024 * 16))
+    {
         av_log(s, AV_LOG_ERROR, "Tag size is way too big\n");
         return;
     }
 
     fields = avio_rl32(pb);    /* number of fields */
-    if (fields > 65536) {
+    if (fields > 65536)
+    {
         av_log(s, AV_LOG_ERROR, "Too many tag fields (%d)\n", fields);
         return;
     }
 
     val = avio_rl32(pb);       /* flags */
-    if (val & APE_TAG_FLAG_IS_HEADER) {
+    if (val & APE_TAG_FLAG_IS_HEADER)
+    {
         av_log(s, AV_LOG_ERROR, "APE Tag is a header\n");
         return;
     }
 
     avio_seek(pb, file_size - tag_bytes, SEEK_SET);
 
-    for (i=0; i<fields; i++)
+    for (i = 0; i < fields; i++)
         if (ape_tag_read_field(s) < 0) break;
 }

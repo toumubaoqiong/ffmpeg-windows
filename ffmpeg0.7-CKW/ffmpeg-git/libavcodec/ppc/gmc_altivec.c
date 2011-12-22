@@ -33,13 +33,13 @@ void gmc1_altivec(uint8_t *dst /* align 8 */, uint8_t *src /* align1 */, int str
 {
     const DECLARE_ALIGNED(16, unsigned short, rounder_a) = rounder;
     const DECLARE_ALIGNED(16, unsigned short, ABCD)[8] =
-        {
-            (16-x16)*(16-y16), /* A */
-            (   x16)*(16-y16), /* B */
-            (16-x16)*(   y16), /* C */
-            (   x16)*(   y16), /* D */
-            0, 0, 0, 0         /* padding */
-        };
+    {
+        (16 - x16)*(16 - y16), /* A */
+        (   x16)*(16 - y16), /* B */
+        (16 - x16)*(   y16), /* C */
+        (   x16)*(   y16), /* D */
+        0, 0, 0, 0         /* padding */
+    };
     register const vector unsigned char vczero = (const vector unsigned char)vec_splat_u8(0);
     register const vector unsigned short vcsr8 = (const vector unsigned short)vec_splat_u16(8);
     register vector unsigned char dstv, dstv2, src_0, src_1, srcvA, srcvB, srcvC, srcvD;
@@ -48,7 +48,7 @@ void gmc1_altivec(uint8_t *dst /* align 8 */, uint8_t *src /* align1 */, int str
     unsigned long dst_odd = (unsigned long)dst & 0x0000000F;
     unsigned long src_really_odd = (unsigned long)src & 0x0000000F;
 
-    tempA = vec_ld(0, (unsigned short*)ABCD);
+    tempA = vec_ld(0, (unsigned short *)ABCD);
     Av = vec_splat(tempA, 0);
     Bv = vec_splat(tempA, 1);
     Cv = vec_splat(tempA, 2);
@@ -65,17 +65,21 @@ void gmc1_altivec(uint8_t *dst /* align 8 */, uint8_t *src /* align1 */, int str
     src_1 = vec_ld(16, src);
     srcvA = vec_perm(src_0, src_1, vec_lvsl(0, src));
 
-    if (src_really_odd != 0x0000000F) {
+    if (src_really_odd != 0x0000000F)
+    {
         // if src & 0xF == 0xF, then (src+1) is properly aligned
         // on the second vector.
         srcvB = vec_perm(src_0, src_1, vec_lvsl(1, src));
-    } else {
+    }
+    else
+    {
         srcvB = src_1;
     }
     srcvA = vec_mergeh(vczero, srcvA);
     srcvB = vec_mergeh(vczero, srcvB);
 
-    for(i=0; i<h; i++) {
+    for(i = 0; i < h; i++)
+    {
         dst_odd = (unsigned long)dst & 0x0000000F;
         src_really_odd = (((unsigned long)src) + stride) & 0x0000000F;
 
@@ -89,11 +93,14 @@ void gmc1_altivec(uint8_t *dst /* align 8 */, uint8_t *src /* align1 */, int str
         src_1 = vec_ld(stride + 16, src);
         srcvC = vec_perm(src_0, src_1, vec_lvsl(stride + 0, src));
 
-        if (src_really_odd != 0x0000000F) {
+        if (src_really_odd != 0x0000000F)
+        {
             // if src & 0xF == 0xF, then (src+1) is properly aligned
             // on the second vector.
             srcvD = vec_perm(src_0, src_1, vec_lvsl(stride + 1, src));
-        } else {
+        }
+        else
+        {
             srcvD = src_1;
         }
 
@@ -116,10 +123,13 @@ void gmc1_altivec(uint8_t *dst /* align 8 */, uint8_t *src /* align1 */, int str
 
         dstv2 = vec_pack(tempD, (vector unsigned short)vczero);
 
-        if (dst_odd) {
-            dstv2 = vec_perm(dstv, dstv2, vcprm(0,1,s0,s1));
-        } else {
-            dstv2 = vec_perm(dstv, dstv2, vcprm(s0,s1,2,3));
+        if (dst_odd)
+        {
+            dstv2 = vec_perm(dstv, dstv2, vcprm(0, 1, s0, s1));
+        }
+        else
+        {
+            dstv2 = vec_perm(dstv, dstv2, vcprm(s0, s1, 2, 3));
         }
 
         vec_st(dstv2, 0, dst);

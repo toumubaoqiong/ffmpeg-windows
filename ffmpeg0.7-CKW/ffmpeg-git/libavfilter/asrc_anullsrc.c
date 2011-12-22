@@ -24,7 +24,8 @@
 #include "avfilter.h"
 #include "libavutil/audioconvert.h"
 
-typedef struct {
+typedef struct
+{
     int64_t channel_layout;
     int64_t sample_rate;
 } ANullContext;
@@ -40,14 +41,16 @@ static int init(AVFilterContext *ctx, const char *args, void *opaque)
     if (args)
         sscanf(args, "%"PRId64":%s", &priv->sample_rate, channel_layout_str);
 
-    if (priv->sample_rate < 0) {
+    if (priv->sample_rate < 0)
+    {
         av_log(ctx, AV_LOG_ERROR, "Invalid negative sample rate: %"PRId64"\n", priv->sample_rate);
         return AVERROR(EINVAL);
     }
 
     if (*channel_layout_str)
         if (!(priv->channel_layout = av_get_channel_layout(channel_layout_str))
-            && sscanf(channel_layout_str, "%"PRId64, &priv->channel_layout) != 1) {
+                && sscanf(channel_layout_str, "%"PRId64, &priv->channel_layout) != 1)
+        {
             av_log(ctx, AV_LOG_ERROR, "Invalid value '%s' for channel layout\n",
                    channel_layout_str);
             return AVERROR(EINVAL);
@@ -79,18 +82,29 @@ static int request_frame(AVFilterLink *link)
     return -1;
 }
 
-AVFilter avfilter_asrc_anullsrc = {
+AVFilter avfilter_asrc_anullsrc =
+{
     .name        = "anullsrc",
     .description = NULL_IF_CONFIG_SMALL("Null audio source, never return audio frames."),
 
     .init        = init,
     .priv_size   = sizeof(ANullContext),
 
-    .inputs      = (AVFilterPad[]) {{ .name = NULL}},
+    .inputs      = (AVFilterPad[])
+    {
+        {
+            .name = NULL
+        }
+    },
 
-    .outputs     = (AVFilterPad[]) {{ .name = "default",
-                                      .type = AVMEDIA_TYPE_AUDIO,
-                                      .config_props = config_props,
-                                      .request_frame = request_frame, },
-                                    { .name = NULL}},
+    .outputs     = (AVFilterPad[])
+    {
+        {
+            .name = "default",
+            .type = AVMEDIA_TYPE_AUDIO,
+            .config_props = config_props,
+            .request_frame = request_frame,
+        },
+        { .name = NULL}
+    },
 };

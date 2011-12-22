@@ -37,7 +37,8 @@
 #define JP2_SIG_TYPE    0x6A502020
 #define JP2_SIG_VALUE   0x0D0A870A
 
-typedef struct {
+typedef struct
+{
     opj_dparameters_t dec_params;
     AVFrame image;
 } LibOpenJPEGContext;
@@ -81,10 +82,13 @@ static int libopenjpeg_decode_frame(AVCodecContext *avctx,
 
     // Check if input is a raw jpeg2k codestream or in jp2 wrapping
     if((AV_RB32(buf) == 12) &&
-       (AV_RB32(buf + 4) == JP2_SIG_TYPE) &&
-       (AV_RB32(buf + 8) == JP2_SIG_VALUE)) {
+            (AV_RB32(buf + 4) == JP2_SIG_TYPE) &&
+            (AV_RB32(buf + 8) == JP2_SIG_VALUE))
+    {
         dec = opj_create_decompress(CODEC_JP2);
-    } else {
+    }
+    else
+    {
         // If the AVPacket contains a jp2c box, then skip to
         // the starting byte of the codestream.
         if (AV_RB32(buf + 4) == AV_RB32("jp2c"))
@@ -92,7 +96,8 @@ static int libopenjpeg_decode_frame(AVCodecContext *avctx,
         dec = opj_create_decompress(CODEC_J2K);
     }
 
-    if(!dec) {
+    if(!dec)
+    {
         av_log(avctx, AV_LOG_ERROR, "Error initializing decoder.\n");
         return -1;
     }
@@ -102,7 +107,8 @@ static int libopenjpeg_decode_frame(AVCodecContext *avctx,
     // Tie decoder with decoding parameters
     opj_setup_decoder(dec, &ctx->dec_params);
     stream = opj_cio_open((opj_common_ptr)dec, buf, buf_size);
-    if(!stream) {
+    if(!stream)
+    {
         av_log(avctx, AV_LOG_ERROR, "Codestream could not be opened for reading.\n");
         opj_destroy_decompress(dec);
         return -1;
@@ -111,14 +117,16 @@ static int libopenjpeg_decode_frame(AVCodecContext *avctx,
     // Decode the codestream
     image = opj_decode_with_info(dec, stream, NULL);
     opj_cio_close(stream);
-    if(!image) {
+    if(!image)
+    {
         av_log(avctx, AV_LOG_ERROR, "Error decoding codestream.\n");
         opj_destroy_decompress(dec);
         return -1;
     }
     width  = image->comps[0].w << avctx->lowres;
     height = image->comps[0].h << avctx->lowres;
-    if(av_image_check_size(width, height, 0, avctx) < 0) {
+    if(av_image_check_size(width, height, 0, avctx) < 0)
+    {
         av_log(avctx, AV_LOG_ERROR, "%dx%d dimension invalid.\n", width, height);
         goto done;
     }
@@ -126,40 +134,52 @@ static int libopenjpeg_decode_frame(AVCodecContext *avctx,
 
     switch(image->numcomps)
     {
-        case 1:  avctx->pix_fmt = PIX_FMT_GRAY8;
-                 break;
-        case 3:  if(check_image_attributes(image)) {
-                     avctx->pix_fmt = PIX_FMT_RGB24;
-                 } else {
-                     avctx->pix_fmt = PIX_FMT_GRAY8;
-                     av_log(avctx, AV_LOG_ERROR, "Only first component will be used.\n");
-                 }
-                 break;
-        case 4:  has_alpha = 1;
-                 avctx->pix_fmt = PIX_FMT_RGBA;
-                 break;
-        default: av_log(avctx, AV_LOG_ERROR, "%d components unsupported.\n", image->numcomps);
-                 goto done;
+    case 1:
+        avctx->pix_fmt = PIX_FMT_GRAY8;
+        break;
+    case 3:
+        if(check_image_attributes(image))
+        {
+            avctx->pix_fmt = PIX_FMT_RGB24;
+        }
+        else
+        {
+            avctx->pix_fmt = PIX_FMT_GRAY8;
+            av_log(avctx, AV_LOG_ERROR, "Only first component will be used.\n");
+        }
+        break;
+    case 4:
+        has_alpha = 1;
+        avctx->pix_fmt = PIX_FMT_RGBA;
+        break;
+    default:
+        av_log(avctx, AV_LOG_ERROR, "%d components unsupported.\n", image->numcomps);
+        goto done;
     }
 
     if(picture->data[0])
         avctx->release_buffer(avctx, picture);
 
-    if(avctx->get_buffer(avctx, picture) < 0) {
+    if(avctx->get_buffer(avctx, picture) < 0)
+    {
         av_log(avctx, AV_LOG_ERROR, "Couldn't allocate image buffer.\n");
         return -1;
     }
 
-    for(x = 0; x < image->numcomps; x++) {
+    for(x = 0; x < image->numcomps; x++)
+    {
         adjust[x] = FFMAX(image->comps[x].prec - 8, 0);
     }
 
-    for(y = 0; y < avctx->height; y++) {
-        index = y*avctx->width;
-        img_ptr = picture->data[0] + y*picture->linesize[0];
-        for(x = 0; x < avctx->width; x++, index++) {
+    for(y = 0; y < avctx->height; y++)
+    {
+        index = y * avctx->width;
+        img_ptr = picture->data[0] + y * picture->linesize[0];
+        for(x = 0; x < avctx->width; x++, index++)
+        {
             *img_ptr++ = image->comps[0].data[index] >> adjust[0];
-            if(image->numcomps > 2 && check_image_attributes(image)) {
+            if(image->numcomps > 2 && check_image_attributes(image))
+            {
                 *img_ptr++ = image->comps[1].data[index] >> adjust[1];
                 *img_ptr++ = image->comps[2].data[index] >> adjust[2];
                 if(has_alpha)
@@ -188,7 +208,8 @@ static av_cold int libopenjpeg_decode_close(AVCodecContext *avctx)
 }
 
 
-AVCodec ff_libopenjpeg_decoder = {
+AVCodec ff_libopenjpeg_decoder =
+{
     "libopenjpeg",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_JPEG2000,

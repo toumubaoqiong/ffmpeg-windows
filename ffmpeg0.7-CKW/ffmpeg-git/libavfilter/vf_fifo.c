@@ -25,12 +25,14 @@
 
 #include "avfilter.h"
 
-typedef struct BufPic {
+typedef struct BufPic
+{
     AVFilterBufferRef *picref;
     struct BufPic     *next;
 } BufPic;
 
-typedef struct {
+typedef struct
+{
     BufPic  root;
     BufPic *last;   ///< last buffered picture
 } FifoContext;
@@ -49,7 +51,8 @@ static av_cold void uninit(AVFilterContext *ctx)
     FifoContext *fifo = ctx->priv;
     BufPic *pic, *tmp;
 
-    for (pic = fifo->root.next; pic; pic = tmp) {
+    for (pic = fifo->root.next; pic; pic = tmp)
+    {
         tmp = pic->next;
         avfilter_unref_buffer(pic->picref);
         av_free(pic);
@@ -75,7 +78,8 @@ static int request_frame(AVFilterLink *outlink)
     BufPic *tmp;
     int ret;
 
-    if (!fifo->root.next) {
+    if (!fifo->root.next)
+    {
         if ((ret = avfilter_request_frame(outlink->src->inputs[0]) < 0))
             return ret;
     }
@@ -95,7 +99,8 @@ static int request_frame(AVFilterLink *outlink)
     return 0;
 }
 
-AVFilter avfilter_vf_fifo = {
+AVFilter avfilter_vf_fifo =
+{
     .name      = "fifo",
     .description = NULL_IF_CONFIG_SMALL("Buffer input images and send them when they are requested."),
 
@@ -104,16 +109,26 @@ AVFilter avfilter_vf_fifo = {
 
     .priv_size = sizeof(FifoContext),
 
-    .inputs    = (AVFilterPad[]) {{ .name            = "default",
-                                    .type            = AVMEDIA_TYPE_VIDEO,
-                                    .get_video_buffer= avfilter_null_get_video_buffer,
-                                    .start_frame     = start_frame,
-                                    .draw_slice      = draw_slice,
-                                    .end_frame       = end_frame,
-                                    .rej_perms       = AV_PERM_REUSE2, },
-                                  { .name = NULL}},
-    .outputs   = (AVFilterPad[]) {{ .name            = "default",
-                                    .type            = AVMEDIA_TYPE_VIDEO,
-                                    .request_frame   = request_frame, },
-                                  { .name = NULL}},
+    .inputs    = (AVFilterPad[])
+    {
+        {
+            .name            = "default",
+            .type            = AVMEDIA_TYPE_VIDEO,
+            .get_video_buffer = avfilter_null_get_video_buffer,
+            .start_frame     = start_frame,
+            .draw_slice      = draw_slice,
+            .end_frame       = end_frame,
+            .rej_perms       = AV_PERM_REUSE2,
+        },
+        { .name = NULL}
+    },
+    .outputs   = (AVFilterPad[])
+    {
+        {
+            .name            = "default",
+            .type            = AVMEDIA_TYPE_VIDEO,
+            .request_frame   = request_frame,
+        },
+        { .name = NULL}
+    },
 };

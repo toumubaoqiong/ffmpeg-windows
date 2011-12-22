@@ -58,8 +58,8 @@ int ff_acelp_decode_8bit_to_1st_delay3(int ac_index);
  *         AMR @@7.4k for the second subframe.
  */
 int ff_acelp_decode_5_6_bit_to_2nd_delay3(
-        int ac_index,
-        int pitch_delay_min);
+    int ac_index,
+    int pitch_delay_min);
 
 /**
  * \brief Decode pitch delay with 1/3 precision.
@@ -78,8 +78,8 @@ int ff_acelp_decode_5_6_bit_to_2nd_delay3(
  *         AMR @@5.15k, AMR @@4.75k for the second subframe.
  */
 int ff_acelp_decode_4bit_to_2nd_delay3(
-        int ac_index,
-        int pitch_delay_min);
+    int ac_index,
+    int pitch_delay_min);
 
 /**
  * \brief Decode pitch delay of the first subframe encoded by 9 bits
@@ -111,8 +111,8 @@ int ff_acelp_decode_9bit_to_1st_delay6(int ac_index);
  * \remark The routine is used in AMR @@12.2k for the second and fourth subframes.
  */
 int ff_acelp_decode_6bit_to_2nd_delay6(
-        int ac_index,
-        int pitch_delay_min);
+    int ac_index,
+    int pitch_delay_min);
 
 /**
  * \brief Update past quantized energies
@@ -131,10 +131,10 @@ int ff_acelp_decode_6bit_to_2nd_delay6(
  * \remark The routine is used in G.729 and AMR (all modes).
  */
 void ff_acelp_update_past_gain(
-        int16_t* quant_energy,
-        int gain_corr_factor,
-        int log2_ma_pred_order,
-        int erasure);
+    int16_t *quant_energy,
+    int gain_corr_factor,
+    int log2_ma_pred_order,
+    int erasure);
 
 /**
  * \brief Decode the adaptive codebook gain and add
@@ -210,10 +210,10 @@ void ff_acelp_update_past_gain(
 int16_t ff_acelp_decode_gain_code(
     DSPContext *dsp,
     int gain_corr_factor,
-    const int16_t* fc_v,
+    const int16_t *fc_v,
     int mr_energy,
-    const int16_t* quant_energy,
-    const int16_t* ma_prediction_coeff,
+    const int16_t *quant_energy,
+    const int16_t *ma_prediction_coeff,
     int subframe_size,
     int max_pred_order);
 

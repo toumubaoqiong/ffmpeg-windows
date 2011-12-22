@@ -54,7 +54,8 @@
 /* update on the 'some browsers don't like it issue from above: this was probably due to missing 'Data Sub-block Terminator' (byte 19) in the app_header */
 #define GIF_ADD_APP_HEADER // required to enable looping of animated gif
 
-typedef struct {
+typedef struct
+{
     unsigned char r;
     unsigned char g;
     unsigned char b;
@@ -67,7 +68,8 @@ typedef struct {
  *   echo -n "{ 0x$r, 0x$g, 0x$b }, "; done; echo ""; done; done
  */
 
-static const rgb_triplet gif_clut[216] = {
+static const rgb_triplet gif_clut[216] =
+{
     { 0x00, 0x00, 0x00 }, { 0x00, 0x00, 0x33 }, { 0x00, 0x00, 0x66 }, { 0x00, 0x00, 0x99 }, { 0x00, 0x00, 0xcc }, { 0x00, 0x00, 0xff },
     { 0x00, 0x33, 0x00 }, { 0x00, 0x33, 0x33 }, { 0x00, 0x33, 0x66 }, { 0x00, 0x33, 0x99 }, { 0x00, 0x33, 0xcc }, { 0x00, 0x33, 0xff },
     { 0x00, 0x66, 0x00 }, { 0x00, 0x66, 0x33 }, { 0x00, 0x66, 0x66 }, { 0x00, 0x66, 0x99 }, { 0x00, 0x66, 0xcc }, { 0x00, 0x66, 0xff },
@@ -124,12 +126,16 @@ static int gif_image_write_header(AVIOContext *pb,
     avio_w8(pb, 0);    /* aspect ratio */
 
     /* the global palette */
-    if (!palette) {
-        avio_write(pb, (const unsigned char *)gif_clut, 216*3);
-        for(i=0;i<((256-216)*3);i++)
+    if (!palette)
+    {
+        avio_write(pb, (const unsigned char *)gif_clut, 216 * 3);
+        for(i = 0; i < ((256 - 216) * 3); i++)
             avio_w8(pb, 0);
-    } else {
-        for(i=0;i<256;i++) {
+    }
+    else
+    {
+        for(i = 0; i < 256; i++)
+        {
             v = palette[i];
             avio_w8(pb, (v >> 16) & 0xff);
             avio_w8(pb, (v >> 8) & 0xff);
@@ -137,31 +143,32 @@ static int gif_image_write_header(AVIOContext *pb,
         }
     }
 
-        /*        update: this is the 'NETSCAPE EXTENSION' that allows for looped animated gif
-                see http://members.aol.com/royalef/gifabout.htm#net-extension
+    /*        update: this is the 'NETSCAPE EXTENSION' that allows for looped animated gif
+            see http://members.aol.com/royalef/gifabout.htm#net-extension
 
-                byte   1       : 33 (hex 0x21) GIF Extension code
-                byte   2       : 255 (hex 0xFF) Application Extension Label
-                byte   3       : 11 (hex (0x0B) Length of Application Block
-                                         (eleven bytes of data to follow)
-                bytes  4 to 11 : "NETSCAPE"
-                bytes 12 to 14 : "2.0"
-                byte  15       : 3 (hex 0x03) Length of Data Sub-Block
-                                         (three bytes of data to follow)
-                byte  16       : 1 (hex 0x01)
-                bytes 17 to 18 : 0 to 65535, an unsigned integer in
-                                         lo-hi byte format. This indicate the
-                                         number of iterations the loop should
-                                         be executed.
-                bytes 19       : 0 (hex 0x00) a Data Sub-block Terminator
-        */
+            byte   1       : 33 (hex 0x21) GIF Extension code
+            byte   2       : 255 (hex 0xFF) Application Extension Label
+            byte   3       : 11 (hex (0x0B) Length of Application Block
+                                     (eleven bytes of data to follow)
+            bytes  4 to 11 : "NETSCAPE"
+            bytes 12 to 14 : "2.0"
+            byte  15       : 3 (hex 0x03) Length of Data Sub-Block
+                                     (three bytes of data to follow)
+            byte  16       : 1 (hex 0x01)
+            bytes 17 to 18 : 0 to 65535, an unsigned integer in
+                                     lo-hi byte format. This indicate the
+                                     number of iterations the loop should
+                                     be executed.
+            bytes 19       : 0 (hex 0x00) a Data Sub-block Terminator
+    */
 
     /* application extension header */
 #ifdef GIF_ADD_APP_HEADER
-    if (loop_count >= 0 && loop_count <= 65535) {
-    avio_w8(pb, 0x21);
-    avio_w8(pb, 0xff);
-    avio_w8(pb, 0x0b);
+    if (loop_count >= 0 && loop_count <= 65535)
+    {
+        avio_w8(pb, 0x21);
+        avio_w8(pb, 0xff);
+        avio_w8(pb, 0x0b);
         avio_write(pb, "NETSCAPE2.0", sizeof("NETSCAPE2.0") - 1);  // bytes 4 to 14
         avio_w8(pb, 0x03); // byte 15
         avio_w8(pb, 0x01); // byte 16
@@ -199,52 +206,61 @@ static int gif_image_write_image(AVIOContext *pb,
 
     avio_w8(pb, 0x08);
 
-    left= width * height;
+    left = width * height;
 
     init_put_bits(&p, buffer, 130);
 
-/*
- * the thing here is the bitstream is written as little packets, with a size byte before
- * but it's still the same bitstream between packets (no flush !)
- */
+    /*
+     * the thing here is the bitstream is written as little packets, with a size byte before
+     * but it's still the same bitstream between packets (no flush !)
+     */
     ptr = buf;
     w = width;
-    while(left>0) {
+    while(left > 0)
+    {
 
         put_bits(&p, 9, 0x0100); /* clear code */
 
-        for(i=(left<GIF_CHUNKS)?left:GIF_CHUNKS;i;i--) {
-            if (pix_fmt == PIX_FMT_RGB24) {
+        for(i = (left < GIF_CHUNKS) ? left : GIF_CHUNKS; i; i--)
+        {
+            if (pix_fmt == PIX_FMT_RGB24)
+            {
                 v = gif_clut_index(ptr[0], ptr[1], ptr[2]);
-                ptr+=3;
-            } else {
+                ptr += 3;
+            }
+            else
+            {
                 v = *ptr++;
             }
             put_bits(&p, 9, v);
-            if (--w == 0) {
+            if (--w == 0)
+            {
                 w = width;
                 buf += linesize;
                 ptr = buf;
             }
         }
 
-        if(left<=GIF_CHUNKS) {
+        if(left <= GIF_CHUNKS)
+        {
             put_bits(&p, 9, 0x101); /* end of stream */
             flush_put_bits(&p);
         }
-        if(put_bits_ptr(&p) - p.buf > 0) {
+        if(put_bits_ptr(&p) - p.buf > 0)
+        {
             avio_w8(pb, put_bits_ptr(&p) - p.buf); /* byte count of the packet */
             avio_write(pb, p.buf, put_bits_ptr(&p) - p.buf); /* the actual buffer */
             p.buf_ptr = p.buf; /* dequeue the bytes off the bitstream */
         }
-        left-=GIF_CHUNKS;
+        left -= GIF_CHUNKS;
     }
     avio_w8(pb, 0x00); /* end of image block */
 
     return 0;
 }
 
-typedef struct {
+typedef struct
+{
     int64_t time, file_time;
     uint8_t buffer[100]; /* data chunks */
 } GIFContext;
@@ -256,31 +272,36 @@ static int gif_write_header(AVFormatContext *s)
     AVCodecContext *enc, *video_enc;
     int i, width, height, loop_count /*, rate*/;
 
-/* XXX: do we reject audio streams or just ignore them ?
-    if(s->nb_streams > 1)
-        return -1;
-*/
+    /* XXX: do we reject audio streams or just ignore them ?
+        if(s->nb_streams > 1)
+            return -1;
+    */
     gif->time = 0;
     gif->file_time = 0;
 
     video_enc = NULL;
-    for(i=0;i<s->nb_streams;i++) {
+    for(i = 0; i < s->nb_streams; i++)
+    {
         enc = s->streams[i]->codec;
         if (enc->codec_type != AVMEDIA_TYPE_AUDIO)
             video_enc = enc;
     }
 
-    if (!video_enc) {
+    if (!video_enc)
+    {
         av_free(gif);
         return -1;
-    } else {
+    }
+    else
+    {
         width = video_enc->width;
         height = video_enc->height;
         loop_count = s->loop_output;
-//        rate = video_enc->time_base.den;
+        //        rate = video_enc->time_base.den;
     }
 
-    if (video_enc->pix_fmt != PIX_FMT_RGB24) {
+    if (video_enc->pix_fmt != PIX_FMT_RGB24)
+    {
         av_log(s, AV_LOG_ERROR, "ERROR: gif only handles the rgb24 pixel format. Use -pix_fmt rgb24.\n");
         return AVERROR(EIO);
     }
@@ -312,7 +333,7 @@ static int gif_write_video(AVFormatContext *s,
     /* XXX: should use delay, in order to be more accurate */
     /* instead of using the same rounded value each time */
     /* XXX: don't even remember if I really use it for now */
-    jiffies = (70*enc->time_base.num/enc->time_base.den) - 1;
+    jiffies = (70 * enc->time_base.num / enc->time_base.den) - 1;
 
     avio_wl16(pb, jiffies);
 
@@ -344,7 +365,8 @@ static int gif_write_trailer(AVFormatContext *s)
     return 0;
 }
 
-AVOutputFormat ff_gif_muxer = {
+AVOutputFormat ff_gif_muxer =
+{
     "gif",
     NULL_IF_CONFIG_SMALL("GIF Animation"),
     "image/gif",

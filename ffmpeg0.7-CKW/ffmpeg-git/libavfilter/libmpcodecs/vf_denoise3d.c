@@ -35,10 +35,11 @@
 
 //===========================================================================//
 
-struct vf_priv_s {
-        int Coefs[4][512];
-        unsigned char *Line;
-        mp_image_t *pmpi;
+struct vf_priv_s
+{
+    int Coefs[4][512];
+    unsigned char *Line;
+    mp_image_t *pmpi;
 };
 
 
@@ -46,15 +47,16 @@ struct vf_priv_s {
 
 
 static int config(struct vf_instance *vf,
-        int width, int height, int d_width, int d_height,
-        unsigned int flags, unsigned int outfmt){
+                  int width, int height, int d_width, int d_height,
+                  unsigned int flags, unsigned int outfmt)
+{
 
-        free(vf->priv->Line);
-        vf->priv->Line = malloc(width);
-        vf->priv->pmpi=NULL;
-//        vf->default_caps &= !VFCAP_ACCEPT_STRIDE;
+    free(vf->priv->Line);
+    vf->priv->Line = malloc(width);
+    vf->priv->pmpi = NULL;
+    //        vf->default_caps &= !VFCAP_ACCEPT_STRIDE;
 
-        return vf_next_config(vf,width,height,d_width,d_height,flags,outfmt);
+    return vf_next_config(vf, width, height, d_width, d_height, flags, outfmt);
 }
 
 
@@ -109,57 +111,59 @@ static void deNoise(unsigned char *Frame,        // mpi->planes[x]
 
 
 
-static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts){
-        int cw= mpi->w >> mpi->chroma_x_shift;
-        int ch= mpi->h >> mpi->chroma_y_shift;
-        int W = mpi->w, H = mpi->h;
+static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
+{
+    int cw = mpi->w >> mpi->chroma_x_shift;
+    int ch = mpi->h >> mpi->chroma_y_shift;
+    int W = mpi->w, H = mpi->h;
 
-        mp_image_t *dmpi=vf_get_image(vf->next,mpi->imgfmt,
-                MP_IMGTYPE_IP, MP_IMGFLAG_ACCEPT_STRIDE |
-                MP_IMGFLAG_PRESERVE | MP_IMGFLAG_READABLE,
-                mpi->w,mpi->h);
+    mp_image_t *dmpi = vf_get_image(vf->next, mpi->imgfmt,
+                                    MP_IMGTYPE_IP, MP_IMGFLAG_ACCEPT_STRIDE |
+                                    MP_IMGFLAG_PRESERVE | MP_IMGFLAG_READABLE,
+                                    mpi->w, mpi->h);
 
-        if(!dmpi) return 0;
-        if (!vf->priv->pmpi) vf->priv->pmpi=mpi;
+    if(!dmpi) return 0;
+    if (!vf->priv->pmpi) vf->priv->pmpi = mpi;
 
-        deNoise(mpi->planes[0], vf->priv->pmpi->planes[0], dmpi->planes[0],
-                vf->priv->Line, W, H,
-                mpi->stride[0], vf->priv->pmpi->stride[0], dmpi->stride[0],
-                vf->priv->Coefs[0] + 256,
-                vf->priv->Coefs[0] + 256,
-                vf->priv->Coefs[1] + 256);
-        deNoise(mpi->planes[1], vf->priv->pmpi->planes[1], dmpi->planes[1],
-                vf->priv->Line, cw, ch,
-                mpi->stride[1], vf->priv->pmpi->stride[1], dmpi->stride[1],
-                vf->priv->Coefs[2] + 256,
-                vf->priv->Coefs[2] + 256,
-                vf->priv->Coefs[3] + 256);
-        deNoise(mpi->planes[2], vf->priv->pmpi->planes[2], dmpi->planes[2],
-                vf->priv->Line, cw, ch,
-                mpi->stride[2], vf->priv->pmpi->stride[2], dmpi->stride[2],
-                vf->priv->Coefs[2] + 256,
-                vf->priv->Coefs[2] + 256,
-                vf->priv->Coefs[3] + 256);
+    deNoise(mpi->planes[0], vf->priv->pmpi->planes[0], dmpi->planes[0],
+            vf->priv->Line, W, H,
+            mpi->stride[0], vf->priv->pmpi->stride[0], dmpi->stride[0],
+            vf->priv->Coefs[0] + 256,
+            vf->priv->Coefs[0] + 256,
+            vf->priv->Coefs[1] + 256);
+    deNoise(mpi->planes[1], vf->priv->pmpi->planes[1], dmpi->planes[1],
+            vf->priv->Line, cw, ch,
+            mpi->stride[1], vf->priv->pmpi->stride[1], dmpi->stride[1],
+            vf->priv->Coefs[2] + 256,
+            vf->priv->Coefs[2] + 256,
+            vf->priv->Coefs[3] + 256);
+    deNoise(mpi->planes[2], vf->priv->pmpi->planes[2], dmpi->planes[2],
+            vf->priv->Line, cw, ch,
+            mpi->stride[2], vf->priv->pmpi->stride[2], dmpi->stride[2],
+            vf->priv->Coefs[2] + 256,
+            vf->priv->Coefs[2] + 256,
+            vf->priv->Coefs[3] + 256);
 
-        vf->priv->pmpi=dmpi; // save reference image
-        return vf_next_put_image(vf,dmpi, pts);
+    vf->priv->pmpi = dmpi; // save reference image
+    return vf_next_put_image(vf, dmpi, pts);
 }
 
 //===========================================================================//
 
-static int query_format(struct vf_instance *vf, unsigned int fmt){
-        switch(fmt)
-        {
-        case IMGFMT_YV12:
-        case IMGFMT_I420:
-        case IMGFMT_IYUV:
-        case IMGFMT_YVU9:
-        case IMGFMT_444P:
-        case IMGFMT_422P:
-        case IMGFMT_411P:
-                return vf_next_query_format(vf, fmt);
-        }
-        return 0;
+static int query_format(struct vf_instance *vf, unsigned int fmt)
+{
+    switch(fmt)
+    {
+    case IMGFMT_YV12:
+    case IMGFMT_I420:
+    case IMGFMT_IYUV:
+    case IMGFMT_YVU9:
+    case IMGFMT_444P:
+    case IMGFMT_422P:
+    case IMGFMT_411P:
+        return vf_next_query_format(vf, fmt);
+    }
+    return 0;
 }
 
 
@@ -170,93 +174,95 @@ static void PrecalcCoefs(int *Ct, double Dist25)
     int i;
     double Gamma, Simil, C;
 
-    Gamma = log(0.25) / log(1.0 - Dist25/255.0);
+    Gamma = log(0.25) / log(1.0 - Dist25 / 255.0);
 
     for (i = -256; i <= 255; i++)
     {
         Simil = 1.0 - ABS(i) / 255.0;
-//        Ct[256+i] = lround(pow(Simil, Gamma) * (double)i);
+        //        Ct[256+i] = lround(pow(Simil, Gamma) * (double)i);
         C = pow(Simil, Gamma) * (double)i;
-        Ct[256+i] = (C<0) ? (C-0.5) : (C+0.5);
+        Ct[256+i] = (C < 0) ? (C - 0.5) : (C + 0.5);
     }
 }
 
 
-static int vf_open(vf_instance_t *vf, char *args){
-        double LumSpac, LumTmp, ChromSpac, ChromTmp;
-        double Param1, Param2, Param3;
+static int vf_open(vf_instance_t *vf, char *args)
+{
+    double LumSpac, LumTmp, ChromSpac, ChromTmp;
+    double Param1, Param2, Param3;
 
-        vf->config=config;
-        vf->put_image=put_image;
-        vf->query_format=query_format;
-        vf->uninit=uninit;
-        vf->priv=malloc(sizeof(struct vf_priv_s));
-        memset(vf->priv, 0, sizeof(struct vf_priv_s));
+    vf->config = config;
+    vf->put_image = put_image;
+    vf->query_format = query_format;
+    vf->uninit = uninit;
+    vf->priv = malloc(sizeof(struct vf_priv_s));
+    memset(vf->priv, 0, sizeof(struct vf_priv_s));
 
-        if (args)
+    if (args)
+    {
+        switch(sscanf(args, "%lf:%lf:%lf",
+                      &Param1, &Param2, &Param3
+                     ))
         {
-            switch(sscanf(args, "%lf:%lf:%lf",
-                          &Param1, &Param2, &Param3
-                         ))
-            {
-            case 0:
-                LumSpac = PARAM1_DEFAULT;
-                LumTmp = PARAM3_DEFAULT;
+        case 0:
+            LumSpac = PARAM1_DEFAULT;
+            LumTmp = PARAM3_DEFAULT;
 
-                ChromSpac = PARAM2_DEFAULT;
-                ChromTmp = LumTmp * ChromSpac / LumSpac;
-                break;
+            ChromSpac = PARAM2_DEFAULT;
+            ChromTmp = LumTmp * ChromSpac / LumSpac;
+            break;
 
-            case 1:
-                LumSpac = Param1;
-                LumTmp = PARAM3_DEFAULT * Param1 / PARAM1_DEFAULT;
+        case 1:
+            LumSpac = Param1;
+            LumTmp = PARAM3_DEFAULT * Param1 / PARAM1_DEFAULT;
 
-                ChromSpac = PARAM2_DEFAULT * Param1 / PARAM1_DEFAULT;
-                ChromTmp = LumTmp * ChromSpac / LumSpac;
-                break;
+            ChromSpac = PARAM2_DEFAULT * Param1 / PARAM1_DEFAULT;
+            ChromTmp = LumTmp * ChromSpac / LumSpac;
+            break;
 
-            case 2:
-                LumSpac = Param1;
-                LumTmp = PARAM3_DEFAULT * Param1 / PARAM1_DEFAULT;
+        case 2:
+            LumSpac = Param1;
+            LumTmp = PARAM3_DEFAULT * Param1 / PARAM1_DEFAULT;
 
-                ChromSpac = Param2;
-                ChromTmp = LumTmp * ChromSpac / LumSpac;
-                break;
+            ChromSpac = Param2;
+            ChromTmp = LumTmp * ChromSpac / LumSpac;
+            break;
 
-            case 3:
-                LumSpac = Param1;
-                LumTmp = Param3;
+        case 3:
+            LumSpac = Param1;
+            LumTmp = Param3;
 
-                ChromSpac = Param2;
-                ChromTmp = LumTmp * ChromSpac / LumSpac;
-                break;
+            ChromSpac = Param2;
+            ChromTmp = LumTmp * ChromSpac / LumSpac;
+            break;
 
-            default:
-                LumSpac = PARAM1_DEFAULT;
-                LumTmp = PARAM3_DEFAULT;
-
-                ChromSpac = PARAM2_DEFAULT;
-                ChromTmp = LumTmp * ChromSpac / LumSpac;
-            }
-        }
-        else
-        {
+        default:
             LumSpac = PARAM1_DEFAULT;
             LumTmp = PARAM3_DEFAULT;
 
             ChromSpac = PARAM2_DEFAULT;
             ChromTmp = LumTmp * ChromSpac / LumSpac;
         }
+    }
+    else
+    {
+        LumSpac = PARAM1_DEFAULT;
+        LumTmp = PARAM3_DEFAULT;
 
-        PrecalcCoefs(vf->priv->Coefs[0], LumSpac);
-        PrecalcCoefs(vf->priv->Coefs[1], LumTmp);
-        PrecalcCoefs(vf->priv->Coefs[2], ChromSpac);
-        PrecalcCoefs(vf->priv->Coefs[3], ChromTmp);
+        ChromSpac = PARAM2_DEFAULT;
+        ChromTmp = LumTmp * ChromSpac / LumSpac;
+    }
 
-        return 1;
+    PrecalcCoefs(vf->priv->Coefs[0], LumSpac);
+    PrecalcCoefs(vf->priv->Coefs[1], LumTmp);
+    PrecalcCoefs(vf->priv->Coefs[2], ChromSpac);
+    PrecalcCoefs(vf->priv->Coefs[3], ChromTmp);
+
+    return 1;
 }
 
-const vf_info_t vf_info_denoise3d = {
+const vf_info_t vf_info_denoise3d =
+{
     "3D Denoiser (variable lowpass filter)",
     "denoise3d",
     "Daniel Moreno",

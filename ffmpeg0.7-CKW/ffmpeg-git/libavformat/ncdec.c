@@ -35,9 +35,9 @@ static int nc_probe(AVProbeData *probe_packet)
     size = AV_RL16(probe_packet->buf + 5);
 
     if (size + 20 > probe_packet->buf_size)
-        return AVPROBE_SCORE_MAX/4;
+        return AVPROBE_SCORE_MAX / 4;
 
-    if (AV_RB32(probe_packet->buf+16+size) == NC_VIDEO_FLAG)
+    if (AV_RB32(probe_packet->buf + 16 + size) == NC_VIDEO_FLAG)
         return AVPROBE_SCORE_MAX;
 
     return 0;
@@ -64,24 +64,27 @@ static int nc_read_packet(AVFormatContext *s, AVPacket *pkt)
     int size;
     int ret;
 
-    uint32_t state=-1;
-    while (state != NC_VIDEO_FLAG) {
+    uint32_t state = -1;
+    while (state != NC_VIDEO_FLAG)
+    {
         if (url_feof(s->pb))
             return AVERROR(EIO);
-        state = (state<<8) + avio_r8(s->pb);
+        state = (state << 8) + avio_r8(s->pb);
     }
 
     avio_r8(s->pb);
     size = avio_rl16(s->pb);
     avio_skip(s->pb, 9);
 
-    if (size == 0) {
+    if (size == 0)
+    {
         av_log(s, AV_LOG_DEBUG, "Next packet size is zero\n");
         return AVERROR(EAGAIN);
     }
 
     ret = av_get_packet(s->pb, pkt, size);
-    if (ret != size) {
+    if (ret != size)
+    {
         if (ret > 0) av_free_packet(pkt);
         return AVERROR(EIO);
     }
@@ -90,7 +93,8 @@ static int nc_read_packet(AVFormatContext *s, AVPacket *pkt)
     return size;
 }
 
-AVInputFormat ff_nc_demuxer = {
+AVInputFormat ff_nc_demuxer =
+{
     "nc",
     NULL_IF_CONFIG_SMALL("NC camera feed format"),
     0,

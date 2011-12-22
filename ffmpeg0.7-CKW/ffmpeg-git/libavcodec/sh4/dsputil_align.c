@@ -68,27 +68,45 @@
 
 #define         OP      put
 
-static void put_pixels4_c(uint8_t *dest,const uint8_t *ref, const int stride,int height)
+static void put_pixels4_c(uint8_t *dest, const uint8_t *ref, const int stride, int height)
 {
-        switch((int)ref&3){
-        case 0: OP_C40(); return;
-        case 1: OP_C4(1); return;
-        case 2: OP_C4(2); return;
-        case 3: OP_C4(3); return;
-        }
+    switch((int)ref & 3)
+    {
+    case 0:
+        OP_C40();
+        return;
+    case 1:
+        OP_C4(1);
+        return;
+    case 2:
+        OP_C4(2);
+        return;
+    case 3:
+        OP_C4(3);
+        return;
+    }
 }
 
 #undef          OP
 #define         OP      avg
 
-static void avg_pixels4_c(uint8_t *dest,const uint8_t *ref, const int stride,int height)
+static void avg_pixels4_c(uint8_t *dest, const uint8_t *ref, const int stride, int height)
 {
-        switch((int)ref&3){
-        case 0: OP_C40(); return;
-        case 1: OP_C4(1); return;
-        case 2: OP_C4(2); return;
-        case 3: OP_C4(3); return;
-        }
+    switch((int)ref & 3)
+    {
+    case 0:
+        OP_C40();
+        return;
+    case 1:
+        OP_C4(1);
+        return;
+    case 2:
+        OP_C4(2);
+        return;
+    case 3:
+        OP_C4(3);
+        return;
+    }
 }
 
 #undef          OP
@@ -274,38 +292,38 @@ static void op##_##rnd##_pixels##sz##_##xy (uint8_t * dest, const uint8_t * ref,
 
 #define OP put
 
-DEFFUNC(put,   rnd,o,8,OP_C,avg32)
-DEFFUNC(put,   rnd,x,8,OP_X,avg32)
-DEFFUNC(put,no_rnd,x,8,OP_X,avg32)
-DEFFUNC(put,   rnd,y,8,OP_Y,avg32)
-DEFFUNC(put,no_rnd,y,8,OP_Y,avg32)
-DEFFUNC(put,   rnd,xy,8,OP_XY,PACK)
-DEFFUNC(put,no_rnd,xy,8,OP_XY,PACK)
-DEFFUNC(put,   rnd,o,16,OP_C,avg32)
-DEFFUNC(put,   rnd,x,16,OP_X,avg32)
-DEFFUNC(put,no_rnd,x,16,OP_X,avg32)
-DEFFUNC(put,   rnd,y,16,OP_Y,avg32)
-DEFFUNC(put,no_rnd,y,16,OP_Y,avg32)
-DEFFUNC(put,   rnd,xy,16,OP_XY,PACK)
-DEFFUNC(put,no_rnd,xy,16,OP_XY,PACK)
+DEFFUNC(put,   rnd, o, 8, OP_C, avg32)
+DEFFUNC(put,   rnd, x, 8, OP_X, avg32)
+DEFFUNC(put, no_rnd, x, 8, OP_X, avg32)
+DEFFUNC(put,   rnd, y, 8, OP_Y, avg32)
+DEFFUNC(put, no_rnd, y, 8, OP_Y, avg32)
+DEFFUNC(put,   rnd, xy, 8, OP_XY, PACK)
+DEFFUNC(put, no_rnd, xy, 8, OP_XY, PACK)
+DEFFUNC(put,   rnd, o, 16, OP_C, avg32)
+DEFFUNC(put,   rnd, x, 16, OP_X, avg32)
+DEFFUNC(put, no_rnd, x, 16, OP_X, avg32)
+DEFFUNC(put,   rnd, y, 16, OP_Y, avg32)
+DEFFUNC(put, no_rnd, y, 16, OP_Y, avg32)
+DEFFUNC(put,   rnd, xy, 16, OP_XY, PACK)
+DEFFUNC(put, no_rnd, xy, 16, OP_XY, PACK)
 
 #undef OP
 #define OP avg
 
-DEFFUNC(avg,   rnd,o,8,OP_C,avg32)
-DEFFUNC(avg,   rnd,x,8,OP_X,avg32)
-DEFFUNC(avg,no_rnd,x,8,OP_X,avg32)
-DEFFUNC(avg,   rnd,y,8,OP_Y,avg32)
-DEFFUNC(avg,no_rnd,y,8,OP_Y,avg32)
-DEFFUNC(avg,   rnd,xy,8,OP_XY,PACK)
-DEFFUNC(avg,no_rnd,xy,8,OP_XY,PACK)
-DEFFUNC(avg,   rnd,o,16,OP_C,avg32)
-DEFFUNC(avg,   rnd,x,16,OP_X,avg32)
-DEFFUNC(avg,no_rnd,x,16,OP_X,avg32)
-DEFFUNC(avg,   rnd,y,16,OP_Y,avg32)
-DEFFUNC(avg,no_rnd,y,16,OP_Y,avg32)
-DEFFUNC(avg,   rnd,xy,16,OP_XY,PACK)
-DEFFUNC(avg,no_rnd,xy,16,OP_XY,PACK)
+DEFFUNC(avg,   rnd, o, 8, OP_C, avg32)
+DEFFUNC(avg,   rnd, x, 8, OP_X, avg32)
+DEFFUNC(avg, no_rnd, x, 8, OP_X, avg32)
+DEFFUNC(avg,   rnd, y, 8, OP_Y, avg32)
+DEFFUNC(avg, no_rnd, y, 8, OP_Y, avg32)
+DEFFUNC(avg,   rnd, xy, 8, OP_XY, PACK)
+DEFFUNC(avg, no_rnd, xy, 8, OP_XY, PACK)
+DEFFUNC(avg,   rnd, o, 16, OP_C, avg32)
+DEFFUNC(avg,   rnd, x, 16, OP_X, avg32)
+DEFFUNC(avg, no_rnd, x, 16, OP_X, avg32)
+DEFFUNC(avg,   rnd, y, 16, OP_Y, avg32)
+DEFFUNC(avg, no_rnd, y, 16, OP_Y, avg32)
+DEFFUNC(avg,   rnd, xy, 16, OP_XY, PACK)
+DEFFUNC(avg, no_rnd, xy, 16, OP_XY, PACK)
 
 #undef OP
 
@@ -331,11 +349,12 @@ DEFFUNC(avg,no_rnd,xy,16,OP_XY,PACK)
 
 #endif
 
-void dsputil_init_align(DSPContext* c, AVCodecContext *avctx)
+void dsputil_init_align(DSPContext *c, AVCodecContext *avctx)
 {
-        const int h264_high_depth = avctx->codec_id == CODEC_ID_H264 && avctx->bits_per_raw_sample > 8;
+    const int h264_high_depth = avctx->codec_id == CODEC_ID_H264 && avctx->bits_per_raw_sample > 8;
 
-        if (!h264_high_depth) {
+    if (!h264_high_depth)
+    {
         c->put_pixels_tab[0][0] = put_rnd_pixels16_o;
         c->put_pixels_tab[0][1] = put_rnd_pixels16_x;
         c->put_pixels_tab[0][2] = put_rnd_pixels16_y;
@@ -371,7 +390,7 @@ void dsputil_init_align(DSPContext* c, AVCodecContext *avctx)
         c->avg_no_rnd_pixels_tab[1][1] = avg_no_rnd_pixels8_x;
         c->avg_no_rnd_pixels_tab[1][2] = avg_no_rnd_pixels8_y;
         c->avg_no_rnd_pixels_tab[1][3] = avg_no_rnd_pixels8_xy;
-        }
+    }
 
 #ifdef QPEL
 
@@ -405,33 +424,35 @@ void dsputil_init_align(DSPContext* c, AVCodecContext *avctx)
     dspfunc(avg_qpel, 1, 8);
     /* dspfunc(avg_no_rnd_qpel, 1, 8); */
 
-    if (!h264_high_depth) {
-    dspfunc(put_h264_qpel, 0, 16);
-    dspfunc(put_h264_qpel, 1, 8);
-    dspfunc(put_h264_qpel, 2, 4);
-    dspfunc(avg_h264_qpel, 0, 16);
-    dspfunc(avg_h264_qpel, 1, 8);
-    dspfunc(avg_h264_qpel, 2, 4);
+    if (!h264_high_depth)
+    {
+        dspfunc(put_h264_qpel, 0, 16);
+        dspfunc(put_h264_qpel, 1, 8);
+        dspfunc(put_h264_qpel, 2, 4);
+        dspfunc(avg_h264_qpel, 0, 16);
+        dspfunc(avg_h264_qpel, 1, 8);
+        dspfunc(avg_h264_qpel, 2, 4);
     }
 
 #undef dspfunc
-    if (!h264_high_depth) {
-    c->put_h264_chroma_pixels_tab[0]= put_h264_chroma_mc8_sh4;
-    c->put_h264_chroma_pixels_tab[1]= put_h264_chroma_mc4_sh4;
-    c->put_h264_chroma_pixels_tab[2]= put_h264_chroma_mc2_sh4;
-    c->avg_h264_chroma_pixels_tab[0]= avg_h264_chroma_mc8_sh4;
-    c->avg_h264_chroma_pixels_tab[1]= avg_h264_chroma_mc4_sh4;
-    c->avg_h264_chroma_pixels_tab[2]= avg_h264_chroma_mc2_sh4;
+    if (!h264_high_depth)
+    {
+        c->put_h264_chroma_pixels_tab[0] = put_h264_chroma_mc8_sh4;
+        c->put_h264_chroma_pixels_tab[1] = put_h264_chroma_mc4_sh4;
+        c->put_h264_chroma_pixels_tab[2] = put_h264_chroma_mc2_sh4;
+        c->avg_h264_chroma_pixels_tab[0] = avg_h264_chroma_mc8_sh4;
+        c->avg_h264_chroma_pixels_tab[1] = avg_h264_chroma_mc4_sh4;
+        c->avg_h264_chroma_pixels_tab[2] = avg_h264_chroma_mc2_sh4;
     }
 
-    c->put_mspel_pixels_tab[0]= put_mspel8_mc00_sh4;
-    c->put_mspel_pixels_tab[1]= put_mspel8_mc10_sh4;
-    c->put_mspel_pixels_tab[2]= put_mspel8_mc20_sh4;
-    c->put_mspel_pixels_tab[3]= put_mspel8_mc30_sh4;
-    c->put_mspel_pixels_tab[4]= put_mspel8_mc02_sh4;
-    c->put_mspel_pixels_tab[5]= put_mspel8_mc12_sh4;
-    c->put_mspel_pixels_tab[6]= put_mspel8_mc22_sh4;
-    c->put_mspel_pixels_tab[7]= put_mspel8_mc32_sh4;
+    c->put_mspel_pixels_tab[0] = put_mspel8_mc00_sh4;
+    c->put_mspel_pixels_tab[1] = put_mspel8_mc10_sh4;
+    c->put_mspel_pixels_tab[2] = put_mspel8_mc20_sh4;
+    c->put_mspel_pixels_tab[3] = put_mspel8_mc30_sh4;
+    c->put_mspel_pixels_tab[4] = put_mspel8_mc02_sh4;
+    c->put_mspel_pixels_tab[5] = put_mspel8_mc12_sh4;
+    c->put_mspel_pixels_tab[6] = put_mspel8_mc22_sh4;
+    c->put_mspel_pixels_tab[7] = put_mspel8_mc32_sh4;
 
     c->gmc1 = gmc1_c;
     c->gmc = gmc_c;

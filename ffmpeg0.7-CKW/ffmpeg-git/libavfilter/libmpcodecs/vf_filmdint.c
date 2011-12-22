@@ -35,7 +35,8 @@
 
 #define NUM_STORED 4
 
-enum pu_field_type_t {
+enum pu_field_type_t
+{
     PU_1ST_OF_3,
     PU_2ND_OF_3,
     PU_3RD_OF_3,
@@ -44,7 +45,8 @@ enum pu_field_type_t {
     PU_INTERLACED
 };
 
-struct metrics {
+struct metrics
+{
     /* This struct maps to a packed word 64-bit MMX register */
     unsigned short int even;
     unsigned short int odd;
@@ -52,15 +54,20 @@ struct metrics {
     unsigned short int temp;
 } __attribute__ ((aligned (8)));
 
-struct frame_stats {
+struct frame_stats
+{
     struct metrics tiny, low, high, bigger, twox, max;
-    struct { unsigned int even, odd, noise, temp; } sad;
+    struct
+    {
+        unsigned int even, odd, noise, temp;
+    } sad;
     unsigned short interlaced_high;
     unsigned short interlaced_low;
     unsigned short num_blocks;
 };
 
-struct vf_priv_s {
+struct vf_priv_s
+{
     unsigned long inframes;
     unsigned long outframes;
     enum pu_field_type_t prev_type;
@@ -95,8 +102,8 @@ struct vf_priv_s {
 
 #define PPZ { 2000, 2000, 0, 2000 }
 #define PPR { 2000, 2000, 0, 2000 }
-static const struct frame_stats ppzs = {PPZ,PPZ,PPZ,PPZ,PPZ,PPZ,PPZ,0,0,9999};
-static const struct frame_stats pprs = {PPR,PPR,PPR,PPR,PPR,PPR,PPR,0,0,9999};
+static const struct frame_stats ppzs = {PPZ, PPZ, PPZ, PPZ, PPZ, PPZ, PPZ, 0, 0, 9999};
+static const struct frame_stats pprs = {PPR, PPR, PPR, PPR, PPR, PPR, PPR, 0, 0, 9999};
 
 #ifndef MIN
 #define        MIN(a,b) (((a)<(b))?(a):(b))
@@ -142,15 +149,16 @@ get_metrics_c(unsigned char *a, unsigned char *b, int as, int bs, int lines,
 {
     a -= as;
     b -= bs;
-    do {
-        cmmx_t old_po = *(cmmx_t*)(a      );
-        cmmx_t     po = *(cmmx_t*)(b      );
-        cmmx_t      e = *(cmmx_t*)(b +   bs);
-        cmmx_t  old_o = *(cmmx_t*)(a + 2*as);
-        cmmx_t      o = *(cmmx_t*)(b + 2*bs);
-        cmmx_t     ne = *(cmmx_t*)(b + 3*bs);
-        cmmx_t old_no = *(cmmx_t*)(a + 4*as);
-        cmmx_t     no = *(cmmx_t*)(b + 4*bs);
+    do
+    {
+        cmmx_t old_po = *(cmmx_t *)(a      );
+        cmmx_t     po = *(cmmx_t *)(b      );
+        cmmx_t      e = *(cmmx_t *)(b +   bs);
+        cmmx_t  old_o = *(cmmx_t *)(a + 2 * as);
+        cmmx_t      o = *(cmmx_t *)(b + 2 * bs);
+        cmmx_t     ne = *(cmmx_t *)(b + 3 * bs);
+        cmmx_t old_no = *(cmmx_t *)(a + 4 * as);
+        cmmx_t     no = *(cmmx_t *)(b + 4 * bs);
 
         cmmx_t   qup_old_odd = p31avgb(old_o, old_po);
         cmmx_t       qup_odd = p31avgb(    o,     po);
@@ -167,7 +175,7 @@ get_metrics_c(unsigned char *a, unsigned char *b, int as, int bs, int lines,
 
         cmmx_t odd_diff = pdiffub(o, old_o);
         m->odd  += psumbw(odd_diff);
-        m->even += psadbw(e, *(cmmx_t*)(a+as));
+        m->even += psadbw(e, *(cmmx_t *)(a + as));
 
         temp_up_diff  = pminub(temp_up_diff, temp_down_diff);
         temp_up_diff  = pminub(temp_up_diff, odd_diff);
@@ -176,9 +184,10 @@ get_metrics_c(unsigned char *a, unsigned char *b, int as, int bs, int lines,
         noise_up_diff = pminub(noise_up_diff, noise_down_diff);
 
         m->noise += psumbw(noise_up_diff);
-        a += 2*as;
-        b += 2*bs;
-    } while (--lines);
+        a += 2 * as;
+        b += 2 * bs;
+    }
+    while (--lines);
 }
 
 static inline void
@@ -187,16 +196,17 @@ get_metrics_fast_c(unsigned char *a, unsigned char *b, int as, int bs,
 {
     a -= as;
     b -= bs;
-    do {
-        cmmx_t old_po = (*(cmmx_t*)(a       ) >> 1) & ~SIGN_BITS;
-        cmmx_t     po = (*(cmmx_t*)(b       ) >> 1) & ~SIGN_BITS;
-        cmmx_t  old_e = (*(cmmx_t*)(a +   as) >> 1) & ~SIGN_BITS;
-        cmmx_t      e = (*(cmmx_t*)(b +   bs) >> 1) & ~SIGN_BITS;
-        cmmx_t  old_o = (*(cmmx_t*)(a + 2*as) >> 1) & ~SIGN_BITS;
-        cmmx_t      o = (*(cmmx_t*)(b + 2*bs) >> 1) & ~SIGN_BITS;
-        cmmx_t     ne = (*(cmmx_t*)(b + 3*bs) >> 1) & ~SIGN_BITS;
-        cmmx_t old_no = (*(cmmx_t*)(a + 4*as) >> 1) & ~SIGN_BITS;
-        cmmx_t     no = (*(cmmx_t*)(b + 4*bs) >> 1) & ~SIGN_BITS;
+    do
+    {
+        cmmx_t old_po = (*(cmmx_t *)(a       ) >> 1) & ~SIGN_BITS;
+        cmmx_t     po = (*(cmmx_t *)(b       ) >> 1) & ~SIGN_BITS;
+        cmmx_t  old_e = (*(cmmx_t *)(a +   as) >> 1) & ~SIGN_BITS;
+        cmmx_t      e = (*(cmmx_t *)(b +   bs) >> 1) & ~SIGN_BITS;
+        cmmx_t  old_o = (*(cmmx_t *)(a + 2 * as) >> 1) & ~SIGN_BITS;
+        cmmx_t      o = (*(cmmx_t *)(b + 2 * bs) >> 1) & ~SIGN_BITS;
+        cmmx_t     ne = (*(cmmx_t *)(b + 3 * bs) >> 1) & ~SIGN_BITS;
+        cmmx_t old_no = (*(cmmx_t *)(a + 4 * as) >> 1) & ~SIGN_BITS;
+        cmmx_t     no = (*(cmmx_t *)(b + 4 * bs) >> 1) & ~SIGN_BITS;
 
         cmmx_t   qup_old_odd = p31avgb_s(old_o, old_po);
         cmmx_t       qup_odd = p31avgb_s(    o,     po);
@@ -222,25 +232,27 @@ get_metrics_fast_c(unsigned char *a, unsigned char *b, int as, int bs,
         noise_up_diff = pminub_s(noise_up_diff, noise_down_diff);
 
         m->noise += psumbw_s(noise_up_diff) << 1;
-        a += 2*as;
-        b += 2*bs;
-    } while (--lines);
+        a += 2 * as;
+        b += 2 * bs;
+    }
+    while (--lines);
 }
 
 static inline void
 get_metrics_faster_c(unsigned char *a, unsigned char *b, int as, int bs,
-                   int lines, struct metrics *m)
+                     int lines, struct metrics *m)
 {
     a -= as;
     b -= bs;
-    do {
-        cmmx_t old_po = (*(cmmx_t*)(a       )>>1) & ~SIGN_BITS;
-        cmmx_t     po = (*(cmmx_t*)(b       )>>1) & ~SIGN_BITS;
-        cmmx_t  old_e = (*(cmmx_t*)(a +   as)>>1) & ~SIGN_BITS;
-        cmmx_t      e = (*(cmmx_t*)(b +   bs)>>1) & ~SIGN_BITS;
-        cmmx_t  old_o = (*(cmmx_t*)(a + 2*as)>>1) & ~SIGN_BITS;
-        cmmx_t      o = (*(cmmx_t*)(b + 2*bs)>>1) & ~SIGN_BITS;
-        cmmx_t     ne = (*(cmmx_t*)(b + 3*bs)>>1) & ~SIGN_BITS;
+    do
+    {
+        cmmx_t old_po = (*(cmmx_t *)(a       ) >> 1) & ~SIGN_BITS;
+        cmmx_t     po = (*(cmmx_t *)(b       ) >> 1) & ~SIGN_BITS;
+        cmmx_t  old_e = (*(cmmx_t *)(a +   as) >> 1) & ~SIGN_BITS;
+        cmmx_t      e = (*(cmmx_t *)(b +   bs) >> 1) & ~SIGN_BITS;
+        cmmx_t  old_o = (*(cmmx_t *)(a + 2 * as) >> 1) & ~SIGN_BITS;
+        cmmx_t      o = (*(cmmx_t *)(b + 2 * bs) >> 1) & ~SIGN_BITS;
+        cmmx_t     ne = (*(cmmx_t *)(b + 3 * bs) >> 1) & ~SIGN_BITS;
 
         cmmx_t  down_even = p31avgb_s(e, ne);
         cmmx_t     up_odd = p31avgb_s(o, po);
@@ -258,9 +270,10 @@ get_metrics_faster_c(unsigned char *a, unsigned char *b, int as, int bs,
 
         m->noise += psumbw_s(noise_diff) << 1;
         m->temp  += psumbw_s(temp_diff) << 1;
-        a += 2*as;
-        b += 2*bs;
-    } while (--lines);
+        a += 2 * as;
+        b += 2 * bs;
+    }
+    while (--lines);
 
 }
 
@@ -272,10 +285,10 @@ get_block_stats(struct metrics *m, struct vf_priv_s *p, struct frame_stats *s)
     unsigned two_n = m->noise + MAX(m->noise, p->thres.noise);
     unsigned two_t = m->temp  + MAX(m->temp , p->thres.temp );
 
-    unsigned e_big   = m->even  >= (m->odd   + two_o + 1)/2;
-    unsigned o_big   = m->odd   >= (m->even  + two_e + 1)/2;
-    unsigned n_big   = m->noise >= (m->temp  + two_t + 1)/2;
-    unsigned t_big   = m->temp  >= (m->noise + two_n + 1)/2;
+    unsigned e_big   = m->even  >= (m->odd   + two_o + 1) / 2;
+    unsigned o_big   = m->odd   >= (m->even  + two_e + 1) / 2;
+    unsigned n_big   = m->noise >= (m->temp  + two_t + 1) / 2;
+    unsigned t_big   = m->temp  >= (m->noise + two_n + 1) / 2;
 
     unsigned e2x     = m->even  >= two_o;
     unsigned o2x     = m->odd   >= two_e;
@@ -287,23 +300,26 @@ get_block_stats(struct metrics *m, struct vf_priv_s *p, struct frame_stats *s)
     unsigned ntiny_n = m->noise > p->thres.noise;
     unsigned ntiny_t = m->temp  > p->thres.temp ;
 
-    unsigned nlow_e  = m->even  > 2*p->thres.even ;
-    unsigned nlow_o  = m->odd   > 2*p->thres.odd  ;
-    unsigned nlow_n  = m->noise > 2*p->thres.noise;
-    unsigned nlow_t  = m->temp  > 2*p->thres.temp ;
+    unsigned nlow_e  = m->even  > 2 * p->thres.even ;
+    unsigned nlow_o  = m->odd   > 2 * p->thres.odd  ;
+    unsigned nlow_n  = m->noise > 2 * p->thres.noise;
+    unsigned nlow_t  = m->temp  > 2 * p->thres.temp ;
 
-    unsigned high_e  = m->even  > 4*p->thres.even ;
-    unsigned high_o  = m->odd   > 4*p->thres.odd  ;
-    unsigned high_n  = m->noise > 4*p->thres.noise;
-    unsigned high_t  = m->temp  > 4*p->thres.temp ;
+    unsigned high_e  = m->even  > 4 * p->thres.even ;
+    unsigned high_o  = m->odd   > 4 * p->thres.odd  ;
+    unsigned high_n  = m->noise > 4 * p->thres.noise;
+    unsigned high_t  = m->temp  > 4 * p->thres.temp ;
 
     unsigned low_il  = !n_big && !t_big && ntiny_n && ntiny_t;
     unsigned high_il = !n_big && !t_big && nlow_n  && nlow_t;
 
-    if (low_il | high_il) {
+    if (low_il | high_il)
+    {
         s->interlaced_low  += low_il;
         s->interlaced_high += high_il;
-    } else {
+    }
+    else
+    {
         s->tiny.even  += ntiny_e;
         s->tiny.odd   += ntiny_o;
         s->tiny.noise += ntiny_n;
@@ -350,33 +366,33 @@ block_metrics_c(unsigned char *a, unsigned char *b, int as, int bs,
     tm.even = tm.odd = tm.noise = tm.temp = 0;
     get_metrics_c(a, b, as, bs, lines, &tm);
     if (sizeof(cmmx_t) < 8)
-        get_metrics_c(a+4, b+4, as, bs, lines, &tm);
+        get_metrics_c(a + 4, b + 4, as, bs, lines, &tm);
     get_block_stats(&tm, p, s);
     return tm;
 }
 
 static inline struct metrics
 block_metrics_fast_c(unsigned char *a, unsigned char *b, int as, int bs,
-                int lines, struct vf_priv_s *p, struct frame_stats *s)
+                     int lines, struct vf_priv_s *p, struct frame_stats *s)
 {
     struct metrics tm;
     tm.even = tm.odd = tm.noise = tm.temp = 0;
     get_metrics_fast_c(a, b, as, bs, lines, &tm);
     if (sizeof(cmmx_t) < 8)
-        get_metrics_fast_c(a+4, b+4, as, bs, lines, &tm);
+        get_metrics_fast_c(a + 4, b + 4, as, bs, lines, &tm);
     get_block_stats(&tm, p, s);
     return tm;
 }
 
 static inline struct metrics
 block_metrics_faster_c(unsigned char *a, unsigned char *b, int as, int bs,
-                int lines, struct vf_priv_s *p, struct frame_stats *s)
+                       int lines, struct vf_priv_s *p, struct frame_stats *s)
 {
     struct metrics tm;
     tm.even = tm.odd = tm.noise = tm.temp = 0;
     get_metrics_faster_c(a, b, as, bs, lines, &tm);
     if (sizeof(cmmx_t) < 8)
-        get_metrics_faster_c(a+4, b+4, as, bs, lines, &tm);
+        get_metrics_faster_c(a + 4, b + 4, as, bs, lines, &tm);
     get_block_stats(&tm, p, s);
     return tm;
 }
@@ -483,14 +499,14 @@ block_metrics_mmx2(unsigned char *a, unsigned char *b, int as, int bs,
 #else
     static const unsigned long long ones = 0x0101010101010101ull;
     x86_reg interlaced;
-    x86_reg prefetch_line = (((long)a>>3) & 7) + 10;
+    x86_reg prefetch_line = (((long)a >> 3) & 7) + 10;
 #ifdef DEBUG
     struct frame_stats ts = *s;
 #endif
     __asm__ volatile("prefetcht0 (%0,%2)\n\t"
-                 "prefetcht0 (%1,%3)\n\t" :
-                 : "r" (a), "r" (b),
-                 "r" (prefetch_line * as), "r" (prefetch_line * bs));
+                     "prefetcht0 (%1,%3)\n\t" :
+                     : "r" (a), "r" (b),
+                     "r" (prefetch_line *as), "r" (prefetch_line *bs));
 
     BLOCK_METRICS_TEMPLATE();
 
@@ -535,12 +551,15 @@ block_metrics_mmx2(unsigned char *a, unsigned char *b, int as, int bs,
         "movd %%mm0, %0\n\t"
         : "=r" (interlaced), "=m" (s->bigger), "=m" (s->twox)
         : "m" (p->thres)
-        );
+    );
 
-    if (interlaced) {
+    if (interlaced)
+    {
         s->interlaced_high += interlaced >> 16;
         s->interlaced_low += interlaced;
-    } else {
+    }
+    else
+    {
         __asm__ volatile(
             "pcmpeqw %%mm0, %%mm0\n\t" /* -1 */
             "psubw         %%mm0, %%mm4\n\t"
@@ -553,7 +572,7 @@ block_metrics_mmx2(unsigned char *a, unsigned char *b, int as, int bs,
             "movq %%mm5, %1\n\t"
             "movq %%mm1, %2\n\t"
             : "=m" (s->tiny), "=m" (s->low), "=m" (s->high)
-            );
+        );
 
         __asm__ volatile(
             "pshufw $0, %2, %%mm0\n\t"
@@ -569,7 +588,7 @@ block_metrics_mmx2(unsigned char *a, unsigned char *b, int as, int bs,
             "movq %%mm1, %1\n\t"
             : "=m" (s->sad.even), "=m" (s->sad.noise)
             : "m" (p->sad_thres)
-            );
+        );
     }
 
     __asm__ volatile(
@@ -579,16 +598,18 @@ block_metrics_mmx2(unsigned char *a, unsigned char *b, int as, int bs,
         "emms"
         : : "r" (&s->max), "r" (&tm), "X" (s->max)
         : "memory"
-        );
+    );
 #ifdef DEBUG
-    if (1) {
+    if (1)
+    {
         struct metrics cm;
-        a -= 7*as;
-        b -= 7*bs;
+        a -= 7 * as;
+        b -= 7 * bs;
         cm = block_metrics_c(a, b, as, bs, 4, p, &ts);
         if (!MEQ(tm, cm))
             mp_msg(MSGT_VFILTER, MSGL_WARN, "Bad metrics\n");
-        if (s) {
+        if (s)
+        {
 #           define CHECK(X) if (!MEQ(s->X, ts.X)) \
                 mp_msg(MSGT_VFILTER, MSGL_WARN, "Bad " #X "\n");
             CHECK(tiny);
@@ -611,7 +632,7 @@ dint_copy_line_mmx2(unsigned char *dst, unsigned char *a, long bos,
     mp_msg(MSGT_VFILTER, MSGL_FATAL, "dint_copy_line_mmx2: internal error\n");
     return 0;
 #else
-    unsigned long len = (w+7) >> 3;
+    unsigned long len = (w + 7) >> 3;
     int ret;
     __asm__ volatile (
         "pxor %%mm6, %%mm6 \n\t"       /* deinterlaced pixel counter */
@@ -621,8 +642,9 @@ dint_copy_line_mmx2(unsigned char *dst, unsigned char *a, long bos,
         "punpckldq %%mm7, %%mm7 \n\t"  /* mm7 = threshold */
         : /* no output */
         : "rm" (t)
-        );
-    do {
+    );
+    do
+    {
         __asm__ volatile (
             "movq (%0), %%mm0\n\t"
             "movq (%0,%3,2), %%mm1\n\t"
@@ -650,17 +672,18 @@ dint_copy_line_mmx2(unsigned char *dst, unsigned char *a, long bos,
             "movq %%mm1, (%2,%4) \n\t"
             : /* no output */
             : "r" (a), "r" ((x86_reg)bos), "r" ((x86_reg)dst), "r" ((x86_reg)ss), "r" ((x86_reg)ds), "r" ((x86_reg)cos)
-            );
+        );
         a += 8;
         dst += 8;
-    } while (--len);
+    }
+    while (--len);
 
     __asm__ volatile ("pxor %%mm7, %%mm7 \n\t"
-                  "psadbw %%mm6, %%mm7 \n\t"
-                  "movd %%mm7, %0 \n\t"
-                  "emms \n\t"
-                  : "=r" (ret)
-        );
+                      "psadbw %%mm6, %%mm7 \n\t"
+                      "movd %%mm7, %0 \n\t"
+                      "emms \n\t"
+                      : "=r" (ret)
+                     );
     return ret;
 #endif
 }
@@ -669,18 +692,19 @@ static inline int
 dint_copy_line(unsigned char *dst, unsigned char *a, long bos,
                long cos, int ds, int ss, int w, int t)
 {
-    unsigned long len = ((unsigned long)w+sizeof(cmmx_t)-1) / sizeof(cmmx_t);
+    unsigned long len = ((unsigned long)w + sizeof(cmmx_t) - 1) / sizeof(cmmx_t);
     cmmx_t dint_count = 0;
     cmmx_t thr;
     t |= t <<  8;
     thr = t | (t << 16);
     if (sizeof(cmmx_t) > 4)
-        thr |= thr << (sizeof(cmmx_t)*4);
-    do {
-        cmmx_t e = *(cmmx_t*)a;
-        cmmx_t ne = *(cmmx_t*)(a+2*ss);
-        cmmx_t o = *(cmmx_t*)(a+bos);
-        cmmx_t oo = *(cmmx_t*)(a+cos);
+        thr |= thr << (sizeof(cmmx_t) * 4);
+    do
+    {
+        cmmx_t e = *(cmmx_t *)a;
+        cmmx_t ne = *(cmmx_t *)(a + 2 * ss);
+        cmmx_t o = *(cmmx_t *)(a + bos);
+        cmmx_t oo = *(cmmx_t *)(a + cos);
         cmmx_t maxe = pmaxub(e, ne);
         cmmx_t avge = pavgb(e, ne);
         cmmx_t max_diff = maxe - avge + thr; /* 0<=max-avg<128, thr<128 */
@@ -692,11 +716,12 @@ dint_copy_line(unsigned char *dst, unsigned char *a, long bos,
         cmmx_t above_thr = ~pcmpgtub(max_diff, diffbo);
         cmmx_t bo_or_avg = ((avge ^ bo) & above_thr) ^ bo;
         dint_count += above_thr & ONE_BYTES;
-        *(cmmx_t*)(dst) = e;
-        *(cmmx_t*)(dst+ds) = bo_or_avg;
+        *(cmmx_t *)(dst) = e;
+        *(cmmx_t *)(dst + ds) = bo_or_avg;
         a += sizeof(cmmx_t);
         dst += sizeof(cmmx_t);
-    } while (--len);
+    }
+    while (--len);
     return psumbw(dint_count);
 }
 
@@ -709,7 +734,8 @@ dint_copy_plane(unsigned char *d, unsigned char *a, unsigned char *b,
     unsigned long ret = 0;
     long bos = b - a;
     long cos = c - a;
-    if (field) {
+    if (field)
+    {
         fast_memcpy(d, b, w);
         h--;
         d += ds;
@@ -717,21 +743,26 @@ dint_copy_plane(unsigned char *d, unsigned char *a, unsigned char *b,
     }
     bos += ss;
     cos += ss;
-    while (h > 2) {
-        if (threshold >= 128) {
+    while (h > 2)
+    {
+        if (threshold >= 128)
+        {
             fast_memcpy(d, a, w);
-            fast_memcpy(d+ds, a+bos, w);
-        } else if (mmx2 == 1) {
+            fast_memcpy(d + ds, a + bos, w);
+        }
+        else if (mmx2 == 1)
+        {
             ret += dint_copy_line_mmx2(d, a, bos, cos, ds, ss, w, threshold);
-        } else
+        }
+        else
             ret += dint_copy_line(d, a, bos, cos, ds, ss, w, threshold);
         h -= 2;
-        d += 2*ds;
-        a += 2*ss;
+        d += 2 * ds;
+        a += 2 * ss;
     }
     fast_memcpy(d, a, w);
     if (h == 2)
-        fast_memcpy(d+ds, a+bos, w);
+        fast_memcpy(d + ds, a + bos, w);
     return ret;
 }
 
@@ -745,22 +776,25 @@ copy_merge_fields(struct vf_priv_s *p, mp_image_t *dmpi,
     unsigned char **other = old;
     if (show >= 12 || !(show & 3))
         show >>= 2, other = new, new = old;
-    if (show <= 2) {  /* Single field: de-interlace */
+    if (show <= 2)    /* Single field: de-interlace */
+    {
         threshold = p->dint_thres;
         field ^= show & 1;
         old = new;
-    } else if (show == 3)
+    }
+    else if (show == 3)
         old = new;
     else
         field ^= 1;
-    dint_pixels +=dint_copy_plane(dmpi->planes[0], old[0], new[0],
-                                  other[0], p->w, p->h, dmpi->stride[0],
-                                  p->stride, threshold, field, p->mmx2);
-    if (dmpi->flags & MP_IMGFLAG_PLANAR) {
+    dint_pixels += dint_copy_plane(dmpi->planes[0], old[0], new[0],
+                                   other[0], p->w, p->h, dmpi->stride[0],
+                                   p->stride, threshold, field, p->mmx2);
+    if (dmpi->flags & MP_IMGFLAG_PLANAR)
+    {
         if (p->luma_only)
             old = new, other = new;
         else
-            threshold = threshold/2 + 1;
+            threshold = threshold / 2 + 1;
         field ^= p->chroma_swapped;
         dint_copy_plane(dmpi->planes[1], old[1], new[1],
                         other[1], p->cw, p->ch,        dmpi->stride[1],
@@ -770,7 +804,7 @@ copy_merge_fields(struct vf_priv_s *p, mp_image_t *dmpi,
                         p->chroma_stride, threshold, field, p->mmx2);
     }
     if (dint_pixels > 0 && p->verbose)
-        mp_msg(MSGT_VFILTER,MSGL_INFO,"Deinterlaced %lu pixels\n",dint_pixels);
+        mp_msg(MSGT_VFILTER, MSGL_INFO, "Deinterlaced %lu pixels\n", dint_pixels);
 }
 
 static void diff_planes(struct vf_priv_s *p, struct frame_stats *s,
@@ -784,33 +818,43 @@ static void diff_planes(struct vf_priv_s *p, struct frame_stats *s,
     w -= align;
     if (swapped)
         of -= os, nf -= ns;
-    i = (h*3 >> 7) & ~1;
-    of += i*os + 8;
-    nf += i*ns + 8;
+    i = (h * 3 >> 7) & ~1;
+    of += i * os + 8;
+    nf += i * ns + 8;
     h -= i;
     w -= 16;
 
     memset(s, 0, sizeof(*s));
 
-    for (y = (h-8) >> 3; y; y--) {
-        if (p->mmx2 == 1) {
+    for (y = (h - 8) >> 3; y; y--)
+    {
+        if (p->mmx2 == 1)
+        {
             for (i = 0; i < w; i += 8)
-                block_metrics_mmx2(of+i, nf+i, os, ns, 4, p, s);
-        } else if (p->mmx2 == 2) {
-            for (i = 0; i < w; i += 8)
-                block_metrics_3dnow(of+i, nf+i, os, ns, 4, p, s);
-        } else if (p->fast > 3) {
-            for (i = 0; i < w; i += 8)
-                block_metrics_faster_c(of+i, nf+i, os, ns, 4, p, s);
-        } else if (p->fast > 1) {
-            for (i = 0; i < w; i += 8)
-                block_metrics_fast_c(of+i, nf+i, os, ns, 4, p, s);
-        } else {
-            for (i = 0; i < w; i += 8)
-                block_metrics_c(of+i, nf+i, os, ns, 4, p, s);
+                block_metrics_mmx2(of + i, nf + i, os, ns, 4, p, s);
         }
-        of += 8*os;
-        nf += 8*ns;
+        else if (p->mmx2 == 2)
+        {
+            for (i = 0; i < w; i += 8)
+                block_metrics_3dnow(of + i, nf + i, os, ns, 4, p, s);
+        }
+        else if (p->fast > 3)
+        {
+            for (i = 0; i < w; i += 8)
+                block_metrics_faster_c(of + i, nf + i, os, ns, 4, p, s);
+        }
+        else if (p->fast > 1)
+        {
+            for (i = 0; i < w; i += 8)
+                block_metrics_fast_c(of + i, nf + i, os, ns, 4, p, s);
+        }
+        else
+        {
+            for (i = 0; i < w; i += 8)
+                block_metrics_c(of + i, nf + i, os, ns, 4, p, s);
+        }
+        of += 8 * os;
+        nf += 8 * ns;
     }
 }
 
@@ -840,17 +884,17 @@ static const char *parse_args(struct vf_priv_s *p, const char *args)
 {
     args--;
     while (args && *++args &&
-           (sscanf(args, "io=%lu:%lu", &p->out_dec, &p->in_inc) == 2 ||
-            sscanf(args, "diff_thres=%hu", &p->thres.even ) == 1 ||
-            sscanf(args, "comb_thres=%hu", &p->thres.noise) == 1 ||
-            sscanf(args, "sad_thres=%lu",  &p->sad_thres  ) == 1 ||
-            sscanf(args, "dint_thres=%lu", &p->dint_thres ) == 1 ||
-            sscanf(args, "fast=%u",        &p->fast       ) == 1 ||
-            sscanf(args, "mmx2=%lu",       &p->mmx2       ) == 1 ||
-            sscanf(args, "luma_only=%u",   &p->luma_only  ) == 1 ||
-            sscanf(args, "verbose=%u",     &p->verbose    ) == 1 ||
-            sscanf(args, "crop=%lu:%lu:%lu:%lu", &p->w,
-                   &p->h, &p->crop_x, &p->crop_y) == 4))
+            (sscanf(args, "io=%lu:%lu", &p->out_dec, &p->in_inc) == 2 ||
+             sscanf(args, "diff_thres=%hu", &p->thres.even ) == 1 ||
+             sscanf(args, "comb_thres=%hu", &p->thres.noise) == 1 ||
+             sscanf(args, "sad_thres=%lu",  &p->sad_thres  ) == 1 ||
+             sscanf(args, "dint_thres=%lu", &p->dint_thres ) == 1 ||
+             sscanf(args, "fast=%u",        &p->fast       ) == 1 ||
+             sscanf(args, "mmx2=%lu",       &p->mmx2       ) == 1 ||
+             sscanf(args, "luma_only=%u",   &p->luma_only  ) == 1 ||
+             sscanf(args, "verbose=%u",     &p->verbose    ) == 1 ||
+             sscanf(args, "crop=%lu:%lu:%lu:%lu", &p->w,
+                    &p->h, &p->crop_x, &p->crop_y) == 4))
         args = strchr(args, '/');
     return args;
 }
@@ -861,7 +905,8 @@ static unsigned long gcd(unsigned long x, unsigned long y)
     if (x > y)
         t = x, x = y, y = t;
 
-    while (x) {
+    while (x)
+    {
         t = y % x;
         y = x;
         x = t;
@@ -877,10 +922,13 @@ static void init(struct vf_priv_s *p, mp_image_t *mpi)
     unsigned long cos, los;
     p->crop_cx = p->crop_x >> mpi->chroma_x_shift;
     p->crop_cy = p->crop_y >> mpi->chroma_y_shift;
-    if (mpi->flags & MP_IMGFLAG_ACCEPT_STRIDE) {
+    if (mpi->flags & MP_IMGFLAG_ACCEPT_STRIDE)
+    {
         p->stride = (mpi->w + 15) & ~15;
         p->chroma_stride = p->stride >> mpi->chroma_x_shift;
-    } else {
+    }
+    else
+    {
         p->stride = mpi->width;
         p->chroma_stride = mpi->chroma_width;
     }
@@ -892,23 +940,26 @@ static void init(struct vf_priv_s *p, mp_image_t *mpi)
     p->old_planes = p->planes[0];
     plane_size = mpi->h * p->stride;
     chroma_plane_size = mpi->flags & MP_IMGFLAG_PLANAR ?
-        mpi->chroma_height * p->chroma_stride : 0;
+                        mpi->chroma_height * p->chroma_stride : 0;
     p->memory_allocated =
-        malloc(NUM_STORED * (plane_size+2*chroma_plane_size) +
-               8*p->chroma_stride + 4096);
+        malloc(NUM_STORED * (plane_size + 2 * chroma_plane_size) +
+               8 * p->chroma_stride + 4096);
     /* align to page boundary */
     plane = p->memory_allocated + (-(long)p->memory_allocated & 4095);
     memset(plane, 0, NUM_STORED * plane_size);
     los = p->crop_x  + p->crop_y  * p->stride;
     cos = p->crop_cx + p->crop_cy * p->chroma_stride;
-    for (i = 0; i != NUM_STORED; i++, plane += plane_size) {
+    for (i = 0; i != NUM_STORED; i++, plane += plane_size)
+    {
         p->planes[i][0] = plane;
         p->planes[NUM_STORED + i][0] = plane + los;
     }
-    if (mpi->flags & MP_IMGFLAG_PLANAR) {
+    if (mpi->flags & MP_IMGFLAG_PLANAR)
+    {
         p->nplanes = 3;
         memset(plane, 0x80, NUM_STORED * 2 * chroma_plane_size);
-        for (i = 0; i != NUM_STORED; i++) {
+        for (i = 0; i != NUM_STORED; i++)
+        {
             p->planes[i][1] = plane;
             p->planes[NUM_STORED + i][1] = plane + cos;
             plane += chroma_plane_size;
@@ -942,18 +993,20 @@ static void get_image(struct vf_instance *vf, mp_image_t *mpi)
     if (!p->planes[0][0]) init(p, mpi);
 
     if (mpi->type == MP_IMGTYPE_TEMP ||
-        (mpi->type == MP_IMGTYPE_IPB && !(mpi->flags & MP_IMGFLAG_READABLE)))
-        planes_idx = NUM_STORED/2 + (++p->temp_idx % (NUM_STORED/2));
+            (mpi->type == MP_IMGTYPE_IPB && !(mpi->flags & MP_IMGFLAG_READABLE)))
+        planes_idx = NUM_STORED / 2 + (++p->temp_idx % (NUM_STORED / 2));
     else
-        planes_idx = ++p->static_idx % (NUM_STORED/2);
+        planes_idx = ++p->static_idx % (NUM_STORED / 2);
     planes = p->planes[planes_idx];
     mpi->priv = p->planes[NUM_STORED + planes_idx];
-    if (mpi->priv == p->old_planes) {
+    if (mpi->priv == p->old_planes)
+    {
         unsigned char **old_planes =
             p->planes[NUM_STORED + 2 + (++p->temp_idx & 1)];
         my_memcpy_pic(old_planes[0], p->old_planes[0],
                       p->w, p->h, p->stride, p->stride);
-        if (mpi->flags & MP_IMGFLAG_PLANAR) {
+        if (mpi->flags & MP_IMGFLAG_PLANAR)
+        {
             my_memcpy_pic(old_planes[1], p->old_planes[1],
                           p->cw, p->ch, p->chroma_stride, p->chroma_stride);
             my_memcpy_pic(old_planes[2], p->old_planes[2],
@@ -964,7 +1017,8 @@ static void get_image(struct vf_instance *vf, mp_image_t *mpi)
     }
     mpi->planes[0] = planes[0];
     mpi->stride[0] = p->stride;
-    if (mpi->flags & MP_IMGFLAG_PLANAR) {
+    if (mpi->flags & MP_IMGFLAG_PLANAR)
+    {
         mpi->planes[1] = planes[1];
         mpi->planes[2] = planes[2];
         mpi->stride[1] = mpi->stride[2] = p->chroma_stride;
@@ -978,8 +1032,8 @@ static void get_image(struct vf_instance *vf, mp_image_t *mpi)
 static inline long
 cmpe(unsigned long x, unsigned long y, unsigned long err, unsigned long e)
 {
-    long diff = x-y;
-    long unit = ((x+y+err) >> e);
+    long diff = x - y;
+    long unit = ((x + y + err) >> e);
     long ret = (diff > unit) - (diff < -unit);
     unit >>= 1;
     return ret + (diff > unit) - (diff < -unit);
@@ -989,7 +1043,7 @@ static unsigned long
 find_breaks(struct vf_priv_s *p, struct frame_stats *s)
 {
     struct frame_stats *ps = &p->stats[(p->inframes-1) & 1];
-    long notfilm = 5*p->in_inc - p->out_dec;
+    long notfilm = 5 * p->in_inc - p->out_dec;
     unsigned long n = s->num_blocks >> 8;
     unsigned long sad_comb_cmp = cmpe(s->sad.temp, s->sad.noise, 512, 1);
     unsigned long ret = 8;
@@ -999,25 +1053,27 @@ find_breaks(struct vf_priv_s *p, struct frame_stats *s)
                "@@@@@@@@ Bottom-first field??? @@@@@@@@\n");
     if (s->sad.temp > 1000 && s->sad.noise > 1000)
         return 3;
-    if (s->interlaced_high >= 2*n && s->sad.temp > 256 && s->sad.noise > 256)
+    if (s->interlaced_high >= 2 * n && s->sad.temp > 256 && s->sad.noise > 256)
         return 3;
-    if (s->high.noise > s->num_blocks/4 && s->sad.noise > 10000 &&
-        s->sad.noise > 2*s->sad.even && s->sad.noise > 2*ps->sad.odd) {
+    if (s->high.noise > s->num_blocks / 4 && s->sad.noise > 10000 &&
+            s->sad.noise > 2 * s->sad.even && s->sad.noise > 2 * ps->sad.odd)
+    {
         // Mid-frame scene change
         if (s->tiny.temp + s->interlaced_low  < n   ||
-            s->low.temp  + s->interlaced_high < n/4 ||
-            s->high.temp + s->interlaced_high < n/8 ||
-            s->sad.temp < 160)
+                s->low.temp  + s->interlaced_high < n / 4 ||
+                s->high.temp + s->interlaced_high < n / 8 ||
+                s->sad.temp < 160)
             return 1;
         return 3;
     }
-    if (s->high.temp > s->num_blocks/4 && s->sad.temp > 10000 &&
-        s->sad.temp > 2*ps->sad.odd && s->sad.temp > 2*ps->sad.even) {
+    if (s->high.temp > s->num_blocks / 4 && s->sad.temp > 10000 &&
+            s->sad.temp > 2 * ps->sad.odd && s->sad.temp > 2 * ps->sad.even)
+    {
         // Start frame scene change
         if (s->tiny.noise + s->interlaced_low  < n   ||
-            s->low.noise  + s->interlaced_high < n/4 ||
-            s->high.noise + s->interlaced_high < n/8 ||
-            s->sad.noise < 160)
+                s->low.noise  + s->interlaced_high < n / 4 ||
+                s->high.noise + s->interlaced_high < n / 8 ||
+                s->sad.noise < 160)
             return 2;
         return 3;
     }
@@ -1026,32 +1082,32 @@ find_breaks(struct vf_priv_s *p, struct frame_stats *s)
     if (sad_comb_cmp == -2)
         return 1;
 
-    if (s->tiny.odd > 3*MAX(n,s->tiny.even) + s->interlaced_low)
+    if (s->tiny.odd > 3 * MAX(n, s->tiny.even) + s->interlaced_low)
         return 1;
-    if (s->tiny.even > 3*MAX(n,s->tiny.odd)+s->interlaced_low &&
-        (!sad_comb_cmp || (s->low.noise <= n/4 && s->low.temp <= n/4)))
+    if (s->tiny.even > 3 * MAX(n, s->tiny.odd) + s->interlaced_low &&
+            (!sad_comb_cmp || (s->low.noise <= n / 4 && s->low.temp <= n / 4)))
         return 4;
 
     if (s->sad.noise < 64 && s->sad.temp < 64 &&
-        s->low.noise <= n/2 && s->high.noise <= n/4 &&
-        s->low.temp  <= n/2 && s->high.temp  <= n/4)
+            s->low.noise <= n / 2 && s->high.noise <= n / 4 &&
+            s->low.temp  <= n / 2 && s->high.temp  <= n / 4)
         goto still;
 
-    if (s->tiny.temp > 3*MAX(n,s->tiny.noise) + s->interlaced_low)
+    if (s->tiny.temp > 3 * MAX(n, s->tiny.noise) + s->interlaced_low)
         return 2;
-    if (s->tiny.noise > 3*MAX(n,s->tiny.temp) + s->interlaced_low)
+    if (s->tiny.noise > 3 * MAX(n, s->tiny.temp) + s->interlaced_low)
         return 1;
 
-    if (s->low.odd > 3*MAX(n/4,s->low.even) + s->interlaced_high)
+    if (s->low.odd > 3 * MAX(n / 4, s->low.even) + s->interlaced_high)
         return 1;
-    if (s->low.even > 3*MAX(n/4,s->low.odd)+s->interlaced_high &&
-        s->sad.even > 2*s->sad.odd &&
-        (!sad_comb_cmp || (s->low.noise <= n/4 && s->low.temp <= n/4)))
+    if (s->low.even > 3 * MAX(n / 4, s->low.odd) + s->interlaced_high &&
+            s->sad.even > 2 * s->sad.odd &&
+            (!sad_comb_cmp || (s->low.noise <= n / 4 && s->low.temp <= n / 4)))
         return 4;
 
-    if (s->low.temp > 3*MAX(n/4,s->low.noise) + s->interlaced_high)
+    if (s->low.temp > 3 * MAX(n / 4, s->low.noise) + s->interlaced_high)
         return 2;
-    if (s->low.noise > 3*MAX(n/4,s->low.temp) + s->interlaced_high)
+    if (s->low.noise > 3 * MAX(n / 4, s->low.temp) + s->interlaced_high)
         return 1;
 
     if (sad_comb_cmp == 1 && s->sad.noise < 64)
@@ -1059,77 +1115,84 @@ find_breaks(struct vf_priv_s *p, struct frame_stats *s)
     if (sad_comb_cmp == -1 && s->sad.temp < 64)
         return 1;
 
-    if (s->tiny.odd <= n || (s->tiny.noise <= n/2 && s->tiny.temp <= n/2)) {
-        if (s->interlaced_low <= n) {
+    if (s->tiny.odd <= n || (s->tiny.noise <= n / 2 && s->tiny.temp <= n / 2))
+    {
+        if (s->interlaced_low <= n)
+        {
             if (p->num_fields == 1)
                 goto still;
-            if (s->tiny.even <= n || ps->tiny.noise <= n/2)
+            if (s->tiny.even <= n || ps->tiny.noise <= n / 2)
                 /* Still frame */
                 goto still;
-            if (s->bigger.even >= 2*MAX(n,s->bigger.odd) + s->interlaced_low)
+            if (s->bigger.even >= 2 * MAX(n, s->bigger.odd) + s->interlaced_low)
                 return 4;
-            if (s->low.even >= 2*n + s->interlaced_low)
+            if (s->low.even >= 2 * n + s->interlaced_low)
                 return 4;
             goto still;
         }
     }
-    if (s->low.odd <= n/4) {
-        if (s->interlaced_high <= n/4) {
+    if (s->low.odd <= n / 4)
+    {
+        if (s->interlaced_high <= n / 4)
+        {
             if (p->num_fields == 1)
                 goto still;
-            if (s->low.even <= n/4)
+            if (s->low.even <= n / 4)
                 /* Still frame */
                 goto still;
-            if (s->bigger.even >= 2*MAX(n/4,s->bigger.odd)+s->interlaced_high)
+            if (s->bigger.even >= 2 * MAX(n / 4, s->bigger.odd) + s->interlaced_high)
                 return 4;
-            if (s->low.even >= n/2 + s->interlaced_high)
+            if (s->low.even >= n / 2 + s->interlaced_high)
                 return 4;
             goto still;
         }
     }
-    if (s->bigger.temp > 2*MAX(n,s->bigger.noise) + s->interlaced_low)
+    if (s->bigger.temp > 2 * MAX(n, s->bigger.noise) + s->interlaced_low)
         return 2;
-    if (s->bigger.noise > 2*MAX(n,s->bigger.temp) + s->interlaced_low)
+    if (s->bigger.noise > 2 * MAX(n, s->bigger.temp) + s->interlaced_low)
         return 1;
-    if (s->bigger.temp > 2*MAX(n,s->bigger.noise) + s->interlaced_high)
+    if (s->bigger.temp > 2 * MAX(n, s->bigger.noise) + s->interlaced_high)
         return 2;
-    if (s->bigger.noise > 2*MAX(n,s->bigger.temp) + s->interlaced_high)
+    if (s->bigger.noise > 2 * MAX(n, s->bigger.temp) + s->interlaced_high)
         return 1;
-    if (s->twox.temp > 2*MAX(n,s->twox.noise) + s->interlaced_high)
+    if (s->twox.temp > 2 * MAX(n, s->twox.noise) + s->interlaced_high)
         return 2;
-    if (s->twox.noise > 2*MAX(n,s->twox.temp) + s->interlaced_high)
+    if (s->twox.noise > 2 * MAX(n, s->twox.temp) + s->interlaced_high)
         return 1;
-    if (s->bigger.even > 2*MAX(n,s->bigger.odd) + s->interlaced_low &&
-        s->bigger.temp < n && s->bigger.noise < n)
+    if (s->bigger.even > 2 * MAX(n, s->bigger.odd) + s->interlaced_low &&
+            s->bigger.temp < n && s->bigger.noise < n)
         return 4;
-    if (s->interlaced_low > MIN(2*n, s->tiny.odd))
+    if (s->interlaced_low > MIN(2 * n, s->tiny.odd))
         return 3;
     ret = 8 + (1 << (s->sad.temp > s->sad.noise));
-  still:
+still:
     if (p->num_fields == 1 && p->prev_fields == 3 && notfilm >= 0 &&
-        (s->tiny.temp <= s->tiny.noise || s->sad.temp < s->sad.noise+16))
+            (s->tiny.temp <= s->tiny.noise || s->sad.temp < s->sad.noise + 16))
         return 1;
-    if (p->notout < p->num_fields && p->iosync > 2*p->in_inc && notfilm < 0)
+    if (p->notout < p->num_fields && p->iosync > 2 * p->in_inc && notfilm < 0)
         notfilm = 0;
     if (p->num_fields < 2 ||
-        (p->num_fields == 2 && p->prev_fields == 2 && notfilm < 0))
+            (p->num_fields == 2 && p->prev_fields == 2 && notfilm < 0))
         return ret;
-    if (!notfilm && (p->prev_fields&~1) == 2) {
-        if (p->prev_fields + p->num_fields == 5) {
+    if (!notfilm && (p->prev_fields&~1) == 2)
+    {
+        if (p->prev_fields + p->num_fields == 5)
+        {
             if (s->tiny.noise <= s->tiny.temp ||
-                s->low.noise == 0 || s->low.noise < s->low.temp ||
-                s->sad.noise < s->sad.temp+16)
+                    s->low.noise == 0 || s->low.noise < s->low.temp ||
+                    s->sad.noise < s->sad.temp + 16)
                 return 2;
         }
-        if (p->prev_fields + p->num_fields == 4) {
+        if (p->prev_fields + p->num_fields == 4)
+        {
             if (s->tiny.temp <= s->tiny.noise ||
-                s->low.temp == 0 || s->low.temp < s->low.noise ||
-                s->sad.temp < s->sad.noise+16)
+                    s->low.temp == 0 || s->low.temp < s->low.noise ||
+                    s->sad.temp < s->sad.noise + 16)
                 return 1;
         }
     }
     if (p->num_fields > 2 &&
-        ps->sad.noise > s->sad.noise && ps->sad.noise > s->sad.temp)
+            ps->sad.noise > s->sad.noise && ps->sad.noise > s->sad.temp)
         return 4;
     return 2 >> (s->sad.noise > s->sad.temp);
 }
@@ -1156,15 +1219,19 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
 
     old_planes = p->old_planes;
 
-    if ((mpi->flags & MP_IMGFLAG_DIRECT) && mpi->priv) {
+    if ((mpi->flags & MP_IMGFLAG_DIRECT) && mpi->priv)
+    {
         planes = mpi->priv;
         mpi->priv = 0;
-    } else {
+    }
+    else
+    {
         planes = p->planes[2 + (++p->temp_idx & 1)];
         my_memcpy_pic(planes[0],
                       mpi->planes[0] + p->crop_x + p->crop_y * mpi->stride[0],
                       p->w, p->h, p->stride, mpi->stride[0]);
-        if (mpi->flags & MP_IMGFLAG_PLANAR) {
+        if (mpi->flags & MP_IMGFLAG_PLANAR)
+        {
             my_memcpy_pic(planes[1],
                           mpi->planes[1] + p->crop_cx + p->crop_cy * mpi->stride[1],
                           p->cw, p->ch, p->chroma_stride, mpi->stride[1]);
@@ -1177,7 +1244,8 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
 
     p->old_planes = planes;
     p->chflag = ';';
-    if (flags & MP_IMGFIELD_ORDERED) {
+    if (flags & MP_IMGFIELD_ORDERED)
+    {
         swapped = !(flags & MP_IMGFIELD_TOP_FIRST);
         p->chflag = (flags & MP_IMGFIELD_REPEAT_FIRST ? '|' :
                      flags & MP_IMGFIELD_TOP_FIRST ? ':' : '.');
@@ -1185,10 +1253,12 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
     p->swapped = swapped;
 
     start_time = get_time();
-    if (p->chflag == '|') {
+    if (p->chflag == '|')
+    {
         *s = ppzs;
         p->iosync += p->in_inc;
-    } else if ((p->fast & 1) && prev_chflag == '|')
+    }
+    else if ((p->fast & 1) && prev_chflag == '|')
         *s = pprs;
     else
         diff_fields(p, s, old_planes, planes);
@@ -1196,68 +1266,83 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
     p->diff_time += diff_time - start_time;
     breaks = p->inframes ? find_breaks(p, s) : 2;
     p->inframes++;
-    keep_rate = 4*p->in_inc == p->out_dec;
+    keep_rate = 4 * p->in_inc == p->out_dec;
 
-    switch (breaks) {
-      case 0:
-      case 8:
-      case 9:
-      case 10:
-        if (!keep_rate && p->notout < p->num_fields && p->iosync < 2*p->in_inc)
+    switch (breaks)
+    {
+    case 0:
+    case 8:
+    case 9:
+    case 10:
+        if (!keep_rate && p->notout < p->num_fields && p->iosync < 2 * p->in_inc)
             break;
         if (p->notout < p->num_fields)
             dropped_fields = -2;
-      case 4:
-        if (keep_rate || p->iosync >= -2*p->in_inc)
-            show_fields = (4<<p->num_fields)-1;
+    case 4:
+        if (keep_rate || p->iosync >= -2 * p->in_inc)
+            show_fields = (4 << p->num_fields) - 1;
         break;
-      case 3:
+    case 3:
         if (keep_rate)
             show_fields = 2;
-        else if (p->iosync > 0) {
-            if (p->notout >= p->num_fields && p->iosync > 2*p->in_inc) {
+        else if (p->iosync > 0)
+        {
+            if (p->notout >= p->num_fields && p->iosync > 2 * p->in_inc)
+            {
                 show_fields = 4; /* prev odd only */
                 if (p->num_fields > 1)
                     show_fields |= 8; /* + prev even */
-            } else {
+            }
+            else
+            {
                 show_fields = 2; /* even only */
                 if (p->notout >= p->num_fields)
                     dropped_fields += p->num_fields;
             }
         }
         break;
-      case 2:
-        if (p->iosync <= -3*p->in_inc) {
+    case 2:
+        if (p->iosync <= -3 * p->in_inc)
+        {
             if (p->notout >= p->num_fields)
                 dropped_fields = p->num_fields;
             break;
         }
-        if (p->num_fields == 1) {
+        if (p->num_fields == 1)
+        {
             int prevbreak = ps->sad.noise >= 128;
-            if (p->iosync < 4*p->in_inc) {
+            if (p->iosync < 4 * p->in_inc)
+            {
                 show_fields = 3;
                 dropped_fields = prevbreak;
-            } else {
+            }
+            else
+            {
                 show_fields = 4 | (!prevbreak << 3);
                 if (p->notout < 1 + p->prev_fields)
                     dropped_fields = -!prevbreak;
             }
             break;
         }
-      default:
+    default:
         if (keep_rate)
             show_fields = 3 << (breaks & 1);
         else if (p->notout >= p->num_fields &&
-            p->iosync >= (breaks == 1 ? -p->in_inc :
-                          p->in_inc << (p->num_fields == 1))) {
-            show_fields = (1 << (2 + p->num_fields)) - (1<<breaks);
-        } else {
+                 p->iosync >= (breaks == 1 ? -p->in_inc :
+                               p->in_inc << (p->num_fields == 1)))
+        {
+            show_fields = (1 << (2 + p->num_fields)) - (1 << breaks);
+        }
+        else
+        {
             if (p->notout >= p->num_fields)
                 dropped_fields += p->num_fields + 2 - breaks;
-            if (breaks == 1) {
-                if (p->iosync >= 4*p->in_inc)
+            if (breaks == 1)
+            {
+                if (p->iosync >= 4 * p->in_inc)
                     show_fields = 6;
-            } else if (p->iosync > -3*p->in_inc)
+            }
+            else if (p->iosync > -3 * p->in_inc)
                 show_fields = 3;  /* odd+even */
         }
         break;
@@ -1265,49 +1350,58 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
 
     show_fields &= 15;
     prev = p->prev_fields;
-    if (breaks < 8) {
+    if (breaks < 8)
+    {
         if (p->num_fields == 1)
             breaks &= ~4;
         if (breaks)
             p->num_breaks++;
         if (breaks == 3)
             p->prev_fields = p->num_fields = 1;
-        else if (breaks) {
-            p->prev_fields = p->num_fields + (breaks==1) - (breaks==4);
+        else if (breaks)
+        {
+            p->prev_fields = p->num_fields + (breaks == 1) - (breaks == 4);
             p->num_fields = breaks - (breaks == 4) + (p->chflag == '|');
-        } else
+        }
+        else
             p->num_fields += 2;
-    } else
+    }
+    else
         p->num_fields += 2;
 
     p->iosync += 4 * p->in_inc;
     if (p->chflag == '|')
         p->iosync += p->in_inc;
 
-    if (show_fields) {
+    if (show_fields)
+    {
         p->iosync -= p->out_dec;
         p->notout = !(show_fields & 1) + !(show_fields & 3);
         if (((show_fields &  3) ==  3 &&
-             (s->low.noise + s->interlaced_low < (s->num_blocks>>8) ||
-              s->sad.noise < 160)) ||
-            ((show_fields & 12) == 12 &&
-             (ps->low.noise + ps->interlaced_low < (s->num_blocks>>8) ||
-              ps->sad.noise < 160))) {
+                (s->low.noise + s->interlaced_low < (s->num_blocks >> 8) ||
+                 s->sad.noise < 160)) ||
+                ((show_fields & 12) == 12 &&
+                 (ps->low.noise + ps->interlaced_low < (s->num_blocks >> 8) ||
+                  ps->sad.noise < 160)))
+        {
             p->export_count++;
             dmpi = vf_get_image(vf->next, mpi->imgfmt, MP_IMGTYPE_EXPORT,
-                                MP_IMGFLAG_PRESERVE|MP_IMGFLAG_READABLE,
+                                MP_IMGFLAG_PRESERVE | MP_IMGFLAG_READABLE,
                                 p->w, p->h);
             if ((show_fields & 3) != 3) planes = old_planes;
             dmpi->planes[0] = planes[0];
             dmpi->stride[0] = p->stride;
             dmpi->width = mpi->width;
-            if (mpi->flags & MP_IMGFLAG_PLANAR) {
+            if (mpi->flags & MP_IMGFLAG_PLANAR)
+            {
                 dmpi->planes[1] = planes[1];
                 dmpi->planes[2] = planes[2];
                 dmpi->stride[1] = p->chroma_stride;
                 dmpi->stride[2] = p->chroma_stride;
             }
-        } else {
+        }
+        else
+        {
             p->merge_count++;
             dmpi = vf_get_image(vf->next, mpi->imgfmt,
                                 MP_IMGTYPE_TEMP, MP_IMGFLAG_ACCEPT_STRIDE,
@@ -1315,19 +1409,20 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
             copy_merge_fields(p, dmpi, old_planes, planes, show_fields);
         }
         p->outframes++;
-    } else
+    }
+    else
         p->notout += 2;
 
     if (p->verbose)
         mp_msg(MSGT_VFILTER, MSGL_INFO, "%lu %lu: %x %c %c %lu%s%s%c%s\n",
                p->inframes, p->outframes,
-               breaks, breaks<8 && breaks>0 ? (int) p->prev_fields+'0' : ' ',
+               breaks, breaks < 8 && breaks > 0 ? (int) p->prev_fields + '0' : ' ',
                ITOC(show_fields),
-               p->num_breaks, 5*p->in_inc == p->out_dec && breaks<8 &&
-               breaks>0 && ((prev&~1)!=2 || prev+p->prev_fields!=5) ?
+               p->num_breaks, 5 * p->in_inc == p->out_dec && breaks < 8 &&
+               breaks > 0 && ((prev&~1) != 2 || prev + p->prev_fields != 5) ?
                " ######## bad telecine ########" : "",
-               dropped_fields ? " ======== dropped ":"", ITOC(dropped_fields),
-               !show_fields || (show_fields & (show_fields-1)) ?
+               dropped_fields ? " ======== dropped " : "", ITOC(dropped_fields),
+               !show_fields || (show_fields & (show_fields - 1)) ?
                "" : " @@@@@@@@@@@@@@@@@");
 
     p->merge_time += get_time() - diff_time;
@@ -1337,13 +1432,14 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
 static int query_format(struct vf_instance *vf, unsigned int fmt)
 {
     /* FIXME - support more formats */
-    switch (fmt) {
-      case IMGFMT_YV12:
-      case IMGFMT_IYUV:
-      case IMGFMT_I420:
-      case IMGFMT_411P:
-      case IMGFMT_422P:
-      case IMGFMT_444P:
+    switch (fmt)
+    {
+    case IMGFMT_YV12:
+    case IMGFMT_IYUV:
+    case IMGFMT_I420:
+    case IMGFMT_411P:
+    case IMGFMT_422P:
+    case IMGFMT_444P:
         return vf_next_query_format(vf, fmt);
     }
     return 0;
@@ -1357,27 +1453,29 @@ static int config(struct vf_instance *vf,
     unsigned long cym = 0;
     struct vf_priv_s *p = vf->priv;
     // rounding:
-    if(!IMGFMT_IS_RGB(outfmt) && !IMGFMT_IS_BGR(outfmt)){
-        switch(outfmt){
-          case IMGFMT_444P:
-          case IMGFMT_Y800:
-          case IMGFMT_Y8:
+    if(!IMGFMT_IS_RGB(outfmt) && !IMGFMT_IS_BGR(outfmt))
+    {
+        switch(outfmt)
+        {
+        case IMGFMT_444P:
+        case IMGFMT_Y800:
+        case IMGFMT_Y8:
             break;
-          case IMGFMT_YVU9:
-          case IMGFMT_IF09:
+        case IMGFMT_YVU9:
+        case IMGFMT_IF09:
             cym = 3;
-          case IMGFMT_411P:
+        case IMGFMT_411P:
             cxm = 3;
             break;
-          case IMGFMT_YV12:
-          case IMGFMT_I420:
-          case IMGFMT_IYUV:
+        case IMGFMT_YV12:
+        case IMGFMT_I420:
+        case IMGFMT_IYUV:
             cym = 1;
-          default:
+        default:
             cxm = 1;
         }
     }
-    p->chroma_swapped = !!(p->crop_y & (cym+1));
+    p->chroma_swapped = !!(p->crop_y & (cym + 1));
     if (p->w) p->w += p->crop_x & cxm;
     if (p->h) p->h += p->crop_y & cym;
     p->crop_x &= ~cxm;
@@ -1387,9 +1485,10 @@ static int config(struct vf_instance *vf,
     if (p->crop_x + p->w > width ) p->crop_x = 0;
     if (p->crop_y + p->h > height) p->crop_y = 0;
 
-    if(!opt_screen_size_x && !opt_screen_size_y){
-        d_width = d_width * p->w/width;
-        d_height = d_height * p->h/height;
+    if(!opt_screen_size_x && !opt_screen_size_y)
+    {
+        d_width = d_width * p->w / width;
+        d_height = d_height * p->h / height;
     }
     return vf_next_config(vf, p->w, p->h, d_width, d_height, flags, outfmt);
 }
@@ -1423,14 +1522,17 @@ static int vf_open(vf_instance_t *vf, char *args)
     p->luma_only = 0;
     p->fast = 3;
     p->mmx2 = gCpuCaps.hasMMX2 ? 1 : gCpuCaps.has3DNow ? 2 : 0;
-    if (args) {
+    if (args)
+    {
         const char *args_remain = parse_args(p, args);
-        if (args_remain) {
+        if (args_remain)
+        {
             mp_msg(MSGT_VFILTER, MSGL_FATAL,
                    "filmdint: unknown suboption: %s\n", args_remain);
             return 0;
         }
-        if (p->out_dec < p->in_inc) {
+        if (p->out_dec < p->in_inc)
+        {
             mp_msg(MSGT_VFILTER, MSGL_FATAL,
                    "filmdint: increasing the frame rate is not supported\n");
             return 0;
@@ -1451,7 +1553,8 @@ static int vf_open(vf_instance_t *vf, char *args)
     return 1;
 }
 
-const vf_info_t vf_info_filmdint = {
+const vf_info_t vf_info_filmdint =
+{
     "Advanced inverse telecine filer",
     "filmdint",
     "Zoltan Hidvegi",

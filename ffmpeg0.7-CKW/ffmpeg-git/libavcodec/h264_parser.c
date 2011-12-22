@@ -37,64 +37,80 @@ static int ff_h264_find_frame_end(H264Context *h, const uint8_t *buf, int buf_si
     int i;
     uint32_t state;
     ParseContext *pc = &(h->s.parse_context);
-//printf("first %02X%02X%02X%02X\n", buf[0], buf[1],buf[2],buf[3]);
-//    mb_addr= pc->mb_addr - 1;
-    state= pc->state;
-    if(state>13)
-        state= 7;
+    //printf("first %02X%02X%02X%02X\n", buf[0], buf[1],buf[2],buf[3]);
+    //    mb_addr= pc->mb_addr - 1;
+    state = pc->state;
+    if(state > 13)
+        state = 7;
 
-    for(i=0; i<buf_size; i++){
-        if(state==7){
+    for(i = 0; i < buf_size; i++)
+    {
+        if(state == 7)
+        {
 #if HAVE_FAST_UNALIGNED
-        /* we check i<buf_size instead of i+3/7 because its simpler
-         * and there should be FF_INPUT_BUFFER_PADDING_SIZE bytes at the end
-         */
+            /* we check i<buf_size instead of i+3/7 because its simpler
+             * and there should be FF_INPUT_BUFFER_PADDING_SIZE bytes at the end
+             */
 #    if HAVE_FAST_64BIT
-            while(i<buf_size && !((~*(const uint64_t*)(buf+i) & (*(const uint64_t*)(buf+i) - 0x0101010101010101ULL)) & 0x8080808080808080ULL))
-                i+=8;
+            while(i < buf_size && !((~*(const uint64_t *)(buf + i) & (*(const uint64_t *)(buf + i) - 0x0101010101010101ULL)) & 0x8080808080808080ULL))
+                i += 8;
 #    else
-            while(i<buf_size && !((~*(const uint32_t*)(buf+i) & (*(const uint32_t*)(buf+i) - 0x01010101U)) & 0x80808080U))
-                i+=4;
+            while(i < buf_size && !((~*(const uint32_t *)(buf + i) & (*(const uint32_t *)(buf + i) - 0x01010101U)) & 0x80808080U))
+                i += 4;
 #    endif
 #endif
-            for(; i<buf_size; i++){
-                if(!buf[i]){
-                    state=2;
+            for(; i < buf_size; i++)
+            {
+                if(!buf[i])
+                {
+                    state = 2;
                     break;
                 }
             }
-        }else if(state<=2){
-            if(buf[i]==1)   state^= 5; //2->7, 1->4, 0->5
+        }
+        else if(state <= 2)
+        {
+            if(buf[i] == 1)   state ^= 5; //2->7, 1->4, 0->5
             else if(buf[i]) state = 7;
-            else            state>>=1; //2->1, 1->0, 0->0
-        }else if(state<=5){
-            int v= buf[i] & 0x1F;
-            if(v==6 || v==7 || v==8 || v==9){
-                if(pc->frame_start_found){
+            else            state >>= 1; //2->1, 1->0, 0->0
+        }
+        else if(state <= 5)
+        {
+            int v = buf[i] & 0x1F;
+            if(v == 6 || v == 7 || v == 8 || v == 9)
+            {
+                if(pc->frame_start_found)
+                {
                     i++;
                     goto found;
                 }
-            }else if(v==1 || v==2 || v==5){
-                if(pc->frame_start_found){
-                    state+=8;
+            }
+            else if(v == 1 || v == 2 || v == 5)
+            {
+                if(pc->frame_start_found)
+                {
+                    state += 8;
                     continue;
-                }else
+                }
+                else
                     pc->frame_start_found = 1;
             }
-            state= 7;
-        }else{
+            state = 7;
+        }
+        else
+        {
             if(buf[i] & 0x80)
                 goto found;
-            state= 7;
+            state = 7;
         }
     }
-    pc->state= state;
+    pc->state = state;
     return END_NOT_FOUND;
 
 found:
-    pc->state=7;
-    pc->frame_start_found= 0;
-    return i-(state&5);
+    pc->state = 7;
+    pc->frame_start_found = 0;
+    return i - (state & 5);
 }
 
 /*!
@@ -120,7 +136,7 @@ static inline int parse_nal_units(AVCodecParserContext *s,
     s->pict_type = FF_I_TYPE;
     s->key_frame = 0;
 
-    h->s.avctx= avctx;
+    h->s.avctx = avctx;
     h->sei_recovery_frame_cnt = -1;
     h->sei_dpb_output_delay         =  0;
     h->sei_cpb_removal_delay        = -1;
@@ -129,14 +145,16 @@ static inline int parse_nal_units(AVCodecParserContext *s,
     if (!buf_size)
         return 0;
 
-    for(;;) {
+    for(;;)
+    {
         int src_length, dst_length, consumed;
         buf = ff_find_start_code(buf, buf_end, &state);
         if(buf >= buf_end)
             break;
         --buf;
         src_length = buf_end - buf;
-        switch (state & 0x1f) {
+        switch (state & 0x1f)
+        {
         case NAL_SLICE:
         case NAL_IDR_SLICE:
             // Do not walk the whole buffer just to decode slice header
@@ -144,12 +162,13 @@ static inline int parse_nal_units(AVCodecParserContext *s,
                 src_length = 20;
             break;
         }
-        ptr= ff_h264_decode_nal(h, buf, &dst_length, &consumed, src_length);
-        if (ptr==NULL || dst_length < 0)
+        ptr = ff_h264_decode_nal(h, buf, &dst_length, &consumed, src_length);
+        if (ptr == NULL || dst_length < 0)
             break;
 
-        init_get_bits(&h->s.gb, ptr, 8*dst_length);
-        switch(h->nal_unit_type) {
+        init_get_bits(&h->s.gb, ptr, 8 * dst_length);
+        switch(h->nal_unit_type)
+        {
         case NAL_SPS:
             ff_h264_decode_seq_parameter_set(h);
             break;
@@ -166,21 +185,25 @@ static inline int parse_nal_units(AVCodecParserContext *s,
             get_ue_golomb(&h->s.gb);  // skip first_mb_in_slice
             slice_type = get_ue_golomb_31(&h->s.gb);
             s->pict_type = golomb_to_pict_type[slice_type % 5];
-            if (h->sei_recovery_frame_cnt >= 0) {
+            if (h->sei_recovery_frame_cnt >= 0)
+            {
                 /* key frame, since recovery_frame_cnt is set */
                 s->key_frame = 1;
             }
-            pps_id= get_ue_golomb(&h->s.gb);
-            if(pps_id>=MAX_PPS_COUNT) {
+            pps_id = get_ue_golomb(&h->s.gb);
+            if(pps_id >= MAX_PPS_COUNT)
+            {
                 av_log(h->s.avctx, AV_LOG_ERROR, "pps_id out of range\n");
                 return -1;
             }
-            if(!h->pps_buffers[pps_id]) {
+            if(!h->pps_buffers[pps_id])
+            {
                 av_log(h->s.avctx, AV_LOG_ERROR, "non-existing PPS referenced\n");
                 return -1;
             }
-            h->pps= *h->pps_buffers[pps_id];
-            if(!h->sps_buffers[h->pps.sps_id]) {
+            h->pps = *h->pps_buffers[pps_id];
+            if(!h->sps_buffers[h->pps.sps_id])
+            {
                 av_log(h->s.avctx, AV_LOG_ERROR, "non-existing SPS referenced\n");
                 return -1;
             }
@@ -190,42 +213,52 @@ static inline int parse_nal_units(AVCodecParserContext *s,
             avctx->profile = ff_h264_get_profile(&h->sps);
             avctx->level   = h->sps.level_idc;
 
-            if(h->sps.frame_mbs_only_flag){
-                h->s.picture_structure= PICT_FRAME;
-            }else{
-                if(get_bits1(&h->s.gb)) { //field_pic_flag
-                    h->s.picture_structure= PICT_TOP_FIELD + get_bits1(&h->s.gb); //bottom_field_flag
-                } else {
-                    h->s.picture_structure= PICT_FRAME;
+            if(h->sps.frame_mbs_only_flag)
+            {
+                h->s.picture_structure = PICT_FRAME;
+            }
+            else
+            {
+                if(get_bits1(&h->s.gb))   //field_pic_flag
+                {
+                    h->s.picture_structure = PICT_TOP_FIELD + get_bits1(&h->s.gb); //bottom_field_flag
+                }
+                else
+                {
+                    h->s.picture_structure = PICT_FRAME;
                 }
             }
 
-            if(h->sps.pic_struct_present_flag) {
-                switch (h->sei_pic_struct) {
-                    case SEI_PIC_STRUCT_TOP_FIELD:
-                    case SEI_PIC_STRUCT_BOTTOM_FIELD:
-                        s->repeat_pict = 0;
-                        break;
-                    case SEI_PIC_STRUCT_FRAME:
-                    case SEI_PIC_STRUCT_TOP_BOTTOM:
-                    case SEI_PIC_STRUCT_BOTTOM_TOP:
-                        s->repeat_pict = 1;
-                        break;
-                    case SEI_PIC_STRUCT_TOP_BOTTOM_TOP:
-                    case SEI_PIC_STRUCT_BOTTOM_TOP_BOTTOM:
-                        s->repeat_pict = 2;
-                        break;
-                    case SEI_PIC_STRUCT_FRAME_DOUBLING:
-                        s->repeat_pict = 3;
-                        break;
-                    case SEI_PIC_STRUCT_FRAME_TRIPLING:
-                        s->repeat_pict = 5;
-                        break;
-                    default:
-                        s->repeat_pict = h->s.picture_structure == PICT_FRAME ? 1 : 0;
-                        break;
+            if(h->sps.pic_struct_present_flag)
+            {
+                switch (h->sei_pic_struct)
+                {
+                case SEI_PIC_STRUCT_TOP_FIELD:
+                case SEI_PIC_STRUCT_BOTTOM_FIELD:
+                    s->repeat_pict = 0;
+                    break;
+                case SEI_PIC_STRUCT_FRAME:
+                case SEI_PIC_STRUCT_TOP_BOTTOM:
+                case SEI_PIC_STRUCT_BOTTOM_TOP:
+                    s->repeat_pict = 1;
+                    break;
+                case SEI_PIC_STRUCT_TOP_BOTTOM_TOP:
+                case SEI_PIC_STRUCT_BOTTOM_TOP_BOTTOM:
+                    s->repeat_pict = 2;
+                    break;
+                case SEI_PIC_STRUCT_FRAME_DOUBLING:
+                    s->repeat_pict = 3;
+                    break;
+                case SEI_PIC_STRUCT_FRAME_TRIPLING:
+                    s->repeat_pict = 5;
+                    break;
+                default:
+                    s->repeat_pict = h->s.picture_structure == PICT_FRAME ? 1 : 0;
+                    break;
                 }
-            } else {
+            }
+            else
+            {
                 s->repeat_pict = h->s.picture_structure == PICT_FRAME ? 1 : 0;
             }
 
@@ -247,26 +280,33 @@ static int h264_parse(AVCodecParserContext *s,
     ParseContext *pc = &h->s.parse_context;
     int next;
 
-    if (!h->got_first) {
+    if (!h->got_first)
+    {
         h->got_first = 1;
-        if (avctx->extradata_size) {
+        if (avctx->extradata_size)
+        {
             h->s.avctx = avctx;
             ff_h264_decode_extradata(h);
         }
     }
 
-    if(s->flags & PARSER_FLAG_COMPLETE_FRAMES){
-        next= buf_size;
-    }else{
-        next= ff_h264_find_frame_end(h, buf, buf_size);
+    if(s->flags & PARSER_FLAG_COMPLETE_FRAMES)
+    {
+        next = buf_size;
+    }
+    else
+    {
+        next = ff_h264_find_frame_end(h, buf, buf_size);
 
-        if (ff_combine_frame(pc, next, &buf, &buf_size) < 0) {
+        if (ff_combine_frame(pc, next, &buf, &buf_size) < 0)
+        {
             *poutbuf = NULL;
             *poutbuf_size = 0;
             return buf_size;
         }
 
-        if(next<0 && next != END_NOT_FOUND){
+        if(next < 0 && next != END_NOT_FOUND)
+        {
             assert(pc->last_index + next >= 0 );
             ff_h264_find_frame_end(h, &pc->buffer[pc->last_index + next], -next); //update state
         }
@@ -274,17 +314,21 @@ static int h264_parse(AVCodecParserContext *s,
 
     parse_nal_units(s, avctx, buf, buf_size);
 
-    if (h->sei_cpb_removal_delay >= 0) {
+    if (h->sei_cpb_removal_delay >= 0)
+    {
         s->dts_sync_point    = h->sei_buffering_period_present;
         s->dts_ref_dts_delta = h->sei_cpb_removal_delay;
         s->pts_dts_delta     = h->sei_dpb_output_delay;
-    } else {
+    }
+    else
+    {
         s->dts_sync_point    = INT_MIN;
         s->dts_ref_dts_delta = INT_MIN;
         s->pts_dts_delta     = INT_MIN;
     }
 
-    if (s->flags & PARSER_FLAG_ONCE) {
+    if (s->flags & PARSER_FLAG_ONCE)
+    {
         s->flags &= PARSER_FLAG_COMPLETE_FRAMES;
     }
 
@@ -298,21 +342,24 @@ static int h264_split(AVCodecContext *avctx,
 {
     int i;
     uint32_t state = -1;
-    int has_sps= 0;
+    int has_sps = 0;
 
-    for(i=0; i<=buf_size; i++){
-        if((state&0xFFFFFF1F) == 0x107)
-            has_sps=1;
-/*        if((state&0xFFFFFF1F) == 0x101 || (state&0xFFFFFF1F) == 0x102 || (state&0xFFFFFF1F) == 0x105){
-        }*/
-        if((state&0xFFFFFF00) == 0x100 && (state&0xFFFFFF1F) != 0x107 && (state&0xFFFFFF1F) != 0x108 && (state&0xFFFFFF1F) != 0x109){
-            if(has_sps){
-                while(i>4 && buf[i-5]==0) i--;
-                return i-4;
+    for(i = 0; i <= buf_size; i++)
+    {
+        if((state & 0xFFFFFF1F) == 0x107)
+            has_sps = 1;
+        /*        if((state&0xFFFFFF1F) == 0x101 || (state&0xFFFFFF1F) == 0x102 || (state&0xFFFFFF1F) == 0x105){
+                }*/
+        if((state & 0xFFFFFF00) == 0x100 && (state & 0xFFFFFF1F) != 0x107 && (state & 0xFFFFFF1F) != 0x108 && (state & 0xFFFFFF1F) != 0x109)
+        {
+            if(has_sps)
+            {
+                while(i > 4 && buf[i-5] == 0) i--;
+                return i - 4;
             }
         }
-        if (i<buf_size)
-            state= (state<<8) | buf[i];
+        if (i < buf_size)
+            state = (state << 8) | buf[i];
     }
     return 0;
 }
@@ -333,7 +380,8 @@ static int init(AVCodecParserContext *s)
     return 0;
 }
 
-AVCodecParser ff_h264_parser = {
+AVCodecParser ff_h264_parser =
+{
     { CODEC_ID_H264 },
     sizeof(H264Context),
     init,

@@ -30,7 +30,8 @@
 
 #include "rtpdec_formats.h"
 
-struct PayloadContext {
+struct PayloadContext
+{
     AVIOContext *data;
     uint32_t       timestamp;
     int is_keyframe;
@@ -56,9 +57,11 @@ static int vp8_handle_packet(AVFormatContext *ctx,
 {
     int start_packet, end_packet, has_au, ret = AVERROR(EAGAIN);
 
-    if (!buf) {
+    if (!buf)
+    {
         // only called when vp8_handle_packet returns 1
-        if (!vp8->data) {
+        if (!vp8->data)
+        {
             av_log(ctx, AV_LOG_ERROR, "Invalid VP8 data passed\n");
             return AVERROR_INVALIDDATA;
         }
@@ -73,10 +76,12 @@ static int vp8_handle_packet(AVFormatContext *ctx,
     buf++;
     len--;
 
-    if (start_packet) {
+    if (start_packet)
+    {
         int res;
         uint32_t ts = *timestamp;
-        if (vp8->data) {
+        if (vp8->data)
+        {
             // missing end marker; return old frame anyway. untested
             prepare_packet(pkt, vp8, st->index);
             *timestamp = vp8->timestamp; // reset timestamp from old frame
@@ -89,9 +94,10 @@ static int vp8_handle_packet(AVFormatContext *ctx,
             return res;
         vp8->is_keyframe = *buf & 1;
         vp8->timestamp   = ts;
-     }
+    }
 
-    if (!vp8->data || vp8->timestamp != *timestamp && ret == AVERROR(EAGAIN)) {
+    if (!vp8->data || vp8->timestamp != *timestamp && ret == AVERROR(EAGAIN))
+    {
         av_log(ctx, AV_LOG_WARNING,
                "Received no start marker; dropping frame\n");
         return AVERROR(EAGAIN);
@@ -99,13 +105,16 @@ static int vp8_handle_packet(AVFormatContext *ctx,
 
     // cycle through VP8AU headers if needed
     // not tested with actual VP8AUs
-    while (len) {
+    while (len)
+    {
         int au_len = len;
-        if (has_au && len > 2) {
+        if (has_au && len > 2)
+        {
             au_len = AV_RB16(buf);
             buf += 2;
             len -= 2;
-            if (buf + au_len > buf + len) {
+            if (buf + au_len > buf + len)
+            {
                 av_log(ctx, AV_LOG_ERROR, "Invalid VP8AU length\n");
                 return AVERROR_INVALIDDATA;
             }
@@ -119,7 +128,8 @@ static int vp8_handle_packet(AVFormatContext *ctx,
     if (ret != AVERROR(EAGAIN)) // did we miss a end marker?
         return ret;
 
-    if (end_packet) {
+    if (end_packet)
+    {
         prepare_packet(pkt, vp8, st->index);
         return 0;
     }
@@ -130,13 +140,14 @@ static int vp8_handle_packet(AVFormatContext *ctx,
 static PayloadContext *vp8_new_context(void)
 {
     av_log(NULL, AV_LOG_ERROR, "RTP VP8 payload implementation is incompatible "
-                               "with the latest spec drafts.\n");
+           "with the latest spec drafts.\n");
     return av_mallocz(sizeof(PayloadContext));
 }
 
 static void vp8_free_context(PayloadContext *vp8)
 {
-    if (vp8->data) {
+    if (vp8->data)
+    {
         uint8_t *tmp;
         avio_close_dyn_buf(vp8->data, &tmp);
         av_free(tmp);
@@ -144,7 +155,8 @@ static void vp8_free_context(PayloadContext *vp8)
     av_free(vp8);
 }
 
-RTPDynamicProtocolHandler ff_vp8_dynamic_handler = {
+RTPDynamicProtocolHandler ff_vp8_dynamic_handler =
+{
     .enc_name       = "VP8",
     .codec_type     = AVMEDIA_TYPE_VIDEO,
     .codec_id       = CODEC_ID_VP8,

@@ -23,7 +23,8 @@
 #include "voc.h"
 
 
-typedef struct avs_format {
+typedef struct avs_format
+{
     VocDecContext voc;
     AVStream *st_video;
     AVStream *st_audio;
@@ -36,7 +37,8 @@ typedef struct avs_format {
     int remaining_audio_size;
 } AvsFormat;
 
-typedef enum avs_block_type {
+typedef enum avs_block_type
+{
     AVS_NONE      = 0x00,
     AVS_VIDEO     = 0x01,
     AVS_AUDIO     = 0x02,
@@ -44,7 +46,7 @@ typedef enum avs_block_type {
     AVS_GAME_DATA = 0x04,
 } AvsBlockType;
 
-static int avs_probe(AVProbeData * p)
+static int avs_probe(AVProbeData *p)
 {
     const uint8_t *d;
 
@@ -55,7 +57,7 @@ static int avs_probe(AVProbeData * p)
     return 0;
 }
 
-static int avs_read_header(AVFormatContext * s, AVFormatParameters * ap)
+static int avs_read_header(AVFormatContext *s, AVFormatParameters *ap)
 {
     AvsFormat *avs = s->priv_data;
 
@@ -81,9 +83,9 @@ static int avs_read_header(AVFormatContext * s, AVFormatParameters * ap)
 }
 
 static int
-avs_read_video_packet(AVFormatContext * s, AVPacket * pkt,
+avs_read_video_packet(AVFormatContext *s, AVPacket *pkt,
                       AvsBlockType type, int sub_type, int size,
-                      uint8_t * palette, int palette_size)
+                      uint8_t *palette, int palette_size)
 {
     AvsFormat *avs = s->priv_data;
     int ret;
@@ -92,7 +94,8 @@ avs_read_video_packet(AVFormatContext * s, AVPacket * pkt,
     if (ret < 0)
         return ret;
 
-    if (palette_size) {
+    if (palette_size)
+    {
         pkt->data[0] = 0x00;
         pkt->data[1] = 0x03;
         pkt->data[2] = palette_size & 0xFF;
@@ -105,7 +108,8 @@ avs_read_video_packet(AVFormatContext * s, AVPacket * pkt,
     pkt->data[palette_size + 2] = size & 0xFF;
     pkt->data[palette_size + 3] = (size >> 8) & 0xFF;
     ret = avio_read(s->pb, pkt->data + palette_size + 4, size - 4) + 4;
-    if (ret < size) {
+    if (ret < size)
+    {
         av_free_packet(pkt);
         return AVERROR(EIO);
     }
@@ -118,7 +122,7 @@ avs_read_video_packet(AVFormatContext * s, AVPacket * pkt,
     return 0;
 }
 
-static int avs_read_audio_packet(AVFormatContext * s, AVPacket * pkt)
+static int avs_read_audio_packet(AVFormatContext *s, AVPacket *pkt)
 {
     AvsFormat *avs = s->priv_data;
     int ret, size;
@@ -139,7 +143,7 @@ static int avs_read_audio_packet(AVFormatContext * s, AVPacket * pkt)
     return size;
 }
 
-static int avs_read_packet(AVFormatContext * s, AVPacket * pkt)
+static int avs_read_packet(AVFormatContext *s, AVPacket *pkt)
 {
     AvsFormat *avs = s->priv_data;
     int sub_type = 0, size = 0;
@@ -152,20 +156,24 @@ static int avs_read_packet(AVFormatContext * s, AVPacket * pkt)
         if (avs_read_audio_packet(s, pkt) > 0)
             return 0;
 
-    while (1) {
-        if (avs->remaining_frame_size <= 0) {
+    while (1)
+    {
+        if (avs->remaining_frame_size <= 0)
+        {
             if (!avio_rl16(s->pb))    /* found EOF */
                 return AVERROR(EIO);
             avs->remaining_frame_size = avio_rl16(s->pb) - 4;
         }
 
-        while (avs->remaining_frame_size > 0) {
+        while (avs->remaining_frame_size > 0)
+        {
             sub_type = avio_r8(s->pb);
             type = avio_r8(s->pb);
             size = avio_rl16(s->pb);
             avs->remaining_frame_size -= size;
 
-            switch (type) {
+            switch (type)
+            {
             case AVS_PALETTE:
                 ret = avio_read(s->pb, palette, size - 4);
                 if (ret < size - 4)
@@ -174,7 +182,8 @@ static int avs_read_packet(AVFormatContext * s, AVPacket * pkt)
                 break;
 
             case AVS_VIDEO:
-                if (!avs->st_video) {
+                if (!avs->st_video)
+                {
                     avs->st_video = av_new_stream(s, AVS_VIDEO);
                     if (avs->st_video == NULL)
                         return AVERROR(ENOMEM);
@@ -182,16 +191,19 @@ static int avs_read_packet(AVFormatContext * s, AVPacket * pkt)
                     avs->st_video->codec->codec_id = CODEC_ID_AVS;
                     avs->st_video->codec->width = avs->width;
                     avs->st_video->codec->height = avs->height;
-                    avs->st_video->codec->bits_per_coded_sample=avs->bits_per_sample;
+                    avs->st_video->codec->bits_per_coded_sample = avs->bits_per_sample;
                     avs->st_video->nb_frames = avs->nb_frames;
-                    avs->st_video->codec->time_base = (AVRational) {
-                    1, avs->fps};
+                    avs->st_video->codec->time_base = (AVRational)
+                    {
+                        1, avs->fps
+                    };
                 }
                 return avs_read_video_packet(s, pkt, type, sub_type, size,
                                              palette, palette_size);
 
             case AVS_AUDIO:
-                if (!avs->st_audio) {
+                if (!avs->st_audio)
+                {
                     avs->st_audio = av_new_stream(s, AVS_AUDIO);
                     if (avs->st_audio == NULL)
                         return AVERROR(ENOMEM);
@@ -210,12 +222,13 @@ static int avs_read_packet(AVFormatContext * s, AVPacket * pkt)
     }
 }
 
-static int avs_read_close(AVFormatContext * s)
+static int avs_read_close(AVFormatContext *s)
 {
     return 0;
 }
 
-AVInputFormat ff_avs_demuxer = {
+AVInputFormat ff_avs_demuxer =
+{
     "avs",
     NULL_IF_CONFIG_SMALL("AVS format"),
     sizeof(AvsFormat),

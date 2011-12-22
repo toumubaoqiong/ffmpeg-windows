@@ -37,7 +37,8 @@
 
 #define SAMPLES_BUF_SIZE 4096
 
-typedef struct MpegAudioContext {
+typedef struct MpegAudioContext
+{
     PutBitContext pb;
     int nb_channels;
     int lsf;           /* 1 if mpeg2 low bitrate selected */
@@ -71,7 +72,8 @@ static av_cold int MPA_encode_init(AVCodecContext *avctx)
     int i, v, table;
     float a;
 
-    if (channels <= 0 || channels > 2){
+    if (channels <= 0 || channels > 2)
+    {
         av_log(avctx, AV_LOG_ERROR, "encoding %d channel(s) is not allowed in mp2\n", channels);
         return -1;
     }
@@ -81,26 +83,31 @@ static av_cold int MPA_encode_init(AVCodecContext *avctx)
 
     /* encoding freq */
     s->lsf = 0;
-    for(i=0;i<3;i++) {
+    for(i = 0; i < 3; i++)
+    {
         if (ff_mpa_freq_tab[i] == freq)
             break;
-        if ((ff_mpa_freq_tab[i] / 2) == freq) {
+        if ((ff_mpa_freq_tab[i] / 2) == freq)
+        {
             s->lsf = 1;
             break;
         }
     }
-    if (i == 3){
+    if (i == 3)
+    {
         av_log(avctx, AV_LOG_ERROR, "Sampling rate %d is not allowed in mp2\n", freq);
         return -1;
     }
     s->freq_index = i;
 
     /* encoding bitrate & frequency */
-    for(i=0;i<15;i++) {
+    for(i = 0; i < 15; i++)
+    {
         if (ff_mpa_bitrate_tab[s->lsf][1][i] == bitrate)
             break;
     }
-    if (i == 15){
+    if (i == 15)
+    {
         av_log(avctx, AV_LOG_ERROR, "bitrate %d is not allowed in mp2\n", bitrate);
         return -1;
     }
@@ -125,10 +132,11 @@ static av_cold int MPA_encode_init(AVCodecContext *avctx)
     av_dlog(avctx, "%d kb/s, %d Hz, frame_size=%d bits, table=%d, padincr=%x\n",
             bitrate, freq, s->frame_size, table, s->frame_frac_incr);
 
-    for(i=0;i<s->nb_channels;i++)
+    for(i = 0; i < s->nb_channels; i++)
         s->samples_offset[i] = 0;
 
-    for(i=0;i<257;i++) {
+    for(i = 0; i < 257; i++)
+    {
         int v;
         v = ff_mpa_enwindow[i];
 #if WFRAC_BITS != 16
@@ -141,7 +149,8 @@ static av_cold int MPA_encode_init(AVCodecContext *avctx)
             filter_bank[512 - i] = v;
     }
 
-    for(i=0;i<64;i++) {
+    for(i = 0; i < 64; i++)
+    {
         v = (int)(pow(2.0, (3 - i) / 3.0) * (1 << 20));
         if (v <= 0)
             v = 1;
@@ -154,7 +163,8 @@ static av_cold int MPA_encode_init(AVCodecContext *avctx)
         scale_factor_mult[i] = (1 << P) * pow(2.0, (i % 3) / 3.0);
 #endif
     }
-    for(i=0;i<128;i++) {
+    for(i = 0; i < 128; i++)
+    {
         v = i - 64;
         if (v <= -3)
             v = 0;
@@ -169,7 +179,8 @@ static av_cold int MPA_encode_init(AVCodecContext *avctx)
         scale_diff_table[i] = v;
     }
 
-    for(i=0;i<17;i++) {
+    for(i = 0; i < 17; i++)
+    {
         v = ff_mpa_quant_bits[i];
         if (v < 0)
             v = -v;
@@ -178,8 +189,8 @@ static av_cold int MPA_encode_init(AVCodecContext *avctx)
         total_quant_bits[i] = 12 * v;
     }
 
-    avctx->coded_frame= avcodec_alloc_frame();
-    avctx->coded_frame->key_frame= 1;
+    avctx->coded_frame = avcodec_alloc_frame();
+    avctx->coded_frame->key_frame = 1;
 
     return 0;
 }
@@ -191,29 +202,34 @@ static void idct32(int *out, int *tab)
     int *t, *t1, xr;
     const int *xp = costab32;
 
-    for(j=31;j>=3;j-=2) tab[j] += tab[j - 2];
+    for(j = 31; j >= 3; j -= 2) tab[j] += tab[j - 2];
 
     t = tab + 30;
     t1 = tab + 2;
-    do {
+    do
+    {
         t[0] += t[-4];
         t[1] += t[1 - 4];
         t -= 4;
-    } while (t != t1);
+    }
+    while (t != t1);
 
     t = tab + 28;
     t1 = tab + 4;
-    do {
+    do
+    {
         t[0] += t[-8];
         t[1] += t[1-8];
         t[2] += t[2-8];
         t[3] += t[3-8];
         t -= 8;
-    } while (t != t1);
+    }
+    while (t != t1);
 
     t = tab;
     t1 = tab + 32;
-    do {
+    do
+    {
         t[ 3] = -t[ 3];
         t[ 6] = -t[ 6];
 
@@ -222,19 +238,21 @@ static void idct32(int *out, int *tab)
         t[13] = -t[13];
         t[15] = -t[15];
         t += 16;
-    } while (t != t1);
+    }
+    while (t != t1);
 
 
     t = tab;
     t1 = tab + 8;
-    do {
+    do
+    {
         int x1, x2, x3, x4;
 
-        x3 = MUL(t[16], FIX(SQRT2*0.5));
+        x3 = MUL(t[16], FIX(SQRT2 * 0.5));
         x4 = t[0] - x3;
         x3 = t[0] + x3;
 
-        x2 = MUL(-(t[24] + t[8]), FIX(SQRT2*0.5));
+        x2 = MUL(-(t[24] + t[8]), FIX(SQRT2 * 0.5));
         x1 = MUL((t[8] - x2), xp[0]);
         x2 = MUL((t[8] + x2), xp[1]);
 
@@ -243,45 +261,49 @@ static void idct32(int *out, int *tab)
         t[16] = x4 + x2;
         t[24] = x3 - x1;
         t++;
-    } while (t != t1);
+    }
+    while (t != t1);
 
     xp += 2;
     t = tab;
     t1 = tab + 4;
-    do {
-        xr = MUL(t[28],xp[0]);
+    do
+    {
+        xr = MUL(t[28], xp[0]);
         t[28] = (t[0] - xr);
         t[0] = (t[0] + xr);
 
-        xr = MUL(t[4],xp[1]);
+        xr = MUL(t[4], xp[1]);
         t[ 4] = (t[24] - xr);
         t[24] = (t[24] + xr);
 
-        xr = MUL(t[20],xp[2]);
+        xr = MUL(t[20], xp[2]);
         t[20] = (t[8] - xr);
         t[ 8] = (t[8] + xr);
 
-        xr = MUL(t[12],xp[3]);
+        xr = MUL(t[12], xp[3]);
         t[12] = (t[16] - xr);
         t[16] = (t[16] + xr);
         t++;
-    } while (t != t1);
+    }
+    while (t != t1);
     xp += 4;
 
-    for (i = 0; i < 4; i++) {
-        xr = MUL(tab[30-i*4],xp[0]);
+    for (i = 0; i < 4; i++)
+    {
+        xr = MUL(tab[30-i*4], xp[0]);
         tab[30-i*4] = (tab[i*4] - xr);
         tab[   i*4] = (tab[i*4] + xr);
 
-        xr = MUL(tab[ 2+i*4],xp[1]);
+        xr = MUL(tab[ 2+i*4], xp[1]);
         tab[ 2+i*4] = (tab[28-i*4] - xr);
         tab[28-i*4] = (tab[28-i*4] + xr);
 
-        xr = MUL(tab[31-i*4],xp[0]);
+        xr = MUL(tab[31-i*4], xp[0]);
         tab[31-i*4] = (tab[1+i*4] - xr);
         tab[ 1+i*4] = (tab[1+i*4] + xr);
 
-        xr = MUL(tab[ 3+i*4],xp[1]);
+        xr = MUL(tab[ 3+i*4], xp[1]);
         tab[ 3+i*4] = (tab[29-i*4] - xr);
         tab[29-i*4] = (tab[29-i*4] + xr);
 
@@ -290,16 +312,19 @@ static void idct32(int *out, int *tab)
 
     t = tab + 30;
     t1 = tab + 1;
-    do {
+    do
+    {
         xr = MUL(t1[0], *xp);
         t1[0] = (t[0] - xr);
         t[0] = (t[0] + xr);
         t -= 2;
         t1 += 2;
         xp++;
-    } while (t >= tab);
+    }
+    while (t >= tab);
 
-    for(i=0;i<32;i++) {
+    for(i = 0; i < 32; i++)
+    {
         out[i] = tab[bitinv32[i]];
     }
 }
@@ -318,9 +343,11 @@ static void filter(MpegAudioContext *s, int ch, const short *samples, int incr)
 
     offset = s->samples_offset[ch];
     out = &s->sb_samples[ch][0][0][0];
-    for(j=0;j<36;j++) {
+    for(j = 0; j < 36; j++)
+    {
         /* 32 samples at once */
-        for(i=0;i<32;i++) {
+        for(i = 0; i < 32; i++)
+        {
             s->samples_buf[ch][offset + (31 - i)] = samples[0];
             samples += incr;
         }
@@ -329,7 +356,8 @@ static void filter(MpegAudioContext *s, int ch, const short *samples, int incr)
         p = s->samples_buf[ch] + offset;
         q = filter_bank;
         /* maxsum = 23169 */
-        for(i=0;i<64;i++) {
+        for(i = 0; i < 64; i++)
+        {
             sum = p[0*64] * q[0*64];
             sum += p[1*64] * q[1*64];
             sum += p[2*64] * q[2*64];
@@ -343,8 +371,8 @@ static void filter(MpegAudioContext *s, int ch, const short *samples, int incr)
             q++;
         }
         tmp1[0] = tmp[16] >> WSHIFT;
-        for( i=1; i<=16; i++ ) tmp1[i] = (tmp[i+16]+tmp[16-i]) >> WSHIFT;
-        for( i=17; i<=31; i++ ) tmp1[i] = (tmp[i+16]-tmp[80-i]) >> WSHIFT;
+        for( i = 1; i <= 16; i++ ) tmp1[i] = (tmp[i+16] + tmp[16-i]) >> WSHIFT;
+        for( i = 17; i <= 31; i++ ) tmp1[i] = (tmp[i+16] - tmp[80-i]) >> WSHIFT;
 
         idct32(out, tmp1);
 
@@ -352,7 +380,8 @@ static void filter(MpegAudioContext *s, int ch, const short *samples, int incr)
         offset -= 32;
         out += 32;
         /* handle the wrap around */
-        if (offset < 0) {
+        if (offset < 0)
+        {
             memmove(s->samples_buf[ch] + SAMPLES_BUF_SIZE - (512 - 32),
                     s->samples_buf[ch], (512 - 32) * 2);
             offset = SAMPLES_BUF_SIZE - 512;
@@ -372,30 +401,39 @@ static void compute_scale_factors(unsigned char scale_code[SBLIMIT],
     int index, d1, d2;
     unsigned char *sf = &scale_factors[0][0];
 
-    for(j=0;j<sblimit;j++) {
-        for(i=0;i<3;i++) {
+    for(j = 0; j < sblimit; j++)
+    {
+        for(i = 0; i < 3; i++)
+        {
             /* find the max absolute value */
             p = &sb_samples[i][0][j];
             vmax = abs(*p);
-            for(k=1;k<12;k++) {
+            for(k = 1; k < 12; k++)
+            {
                 p += SBLIMIT;
                 v = abs(*p);
                 if (v > vmax)
                     vmax = v;
             }
             /* compute the scale factor index using log 2 computations */
-            if (vmax > 1) {
+            if (vmax > 1)
+            {
                 n = av_log2(vmax);
                 /* n is the position of the MSB of vmax. now
                    use at most 2 compares to find the index */
                 index = (21 - n) * 3 - 3;
-                if (index >= 0) {
+                if (index >= 0)
+                {
                     while (vmax <= scale_factor_table[index+1])
                         index++;
-                } else {
+                }
+                else
+                {
                     index = 0; /* very unlikely case of overflow */
                 }
-            } else {
+            }
+            else
+            {
                 index = 62; /* value 63 is not allowed */
             }
 
@@ -404,7 +442,7 @@ static void compute_scale_factors(unsigned char scale_code[SBLIMIT],
                    j, i, vmax, scale_factor_table[index], index);
 #endif
             /* store the scale factor */
-            assert(index >=0 && index <= 63);
+            assert(index >= 0 && index <= 63);
             sf[i] = index;
         }
 
@@ -414,7 +452,8 @@ static void compute_scale_factors(unsigned char scale_code[SBLIMIT],
         d2 = scale_diff_table[sf[1] - sf[2] + 64];
 
         /* handle the 25 cases */
-        switch(d1 * 5 + d2) {
+        switch(d1 * 5 + d2)
+        {
         case 0*5+0:
         case 0*5+4:
         case 3*5+4:
@@ -462,7 +501,7 @@ static void compute_scale_factors(unsigned char scale_code[SBLIMIT],
         case 1*5+3:
             code = 2;
             if (sf[0] > sf[2])
-              sf[0] = sf[2];
+                sf[0] = sf[2];
             sf[1] = sf[2] = sf[0];
             break;
         default:
@@ -486,7 +525,8 @@ static void psycho_acoustic_model(MpegAudioContext *s, short smr[SBLIMIT])
 {
     int i;
 
-    for(i=0;i<s->sblimit;i++) {
+    for(i = 0; i < s->sblimit; i++)
+    {
         smr[i] = (int)(fixed_smr[i] * 10);
     }
 }
@@ -517,30 +557,38 @@ static void compute_bit_allocation(MpegAudioContext *s,
     /* compute frame size and padding */
     max_frame_size = s->frame_size;
     s->frame_frac += s->frame_frac_incr;
-    if (s->frame_frac >= 65536) {
+    if (s->frame_frac >= 65536)
+    {
         s->frame_frac -= 65536;
         s->do_padding = 1;
         max_frame_size += 8;
-    } else {
+    }
+    else
+    {
         s->do_padding = 0;
     }
 
     /* compute the header + bit alloc size */
     current_frame_size = 32;
     alloc = s->alloc_table;
-    for(i=0;i<s->sblimit;i++) {
+    for(i = 0; i < s->sblimit; i++)
+    {
         incr = alloc[0];
         current_frame_size += incr * s->nb_channels;
         alloc += 1 << incr;
     }
-    for(;;) {
+    for(;;)
+    {
         /* look for the subband with the largest signal to mask ratio */
         max_sb = -1;
         max_ch = -1;
         max_smr = INT_MIN;
-        for(ch=0;ch<s->nb_channels;ch++) {
-            for(i=0;i<s->sblimit;i++) {
-                if (smr[ch][i] > max_smr && subband_status[ch][i] != SB_NOMORE) {
+        for(ch = 0; ch < s->nb_channels; ch++)
+        {
+            for(i = 0; i < s->sblimit; i++)
+            {
+                if (smr[ch][i] > max_smr && subband_status[ch][i] != SB_NOMORE)
+                {
                     max_smr = smr[ch][i];
                     max_sb = i;
                     max_ch = ch;
@@ -558,22 +606,27 @@ static void compute_bit_allocation(MpegAudioContext *s,
         /* find alloc table entry (XXX: not optimal, should use
            pointer table) */
         alloc = s->alloc_table;
-        for(i=0;i<max_sb;i++) {
+        for(i = 0; i < max_sb; i++)
+        {
             alloc += 1 << alloc[0];
         }
 
-        if (subband_status[max_ch][max_sb] == SB_NOTALLOCATED) {
+        if (subband_status[max_ch][max_sb] == SB_NOTALLOCATED)
+        {
             /* nothing was coded for this band: add the necessary bits */
             incr = 2 + nb_scale_factors[s->scale_code[max_ch][max_sb]] * 6;
             incr += total_quant_bits[alloc[1]];
-        } else {
+        }
+        else
+        {
             /* increments bit allocation */
             b = bit_alloc[max_ch][max_sb];
             incr = total_quant_bits[alloc[b + 1]] -
-                total_quant_bits[alloc[b]];
+                   total_quant_bits[alloc[b]];
         }
 
-        if (current_frame_size + incr <= max_frame_size) {
+        if (current_frame_size + incr <= max_frame_size)
+        {
             /* can increase size */
             b = ++bit_alloc[max_ch][max_sb];
             current_frame_size += incr;
@@ -584,7 +637,9 @@ static void compute_bit_allocation(MpegAudioContext *s,
                 subband_status[max_ch][max_sb] = SB_NOMORE;
             else
                 subband_status[max_ch][max_sb] = SB_ALLOCATED;
-        } else {
+        }
+        else
+        {
             /* cannot increase the size of this subband */
             subband_status[max_ch][max_sb] = SB_NOMORE;
         }
@@ -593,7 +648,8 @@ static void compute_bit_allocation(MpegAudioContext *s,
     assert(*padding >= 0);
 
 #if 0
-    for(i=0;i<s->sblimit;i++) {
+    for(i = 0; i < s->sblimit; i++)
+    {
         printf("%d ", bit_alloc[i]);
     }
     printf("\n");
@@ -617,7 +673,7 @@ static void encode_frame(MpegAudioContext *s,
 
     put_bits(p, 12, 0xfff);
     put_bits(p, 1, 1 - s->lsf); /* 1 = mpeg1 ID, 0 = mpeg2 lsf ID */
-    put_bits(p, 2, 4-2);  /* layer 2 */
+    put_bits(p, 2, 4 - 2); /* layer 2 */
     put_bits(p, 1, 1); /* no error protection */
     put_bits(p, 4, s->bitrate_index);
     put_bits(p, 2, s->freq_index);
@@ -631,28 +687,36 @@ static void encode_frame(MpegAudioContext *s,
 
     /* bit allocation */
     j = 0;
-    for(i=0;i<s->sblimit;i++) {
+    for(i = 0; i < s->sblimit; i++)
+    {
         bit_alloc_bits = s->alloc_table[j];
-        for(ch=0;ch<s->nb_channels;ch++) {
+        for(ch = 0; ch < s->nb_channels; ch++)
+        {
             put_bits(p, bit_alloc_bits, bit_alloc[ch][i]);
         }
         j += 1 << bit_alloc_bits;
     }
 
     /* scale codes */
-    for(i=0;i<s->sblimit;i++) {
-        for(ch=0;ch<s->nb_channels;ch++) {
+    for(i = 0; i < s->sblimit; i++)
+    {
+        for(ch = 0; ch < s->nb_channels; ch++)
+        {
             if (bit_alloc[ch][i])
                 put_bits(p, 2, s->scale_code[ch][i]);
         }
     }
 
     /* scale factors */
-    for(i=0;i<s->sblimit;i++) {
-        for(ch=0;ch<s->nb_channels;ch++) {
-            if (bit_alloc[ch][i]) {
+    for(i = 0; i < s->sblimit; i++)
+    {
+        for(ch = 0; ch < s->nb_channels; ch++)
+        {
+            if (bit_alloc[ch][i])
+            {
                 sf = &s->scale_factors[ch][i][0];
-                switch(s->scale_code[ch][i]) {
+                switch(s->scale_code[ch][i])
+                {
                 case 0:
                     put_bits(p, 6, sf[0]);
                     put_bits(p, 6, sf[1]);
@@ -673,19 +737,25 @@ static void encode_frame(MpegAudioContext *s,
 
     /* quantization & write sub band samples */
 
-    for(k=0;k<3;k++) {
-        for(l=0;l<12;l+=3) {
+    for(k = 0; k < 3; k++)
+    {
+        for(l = 0; l < 12; l += 3)
+        {
             j = 0;
-            for(i=0;i<s->sblimit;i++) {
+            for(i = 0; i < s->sblimit; i++)
+            {
                 bit_alloc_bits = s->alloc_table[j];
-                for(ch=0;ch<s->nb_channels;ch++) {
+                for(ch = 0; ch < s->nb_channels; ch++)
+                {
                     b = bit_alloc[ch][i];
-                    if (b) {
+                    if (b)
+                    {
                         int qindex, steps, m, sample, bits;
                         /* we encode 3 sub band samples of the same sub band at a time */
                         qindex = s->alloc_table[j+b];
                         steps = ff_mpa_quant_steps[qindex];
-                        for(m=0;m<3;m++) {
+                        for(m = 0; m < 3; m++)
+                        {
                             sample = s->sb_samples[ch][k][l + m][i];
                             /* divide by scale factor */
 #ifdef USE_FLOATS
@@ -715,7 +785,8 @@ static void encode_frame(MpegAudioContext *s,
                             assert(q[m] >= 0 && q[m] < steps);
                         }
                         bits = ff_mpa_quant_bits[qindex];
-                        if (bits < 0) {
+                        if (bits < 0)
+                        {
                             /* group the 3 values to save bits */
                             put_bits(p, -bits,
                                      q[0] + steps * (q[1] + steps * q[2]));
@@ -723,7 +794,9 @@ static void encode_frame(MpegAudioContext *s,
                             printf("%d: gr1 %d\n",
                                    i, q[0] + steps * (q[1] + steps * q[2]));
 #endif
-                        } else {
+                        }
+                        else
+                        {
 #if 0
                             printf("%d: gr3 %d %d %d\n",
                                    i, q[0], q[1], q[2]);
@@ -741,7 +814,7 @@ static void encode_frame(MpegAudioContext *s,
     }
 
     /* padding */
-    for(i=0;i<padding;i++)
+    for(i = 0; i < padding; i++)
         put_bits(p, 1, 0);
 
     /* flush */
@@ -757,15 +830,18 @@ static int MPA_encode_frame(AVCodecContext *avctx,
     unsigned char bit_alloc[MPA_MAX_CHANNELS][SBLIMIT];
     int padding, i;
 
-    for(i=0;i<s->nb_channels;i++) {
+    for(i = 0; i < s->nb_channels; i++)
+    {
         filter(s, i, samples + i, s->nb_channels);
     }
 
-    for(i=0;i<s->nb_channels;i++) {
+    for(i = 0; i < s->nb_channels; i++)
+    {
         compute_scale_factors(s->scale_code[i], s->scale_factors[i],
                               s->sb_samples[i], s->sblimit);
     }
-    for(i=0;i<s->nb_channels;i++) {
+    for(i = 0; i < s->nb_channels; i++)
+    {
         psycho_acoustic_model(s, smr[i]);
     }
     compute_bit_allocation(s, smr, bit_alloc, &padding);
@@ -783,7 +859,8 @@ static av_cold int MPA_encode_close(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec ff_mp2_encoder = {
+AVCodec ff_mp2_encoder =
+{
     "mp2",
     AVMEDIA_TYPE_AUDIO,
     CODEC_ID_MP2,
@@ -792,8 +869,14 @@ AVCodec ff_mp2_encoder = {
     MPA_encode_frame,
     MPA_encode_close,
     NULL,
-    .sample_fmts = (const enum AVSampleFormat[]){AV_SAMPLE_FMT_S16,AV_SAMPLE_FMT_NONE},
-    .supported_samplerates= (const int[]){44100, 48000,  32000, 22050, 24000, 16000, 0},
+    .sample_fmts = (const enum AVSampleFormat[])
+    {
+        AV_SAMPLE_FMT_S16, AV_SAMPLE_FMT_NONE
+    },
+    .supported_samplerates = (const int[])
+    {
+        44100, 48000,  32000, 22050, 24000, 16000, 0
+    },
     .long_name = NULL_IF_CONFIG_SMALL("MP2 (MPEG audio layer 2)"),
 };
 

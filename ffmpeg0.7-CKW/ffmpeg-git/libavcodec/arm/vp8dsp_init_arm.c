@@ -83,7 +83,8 @@ VP8_MC(bilin4_hv);
 
 av_cold void ff_vp8dsp_init_arm(VP8DSPContext *dsp)
 {
-    if (HAVE_NEON) {
+    if (HAVE_NEON)
+    {
         dsp->vp8_luma_dc_wht    = ff_vp8_luma_dc_wht_neon;
         dsp->vp8_luma_dc_wht_dc = ff_vp8_luma_dc_wht_dc_neon;
 

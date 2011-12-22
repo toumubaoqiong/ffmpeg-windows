@@ -43,9 +43,12 @@ static int rtsp_read_play(AVFormatContext *s)
     av_log(s, AV_LOG_DEBUG, "hello state=%d\n", rt->state);
     rt->nb_byes = 0;
 
-    if (!(rt->server_type == RTSP_SERVER_REAL && rt->need_subscription)) {
-        if (rt->transport == RTSP_TRANSPORT_RTP) {
-            for (i = 0; i < rt->nb_rtsp_streams; i++) {
+    if (!(rt->server_type == RTSP_SERVER_REAL && rt->need_subscription))
+    {
+        if (rt->transport == RTSP_TRANSPORT_RTP)
+        {
+            for (i = 0; i < rt->nb_rtsp_streams; i++)
+            {
                 RTSPStream *rtsp_st = rt->rtsp_streams[i];
                 RTPDemuxContext *rtpctx = rtsp_st->transport_priv;
                 if (!rtpctx)
@@ -57,21 +60,27 @@ static int rtsp_read_play(AVFormatContext *s)
                 rtpctx->rtcp_ts_offset      = 0;
             }
         }
-        if (rt->state == RTSP_STATE_PAUSED) {
+        if (rt->state == RTSP_STATE_PAUSED)
+        {
             cmd[0] = 0;
-        } else {
+        }
+        else
+        {
             snprintf(cmd, sizeof(cmd),
                      "Range: npt=%"PRId64".%03"PRId64"-\r\n",
                      rt->seek_timestamp / AV_TIME_BASE,
                      rt->seek_timestamp / (AV_TIME_BASE / 1000) % 1000);
         }
         ff_rtsp_send_cmd(s, "PLAY", rt->control_uri, cmd, reply, NULL);
-        if (reply->status_code != RTSP_STATUS_OK) {
+        if (reply->status_code != RTSP_STATUS_OK)
+        {
             return -1;
         }
         if (rt->transport == RTSP_TRANSPORT_RTP &&
-            reply->range_start != AV_NOPTS_VALUE) {
-            for (i = 0; i < rt->nb_rtsp_streams; i++) {
+                reply->range_start != AV_NOPTS_VALUE)
+        {
+            for (i = 0; i < rt->nb_rtsp_streams; i++)
+            {
                 RTSPStream *rtsp_st = rt->rtsp_streams[i];
                 RTPDemuxContext *rtpctx = rtsp_st->transport_priv;
                 AVStream *st = NULL;
@@ -96,9 +105,11 @@ static int rtsp_read_pause(AVFormatContext *s)
 
     if (rt->state != RTSP_STATE_STREAMING)
         return 0;
-    else if (!(rt->server_type == RTSP_SERVER_REAL && rt->need_subscription)) {
+    else if (!(rt->server_type == RTSP_SERVER_REAL && rt->need_subscription))
+    {
         ff_rtsp_send_cmd(s, "PAUSE", rt->control_uri, NULL, reply, NULL);
-        if (reply->status_code != RTSP_STATUS_OK) {
+        if (reply->status_code != RTSP_STATUS_OK)
+        {
             return -1;
         }
     }
@@ -116,7 +127,8 @@ int ff_rtsp_setup_input_streams(AVFormatContext *s, RTSPMessageHeader *reply)
     /* describe the stream */
     snprintf(cmd, sizeof(cmd),
              "Accept: application/sdp\r\n");
-    if (rt->server_type == RTSP_SERVER_REAL) {
+    if (rt->server_type == RTSP_SERVER_REAL)
+    {
         /**
          * The Require: attribute is needed for proper streaming from
          * Realmedia servers.
@@ -128,7 +140,8 @@ int ff_rtsp_setup_input_streams(AVFormatContext *s, RTSPMessageHeader *reply)
     ff_rtsp_send_cmd(s, "DESCRIBE", rt->control_uri, cmd, reply, &content);
     if (!content)
         return AVERROR_INVALIDDATA;
-    if (reply->status_code != RTSP_STATUS_OK) {
+    if (reply->status_code != RTSP_STATUS_OK)
+    {
         av_freep(&content);
         return AVERROR_INVALIDDATA;
     }
@@ -165,10 +178,14 @@ static int rtsp_read_header(AVFormatContext *s,
         return AVERROR(ENOMEM);
     rt->real_setup = rt->real_setup_cache + s->nb_streams;
 
-    if (ap->initial_pause) {
-         /* do not start immediately */
-    } else {
-         if (rtsp_read_play(s) < 0) {
+    if (ap->initial_pause)
+    {
+        /* do not start immediately */
+    }
+    else
+    {
+        if (rtsp_read_play(s) < 0)
+        {
             ff_rtsp_close_streams(s);
             ff_rtsp_close_connections(s);
             return AVERROR_INVALIDDATA;
@@ -189,7 +206,8 @@ int ff_rtsp_tcp_read_packet(AVFormatContext *s, RTSPStream **prtsp_st,
     av_dlog(s, "tcp_read_packet:\n");
 #endif
 redo:
-    for (;;) {
+    for (;;)
+    {
         RTSPMessageHeader reply;
 
         ret = ff_rtsp_read_reply(s, &reply, NULL, 1, NULL);
@@ -216,14 +234,15 @@ redo:
     if (ret != len)
         return -1;
     if (rt->transport == RTSP_TRANSPORT_RDT &&
-        ff_rdt_parse_header(buf, len, &id, NULL, NULL, NULL, NULL) < 0)
+            ff_rdt_parse_header(buf, len, &id, NULL, NULL, NULL, NULL) < 0)
         return -1;
 
     /* find the matching stream */
-    for (i = 0; i < rt->nb_rtsp_streams; i++) {
+    for (i = 0; i < rt->nb_rtsp_streams; i++)
+    {
         rtsp_st = rt->rtsp_streams[i];
         if (id >= rtsp_st->interleaved_min &&
-            id <= rtsp_st->interleaved_max)
+                id <= rtsp_st->interleaved_max)
             goto found;
     }
     goto redo;
@@ -253,15 +272,18 @@ static int rtsp_read_packet(AVFormatContext *s, AVPacket *pkt)
     char cmd[1024];
 
 retry:
-    if (rt->server_type == RTSP_SERVER_REAL) {
+    if (rt->server_type == RTSP_SERVER_REAL)
+    {
         int i;
 
         for (i = 0; i < s->nb_streams; i++)
             rt->real_setup[i] = s->streams[i]->discard;
 
-        if (!rt->need_subscription) {
+        if (!rt->need_subscription)
+        {
             if (memcmp (rt->real_setup, rt->real_setup_cache,
-                        sizeof(enum AVDiscard) * s->nb_streams)) {
+                        sizeof(enum AVDiscard) * s->nb_streams))
+            {
                 snprintf(cmd, sizeof(cmd),
                          "Unsubscribe: %s\r\n",
                          rt->last_subscription);
@@ -273,7 +295,8 @@ retry:
             }
         }
 
-        if (rt->need_subscription) {
+        if (rt->need_subscription)
+        {
             int r, rule_nr, first = 1;
 
             memcpy(rt->real_setup_cache, rt->real_setup,
@@ -282,11 +305,15 @@ retry:
 
             snprintf(cmd, sizeof(cmd),
                      "Subscribe: ");
-            for (i = 0; i < rt->nb_rtsp_streams; i++) {
+            for (i = 0; i < rt->nb_rtsp_streams; i++)
+            {
                 rule_nr = 0;
-                for (r = 0; r < s->nb_streams; r++) {
-                    if (s->streams[r]->id == i) {
-                        if (s->streams[r]->discard != AVDISCARD_ALL) {
+                for (r = 0; r < s->nb_streams; r++)
+                {
+                    if (s->streams[r]->id == i)
+                    {
+                        if (s->streams[r]->discard != AVDISCARD_ALL)
+                        {
                             if (!first)
                                 av_strlcat(rt->last_subscription, ",",
                                            sizeof(rt->last_subscription));
@@ -312,10 +339,13 @@ retry:
     }
 
     ret = ff_rtsp_fetch_packet(s, pkt);
-    if (ret < 0) {
-        if (ret == AVERROR(ETIMEDOUT) && !rt->packets) {
+    if (ret < 0)
+    {
+        if (ret == AVERROR(ETIMEDOUT) && !rt->packets)
+        {
             if (rt->lower_transport == RTSP_LOWER_TRANSPORT_UDP &&
-                rt->lower_transport_mask & (1 << RTSP_LOWER_TRANSPORT_TCP)) {
+                    rt->lower_transport_mask & (1 << RTSP_LOWER_TRANSPORT_TCP))
+            {
                 RTSPMessageHeader reply1, *reply = &reply1;
                 av_log(s, AV_LOG_WARNING, "UDP timeout, retrying with TCP\n");
                 if (rtsp_read_pause(s) != 0)
@@ -326,7 +356,8 @@ retry:
                     ff_rtsp_send_cmd(s, "TEARDOWN", rt->control_uri, NULL,
                                      reply, NULL);
                 rt->session_id[0] = '\0';
-                if (resetup_tcp(s) == 0) {
+                if (resetup_tcp(s) == 0)
+                {
                     rt->state = RTSP_STATE_IDLE;
                     rt->need_subscription = 1;
                     if (rtsp_read_play(s) != 0)
@@ -340,10 +371,14 @@ retry:
     rt->packets++;
 
     /* send dummy request to keep TCP connection alive */
-    if ((av_gettime() - rt->last_cmd_time) / 1000000 >= rt->timeout / 2) {
-        if (rt->server_type != RTSP_SERVER_REAL) {
+    if ((av_gettime() - rt->last_cmd_time) / 1000000 >= rt->timeout / 2)
+    {
+        if (rt->server_type != RTSP_SERVER_REAL)
+        {
             ff_rtsp_send_cmd_async(s, "GET_PARAMETER", rt->control_uri, NULL);
-        } else {
+        }
+        else
+        {
             ff_rtsp_send_cmd_async(s, "OPTIONS", "*", NULL);
         }
     }
@@ -359,7 +394,8 @@ static int rtsp_read_seek(AVFormatContext *s, int stream_index,
     rt->seek_timestamp = av_rescale_q(timestamp,
                                       s->streams[stream_index]->time_base,
                                       AV_TIME_BASE_Q);
-    switch(rt->state) {
+    switch(rt->state)
+    {
     default:
     case RTSP_STATE_IDLE:
         break;
@@ -383,7 +419,8 @@ static int rtsp_read_close(AVFormatContext *s)
 
 #if 0
     /* NOTE: it is valid to flush the buffer here */
-    if (rt->lower_transport == RTSP_LOWER_TRANSPORT_TCP) {
+    if (rt->lower_transport == RTSP_LOWER_TRANSPORT_TCP)
+    {
         avio_close(&rt->rtsp_gb);
     }
 #endif
@@ -397,7 +434,8 @@ static int rtsp_read_close(AVFormatContext *s)
     return 0;
 }
 
-AVInputFormat ff_rtsp_demuxer = {
+AVInputFormat ff_rtsp_demuxer =
+{
     "rtsp",
     NULL_IF_CONFIG_SMALL("RTSP input format"),
     sizeof(RTSPState),

@@ -27,7 +27,8 @@
 #include "avcodec.h"
 #include "raw.h"
 
-const PixelFormatTag ff_raw_pix_fmt_tags[] = {
+const PixelFormatTag ff_raw_pix_fmt_tags[] =
+{
     { PIX_FMT_YUV420P, MKTAG('I', '4', '2', '0') }, /* Planar formats */
     { PIX_FMT_YUV420P, MKTAG('I', 'Y', 'U', 'V') },
     { PIX_FMT_YUV420P, MKTAG('Y', 'V', '1', '2') },
@@ -92,14 +93,14 @@ const PixelFormatTag ff_raw_pix_fmt_tags[] = {
     { PIX_FMT_YUVJ440P, MKTAG('4', '4', '0', 'P') },
     { PIX_FMT_YUV444P,  MKTAG('4', '4', '4', 'P') },
     { PIX_FMT_YUVJ444P, MKTAG('4', '4', '4', 'P') },
-    { PIX_FMT_MONOWHITE,MKTAG('B', '1', 'W', '0') },
-    { PIX_FMT_MONOBLACK,MKTAG('B', '0', 'W', '1') },
+    { PIX_FMT_MONOWHITE, MKTAG('B', '1', 'W', '0') },
+    { PIX_FMT_MONOBLACK, MKTAG('B', '0', 'W', '1') },
     { PIX_FMT_BGR8,     MKTAG('B', 'G', 'R',  8 ) },
     { PIX_FMT_RGB8,     MKTAG('R', 'G', 'B',  8 ) },
     { PIX_FMT_BGR4,     MKTAG('B', 'G', 'R',  4 ) },
     { PIX_FMT_RGB4,     MKTAG('R', 'G', 'B',  4 ) },
-    { PIX_FMT_RGB4_BYTE,MKTAG('B', '4', 'B', 'Y') },
-    { PIX_FMT_BGR4_BYTE,MKTAG('R', '4', 'B', 'Y') },
+    { PIX_FMT_RGB4_BYTE, MKTAG('B', '4', 'B', 'Y') },
+    { PIX_FMT_BGR4_BYTE, MKTAG('R', '4', 'B', 'Y') },
     { PIX_FMT_RGB48LE,  MKTAG('R', 'G', 'B', 48 ) },
     { PIX_FMT_RGB48BE,  MKTAG( 48, 'R', 'G', 'B') },
     { PIX_FMT_BGR48LE,  MKTAG('B', 'G', 'R', 48 ) },
@@ -122,31 +123,32 @@ const PixelFormatTag ff_raw_pix_fmt_tags[] = {
     { PIX_FMT_YUYV422, MKTAG('y', 'u', 'v', '2') },
     { PIX_FMT_YUYV422, MKTAG('y', 'u', 'v', 's') },
     { PIX_FMT_PAL8,    MKTAG('W', 'R', 'A', 'W') },
-    { PIX_FMT_RGB555LE,MKTAG('L', '5', '5', '5') },
-    { PIX_FMT_RGB565LE,MKTAG('L', '5', '6', '5') },
-    { PIX_FMT_RGB565BE,MKTAG('B', '5', '6', '5') },
+    { PIX_FMT_RGB555LE, MKTAG('L', '5', '5', '5') },
+    { PIX_FMT_RGB565LE, MKTAG('L', '5', '6', '5') },
+    { PIX_FMT_RGB565BE, MKTAG('B', '5', '6', '5') },
     { PIX_FMT_BGR24,   MKTAG('2', '4', 'B', 'G') },
     { PIX_FMT_BGRA,    MKTAG('B', 'G', 'R', 'A') },
     { PIX_FMT_RGBA,    MKTAG('R', 'G', 'B', 'A') },
     { PIX_FMT_ABGR,    MKTAG('A', 'B', 'G', 'R') },
-    { PIX_FMT_GRAY16BE,MKTAG('b', '1', '6', 'g') },
+    { PIX_FMT_GRAY16BE, MKTAG('b', '1', '6', 'g') },
     { PIX_FMT_RGB48BE, MKTAG('b', '4', '8', 'r') },
 
     /* special */
-    { PIX_FMT_RGB565LE,MKTAG( 3 ,  0 ,  0 ,  0 ) }, /* flipped RGB565LE */
+    { PIX_FMT_RGB565LE, MKTAG( 3 ,  0 ,  0 ,  0 ) }, /* flipped RGB565LE */
 
     { PIX_FMT_NONE, 0 },
 };
 
-const PixelFormatTag* av_getff_raw_pix_fmt_tags(void)
+const PixelFormatTag *av_getff_raw_pix_fmt_tags(void)
 {
-	return ff_raw_pix_fmt_tags;
+    return ff_raw_pix_fmt_tags;
 }
 
 unsigned int avcodec_pix_fmt_to_codec_tag(enum PixelFormat fmt)
 {
     const PixelFormatTag *tags = ff_raw_pix_fmt_tags;
-    while (tags->pix_fmt >= 0) {
+    while (tags->pix_fmt >= 0)
+    {
         if (tags->pix_fmt == fmt)
             return tags->fourcc;
         tags++;

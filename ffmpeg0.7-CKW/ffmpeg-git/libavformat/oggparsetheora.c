@@ -28,14 +28,15 @@
 #include "avformat.h"
 #include "oggdec.h"
 
-struct theora_params {
+struct theora_params
+{
     int gpshift;
     int gpmask;
     unsigned version;
 };
 
 static int
-theora_header (AVFormatContext * s, int idx)
+theora_header (AVFormatContext *s, int idx)
 {
     struct ogg *ogg = s->priv_data;
     struct ogg_stream *os = ogg->streams + idx;
@@ -47,24 +48,26 @@ theora_header (AVFormatContext * s, int idx)
     if(!(os->buf[os->pstart] & 0x80))
         return 0;
 
-    if(!thp){
+    if(!thp)
+    {
         thp = av_mallocz(sizeof(*thp));
         os->private = thp;
     }
 
-    if (os->buf[os->pstart] == 0x80) {
+    if (os->buf[os->pstart] == 0x80)
+    {
         GetBitContext gb;
         int width, height;
 
-        init_get_bits(&gb, os->buf + os->pstart, os->psize*8);
+        init_get_bits(&gb, os->buf + os->pstart, os->psize * 8);
 
-        skip_bits_long(&gb, 7*8); /* 0x80"theora" */
+        skip_bits_long(&gb, 7 * 8); /* 0x80"theora" */
 
         thp->version = get_bits_long(&gb, 24);
         if (thp->version < 0x030100)
         {
             av_log(s, AV_LOG_ERROR,
-                "Too old or unsupported Theora (%x)\n", thp->version);
+                   "Too old or unsupported Theora (%x)\n", thp->version);
             return -1;
         }
 
@@ -75,18 +78,20 @@ theora_header (AVFormatContext * s, int idx)
         if (thp->version >= 0x030400)
             skip_bits(&gb, 100);
 
-        if (thp->version >= 0x030200) {
+        if (thp->version >= 0x030200)
+        {
             width  = get_bits_long(&gb, 24);
             height = get_bits_long(&gb, 24);
-            if (   width  <= st->codec->width  && width  > st->codec->width-16
-                && height <= st->codec->height && height > st->codec->height-16)
+            if (   width  <= st->codec->width  && width  > st->codec->width - 16
+                    && height <= st->codec->height && height > st->codec->height - 16)
                 avcodec_set_dimensions(st->codec, width, height);
 
             skip_bits(&gb, 16);
         }
         st->codec->time_base.den = get_bits_long(&gb, 32);
         st->codec->time_base.num = get_bits_long(&gb, 32);
-        if (!(st->codec->time_base.num > 0 && st->codec->time_base.den > 0)) {
+        if (!(st->codec->time_base.num > 0 && st->codec->time_base.den > 0))
+        {
             av_log(s, AV_LOG_WARNING, "Invalid time base in theora stream, assuming 25 FPS\n");
             st->codec->time_base.num = 1;
             st->codec->time_base.den = 25;
@@ -108,7 +113,9 @@ theora_header (AVFormatContext * s, int idx)
         st->codec->codec_id = CODEC_ID_THEORA;
         st->need_parsing = AVSTREAM_PARSE_HEADERS;
 
-    } else if (os->buf[os->pstart] == 0x83) {
+    }
+    else if (os->buf[os->pstart] == 0x83)
+    {
         ff_vorbis_comment (s, &st->metadata, os->buf + os->pstart + 7, os->psize - 8);
     }
 
@@ -144,7 +151,8 @@ theora_gptopts(AVFormatContext *ctx, int idx, uint64_t gp, int64_t *dts)
     return iframe + pframe;
 }
 
-const struct ogg_codec ff_theora_codec = {
+const struct ogg_codec ff_theora_codec =
+{
     .magic = "\200theora",
     .magicsize = 7,
     .header = theora_header,

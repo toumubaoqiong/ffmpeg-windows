@@ -60,11 +60,12 @@ av_cold int ff_mdct_init(FFTContext *s, int nbits, int inverse, double scale)
     if (ff_fft_init(s, s->mdct_bits - 2, inverse) < 0)
         goto fail;
 
-    s->tcos = av_malloc(n/2 * sizeof(FFTSample));
+    s->tcos = av_malloc(n / 2 * sizeof(FFTSample));
     if (!s->tcos)
         goto fail;
 
-    switch (s->mdct_permutation) {
+    switch (s->mdct_permutation)
+    {
     case FF_MDCT_PERM_NONE:
         s->tsin = s->tcos + n4;
         tstep = 1;
@@ -79,13 +80,14 @@ av_cold int ff_mdct_init(FFTContext *s, int nbits, int inverse, double scale)
 
     theta = 1.0 / 8.0 + (scale < 0 ? n4 : 0);
     scale = sqrt(fabs(scale));
-    for(i=0;i<n4;i++) {
+    for(i = 0; i < n4; i++)
+    {
         alpha = 2 * M_PI * (i + theta) / n;
-        s->tcos[i*tstep] = FIX15(-cos(alpha) * scale);
-        s->tsin[i*tstep] = FIX15(-sin(alpha) * scale);
+        s->tcos[i *tstep] = FIX15(-cos(alpha) * scale);
+        s->tsin[i *tstep] = FIX15(-sin(alpha) * scale);
     }
     return 0;
- fail:
+fail:
     ff_mdct_end(s);
     return -1;
 }
@@ -113,8 +115,9 @@ void ff_imdct_half_c(FFTContext *s, FFTSample *output, const FFTSample *input)
     /* pre rotation */
     in1 = input;
     in2 = input + n2 - 1;
-    for(k = 0; k < n4; k++) {
-        j=revtab[k];
+    for(k = 0; k < n4; k++)
+    {
+        j = revtab[k];
         CMUL(z[j].re, z[j].im, *in2, *in1, tcos[k], tsin[k]);
         in1 += 2;
         in2 -= 2;
@@ -122,7 +125,8 @@ void ff_imdct_half_c(FFTContext *s, FFTSample *output, const FFTSample *input)
     s->fft_calc(s, z);
 
     /* post rotation + reordering */
-    for(k = 0; k < n8; k++) {
+    for(k = 0; k < n8; k++)
+    {
         FFTSample r0, i0, r1, i1;
         CMUL(r0, i1, z[n8-k-1].im, z[n8-k-1].re, tsin[n8-k-1], tcos[n8-k-1]);
         CMUL(r1, i0, z[n8+k  ].im, z[n8+k  ].re, tsin[n8+k  ], tcos[n8+k  ]);
@@ -145,9 +149,10 @@ void ff_imdct_calc_c(FFTContext *s, FFTSample *output, const FFTSample *input)
     int n2 = n >> 1;
     int n4 = n >> 2;
 
-    ff_imdct_half_c(s, output+n4, input);
+    ff_imdct_half_c(s, output + n4, input);
 
-    for(k = 0; k < n4; k++) {
+    for(k = 0; k < n4; k++)
+    {
         output[k] = -output[n2-k-1];
         output[n-k-1] = output[n2+k];
     }
@@ -174,7 +179,8 @@ void ff_mdct_calc_c(FFTContext *s, FFTSample *out, const FFTSample *input)
     n3 = 3 * n4;
 
     /* pre rotation */
-    for(i=0;i<n8;i++) {
+    for(i = 0; i < n8; i++)
+    {
         re = RSCALE(-input[2*i+n3] - input[n3-1-2*i]);
         im = RSCALE(-input[n4+2*i] + input[n4-1-2*i]);
         j = revtab[i];
@@ -189,7 +195,8 @@ void ff_mdct_calc_c(FFTContext *s, FFTSample *out, const FFTSample *input)
     s->fft_calc(s, x);
 
     /* post rotation */
-    for(i=0;i<n8;i++) {
+    for(i = 0; i < n8; i++)
+    {
         FFTSample r0, i0, r1, i1;
         CMUL(i1, r0, x[n8-i-1].re, x[n8-i-1].im, -tsin[n8-i-1], -tcos[n8-i-1]);
         CMUL(i0, r1, x[n8+i  ].re, x[n8+i  ].im, -tsin[n8+i  ], -tcos[n8+i  ]);

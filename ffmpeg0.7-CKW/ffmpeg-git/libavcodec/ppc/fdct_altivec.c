@@ -57,7 +57,8 @@
 #define WB (SQRT_2 * ( C5 - C3))
 
 
-static vector float fdctconsts[3] = {
+static vector float fdctconsts[3] =
+{
     { W0, W1, W2, W3 },
     { W4, W5, W6, W7 },
     { W8, W9, WA, WB }
@@ -209,8 +210,10 @@ void fdct_altivec(int16_t *block)
     mzero = ((vector float)vec_splat_u32(-1));
     mzero = ((vector float)vec_sl(vu32(mzero), vu32(mzero)));
     cp = fdctconsts;
-    cnsts0 = vec_ld(0, cp); cp++;
-    cnsts1 = vec_ld(0, cp); cp++;
+    cnsts0 = vec_ld(0, cp);
+    cp++;
+    cnsts1 = vec_ld(0, cp);
+    cp++;
     cnsts2 = vec_ld(0, cp);
     /* }}} */
 
@@ -218,24 +221,24 @@ void fdct_altivec(int16_t *block)
     /* 8x8 matrix transpose (vector short[8]) {{{ */
 #define MERGE_S16(hl,a,b) vec_merge##hl(vs16(a), vs16(b))
 
-    bp = (vector signed short*)block;
+    bp = (vector signed short *)block;
     b00 = ((vector float)vec_ld(0,    bp));
-    b40 = ((vector float)vec_ld(16*4, bp));
+    b40 = ((vector float)vec_ld(16 * 4, bp));
     b01 = ((vector float)MERGE_S16(h, b00, b40));
     b11 = ((vector float)MERGE_S16(l, b00, b40));
     bp++;
     b10 = ((vector float)vec_ld(0,    bp));
-    b50 = ((vector float)vec_ld(16*4, bp));
+    b50 = ((vector float)vec_ld(16 * 4, bp));
     b21 = ((vector float)MERGE_S16(h, b10, b50));
     b31 = ((vector float)MERGE_S16(l, b10, b50));
     bp++;
     b20 = ((vector float)vec_ld(0,    bp));
-    b60 = ((vector float)vec_ld(16*4, bp));
+    b60 = ((vector float)vec_ld(16 * 4, bp));
     b41 = ((vector float)MERGE_S16(h, b20, b60));
     b51 = ((vector float)MERGE_S16(l, b20, b60));
     bp++;
     b30 = ((vector float)vec_ld(0,    bp));
-    b70 = ((vector float)vec_ld(16*4, bp));
+    b70 = ((vector float)vec_ld(16 * 4, bp));
     b61 = ((vector float)MERGE_S16(h, b30, b70));
     b71 = ((vector float)MERGE_S16(l, b30, b70));
 
@@ -261,10 +264,10 @@ void fdct_altivec(int16_t *block)
     /* }}} */
 
 
-/* Some of the initial calculations can be done as vector short before
- * conversion to vector float.  The following code section takes advantage
- * of this.
- */
+    /* Some of the initial calculations can be done as vector short before
+     * conversion to vector float.  The following code section takes advantage
+     * of this.
+     */
 #if 1
     /* fdct rows {{{ */
     x0 = ((vector float)vec_add(vs16(b00), vs16(b70)));
@@ -317,7 +320,7 @@ void fdct_altivec(int16_t *block)
     b##1 = ((vector float)vec_unpackl(vs16(x))); \
     b##0 = vec_ctf(vs32(b##0), 0); \
     b##1 = vec_ctf(vs32(b##1), 0); \
-
+ 
     CTFX(x4, b7);
     CTFX(x5, b5);
     CTFX(x6, b3);
@@ -396,7 +399,7 @@ void fdct_altivec(int16_t *block)
     vs32(b##n##0) = vec_unpackh(vs16(b##n##0)); \
     b##n##1 = vec_ctf(vs32(b##n##1), 0); \
     b##n##0 = vec_ctf(vs32(b##n##0), 0); \
-
+ 
     CTF(0);
     CTF(1);
     CTF(2);
@@ -470,14 +473,21 @@ void fdct_altivec(int16_t *block)
     b##n##0 = ((vector float)vec_pack(vs32(b##n##0), vs32(b##n##1))); \
     vec_st(vs16(b##n##0), 0, bp);
 
-    bp = (vector signed short*)block;
-    CTS(0); bp++;
-    CTS(1); bp++;
-    CTS(2); bp++;
-    CTS(3); bp++;
-    CTS(4); bp++;
-    CTS(5); bp++;
-    CTS(6); bp++;
+    bp = (vector signed short *)block;
+    CTS(0);
+    bp++;
+    CTS(1);
+    bp++;
+    CTS(2);
+    bp++;
+    CTS(3);
+    bp++;
+    CTS(4);
+    bp++;
+    CTS(5);
+    bp++;
+    CTS(6);
+    bp++;
     CTS(7);
 
 #undef CTS

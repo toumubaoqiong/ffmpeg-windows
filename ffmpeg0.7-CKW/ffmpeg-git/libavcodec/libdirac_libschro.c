@@ -25,7 +25,8 @@
 
 #include "libdirac_libschro.h"
 
-static const FfmpegDiracSchroVideoFormatInfo ff_dirac_schro_video_format_info[] = {
+static const FfmpegDiracSchroVideoFormatInfo ff_dirac_schro_video_format_info[] =
+{
     { 640,  480,  24000, 1001},
     { 176,  120,  15000, 1001},
     { 176,  144,  25,    2   },
@@ -52,13 +53,15 @@ unsigned int ff_dirac_schro_get_video_format_idx(AVCodecContext *avccontext)
     unsigned int num_formats = sizeof(ff_dirac_schro_video_format_info) /
                                sizeof(ff_dirac_schro_video_format_info[0]);
 
-    for (idx = 1; idx < num_formats; ++idx) {
+    for (idx = 1; idx < num_formats; ++idx)
+    {
         const FfmpegDiracSchroVideoFormatInfo *vf = &ff_dirac_schro_video_format_info[idx];
         if (avccontext->width  == vf->width &&
-            avccontext->height == vf->height) {
+                avccontext->height == vf->height)
+        {
             ret_idx = idx;
             if (avccontext->time_base.den == vf->frame_rate_num &&
-                avccontext->time_base.num == vf->frame_rate_denom)
+                    avccontext->time_base.num == vf->frame_rate_denom)
                 return idx;
         }
     }
@@ -101,7 +104,8 @@ void *ff_dirac_schro_queue_pop(FfmpegDiracSchroQueue *queue)
 {
     FfmpegDiracSchroQueueElement *top = queue->p_head;
 
-    if (top) {
+    if (top)
+    {
         void *data = top->data;
         queue->p_head = queue->p_head->next;
         --queue->size;

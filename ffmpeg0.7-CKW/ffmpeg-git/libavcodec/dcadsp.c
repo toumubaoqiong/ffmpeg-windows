@@ -31,10 +31,12 @@ static void dca_lfe_fir_c(float *out, const float *in, const float *coefs,
     int j, k;
 
     /* One decimated sample generates 2*decifactor interpolated ones */
-    for (k = 0; k < decifactor; k++) {
+    for (k = 0; k < decifactor; k++)
+    {
         float v0 = 0.0;
         float v1 = 0.0;
-        for (j = 0; j < 256 / decifactor; j++) {
+        for (j = 0; j < 256 / decifactor; j++)
+        {
             float s = in[-j];
             v0 += s * *cf0++;
             v1 += s * *--cf1;

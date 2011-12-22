@@ -32,7 +32,8 @@
  * \param v number to invert, must be odd!
  * \return number so that result * v = 1 (mod 2^32)
  */
-static uint32_t inverse(uint32_t v) {
+static uint32_t inverse(uint32_t v)
+{
     // v ^ 3 gives the inverse (mod 16), could also be implemented
     // as table etc. (only lowest 4 bits matter!)
     uint32_t inverse = v * v * v;
@@ -50,7 +51,8 @@ static uint32_t inverse(uint32_t v) {
  * \param keys output key array containing the keys for encryption in
  *             native endianness
  */
-static void multiswap_init(const uint8_t keybuf[48], uint32_t keys[12]) {
+static void multiswap_init(const uint8_t keybuf[48], uint32_t keys[12])
+{
     int i;
     for (i = 0; i < 12; i++)
         keys[i] = AV_RL32(keybuf + (i << 2)) | 1;
@@ -61,7 +63,8 @@ static void multiswap_init(const uint8_t keybuf[48], uint32_t keys[12]) {
  *        the other way round.
  * \param keys key array of ints to invert
  */
-static void multiswap_invert_keys(uint32_t keys[12]) {
+static void multiswap_invert_keys(uint32_t keys[12])
+{
     int i;
     for (i = 0; i < 5; i++)
         keys[i] = inverse(keys[i]);
@@ -69,10 +72,12 @@ static void multiswap_invert_keys(uint32_t keys[12]) {
         keys[i] = inverse(keys[i]);
 }
 
-static uint32_t multiswap_step(const uint32_t keys[12], uint32_t v) {
+static uint32_t multiswap_step(const uint32_t keys[12], uint32_t v)
+{
     int i;
     v *= keys[0];
-    for (i = 1; i < 5; i++) {
+    for (i = 1; i < 5; i++)
+    {
         v = (v >> 16) | (v << 16);
         v *= keys[i];
     }
@@ -80,10 +85,12 @@ static uint32_t multiswap_step(const uint32_t keys[12], uint32_t v) {
     return v;
 }
 
-static uint32_t multiswap_inv_step(const uint32_t keys[12], uint32_t v) {
+static uint32_t multiswap_inv_step(const uint32_t keys[12], uint32_t v)
+{
     int i;
     v -= keys[5];
-    for (i = 4; i > 0; i--) {
+    for (i = 4; i > 0; i--)
+    {
         v *= keys[i];
         v = (v >> 16) | (v << 16);
     }
@@ -99,7 +106,8 @@ static uint32_t multiswap_inv_step(const uint32_t keys[12], uint32_t v) {
  * \param data data to encrypt
  * \return encrypted data
  */
-static uint64_t multiswap_enc(const uint32_t keys[12], uint64_t key, uint64_t data) {
+static uint64_t multiswap_enc(const uint32_t keys[12], uint64_t key, uint64_t data)
+{
     uint32_t a = data;
     uint32_t b = data >> 32;
     uint32_t c;
@@ -121,7 +129,8 @@ static uint64_t multiswap_enc(const uint32_t keys[12], uint64_t key, uint64_t da
  * \param data data to decrypt
  * \return decrypted data
  */
-static uint64_t multiswap_dec(const uint32_t keys[12], uint64_t key, uint64_t data) {
+static uint64_t multiswap_dec(const uint32_t keys[12], uint64_t key, uint64_t data)
+{
     uint32_t a;
     uint32_t b;
     uint32_t c = data >> 32;
@@ -135,7 +144,8 @@ static uint64_t multiswap_dec(const uint32_t keys[12], uint64_t key, uint64_t da
     return ((uint64_t)b << 32) | a;
 }
 
-void ff_asfcrypt_dec(const uint8_t key[20], uint8_t *data, int len) {
+void ff_asfcrypt_dec(const uint8_t key[20], uint8_t *data, int len)
+{
     struct AVDES des;
     struct AVRC4 rc4;
     int num_qwords = len >> 3;
@@ -145,7 +155,8 @@ void ff_asfcrypt_dec(const uint8_t key[20], uint8_t *data, int len) {
     uint32_t ms_keys[12];
     uint64_t ms_state;
     int i;
-    if (len < 16) {
+    if (len < 16)
+    {
         for (i = 0; i < len; i++)
             data[i] ^= key[i];
         return;

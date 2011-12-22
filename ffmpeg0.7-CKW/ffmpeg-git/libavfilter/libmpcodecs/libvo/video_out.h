@@ -84,15 +84,17 @@
 #define VOCTRL_XOVERLAY_SUPPORT 22
 
 #define VOCTRL_XOVERLAY_SET_COLORKEY 24
-typedef struct {
-  uint32_t x11; // The raw x11 color
-  uint16_t r,g,b;
+typedef struct
+{
+    uint32_t x11; // The raw x11 color
+    uint16_t r, g, b;
 } mp_colorkey_t;
 
 #define VOCTRL_XOVERLAY_SET_WIN 23
-typedef struct {
-  int x,y;
-  int w,h;
+typedef struct
+{
+    int x, y;
+    int w, h;
 } mp_win_t;
 
 #define VO_TRUE      1
@@ -164,7 +166,7 @@ typedef struct vo_functions_s
      *   w,h = width*height of area to be copied (in Y pixels)
      *   x,y = position at the destination image (in Y pixels)
      */
-    int (*draw_slice)(uint8_t *src[], int stride[], int w,int h, int x,int y);
+    int (*draw_slice)(uint8_t *src[], int stride[], int w, int h, int x, int y);
 
     /*
      * Draws OSD to the screen buffer
@@ -188,14 +190,14 @@ typedef struct vo_functions_s
     void (*uninit)(void);
 } vo_functions_t;
 
-const vo_functions_t* init_best_video_out(char** vo_list);
+const vo_functions_t *init_best_video_out(char **vo_list);
 int config_video_out(const vo_functions_t *vo, uint32_t width, uint32_t height,
                      uint32_t d_width, uint32_t d_height, uint32_t flags,
                      char *title, uint32_t format);
 void list_video_out(void);
 
 // NULL terminated array of all drivers
-extern const vo_functions_t* const video_out_drivers[];
+extern const vo_functions_t *const video_out_drivers[];
 
 extern int vo_flags;
 
@@ -255,10 +257,11 @@ extern char *vo_wintitle;
 
 extern int64_t WinID;
 
-typedef struct {
-        float min;
-        float max;
-        } range_t;
+typedef struct
+{
+    float min;
+    float max;
+} range_t;
 
 float range_max(range_t *r);
 int in_range(range_t *r, float f);
@@ -267,13 +270,15 @@ extern char *monitor_hfreq_str;
 extern char *monitor_vfreq_str;
 extern char *monitor_dotclock_str;
 
-struct mp_keymap {
-  int from;
-  int to;
+struct mp_keymap
+{
+    int from;
+    int to;
 };
 int lookup_keymap_table(const struct mp_keymap *map, int key);
-struct vo_rect {
-  int left, right, top, bottom, width, height;
+struct vo_rect
+{
+    int left, right, top, bottom, width, height;
 };
 void calc_src_dst_rects(int src_width, int src_height, struct vo_rect *src, struct vo_rect *dst,
                         struct vo_rect *borders, const struct vo_rect *crop);
@@ -281,7 +286,7 @@ void vo_mouse_movement(int posx, int posy);
 
 static inline int aspect_scaling(void)
 {
-  return vo_fs;
+    return vo_fs;
 }
 
 #endif /* MPLAYER_VIDEO_OUT_H */

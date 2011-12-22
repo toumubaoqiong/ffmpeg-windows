@@ -30,7 +30,8 @@ void ff_dynarray_add(intptr_t **tab_ptr, int *nb_ptr, intptr_t elem)
 
     nb = *nb_ptr;
     tab = *tab_ptr;
-    if ((nb & (nb - 1)) == 0) {
+    if ((nb & (nb - 1)) == 0)
+    {
         if (nb == 0)
             nb_alloc = 1;
         else
@@ -60,19 +61,24 @@ struct tm *brktimegm(time_t secs, struct tm *tm)
 
     /* oh well, may be someone some day will invent a formula for this stuff */
     y = 1970; /* start "guessing" */
-    while (days > 365) {
-        ny = (y + days/366);
+    while (days > 365)
+    {
+        ny = (y + days / 366);
         days -= (ny - y) * 365 + LEAPS_COUNT(ny - 1) - LEAPS_COUNT(y - 1);
         y = ny;
     }
-    if (days==365 && !ISLEAP(y)) { days=0; y++; }
-    md[1] = ISLEAP(y)?29:28;
-    for (m=0; days >= md[m]; m++)
-         days -= md[m];
+    if (days == 365 && !ISLEAP(y))
+    {
+        days = 0;
+        y++;
+    }
+    md[1] = ISLEAP(y) ? 29 : 28;
+    for (m = 0; days >= md[m]; m++)
+        days -= md[m];
 
     tm->tm_year = y;  /* unlike gmtime_r we store complete year here */
-    tm->tm_mon = m+1; /* unlike gmtime_r tm_mon is from 1 to 12 */
-    tm->tm_mday = days+1;
+    tm->tm_mon = m + 1; /* unlike gmtime_r tm_mon is from 1 to 12 */
+    tm->tm_mday = days + 1;
 
     return tm;
 }

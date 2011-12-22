@@ -23,7 +23,8 @@
 #include "avformat.h"
 #include "id3v1.h"
 
-typedef struct {
+typedef struct
+{
     int totalframes, currentframe;
 } TTAContext;
 
@@ -54,24 +55,27 @@ static int tta_read_header(AVFormatContext *s, AVFormatParameters *ap)
     channels = avio_rl16(s->pb);
     bps = avio_rl16(s->pb);
     samplerate = avio_rl32(s->pb);
-    if(samplerate <= 0 || samplerate > 1000000){
+    if(samplerate <= 0 || samplerate > 1000000)
+    {
         av_log(s, AV_LOG_ERROR, "nonsense samplerate\n");
         return -1;
     }
 
     datalen = avio_rl32(s->pb);
-    if(datalen < 0){
+    if(datalen < 0)
+    {
         av_log(s, AV_LOG_ERROR, "nonsense datalen\n");
         return -1;
     }
 
     avio_skip(s->pb, 4); // header crc
 
-    framelen = samplerate*256/245;
+    framelen = samplerate * 256 / 245;
     c->totalframes = datalen / framelen + ((datalen % framelen) ? 1 : 0);
     c->currentframe = 0;
 
-    if(c->totalframes >= UINT_MAX/sizeof(uint32_t)){
+    if(c->totalframes >= UINT_MAX / sizeof(uint32_t))
+    {
         av_log(s, AV_LOG_ERROR, "totalframes too large\n");
         return -1;
     }
@@ -84,11 +88,12 @@ static int tta_read_header(AVFormatContext *s, AVFormatParameters *ap)
     st->start_time = 0;
     st->duration = datalen;
 
-    framepos = avio_tell(s->pb) + 4*c->totalframes + 4;
+    framepos = avio_tell(s->pb) + 4 * c->totalframes + 4;
 
-    for (i = 0; i < c->totalframes; i++) {
+    for (i = 0; i < c->totalframes; i++)
+    {
         uint32_t size = avio_rl32(s->pb);
-        av_add_index_entry(st, framepos, i*framelen, size, 0, AVINDEX_KEYFRAME);
+        av_add_index_entry(st, framepos, i * framelen, size, 0, AVINDEX_KEYFRAME);
         framepos += size;
     }
     avio_skip(s->pb, 4); // seektable crc
@@ -100,12 +105,13 @@ static int tta_read_header(AVFormatContext *s, AVFormatParameters *ap)
     st->codec->bits_per_coded_sample = bps;
 
     st->codec->extradata_size = avio_tell(s->pb) - start_offset;
-    if(st->codec->extradata_size+FF_INPUT_BUFFER_PADDING_SIZE <= (unsigned)st->codec->extradata_size){
+    if(st->codec->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE <= (unsigned)st->codec->extradata_size)
+    {
         //this check is redundant as avio_read should fail
         av_log(s, AV_LOG_ERROR, "extradata_size too large\n");
         return -1;
     }
-    st->codec->extradata = av_mallocz(st->codec->extradata_size+FF_INPUT_BUFFER_PADDING_SIZE);
+    st->codec->extradata = av_mallocz(st->codec->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE);
     avio_seek(s->pb, start_offset, SEEK_SET);
     avio_read(s->pb, st->codec->extradata, st->codec->extradata_size);
 
@@ -143,7 +149,8 @@ static int tta_read_seek(AVFormatContext *s, int stream_index, int64_t timestamp
     return 0;
 }
 
-AVInputFormat ff_tta_demuxer = {
+AVInputFormat ff_tta_demuxer =
+{
     "tta",
     NULL_IF_CONFIG_SMALL("True Audio"),
     sizeof(TTAContext),

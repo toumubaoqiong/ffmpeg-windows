@@ -26,13 +26,13 @@
 void ff_bfin_vp3_idct_put (uint8_t *dest, int line_size, DCTELEM *block)
 {
     uint8_t *cm = ff_cropTbl + MAX_NEG_CROP + 128;
-    int i,j;
+    int i, j;
 
     ff_bfin_vp3_idct (block);
 
-    for (i=0;i<8;i++)
-        for (j=0;j<8;j++)
-            dest[line_size*i+j]=cm[block[i*8+j]];
+    for (i = 0; i < 8; i++)
+        for (j = 0; j < 8; j++)
+            dest[line_size *i+j] = cm[block[i*8+j]];
 }
 
 /* Inter iDCT */

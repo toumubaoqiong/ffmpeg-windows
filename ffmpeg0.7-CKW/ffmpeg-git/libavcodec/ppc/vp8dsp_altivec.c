@@ -79,22 +79,22 @@ void put_vp8_epel_h_altivec_core(uint8_t *dst, int dst_stride,
                                  uint8_t *src, int src_stride,
                                  int h, int mx, int w, int is6tap)
 {
-    LOAD_H_SUBPEL_FILTER(mx-1);
+    LOAD_H_SUBPEL_FILTER(mx - 1);
     vec_u8 align_vec0, align_vec8, permh0, permh8, filt;
     vec_u8 perm_6tap0, perm_6tap8, perml0, perml8;
     vec_u8 a, b, pixh, pixl, outer;
     vec_s16 f16h, f16l;
     vec_s32 filth, filtl;
 
-    vec_u8 perm_inner6 = { 1,2,3,4, 2,3,4,5, 3,4,5,6, 4,5,6,7 };
-    vec_u8 perm_inner4 = { 0,1,2,3, 1,2,3,4, 2,3,4,5, 3,4,5,6 };
+    vec_u8 perm_inner6 = { 1, 2, 3, 4, 2, 3, 4, 5, 3, 4, 5, 6, 4, 5, 6, 7 };
+    vec_u8 perm_inner4 = { 0, 1, 2, 3, 1, 2, 3, 4, 2, 3, 4, 5, 3, 4, 5, 6 };
     vec_u8 perm_inner  = is6tap ? perm_inner6 : perm_inner4;
-    vec_u8 perm_outer = { 4,9, 0,5, 5,10, 1,6, 6,11, 2,7, 7,12, 3,8 };
+    vec_u8 perm_outer = { 4, 9, 0, 5, 5, 10, 1, 6, 6, 11, 2, 7, 7, 12, 3, 8 };
     vec_s32 c64 = vec_sl(vec_splat_s32(1), vec_splat_u32(6));
     vec_u16 c7  = vec_splat_u16(7);
 
-    align_vec0 = vec_lvsl( -is6tap-1, src);
-    align_vec8 = vec_lvsl(8-is6tap-1, src);
+    align_vec0 = vec_lvsl( -is6tap - 1, src);
+    align_vec8 = vec_lvsl(8 - is6tap - 1, src);
 
     permh0     = vec_perm(align_vec0, align_vec0, perm_inner);
     permh8     = vec_perm(align_vec8, align_vec8, perm_inner);
@@ -104,18 +104,22 @@ void put_vp8_epel_h_altivec_core(uint8_t *dst, int dst_stride,
     perm_6tap0 = vec_perm(align_vec0, align_vec0, perm_outer);
     perm_6tap8 = vec_perm(align_vec8, align_vec8, perm_outer);
 
-    while (h --> 0) {
+    while (h -- > 0)
+    {
         FILTER_H(f16h, 0);
 
-        if (w == 16) {
+        if (w == 16)
+        {
             FILTER_H(f16l, 8);
             filt = vec_packsu(f16h, f16l);
             vec_st(filt, 0, dst);
-        } else {
+        }
+        else
+        {
             filt = vec_packsu(f16h, f16h);
-            vec_ste((vec_u32)filt, 0, (uint32_t*)dst);
+            vec_ste((vec_u32)filt, 0, (uint32_t *)dst);
             if (w == 8)
-                vec_ste((vec_u32)filt, 4, (uint32_t*)dst);
+                vec_ste((vec_u32)filt, 4, (uint32_t *)dst);
         }
         src += src_stride;
         dst += dst_stride;
@@ -165,7 +169,7 @@ void put_vp8_epel_v_altivec_core(uint8_t *dst, int dst_stride,
                                  uint8_t *src, int src_stride,
                                  int h, int my, int w, int is6tap)
 {
-    LOAD_V_SUBPEL_FILTER(my-1);
+    LOAD_V_SUBPEL_FILTER(my - 1);
     vec_u8 s0, s1, s2, s3, s4, s5, filt, align_vech, perm_vec, align_vecl;
     vec_s16 s0f, s1f, s2f, s3f, s4f, s5f, f16h, f16l;
     vec_s16 c64 = vec_sl(vec_splat_s16(1), vec_splat_u16(6));
@@ -175,22 +179,23 @@ void put_vp8_epel_v_altivec_core(uint8_t *dst, int dst_stride,
     // so combine this permute with the alignment permute vector
     align_vech = vec_lvsl(0, src);
     align_vecl = vec_sld(align_vech, align_vech, 8);
-    if (w ==16)
+    if (w == 16)
         perm_vec = vec_mergeh(align_vech, align_vecl);
     else
         perm_vec = vec_mergeh(align_vech, align_vech);
 
     if (is6tap)
-        s0 = load_with_perm_vec(-2*src_stride, src, perm_vec);
-    s1 = load_with_perm_vec(-1*src_stride, src, perm_vec);
-    s2 = load_with_perm_vec( 0*src_stride, src, perm_vec);
-    s3 = load_with_perm_vec( 1*src_stride, src, perm_vec);
+        s0 = load_with_perm_vec(-2 * src_stride, src, perm_vec);
+    s1 = load_with_perm_vec(-1 * src_stride, src, perm_vec);
+    s2 = load_with_perm_vec( 0 * src_stride, src, perm_vec);
+    s3 = load_with_perm_vec( 1 * src_stride, src, perm_vec);
     if (is6tap)
-        s4 = load_with_perm_vec( 2*src_stride, src, perm_vec);
+        s4 = load_with_perm_vec( 2 * src_stride, src, perm_vec);
 
-    src += (2+is6tap)*src_stride;
+    src += (2 + is6tap) * src_stride;
 
-    while (h --> 0) {
+    while (h -- > 0)
+    {
         if (is6tap)
             s5 = load_with_perm_vec(0, src, perm_vec);
         else
@@ -198,17 +203,20 @@ void put_vp8_epel_v_altivec_core(uint8_t *dst, int dst_stride,
 
         FILTER_V(f16h, vec_mule);
 
-        if (w == 16) {
+        if (w == 16)
+        {
             FILTER_V(f16l, vec_mulo);
             filt = vec_packsu(f16h, f16l);
             vec_st(filt, 0, dst);
-        } else {
+        }
+        else
+        {
             filt = vec_packsu(f16h, f16h);
             if (w == 4)
                 filt = (vec_u8)vec_splat((vec_u32)filt, 0);
             else
-                vec_ste((vec_u32)filt, 4, (uint32_t*)dst);
-            vec_ste((vec_u32)filt, 0, (uint32_t*)dst);
+                vec_ste((vec_u32)filt, 4, (uint32_t *)dst);
+            vec_ste((vec_u32)filt, 0, (uint32_t *)dst);
         }
 
         if (is6tap)
@@ -250,21 +258,21 @@ static void put_vp8_epel ## WIDTH ## _h ## HTAPS ## v ## VTAPS ## _altivec(uint8
     } \
 }
 
-EPEL_FUNCS(16,6)
+EPEL_FUNCS(16, 6)
 EPEL_FUNCS(8, 6)
 EPEL_FUNCS(8, 4)
 EPEL_FUNCS(4, 6)
 EPEL_FUNCS(4, 4)
 
-EPEL_HV(16, 6,6)
-EPEL_HV(8,  6,6)
-EPEL_HV(8,  4,6)
-EPEL_HV(8,  6,4)
-EPEL_HV(8,  4,4)
-EPEL_HV(4,  6,6)
-EPEL_HV(4,  4,6)
-EPEL_HV(4,  6,4)
-EPEL_HV(4,  4,4)
+EPEL_HV(16, 6, 6)
+EPEL_HV(8,  6, 6)
+EPEL_HV(8,  4, 6)
+EPEL_HV(8,  6, 4)
+EPEL_HV(8,  4, 4)
+EPEL_HV(4,  6, 6)
+EPEL_HV(4,  4, 6)
+EPEL_HV(4,  6, 4)
+EPEL_HV(4,  4, 4)
 
 static void put_vp8_pixels16_altivec(uint8_t *dst, int stride, uint8_t *src, int s, int h, int mx, int my)
 {

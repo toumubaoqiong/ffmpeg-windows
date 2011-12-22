@@ -44,7 +44,8 @@
 #define MM_TYPE_INTER_HHV   0xf
 #define MM_TYPE_PALETTE     0x31
 
-typedef struct MmContext {
+typedef struct MmContext
+{
     AVCodecContext *avctx;
     AVFrame frame;
     int palette[AVPALETTE_COUNT];
@@ -67,9 +68,10 @@ static void mm_decode_pal(MmContext *s, const uint8_t *buf, const uint8_t *buf_e
 {
     int i;
     buf += 4;
-    for (i=0; i<128 && buf+2<buf_end; i++) {
+    for (i = 0; i < 128 && buf + 2 < buf_end; i++)
+    {
         s->palette[i] = AV_RB24(buf);
-        s->palette[i+128] = s->palette[i]<<2;
+        s->palette[i+128] = s->palette[i] << 2;
         buf += 3;
     }
 }
@@ -78,39 +80,47 @@ static void mm_decode_pal(MmContext *s, const uint8_t *buf, const uint8_t *buf_e
  * @param half_horiz Half horizontal resolution (0 or 1)
  * @param half_vert Half vertical resolution (0 or 1)
  */
-static void mm_decode_intra(MmContext * s, int half_horiz, int half_vert, const uint8_t *buf, int buf_size)
+static void mm_decode_intra(MmContext *s, int half_horiz, int half_vert, const uint8_t *buf, int buf_size)
 {
     int i, x, y;
-    i=0; x=0; y=0;
+    i = 0;
+    x = 0;
+    y = 0;
 
-    while(i<buf_size) {
+    while(i < buf_size)
+    {
         int run_length, color;
 
         if (y >= s->avctx->height)
             return;
 
-        if (buf[i] & 0x80) {
+        if (buf[i] & 0x80)
+        {
             run_length = 1;
             color = buf[i];
             i++;
-        }else{
+        }
+        else
+        {
             run_length = (buf[i] & 0x7f) + 2;
             color = buf[i+1];
-            i+=2;
+            i += 2;
         }
 
         if (half_horiz)
-            run_length *=2;
+            run_length *= 2;
 
-        if (color) {
-            memset(s->frame.data[0] + y*s->frame.linesize[0] + x, color, run_length);
+        if (color)
+        {
+            memset(s->frame.data[0] + y * s->frame.linesize[0] + x, color, run_length);
             if (half_vert)
-                memset(s->frame.data[0] + (y+1)*s->frame.linesize[0] + x, color, run_length);
+                memset(s->frame.data[0] + (y + 1)*s->frame.linesize[0] + x, color, run_length);
         }
-        x+= run_length;
+        x += run_length;
 
-        if (x >= s->avctx->width) {
-            x=0;
+        if (x >= s->avctx->width)
+        {
+            x = 0;
             y += 1 + half_vert;
         }
     }
@@ -120,19 +130,23 @@ static void mm_decode_intra(MmContext * s, int half_horiz, int half_vert, const 
  * @param half_horiz Half horizontal resolution (0 or 1)
  * @param half_vert Half vertical resolution (0 or 1)
  */
-static void mm_decode_inter(MmContext * s, int half_horiz, int half_vert, const uint8_t *buf, int buf_size)
+static void mm_decode_inter(MmContext *s, int half_horiz, int half_vert, const uint8_t *buf, int buf_size)
 {
     const int data_ptr = 2 + AV_RL16(&buf[0]);
     int d, r, y;
-    d = data_ptr; r = 2; y = 0;
+    d = data_ptr;
+    r = 2;
+    y = 0;
 
-    while(r < data_ptr) {
+    while(r < data_ptr)
+    {
         int i, j;
         int length = buf[r] & 0x7f;
         int x = buf[r+1] + ((buf[r] & 0x80) << 1);
         r += 2;
 
-        if (length==0) {
+        if (length == 0)
+        {
             y += x;
             continue;
         }
@@ -140,15 +154,19 @@ static void mm_decode_inter(MmContext * s, int half_horiz, int half_vert, const 
         if (y + half_vert >= s->avctx->height)
             return;
 
-        for(i=0; i<length; i++) {
-            for(j=0; j<8; j++) {
-                int replace = (buf[r+i] >> (7-j)) & 1;
-                if (replace) {
+        for(i = 0; i < length; i++)
+        {
+            for(j = 0; j < 8; j++)
+            {
+                int replace = (buf[r+i] >> (7 - j)) & 1;
+                if (replace)
+                {
                     int color = buf[d];
-                    s->frame.data[0][y*s->frame.linesize[0] + x] = color;
+                    s->frame.data[0][y *s->frame.linesize[0] + x] = color;
                     if (half_horiz)
-                        s->frame.data[0][y*s->frame.linesize[0] + x + 1] = color;
-                    if (half_vert) {
+                        s->frame.data[0][y *s->frame.linesize[0] + x + 1] = color;
+                    if (half_vert)
+                    {
                         s->frame.data[0][(y+1)*s->frame.linesize[0] + x] = color;
                         if (half_horiz)
                             s->frame.data[0][(y+1)*s->frame.linesize[0] + x + 1] = color;
@@ -165,32 +183,48 @@ static void mm_decode_inter(MmContext * s, int half_horiz, int half_vert, const 
 }
 
 static int mm_decode_frame(AVCodecContext *avctx,
-                            void *data, int *data_size,
-                            AVPacket *avpkt)
+                           void *data, int *data_size,
+                           AVPacket *avpkt)
 {
     const uint8_t *buf = avpkt->data;
     int buf_size = avpkt->size;
     MmContext *s = avctx->priv_data;
-    const uint8_t *buf_end = buf+buf_size;
+    const uint8_t *buf_end = buf + buf_size;
     int type;
 
     type = AV_RL16(&buf[0]);
     buf += MM_PREAMBLE_SIZE;
     buf_size -= MM_PREAMBLE_SIZE;
 
-    if (avctx->reget_buffer(avctx, &s->frame) < 0) {
+    if (avctx->reget_buffer(avctx, &s->frame) < 0)
+    {
         av_log(avctx, AV_LOG_ERROR, "reget_buffer() failed\n");
         return -1;
     }
 
-    switch(type) {
-    case MM_TYPE_PALETTE   : mm_decode_pal(s, buf, buf_end); return buf_size;
-    case MM_TYPE_INTRA     : mm_decode_intra(s, 0, 0, buf, buf_size); break;
-    case MM_TYPE_INTRA_HH  : mm_decode_intra(s, 1, 0, buf, buf_size); break;
-    case MM_TYPE_INTRA_HHV : mm_decode_intra(s, 1, 1, buf, buf_size); break;
-    case MM_TYPE_INTER     : mm_decode_inter(s, 0, 0, buf, buf_size); break;
-    case MM_TYPE_INTER_HH  : mm_decode_inter(s, 1, 0, buf, buf_size); break;
-    case MM_TYPE_INTER_HHV : mm_decode_inter(s, 1, 1, buf, buf_size); break;
+    switch(type)
+    {
+    case MM_TYPE_PALETTE   :
+        mm_decode_pal(s, buf, buf_end);
+        return buf_size;
+    case MM_TYPE_INTRA     :
+        mm_decode_intra(s, 0, 0, buf, buf_size);
+        break;
+    case MM_TYPE_INTRA_HH  :
+        mm_decode_intra(s, 1, 0, buf, buf_size);
+        break;
+    case MM_TYPE_INTRA_HHV :
+        mm_decode_intra(s, 1, 1, buf, buf_size);
+        break;
+    case MM_TYPE_INTER     :
+        mm_decode_inter(s, 0, 0, buf, buf_size);
+        break;
+    case MM_TYPE_INTER_HH  :
+        mm_decode_inter(s, 1, 0, buf, buf_size);
+        break;
+    case MM_TYPE_INTER_HHV :
+        mm_decode_inter(s, 1, 1, buf, buf_size);
+        break;
     default :
         return -1;
     }
@@ -198,7 +232,7 @@ static int mm_decode_frame(AVCodecContext *avctx,
     memcpy(s->frame.data[1], s->palette, AVPALETTE_SIZE);
 
     *data_size = sizeof(AVFrame);
-    *(AVFrame*)data = s->frame;
+    *(AVFrame *)data = s->frame;
 
     return buf_size;
 }
@@ -213,7 +247,8 @@ static av_cold int mm_decode_end(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec ff_mmvideo_decoder = {
+AVCodec ff_mmvideo_decoder =
+{
     "mmvideo",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_MMVIDEO,

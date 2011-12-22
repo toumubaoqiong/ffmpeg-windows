@@ -34,7 +34,7 @@
  * @param data_size input size
  */
 int ff_msrle_decode(AVCodecContext *avctx, AVPicture *pic, int depth,
-                    const uint8_t* data, int data_size);
+                    const uint8_t *data, int data_size);
 
 #endif /* AVCODEC_MSRLEDEC_H */
 

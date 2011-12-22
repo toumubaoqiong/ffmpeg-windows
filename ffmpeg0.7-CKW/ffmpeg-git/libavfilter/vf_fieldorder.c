@@ -42,21 +42,30 @@ static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
     const char *tff = "tff";
     const char *bff = "bff";
 
-    if (!args) {
+    if (!args)
+    {
         fieldorder->dst_tff = 1;
-    } else if (sscanf(args, "%u", &fieldorder->dst_tff) == 1) {
+    }
+    else if (sscanf(args, "%u", &fieldorder->dst_tff) == 1)
+    {
         fieldorder->dst_tff = !!fieldorder->dst_tff;
-    } else if (!strcmp(tff, args)) {
+    }
+    else if (!strcmp(tff, args))
+    {
         fieldorder->dst_tff = 1;
-    } else if (!strcmp(bff, args)) {
+    }
+    else if (!strcmp(bff, args))
+    {
         fieldorder->dst_tff = 0;
-    } else {
+    }
+    else
+    {
         av_log(ctx, AV_LOG_ERROR, "Invalid argument '%s'.\n", args);
         return AVERROR(EINVAL);
     }
 
     av_log(ctx, AV_LOG_INFO, "output field order: %s\n",
-            fieldorder->dst_tff ? tff : bff);
+           fieldorder->dst_tff ? tff : bff);
 
     return 0;
 }
@@ -69,14 +78,16 @@ static int query_formats(AVFilterContext *ctx)
 
     /** accept any input pixel format that is not hardware accelerated, not
      *  a bitstream format, and does not have vertically sub-sampled chroma */
-    if (ctx->inputs[0]) {
+    if (ctx->inputs[0])
+    {
         formats = NULL;
         for (pix_fmt = 0; pix_fmt < PIX_FMT_NB; pix_fmt++)
             if (!(  (av_getav_pix_fmt_descriptors())[pix_fmt].flags & PIX_FMT_HWACCEL
-                 || (av_getav_pix_fmt_descriptors())[pix_fmt].flags & PIX_FMT_BITSTREAM)
-                && (av_getav_pix_fmt_descriptors())[pix_fmt].nb_components
-                && !(av_getav_pix_fmt_descriptors())[pix_fmt].log2_chroma_h
-                && (ret = avfilter_add_format(&formats, pix_fmt)) < 0) {
+                    || (av_getav_pix_fmt_descriptors())[pix_fmt].flags & PIX_FMT_BITSTREAM)
+                    && (av_getav_pix_fmt_descriptors())[pix_fmt].nb_components
+                    && !(av_getav_pix_fmt_descriptors())[pix_fmt].log2_chroma_h
+                    && (ret = avfilter_add_format(&formats, pix_fmt)) < 0)
+            {
                 avfilter_formats_unref(&formats);
                 return ret;
             }
@@ -95,11 +106,12 @@ static int config_input(AVFilterLink *inlink)
 
     /** full an array with the number of bytes that the video
      *  data occupies per line for each plane of the input video */
-    for (plane = 0; plane < 4; plane++) {
+    for (plane = 0; plane < 4; plane++)
+    {
         fieldorder->line_size[plane] = av_image_get_linesize(
-                inlink->format,
-                inlink->w,
-                plane);
+                                           inlink->format,
+                                           inlink->w,
+                                           plane);
     }
 
     return 0;
@@ -139,7 +151,8 @@ static void draw_slice(AVFilterLink *inlink, int y, int h, int slice_dir)
      *  slice will contain different video lines than the input slice
      *  and that complexity will be added later */
     if (  !inpicref->video->interlaced
-        || inpicref->video->top_field_first == fieldorder->dst_tff) {
+            || inpicref->video->top_field_first == fieldorder->dst_tff)
+    {
         avfilter_draw_slice(outlink, y, h, slice_dir);
     }
 }
@@ -157,33 +170,42 @@ static void end_frame(AVFilterLink *inlink)
     uint8_t           *cpy_src, *cpy_dst;
 
     if (    inpicref->video->interlaced
-         && inpicref->video->top_field_first != fieldorder->dst_tff) {
+            && inpicref->video->top_field_first != fieldorder->dst_tff)
+    {
         av_dlog(ctx,
                 "picture will move %s one line\n",
                 fieldorder->dst_tff ? "up" : "down");
         h = inpicref->video->h;
         w = inpicref->video->w;
-        for (plane = 0; plane < 4 && inpicref->data[plane]; plane++) {
+        for (plane = 0; plane < 4 && inpicref->data[plane]; plane++)
+        {
             line_step = inpicref->linesize[plane];
             line_size = fieldorder->line_size[plane];
             cpy_src = inpicref->data[plane];
             cpy_dst = outpicref->data[plane];
-            if (fieldorder->dst_tff) {
+            if (fieldorder->dst_tff)
+            {
                 /** Move every line up one line, working from
                  *  the top to the bottom of the frame.
                  *  The original top line is lost.
                  *  The new last line is created as a copy of the
                  *  penultimate line from that field. */
-                for (line = 0; line < h; line++) {
-                    if (1 + line < outpicref->video->h) {
+                for (line = 0; line < h; line++)
+                {
+                    if (1 + line < outpicref->video->h)
+                    {
                         memcpy(cpy_dst, cpy_src + line_step, line_size);
-                    } else {
+                    }
+                    else
+                    {
                         memcpy(cpy_dst, cpy_src - line_step - line_step, line_size);
                     }
                     cpy_src += line_step;
                     cpy_dst += line_step;
                 }
-            } else {
+            }
+            else
+            {
                 /** Move every line down one line, working from
                  *  the bottom to the top of the frame.
                  *  The original bottom line is lost.
@@ -191,10 +213,14 @@ static void end_frame(AVFilterLink *inlink)
                  *  second line from that field. */
                 cpy_src += (h - 1) * line_step;
                 cpy_dst += (h - 1) * line_step;
-                for (line = h - 1; line >= 0 ; line--) {
-                    if (line > 0) {
+                for (line = h - 1; line >= 0 ; line--)
+                {
+                    if (line > 0)
+                    {
                         memcpy(cpy_dst, cpy_src - line_step, line_size);
-                    } else {
+                    }
+                    else
+                    {
                         memcpy(cpy_dst, cpy_src + line_step + line_step, line_size);
                     }
                     cpy_src -= line_step;
@@ -204,7 +230,9 @@ static void end_frame(AVFilterLink *inlink)
         }
         outpicref->video->top_field_first = fieldorder->dst_tff;
         avfilter_draw_slice(outlink, 0, h, 1);
-    } else {
+    }
+    else
+    {
         av_dlog(ctx,
                 "not interlaced or field order already correct\n");
     }
@@ -213,23 +241,34 @@ static void end_frame(AVFilterLink *inlink)
     avfilter_unref_buffer(inpicref);
 }
 
-AVFilter avfilter_vf_fieldorder = {
+AVFilter avfilter_vf_fieldorder =
+{
     .name          = "fieldorder",
     .description   = NULL_IF_CONFIG_SMALL("Set the field order."),
     .init          = init,
     .priv_size     = sizeof(FieldOrderContext),
     .query_formats = query_formats,
-    .inputs        = (AVFilterPad[]) {{ .name             = "default",
-                                        .type             = AVMEDIA_TYPE_VIDEO,
-                                        .config_props     = config_input,
-                                        .start_frame      = start_frame,
-                                        .get_video_buffer = get_video_buffer,
-                                        .draw_slice       = draw_slice,
-                                        .end_frame        = end_frame,
-                                        .min_perms        = AV_PERM_READ,
-                                        .rej_perms        = AV_PERM_REUSE2|AV_PERM_PRESERVE,},
-                                      { .name = NULL}},
-    .outputs       = (AVFilterPad[]) {{ .name             = "default",
-                                        .type             = AVMEDIA_TYPE_VIDEO, },
-                                      { .name = NULL}},
+    .inputs        = (AVFilterPad[])
+    {
+        {
+            .name             = "default",
+            .type             = AVMEDIA_TYPE_VIDEO,
+            .config_props     = config_input,
+            .start_frame      = start_frame,
+            .get_video_buffer = get_video_buffer,
+            .draw_slice       = draw_slice,
+            .end_frame        = end_frame,
+            .min_perms        = AV_PERM_READ,
+            .rej_perms        = AV_PERM_REUSE2 | AV_PERM_PRESERVE,
+        },
+        { .name = NULL}
+    },
+    .outputs       = (AVFilterPad[])
+    {
+        {
+            .name             = "default",
+            .type             = AVMEDIA_TYPE_VIDEO,
+        },
+        { .name = NULL}
+    },
 };

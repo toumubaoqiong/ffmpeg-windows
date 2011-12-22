@@ -43,23 +43,28 @@ int ff_adts_decode_extradata(AVFormatContext *s, ADTSContext *adts, uint8_t *buf
     adts->sample_rate_index = m4ac.sampling_index;
     adts->channel_conf      = m4ac.chan_config;
 
-    if (adts->objecttype > 3U) {
-        av_log(s, AV_LOG_ERROR, "MPEG-4 AOT %d is not allowed in ADTS\n", adts->objecttype+1);
+    if (adts->objecttype > 3U)
+    {
+        av_log(s, AV_LOG_ERROR, "MPEG-4 AOT %d is not allowed in ADTS\n", adts->objecttype + 1);
         return -1;
     }
-    if (adts->sample_rate_index == 15) {
+    if (adts->sample_rate_index == 15)
+    {
         av_log(s, AV_LOG_ERROR, "Escape sample rate index illegal in ADTS\n");
         return -1;
     }
-    if (get_bits(&gb, 1)) {
+    if (get_bits(&gb, 1))
+    {
         av_log(s, AV_LOG_ERROR, "960/120 MDCT window is not allowed in ADTS\n");
         return -1;
     }
-    if (get_bits(&gb, 1)) {
+    if (get_bits(&gb, 1))
+    {
         av_log(s, AV_LOG_ERROR, "Scalable configurations are not allowed in ADTS\n");
         return -1;
     }
-    if (!adts->channel_conf) {
+    if (!adts->channel_conf)
+    {
         init_put_bits(&pb, adts->pce_data, MAX_PCE_SIZE);
 
         put_bits(&pb, 3, 5); //ID_PCE
@@ -123,10 +128,12 @@ static int adts_write_packet(AVFormatContext *s, AVPacket *pkt)
 
     if (!pkt->size)
         return 0;
-    if (adts->write_adts) {
+    if (adts->write_adts)
+    {
         ff_adts_write_frame_header(adts, buf, pkt->size, adts->pce_size);
         avio_write(pb, buf, ADTS_HEADER_SIZE);
-        if (adts->pce_size) {
+        if (adts->pce_size)
+        {
             avio_write(pb, adts->pce_data, adts->pce_size);
             adts->pce_size = 0;
         }
@@ -137,7 +144,8 @@ static int adts_write_packet(AVFormatContext *s, AVPacket *pkt)
     return 0;
 }
 
-AVOutputFormat ff_adts_muxer = {
+AVOutputFormat ff_adts_muxer =
+{
     "adts",
     NULL_IF_CONFIG_SMALL("ADTS AAC"),
     "audio/aac",

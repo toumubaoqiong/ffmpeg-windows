@@ -28,7 +28,8 @@ void get_pixels_mvi(DCTELEM *restrict block,
 {
     int h = 8;
 
-    do {
+    do
+    {
         uint64_t p;
 
         p = ldq(pixels);
@@ -37,17 +38,20 @@ void get_pixels_mvi(DCTELEM *restrict block,
 
         pixels += line_size;
         block += 8;
-    } while (--h);
+    }
+    while (--h);
 }
 
 void diff_pixels_mvi(DCTELEM *block, const uint8_t *s1, const uint8_t *s2,
-                     int stride) {
+                     int stride)
+{
     int h = 8;
     uint64_t mask = 0x4040;
 
     mask |= mask << 16;
     mask |= mask << 32;
-    do {
+    do
+    {
         uint64_t x, y, c, d, a;
         uint64_t signs;
 
@@ -65,7 +69,8 @@ void diff_pixels_mvi(DCTELEM *block, const uint8_t *s1, const uint8_t *s2,
         s1 += stride;
         s2 += stride;
         block += 8;
-    } while (--h);
+    }
+    while (--h);
 }
 
 static inline uint64_t avg2(uint64_t a, uint64_t b)
@@ -76,14 +81,14 @@ static inline uint64_t avg2(uint64_t a, uint64_t b)
 static inline uint64_t avg4(uint64_t l1, uint64_t l2, uint64_t l3, uint64_t l4)
 {
     uint64_t r1 = ((l1 & ~BYTE_VEC(0x03)) >> 2)
-                + ((l2 & ~BYTE_VEC(0x03)) >> 2)
-                + ((l3 & ~BYTE_VEC(0x03)) >> 2)
-                + ((l4 & ~BYTE_VEC(0x03)) >> 2);
+                  + ((l2 & ~BYTE_VEC(0x03)) >> 2)
+                  + ((l3 & ~BYTE_VEC(0x03)) >> 2)
+                  + ((l4 & ~BYTE_VEC(0x03)) >> 2);
     uint64_t r2 = ((  (l1 & BYTE_VEC(0x03))
-                    + (l2 & BYTE_VEC(0x03))
-                    + (l3 & BYTE_VEC(0x03))
-                    + (l4 & BYTE_VEC(0x03))
-                    + BYTE_VEC(0x02)) >> 2) & BYTE_VEC(0x03);
+                      + (l2 & BYTE_VEC(0x03))
+                      + (l3 & BYTE_VEC(0x03))
+                      + (l4 & BYTE_VEC(0x03))
+                      + BYTE_VEC(0x02)) >> 2) & BYTE_VEC(0x03);
     return r1 + r2;
 }
 
@@ -91,9 +96,11 @@ int pix_abs8x8_mvi(void *v, uint8_t *pix1, uint8_t *pix2, int line_size, int h)
 {
     int result = 0;
 
-    if ((size_t) pix2 & 0x7) {
+    if ((size_t) pix2 & 0x7)
+    {
         /* works only when pix2 is actually unaligned */
-        do {                    /* do 8 pixel a time */
+        do                      /* do 8 pixel a time */
+        {
             uint64_t p1, p2;
 
             p1  = ldq(pix1);
@@ -102,9 +109,13 @@ int pix_abs8x8_mvi(void *v, uint8_t *pix1, uint8_t *pix2, int line_size, int h)
 
             pix1 += line_size;
             pix2 += line_size;
-        } while (--h);
-    } else {
-        do {
+        }
+        while (--h);
+    }
+    else
+    {
+        do
+        {
             uint64_t p1, p2;
 
             p1 = ldq(pix1);
@@ -113,7 +124,8 @@ int pix_abs8x8_mvi(void *v, uint8_t *pix1, uint8_t *pix2, int line_size, int h)
 
             pix1 += line_size;
             pix2 += line_size;
-        } while (--h);
+        }
+        while (--h);
     }
 
     return result;
@@ -125,9 +137,11 @@ int pix_abs16x16_mvi(uint8_t *pix1, uint8_t *pix2, int line_size)
     int result = 0;
     int h = 16;
 
-    if ((size_t) pix2 & 0x7) {
+    if ((size_t) pix2 & 0x7)
+    {
         /* works only when pix2 is actually unaligned */
-        do {                    /* do 16 pixel a time */
+        do                      /* do 16 pixel a time */
+        {
             uint64_t p1_l, p1_r, p2_l, p2_r;
             uint64_t t;
 
@@ -140,10 +154,14 @@ int pix_abs16x16_mvi(uint8_t *pix1, uint8_t *pix2, int line_size)
             pix2 += line_size;
 
             result += perr(p1_l, p2_l)
-                    + perr(p1_r, p2_r);
-        } while (--h);
-    } else {
-        do {
+                      + perr(p1_r, p2_r);
+        }
+        while (--h);
+    }
+    else
+    {
+        do
+        {
             uint64_t p1_l, p1_r, p2_l, p2_r;
 
             p1_l = ldq(pix1);
@@ -154,8 +172,9 @@ int pix_abs16x16_mvi(uint8_t *pix1, uint8_t *pix2, int line_size)
             pix2 += line_size;
 
             result += perr(p1_l, p2_l)
-                    + perr(p1_r, p2_r);
-        } while (--h);
+                      + perr(p1_r, p2_r);
+        }
+        while (--h);
     }
 
     return result;
@@ -167,9 +186,11 @@ int pix_abs16x16_x2_mvi(void *v, uint8_t *pix1, uint8_t *pix2, int line_size, in
     int result = 0;
     uint64_t disalign = (size_t) pix2 & 0x7;
 
-    switch (disalign) {
+    switch (disalign)
+    {
     case 0:
-        do {
+        do
+        {
             uint64_t p1_l, p1_r, p2_l, p2_r;
             uint64_t l, r;
 
@@ -183,15 +204,17 @@ int pix_abs16x16_x2_mvi(void *v, uint8_t *pix1, uint8_t *pix2, int line_size, in
             pix2 += line_size;
 
             result += perr(p1_l, p2_l)
-                    + perr(p1_r, p2_r);
-        } while (--h);
+                      + perr(p1_r, p2_r);
+        }
+        while (--h);
         break;
     case 7:
         /* |.......l|lllllllr|rrrrrrr*|
            This case is special because disalign1 would be 8, which
            gets treated as 0 by extqh.  At least it is a bit faster
            that way :)  */
-        do {
+        do
+        {
             uint64_t p1_l, p1_r, p2_l, p2_r;
             uint64_t l, m, r;
 
@@ -206,11 +229,13 @@ int pix_abs16x16_x2_mvi(void *v, uint8_t *pix1, uint8_t *pix2, int line_size, in
             pix2 += line_size;
 
             result += perr(p1_l, p2_l)
-                    + perr(p1_r, p2_r);
-        } while (--h);
+                      + perr(p1_r, p2_r);
+        }
+        while (--h);
         break;
     default:
-        do {
+        do
+        {
             uint64_t disalign1 = disalign + 1;
             uint64_t p1_l, p1_r, p2_l, p2_r;
             uint64_t l, m, r;
@@ -228,8 +253,9 @@ int pix_abs16x16_x2_mvi(void *v, uint8_t *pix1, uint8_t *pix2, int line_size, in
             pix2 += line_size;
 
             result += perr(p1_l, p2_l)
-                    + perr(p1_r, p2_r);
-        } while (--h);
+                      + perr(p1_r, p2_r);
+        }
+        while (--h);
         break;
     }
     return result;
@@ -239,13 +265,15 @@ int pix_abs16x16_y2_mvi(void *v, uint8_t *pix1, uint8_t *pix2, int line_size, in
 {
     int result = 0;
 
-    if ((size_t) pix2 & 0x7) {
+    if ((size_t) pix2 & 0x7)
+    {
         uint64_t t, p2_l, p2_r;
         t     = ldq_u(pix2 + 8);
         p2_l  = extql(ldq_u(pix2), pix2) | extqh(t, pix2);
         p2_r  = extql(t, pix2) | extqh(ldq_u(pix2 + 16), pix2);
 
-        do {
+        do
+        {
             uint64_t p1_l, p1_r, np2_l, np2_r;
             uint64_t t;
 
@@ -257,18 +285,22 @@ int pix_abs16x16_y2_mvi(void *v, uint8_t *pix1, uint8_t *pix2, int line_size, in
             np2_r = extql(t, pix2) | extqh(ldq_u(pix2 + 16), pix2);
 
             result += perr(p1_l, avg2(p2_l, np2_l))
-                    + perr(p1_r, avg2(p2_r, np2_r));
+                      + perr(p1_r, avg2(p2_r, np2_r));
 
             pix1 += line_size;
             p2_l  = np2_l;
             p2_r  = np2_r;
 
-        } while (--h);
-    } else {
+        }
+        while (--h);
+    }
+    else
+    {
         uint64_t p2_l, p2_r;
         p2_l = ldq(pix2);
         p2_r = ldq(pix2 + 8);
-        do {
+        do
+        {
             uint64_t p1_l, p1_r, np2_l, np2_r;
 
             p1_l = ldq(pix1);
@@ -278,12 +310,13 @@ int pix_abs16x16_y2_mvi(void *v, uint8_t *pix1, uint8_t *pix2, int line_size, in
             np2_r = ldq(pix2 + 8);
 
             result += perr(p1_l, avg2(p2_l, np2_l))
-                    + perr(p1_r, avg2(p2_r, np2_r));
+                      + perr(p1_r, avg2(p2_r, np2_r));
 
             pix1 += line_size;
             p2_l  = np2_l;
             p2_r  = np2_r;
-        } while (--h);
+        }
+        while (--h);
     }
     return result;
 }
@@ -298,17 +331,21 @@ int pix_abs16x16_xy2_mvi(void *v, uint8_t *pix1, uint8_t *pix2, int line_size, i
     p1_l = ldq(pix1);
     p1_r = ldq(pix1 + 8);
 
-    if ((size_t) pix2 & 0x7) { /* could be optimized a lot */
+    if ((size_t) pix2 & 0x7)   /* could be optimized a lot */
+    {
         p2_l = uldq(pix2);
         p2_r = uldq(pix2 + 8);
         p2_x = (uint64_t) pix2[16] << 56;
-    } else {
+    }
+    else
+    {
         p2_l = ldq(pix2);
         p2_r = ldq(pix2 + 8);
         p2_x = ldq(pix2 + 16) << 56;
     }
 
-    do {
+    do
+    {
         uint64_t np1_l, np1_r;
         uint64_t np2_l, np2_r, np2_x;
 
@@ -318,11 +355,14 @@ int pix_abs16x16_xy2_mvi(void *v, uint8_t *pix1, uint8_t *pix2, int line_size, i
         np1_l = ldq(pix1);
         np1_r = ldq(pix1 + 8);
 
-        if ((size_t) pix2 & 0x7) { /* could be optimized a lot */
+        if ((size_t) pix2 & 0x7)   /* could be optimized a lot */
+        {
             np2_l = uldq(pix2);
             np2_r = uldq(pix2 + 8);
             np2_x = (uint64_t) pix2[16] << 56;
-        } else {
+        }
+        else
+        {
             np2_l = ldq(pix2);
             np2_r = ldq(pix2 + 8);
             np2_x = ldq(pix2 + 16) << 56;
@@ -330,17 +370,18 @@ int pix_abs16x16_xy2_mvi(void *v, uint8_t *pix1, uint8_t *pix2, int line_size, i
 
         result += perr(p1_l,
                        avg4( p2_l, ( p2_l >> 8) | ((uint64_t)  p2_r << 56),
-                            np2_l, (np2_l >> 8) | ((uint64_t) np2_r << 56)))
-                + perr(p1_r,
-                       avg4( p2_r, ( p2_r >> 8) | ((uint64_t)  p2_x),
-                            np2_r, (np2_r >> 8) | ((uint64_t) np2_x)));
+                             np2_l, (np2_l >> 8) | ((uint64_t) np2_r << 56)))
+                  + perr(p1_r,
+                         avg4( p2_r, ( p2_r >> 8) | ((uint64_t)  p2_x),
+                               np2_r, (np2_r >> 8) | ((uint64_t) np2_x)));
 
         p1_l = np1_l;
         p1_r = np1_r;
         p2_l = np2_l;
         p2_r = np2_r;
         p2_x = np2_x;
-    } while (--h);
+    }
+    while (--h);
 
     return result;
 }

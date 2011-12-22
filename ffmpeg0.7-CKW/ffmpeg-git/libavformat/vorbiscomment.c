@@ -29,7 +29,8 @@
  * from Ogg Vorbis I format specification: comment field and header specification
  * http://xiph.org/vorbis/doc/v-comment.html
  */
-const AVMetadataConv ff_vorbiscomment_metadata_conv[] = {
+const AVMetadataConv ff_vorbiscomment_metadata_conv[] =
+{
     { "ALBUMARTIST", "album_artist"},
     { "TRACKNUMBER", "track"  },
     { "DISCNUMBER",  "disc"   },
@@ -42,10 +43,12 @@ int ff_vorbiscomment_length(AVMetadata *m, const char *vendor_string,
     int len = 8;
     len += strlen(vendor_string);
     *count = 0;
-    if (m) {
+    if (m)
+    {
         AVMetadataTag *tag = NULL;
-        while ((tag = av_metadata_get(m, "", tag, AV_METADATA_IGNORE_SUFFIX))) {
-            len += 4 +strlen(tag->key) + 1 + strlen(tag->value);
+        while ((tag = av_metadata_get(m, "", tag, AV_METADATA_IGNORE_SUFFIX)))
+        {
+            len += 4 + strlen(tag->key) + 1 + strlen(tag->value);
             (*count)++;
         }
     }
@@ -57,18 +60,21 @@ int ff_vorbiscomment_write(uint8_t **p, AVMetadata **m,
 {
     bytestream_put_le32(p, strlen(vendor_string));
     bytestream_put_buffer(p, vendor_string, strlen(vendor_string));
-    if (*m) {
+    if (*m)
+    {
         AVMetadataTag *tag = NULL;
         bytestream_put_le32(p, count);
-        while ((tag = av_metadata_get(*m, "", tag, AV_METADATA_IGNORE_SUFFIX))) {
+        while ((tag = av_metadata_get(*m, "", tag, AV_METADATA_IGNORE_SUFFIX)))
+        {
             unsigned int len1 = strlen(tag->key);
             unsigned int len2 = strlen(tag->value);
-            bytestream_put_le32(p, len1+1+len2);
+            bytestream_put_le32(p, len1 + 1 + len2);
             bytestream_put_buffer(p, tag->key, len1);
             bytestream_put_byte(p, '=');
             bytestream_put_buffer(p, tag->value, len2);
         }
-    } else
+    }
+    else
         bytestream_put_le32(p, 0);
     return 0;
 }

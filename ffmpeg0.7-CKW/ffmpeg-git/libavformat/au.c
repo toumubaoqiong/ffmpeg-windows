@@ -36,7 +36,8 @@
 #define AU_UNKNOWN_SIZE ((uint32_t)(~0))
 
 /* The ffmpeg codecs we support, and the IDs they have in the file */
-static const AVCodecTag codec_au_tags[] = {
+static const AVCodecTag codec_au_tags[] =
+{
     { CODEC_ID_PCM_MULAW, 1 },
     { CODEC_ID_PCM_S8, 2 },
     { CODEC_ID_PCM_S16BE, 3 },
@@ -70,7 +71,8 @@ static int au_write_header(AVFormatContext *s)
     s->priv_data = NULL;
 
     /* format header */
-    if (put_au_header(pb, s->streams[0]->codec) < 0) {
+    if (put_au_header(pb, s->streams[0]->codec) < 0)
+    {
         return -1;
     }
 
@@ -91,7 +93,8 @@ static int au_write_trailer(AVFormatContext *s)
     AVIOContext *pb = s->pb;
     int64_t file_size;
 
-    if (s->pb->seekable) {
+    if (s->pb->seekable)
+    {
 
         /* update file size */
         file_size = avio_tell(pb);
@@ -110,7 +113,7 @@ static int au_probe(AVProbeData *p)
 {
     /* check file header */
     if (p->buf[0] == '.' && p->buf[1] == 's' &&
-        p->buf[2] == 'n' && p->buf[3] == 'd')
+            p->buf[2] == 'n' && p->buf[3] == 'd')
         return AVPROBE_SCORE_MAX;
     else
         return 0;
@@ -140,12 +143,14 @@ static int au_read_header(AVFormatContext *s,
 
     codec = ff_codec_get_id(codec_au_tags, id);
 
-    if (!av_get_bits_per_sample(codec)) {
+    if (!av_get_bits_per_sample(codec))
+    {
         av_log_ask_for_sample(s, "could not determine bits per sample\n");
         return AVERROR_INVALIDDATA;
     }
 
-    if (size >= 24) {
+    if (size >= 24)
+    {
         /* skip unused data */
         avio_skip(pb, size - 24);
     }
@@ -170,9 +175,9 @@ static int au_read_packet(AVFormatContext *s,
 {
     int ret;
 
-    ret= av_get_packet(s->pb, pkt, BLOCK_SIZE *
-                       s->streams[0]->codec->channels *
-                       av_get_bits_per_sample(s->streams[0]->codec->codec_id) >> 3);
+    ret = av_get_packet(s->pb, pkt, BLOCK_SIZE *
+                        s->streams[0]->codec->channels *
+                        av_get_bits_per_sample(s->streams[0]->codec->codec_id) >> 3);
     if (ret < 0)
         return ret;
     pkt->stream_index = 0;
@@ -184,7 +189,8 @@ static int au_read_packet(AVFormatContext *s,
 }
 
 #if CONFIG_AU_DEMUXER
-AVInputFormat ff_au_demuxer = {
+AVInputFormat ff_au_demuxer =
+{
     "au",
     NULL_IF_CONFIG_SMALL("SUN AU format"),
     0,
@@ -193,12 +199,16 @@ AVInputFormat ff_au_demuxer = {
     au_read_packet,
     NULL,
     pcm_read_seek,
-    .codec_tag= (const AVCodecTag* const []){codec_au_tags, 0},
+    .codec_tag = (const AVCodecTag *const [])
+    {
+        codec_au_tags, 0
+    },
 };
 #endif
 
 #if CONFIG_AU_MUXER
-AVOutputFormat ff_au_muxer = {
+AVOutputFormat ff_au_muxer =
+{
     "au",
     NULL_IF_CONFIG_SMALL("SUN AU format"),
     "audio/basic",
@@ -209,6 +219,9 @@ AVOutputFormat ff_au_muxer = {
     au_write_header,
     au_write_packet,
     au_write_trailer,
-    .codec_tag= (const AVCodecTag* const []){codec_au_tags, 0},
+    .codec_tag = (const AVCodecTag *const [])
+    {
+        codec_au_tags, 0
+    },
 };
 #endif //CONFIG_AU_MUXER

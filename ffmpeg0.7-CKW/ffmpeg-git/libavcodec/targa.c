@@ -24,7 +24,8 @@
 #include "avcodec.h"
 #include "targa.h"
 
-typedef struct TargaContext {
+typedef struct TargaContext
+{
     AVFrame picture;
 
     int width, height;
@@ -38,7 +39,7 @@ typedef struct TargaContext {
         av_log(avctx, AV_LOG_ERROR, "Problem: unexpected end of data while reading " where "\n"); \
         return -1; \
     } \
-
+ 
 static int targa_decode_rle(AVCodecContext *avctx, TargaContext *s, const uint8_t *src, int src_size, uint8_t *dst, int w, int h, int stride, int bpp)
 {
     int i, x, y;
@@ -49,27 +50,34 @@ static int targa_decode_rle(AVCodecContext *avctx, TargaContext *s, const uint8_
 
     diff = stride - w * depth;
     x = y = 0;
-    while(y < h){
+    while(y < h)
+    {
         CHECK_BUFFER_SIZE(src, src_end, 1, "image type");
         type = *src++;
         count = (type & 0x7F) + 1;
         type &= 0x80;
-        if((x + count > w) && (x + count + 1 > (h - y) * w)){
+        if((x + count > w) && (x + count + 1 > (h - y) * w))
+        {
             av_log(avctx, AV_LOG_ERROR, "Packet went out of bounds: position (%i,%i) size %i\n", x, y, count);
             return -1;
         }
-        if(type){
+        if(type)
+        {
             CHECK_BUFFER_SIZE(src, src_end, depth, "image data");
-        }else{
+        }
+        else
+        {
             CHECK_BUFFER_SIZE(src, src_end, count * depth, "image data");
         }
-        for(i = 0; i < count; i++){
-            switch(depth){
+        for(i = 0; i < count; i++)
+        {
+            switch(depth)
+            {
             case 1:
                 *dst = *src;
                 break;
             case 2:
-                *((uint16_t*)dst) = AV_RL16(src);
+                *((uint16_t *)dst) = AV_RL16(src);
                 break;
             case 3:
                 dst[0] = src[0];
@@ -77,7 +85,7 @@ static int targa_decode_rle(AVCodecContext *avctx, TargaContext *s, const uint8_
                 dst[2] = src[2];
                 break;
             case 4:
-                *((uint32_t*)dst) = AV_RL32(src);
+                *((uint32_t *)dst) = AV_RL32(src);
                 break;
             }
             dst += depth;
@@ -85,7 +93,8 @@ static int targa_decode_rle(AVCodecContext *avctx, TargaContext *s, const uint8_
                 src += depth;
 
             x++;
-            if(x == w){
+            if(x == w)
+            {
                 x = 0;
                 y++;
                 dst += diff;
@@ -103,9 +112,9 @@ static int decode_frame(AVCodecContext *avctx,
 {
     const uint8_t *buf = avpkt->data;
     const uint8_t *buf_end = avpkt->data + avpkt->size;
-    TargaContext * const s = avctx->priv_data;
+    TargaContext *const s = avctx->priv_data;
     AVFrame *picture = data;
-    AVFrame * const p= (AVFrame*)&s->picture;
+    AVFrame *const p = (AVFrame *)&s->picture;
     uint8_t *dst;
     int stride;
     int idlen, pal, compr, x, y, w, h, bpp, flags;
@@ -116,13 +125,19 @@ static int decode_frame(AVCodecContext *avctx,
     idlen = *buf++;
     pal = *buf++;
     compr = *buf++;
-    first_clr = AV_RL16(buf); buf += 2;
-    colors = AV_RL16(buf); buf += 2;
+    first_clr = AV_RL16(buf);
+    buf += 2;
+    colors = AV_RL16(buf);
+    buf += 2;
     csize = *buf++;
-    x = AV_RL16(buf); buf += 2;
-    y = AV_RL16(buf); buf += 2;
-    w = AV_RL16(buf); buf += 2;
-    h = AV_RL16(buf); buf += 2;
+    x = AV_RL16(buf);
+    buf += 2;
+    y = AV_RL16(buf);
+    buf += 2;
+    w = AV_RL16(buf);
+    buf += 2;
+    h = AV_RL16(buf);
+    buf += 2;
     bpp = *buf++;
     flags = *buf++;
     //skip identifier if any
@@ -131,7 +146,8 @@ static int decode_frame(AVCodecContext *avctx,
     s->bpp = bpp;
     s->width = w;
     s->height = h;
-    switch(s->bpp){
+    switch(s->bpp)
+    {
     case 8:
         avctx->pix_fmt = ((compr & (~TGA_RLE)) == TGA_BW) ? PIX_FMT_GRAY8 : PIX_FMT_PAL8;
         break;
@@ -159,25 +175,32 @@ static int decode_frame(AVCodecContext *avctx,
         return -1;
     if(w != avctx->width || h != avctx->height)
         avcodec_set_dimensions(avctx, w, h);
-    if(avctx->get_buffer(avctx, p) < 0){
+    if(avctx->get_buffer(avctx, p) < 0)
+    {
         av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
         return -1;
     }
-    if(flags & 0x20){
+    if(flags & 0x20)
+    {
         dst = p->data[0];
         stride = p->linesize[0];
-    }else{ //image is upside-down
+    }
+    else   //image is upside-down
+    {
         dst = p->data[0] + p->linesize[0] * (h - 1);
         stride = -p->linesize[0];
     }
 
-    if(colors){
+    if(colors)
+    {
         size_t pal_size;
-        if((colors + first_clr) > 256){
+        if((colors + first_clr) > 256)
+        {
             av_log(avctx, AV_LOG_ERROR, "Incorrect palette: %i colors with offset %i\n", colors, first_clr);
             return -1;
         }
-        if(csize != 24){
+        if(csize != 24)
+        {
             av_log(avctx, AV_LOG_ERROR, "Palette entry size %i bits is not supported\n", csize);
             return -1;
         }
@@ -185,10 +208,12 @@ static int decode_frame(AVCodecContext *avctx,
         CHECK_BUFFER_SIZE(buf, buf_end, pal_size, "color table");
         if(avctx->pix_fmt != PIX_FMT_PAL8)//should not occur but skip palette anyway
             buf += pal_size;
-        else{
+        else
+        {
             int r, g, b, t;
-            int32_t *pal = ((int32_t*)p->data[1]) + first_clr;
-            for(t = 0; t < colors; t++){
+            int32_t *pal = ((int32_t *)p->data[1]) + first_clr;
+            for(t = 0; t < colors; t++)
+            {
                 r = *buf++;
                 g = *buf++;
                 b = *buf++;
@@ -199,26 +224,35 @@ static int decode_frame(AVCodecContext *avctx,
     }
     if((compr & (~TGA_RLE)) == TGA_NODATA)
         memset(p->data[0], 0, p->linesize[0] * s->height);
-    else{
-        if(compr & TGA_RLE){
+    else
+    {
+        if(compr & TGA_RLE)
+        {
             int res = targa_decode_rle(avctx, s, buf, buf_end - buf, dst, avctx->width, avctx->height, stride, bpp);
             if (res < 0)
                 return -1;
             buf += res;
-        }else{
+        }
+        else
+        {
             size_t img_size = s->width * ((s->bpp + 1) >> 3);
             CHECK_BUFFER_SIZE(buf, buf_end, img_size, "image data");
-            for(y = 0; y < s->height; y++){
+            for(y = 0; y < s->height; y++)
+            {
 #if HAVE_BIGENDIAN
-                if((s->bpp + 1) >> 3 == 2){
-                    uint16_t *dst16 = (uint16_t*)dst;
+                if((s->bpp + 1) >> 3 == 2)
+                {
+                    uint16_t *dst16 = (uint16_t *)dst;
                     for(x = 0; x < s->width; x++)
                         dst16[x] = AV_RL16(buf + x * 2);
-                }else if((s->bpp + 1) >> 3 == 4){
-                    uint32_t *dst32 = (uint32_t*)dst;
+                }
+                else if((s->bpp + 1) >> 3 == 4)
+                {
+                    uint32_t *dst32 = (uint32_t *)dst;
                     for(x = 0; x < s->width; x++)
                         dst32[x] = AV_RL32(buf + x * 4);
-                }else
+                }
+                else
 #endif
                     memcpy(dst, buf, img_size);
 
@@ -228,22 +262,24 @@ static int decode_frame(AVCodecContext *avctx,
         }
     }
 
-    *picture= *(AVFrame*)&s->picture;
+    *picture = *(AVFrame *)&s->picture;
     *data_size = sizeof(AVPicture);
 
     return avpkt->size;
 }
 
-static av_cold int targa_init(AVCodecContext *avctx){
+static av_cold int targa_init(AVCodecContext *avctx)
+{
     TargaContext *s = avctx->priv_data;
 
-    avcodec_get_frame_defaults((AVFrame*)&s->picture);
-    avctx->coded_frame= (AVFrame*)&s->picture;
+    avcodec_get_frame_defaults((AVFrame *)&s->picture);
+    avctx->coded_frame = (AVFrame *)&s->picture;
 
     return 0;
 }
 
-static av_cold int targa_end(AVCodecContext *avctx){
+static av_cold int targa_end(AVCodecContext *avctx)
+{
     TargaContext *s = avctx->priv_data;
 
     if(s->picture.data[0])
@@ -252,7 +288,8 @@ static av_cold int targa_end(AVCodecContext *avctx){
     return 0;
 }
 
-AVCodec ff_targa_decoder = {
+AVCodec ff_targa_decoder =
+{
     "targa",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_TARGA,

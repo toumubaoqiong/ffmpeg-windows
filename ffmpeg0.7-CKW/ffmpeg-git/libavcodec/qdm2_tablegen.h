@@ -42,7 +42,8 @@ static uint8_t random_dequant_index[256][5];
 static uint8_t random_dequant_type24[128][3];
 static float noise_samples[128];
 
-static av_cold void softclip_table_init(void) {
+static av_cold void softclip_table_init(void)
+{
     int i;
     double dfl = SOFTCLIP_THRESHOLD - 32767;
     float delta = 1.0 / -dfl;
@@ -52,21 +53,25 @@ static av_cold void softclip_table_init(void) {
 
 
 // random generated table
-static av_cold void rnd_table_init(void) {
-    int i,j;
-    uint32_t ldw,hdw;
+static av_cold void rnd_table_init(void)
+{
+    int i, j;
+    uint32_t ldw, hdw;
     uint64_t tmp64_1;
     uint64_t random_seed = 0;
     float delta = 1.0 / 16384.0;
-    for(i = 0; i < 4096 ;i++) {
+    for(i = 0; i < 4096 ; i++)
+    {
         random_seed = random_seed * 214013 + 2531011;
-        noise_table[i] = (delta * (float)(((int32_t)random_seed >> 16) & 0x00007FFF)- 1.0) * 1.3;
+        noise_table[i] = (delta * (float)(((int32_t)random_seed >> 16) & 0x00007FFF) - 1.0) * 1.3;
     }
 
-    for (i = 0; i < 256 ;i++) {
+    for (i = 0; i < 256 ; i++)
+    {
         random_seed = 81;
         ldw = i;
-        for (j = 0; j < 5 ;j++) {
+        for (j = 0; j < 5 ; j++)
+        {
             random_dequant_index[i][j] = (uint8_t)((ldw / random_seed) & 0xFF);
             ldw = (uint32_t)ldw % (uint32_t)random_seed;
             tmp64_1 = (random_seed * 0x55555556);
@@ -74,10 +79,12 @@ static av_cold void rnd_table_init(void) {
             random_seed = (uint64_t)(hdw + (ldw >> 31));
         }
     }
-    for (i = 0; i < 128 ;i++) {
+    for (i = 0; i < 128 ; i++)
+    {
         random_seed = 25;
         ldw = i;
-        for (j = 0; j < 3 ;j++) {
+        for (j = 0; j < 3 ; j++)
+        {
             random_dequant_type24[i][j] = (uint8_t)((ldw / random_seed) & 0xFF);
             ldw = (uint32_t)ldw % (uint32_t)random_seed;
             tmp64_1 = (random_seed * 0x66666667);
@@ -88,11 +95,13 @@ static av_cold void rnd_table_init(void) {
 }
 
 
-static av_cold void init_noise_samples(void) {
+static av_cold void init_noise_samples(void)
+{
     int i;
     int random_seed = 0;
     float delta = 1.0 / 16384.0;
-    for (i = 0; i < 128;i++) {
+    for (i = 0; i < 128; i++)
+    {
         random_seed = random_seed * 214013 + 2531011;
         noise_samples[i] = (delta * (float)((random_seed >> 16) & 0x00007fff) - 1.0);
     }

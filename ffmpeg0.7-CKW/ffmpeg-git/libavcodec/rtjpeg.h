@@ -25,7 +25,8 @@
 #include <stdint.h>
 #include "dsputil.h"
 
-typedef struct {
+typedef struct
+{
     int w, h;
     DSPContext *dsp;
     uint8_t scan[64];

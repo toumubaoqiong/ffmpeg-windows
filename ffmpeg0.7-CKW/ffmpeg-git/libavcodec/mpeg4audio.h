@@ -26,7 +26,8 @@
 #include "get_bits.h"
 #include "put_bits.h"
 
-typedef struct {
+typedef struct
+{
     int object_type;
     int sampling_index;
     int sample_rate;
@@ -41,7 +42,7 @@ typedef struct {
 } MPEG4AudioConfig;
 
 extern const int ff_mpeg4audio_sample_rates[16];
-FFMPEGLIB_API const int* av_getff_mpeg4audio_sample_rates(void);
+FFMPEGLIB_API const int *av_getff_mpeg4audio_sample_rates(void);
 FFMPEGLIB_API const int av_getsize_ff_mpeg4audio_sample_rates(void);
 extern const uint8_t ff_mpeg4audio_channels[8];
 /**
@@ -53,9 +54,10 @@ extern const uint8_t ff_mpeg4audio_channels[8];
  */
 FFMPEGLIB_API int ff_mpeg4audio_get_config(MPEG4AudioConfig *c, const uint8_t *buf, int buf_size);
 
-enum AudioObjectType {
+enum AudioObjectType
+{
     AOT_NULL,
-                               // Support?                Name
+    // Support?                Name
     AOT_AAC_MAIN,              ///< Y                       Main
     AOT_AAC_LC,                ///< Y                       Low Complexity
     AOT_AAC_SSR,               ///< N (code in SoC repo)    Scalable Sample Rate
@@ -101,7 +103,7 @@ enum AudioObjectType {
 };
 
 #define MAX_PCE_SIZE 304 ///<Maximum size of a PCE including the 3-bit ID_PCE
-                         ///<marker and the comment
+///<marker and the comment
 
 FFMPEGLIB_API int ff_copy_pce_data(PutBitContext *pb, GetBitContext *gb);
 

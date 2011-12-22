@@ -31,7 +31,8 @@
 #include "avcodec.h"
 #include "get_bits.h"
 
-typedef struct {
+typedef struct
+{
     unsigned width;
     unsigned height;
     uint8_t chroma_format;          ///< 0: 444  1: 422  2: 420
@@ -52,6 +53,6 @@ typedef struct {
 } dirac_source_params;
 
 FFMPEGLIB_API int ff_dirac_parse_sequence_header(AVCodecContext *avctx, GetBitContext *gb,
-                                   dirac_source_params *source);
+        dirac_source_params *source);
 
 #endif /* AVCODEC_DIRAC_H */

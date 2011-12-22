@@ -31,7 +31,7 @@ static int chomp_filter(AVBitStreamFilterContext *bsfc,
     while (buf_size > 0 && !buf[buf_size-1])
         buf_size--;
 
-    *poutbuf = (uint8_t*) buf;
+    *poutbuf = (uint8_t *) buf;
     *poutbuf_size = buf_size;
 
     return 0;
@@ -40,7 +40,8 @@ static int chomp_filter(AVBitStreamFilterContext *bsfc,
 /**
  * This filter removes a string of NULL bytes from the end of a packet.
  */
-AVBitStreamFilter ff_chomp_bsf = {
+AVBitStreamFilter ff_chomp_bsf =
+{
     "chomp",
     0,
     chomp_filter,

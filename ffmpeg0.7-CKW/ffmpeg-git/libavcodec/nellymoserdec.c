@@ -45,9 +45,10 @@
 #include "get_bits.h"
 
 
-typedef struct NellyMoserDecodeContext {
-    AVCodecContext* avctx;
-    DECLARE_ALIGNED(16, float,float_buf)[NELLY_SAMPLES];
+typedef struct NellyMoserDecodeContext
+{
+    AVCodecContext *avctx;
+    DECLARE_ALIGNED(16, float, float_buf)[NELLY_SAMPLES];
     float           state[128];
     AVLFG           random_state;
     GetBitContext   gb;
@@ -55,7 +56,7 @@ typedef struct NellyMoserDecodeContext {
     DSPContext      dsp;
     FFTContext      imdct_ctx;
     FmtConvertContext fmt_conv;
-    DECLARE_ALIGNED(16, float,imdct_out)[NELLY_BUF_LEN * 2];
+    DECLARE_ALIGNED(16, float, imdct_out)[NELLY_BUF_LEN * 2];
 } NellyMoserDecodeContext;
 
 static void overlap_and_window(NellyMoserDecodeContext *s, float *state, float *audio, float *a_in)
@@ -63,11 +64,12 @@ static void overlap_and_window(NellyMoserDecodeContext *s, float *state, float *
     int bot, top;
 
     bot = 0;
-    top = NELLY_BUF_LEN-1;
+    top = NELLY_BUF_LEN - 1;
 
-    while (bot < NELLY_BUF_LEN) {
-        audio[bot] = a_in [bot]*ff_sine_128[bot]
-                    +state[bot]*ff_sine_128[top];
+    while (bot < NELLY_BUF_LEN)
+    {
+        audio[bot] = a_in [bot] * ff_sine_128[bot]
+                     + state[bot] * ff_sine_128[top];
 
         bot++;
         top--;
@@ -79,7 +81,7 @@ static void nelly_decode_block(NellyMoserDecodeContext *s,
                                const unsigned char block[NELLY_BLOCK_LEN],
                                float audio[NELLY_SAMPLES])
 {
-    int i,j;
+    int i, j;
     float buf[NELLY_FILL_LEN], pows[NELLY_FILL_LEN];
     float *aptr, *bptr, *pptr, val, pval;
     int bits[NELLY_BUF_LEN];
@@ -90,11 +92,13 @@ static void nelly_decode_block(NellyMoserDecodeContext *s,
     bptr = buf;
     pptr = pows;
     val = ff_nelly_init_table[get_bits(&s->gb, 6)];
-    for (i=0 ; i<NELLY_BANDS ; i++) {
+    for (i = 0 ; i < NELLY_BANDS ; i++)
+    {
         if (i > 0)
             val += ff_nelly_delta_table[get_bits(&s->gb, 5)];
-        pval = -pow(2, val/2048) * s->scale_bias;
-        for (j = 0; j < ff_nelly_band_sizes_table[i]; j++) {
+        pval = -pow(2, val / 2048) * s->scale_bias;
+        for (j = 0; j < ff_nelly_band_sizes_table[i]; j++)
+        {
             *bptr++ = val;
             *pptr++ = pval;
         }
@@ -103,20 +107,25 @@ static void nelly_decode_block(NellyMoserDecodeContext *s,
 
     ff_nelly_get_sample_bits(buf, bits);
 
-    for (i = 0; i < 2; i++) {
+    for (i = 0; i < 2; i++)
+    {
         aptr = audio + i * NELLY_BUF_LEN;
 
         init_get_bits(&s->gb, block, NELLY_BLOCK_LEN * 8);
-        skip_bits_long(&s->gb, NELLY_HEADER_BITS + i*NELLY_DETAIL_BITS);
+        skip_bits_long(&s->gb, NELLY_HEADER_BITS + i * NELLY_DETAIL_BITS);
 
-        for (j = 0; j < NELLY_FILL_LEN; j++) {
-            if (bits[j] <= 0) {
-                aptr[j] = M_SQRT1_2*pows[j];
+        for (j = 0; j < NELLY_FILL_LEN; j++)
+        {
+            if (bits[j] <= 0)
+            {
+                aptr[j] = M_SQRT1_2 * pows[j];
                 if (av_lfg_get(&s->random_state) & 1)
                     aptr[j] *= -1.0;
-            } else {
+            }
+            else
+            {
                 v = get_bits(&s->gb, bits[j]);
-                aptr[j] = ff_nelly_dequantization_table[(1<<bits[j])-1+v]*pows[j];
+                aptr[j] = ff_nelly_dequantization_table[(1<<bits[j]) - 1 + v] * pows[j];
             }
         }
         memset(&aptr[NELLY_FILL_LEN], 0,
@@ -129,7 +138,8 @@ static void nelly_decode_block(NellyMoserDecodeContext *s,
     }
 }
 
-static av_cold int decode_init(AVCodecContext * avctx) {
+static av_cold int decode_init(AVCodecContext *avctx)
+{
     NellyMoserDecodeContext *s = avctx->priv_data;
 
     s->avctx = avctx;
@@ -139,7 +149,7 @@ static av_cold int decode_init(AVCodecContext * avctx) {
     dsputil_init(&s->dsp, avctx);
     ff_fmt_convert_init(&s->fmt_conv, avctx);
 
-    s->scale_bias = 1.0/(1*8);
+    s->scale_bias = 1.0 / (1 * 8);
 
     /* Generate overlap window */
     if (!ff_sine_128[127])
@@ -150,21 +160,23 @@ static av_cold int decode_init(AVCodecContext * avctx) {
     return 0;
 }
 
-static int decode_tag(AVCodecContext * avctx,
+static int decode_tag(AVCodecContext *avctx,
                       void *data, int *data_size,
-                      AVPacket *avpkt) {
+                      AVPacket *avpkt)
+{
     const uint8_t *buf = avpkt->data;
     int buf_size = avpkt->size;
     NellyMoserDecodeContext *s = avctx->priv_data;
     int blocks, i;
-    int16_t* samples;
+    int16_t *samples;
     *data_size = 0;
-    samples = (int16_t*)data;
+    samples = (int16_t *)data;
 
     if (buf_size < avctx->block_align)
         return buf_size;
 
-    if (buf_size % 64) {
+    if (buf_size % 64)
+    {
         av_log(avctx, AV_LOG_ERROR, "Tag size %d.\n", buf_size);
         return buf_size;
     }
@@ -177,23 +189,26 @@ static int decode_tag(AVCodecContext * avctx,
      * 44100 Hz - 8
      */
 
-    for (i=0 ; i<blocks ; i++) {
+    for (i = 0 ; i < blocks ; i++)
+    {
         nelly_decode_block(s, &buf[i*NELLY_BLOCK_LEN], s->float_buf);
         s->fmt_conv.float_to_int16(&samples[i*NELLY_SAMPLES], s->float_buf, NELLY_SAMPLES);
-        *data_size += NELLY_SAMPLES*sizeof(int16_t);
+        *data_size += NELLY_SAMPLES * sizeof(int16_t);
     }
 
     return buf_size;
 }
 
-static av_cold int decode_end(AVCodecContext * avctx) {
+static av_cold int decode_end(AVCodecContext *avctx)
+{
     NellyMoserDecodeContext *s = avctx->priv_data;
 
     ff_mdct_end(&s->imdct_ctx);
     return 0;
 }
 
-AVCodec ff_nellymoser_decoder = {
+AVCodec ff_nellymoser_decoder =
+{
     "nellymoser",
     AVMEDIA_TYPE_AUDIO,
     CODEC_ID_NELLYMOSER,

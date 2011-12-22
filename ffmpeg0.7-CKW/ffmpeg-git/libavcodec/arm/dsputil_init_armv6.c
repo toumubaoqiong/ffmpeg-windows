@@ -62,7 +62,7 @@ int ff_pix_abs16_y2_armv6(void *s, uint8_t *blk1, uint8_t *blk2,
                           int line_size, int h);
 
 int ff_pix_abs8_armv6(void *s, uint8_t *blk1, uint8_t *blk2,
-                       int line_size, int h);
+                      int line_size, int h);
 
 int ff_sse16_armv6(void *s, uint8_t *blk1, uint8_t *blk2,
                    int line_size, int h);
@@ -70,39 +70,41 @@ int ff_sse16_armv6(void *s, uint8_t *blk1, uint8_t *blk2,
 int ff_pix_norm1_armv6(uint8_t *pix, int line_size);
 int ff_pix_sum_armv6(uint8_t *pix, int line_size);
 
-void av_cold ff_dsputil_init_armv6(DSPContext* c, AVCodecContext *avctx)
+void av_cold ff_dsputil_init_armv6(DSPContext *c, AVCodecContext *avctx)
 {
     const int h264_high_depth = avctx->codec_id == CODEC_ID_H264 && avctx->bits_per_raw_sample > 8;
 
     if (!avctx->lowres && (avctx->idct_algo == FF_IDCT_AUTO ||
-                           avctx->idct_algo == FF_IDCT_SIMPLEARMV6)) {
+                           avctx->idct_algo == FF_IDCT_SIMPLEARMV6))
+    {
         c->idct_put              = ff_simple_idct_put_armv6;
         c->idct_add              = ff_simple_idct_add_armv6;
         c->idct                  = ff_simple_idct_armv6;
         c->idct_permutation_type = FF_LIBMPEG2_IDCT_PERM;
     }
 
-    if (!h264_high_depth) {
-    c->put_pixels_tab[0][0] = ff_put_pixels16_armv6;
-    c->put_pixels_tab[0][1] = ff_put_pixels16_x2_armv6;
-    c->put_pixels_tab[0][2] = ff_put_pixels16_y2_armv6;
-/*     c->put_pixels_tab[0][3] = ff_put_pixels16_xy2_armv6; */
-    c->put_pixels_tab[1][0] = ff_put_pixels8_armv6;
-    c->put_pixels_tab[1][1] = ff_put_pixels8_x2_armv6;
-    c->put_pixels_tab[1][2] = ff_put_pixels8_y2_armv6;
-/*     c->put_pixels_tab[1][3] = ff_put_pixels8_xy2_armv6; */
+    if (!h264_high_depth)
+    {
+        c->put_pixels_tab[0][0] = ff_put_pixels16_armv6;
+        c->put_pixels_tab[0][1] = ff_put_pixels16_x2_armv6;
+        c->put_pixels_tab[0][2] = ff_put_pixels16_y2_armv6;
+        /*     c->put_pixels_tab[0][3] = ff_put_pixels16_xy2_armv6; */
+        c->put_pixels_tab[1][0] = ff_put_pixels8_armv6;
+        c->put_pixels_tab[1][1] = ff_put_pixels8_x2_armv6;
+        c->put_pixels_tab[1][2] = ff_put_pixels8_y2_armv6;
+        /*     c->put_pixels_tab[1][3] = ff_put_pixels8_xy2_armv6; */
 
-    c->put_no_rnd_pixels_tab[0][0] = ff_put_pixels16_armv6;
-    c->put_no_rnd_pixels_tab[0][1] = ff_put_pixels16_x2_no_rnd_armv6;
-    c->put_no_rnd_pixels_tab[0][2] = ff_put_pixels16_y2_no_rnd_armv6;
-/*     c->put_no_rnd_pixels_tab[0][3] = ff_put_pixels16_xy2_no_rnd_armv6; */
-    c->put_no_rnd_pixels_tab[1][0] = ff_put_pixels8_armv6;
-    c->put_no_rnd_pixels_tab[1][1] = ff_put_pixels8_x2_no_rnd_armv6;
-    c->put_no_rnd_pixels_tab[1][2] = ff_put_pixels8_y2_no_rnd_armv6;
-/*     c->put_no_rnd_pixels_tab[1][3] = ff_put_pixels8_xy2_no_rnd_armv6; */
+        c->put_no_rnd_pixels_tab[0][0] = ff_put_pixels16_armv6;
+        c->put_no_rnd_pixels_tab[0][1] = ff_put_pixels16_x2_no_rnd_armv6;
+        c->put_no_rnd_pixels_tab[0][2] = ff_put_pixels16_y2_no_rnd_armv6;
+        /*     c->put_no_rnd_pixels_tab[0][3] = ff_put_pixels16_xy2_no_rnd_armv6; */
+        c->put_no_rnd_pixels_tab[1][0] = ff_put_pixels8_armv6;
+        c->put_no_rnd_pixels_tab[1][1] = ff_put_pixels8_x2_no_rnd_armv6;
+        c->put_no_rnd_pixels_tab[1][2] = ff_put_pixels8_y2_no_rnd_armv6;
+        /*     c->put_no_rnd_pixels_tab[1][3] = ff_put_pixels8_xy2_no_rnd_armv6; */
 
-    c->avg_pixels_tab[0][0] = ff_avg_pixels16_armv6;
-    c->avg_pixels_tab[1][0] = ff_avg_pixels8_armv6;
+        c->avg_pixels_tab[0][0] = ff_avg_pixels16_armv6;
+        c->avg_pixels_tab[1][0] = ff_avg_pixels8_armv6;
     }
 
     c->add_pixels_clamped = ff_add_pixels_clamped_armv6;

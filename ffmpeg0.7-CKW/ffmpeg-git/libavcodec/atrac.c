@@ -35,13 +35,14 @@
 float ff_atrac_sf_table[64];
 static float qmf_window[48];
 
-static const float qmf_48tap_half[24] = {
-   -0.00001461907, -0.00009205479,-0.000056157569,0.00030117269,
-    0.0002422519,  -0.00085293897,-0.0005205574,  0.0020340169,
+static const float qmf_48tap_half[24] =
+{
+    -0.00001461907, -0.00009205479, -0.000056157569, 0.00030117269,
+    0.0002422519,  -0.00085293897, -0.0005205574,  0.0020340169,
     0.00078333891, -0.0042153862, -0.00075614988, 0.0078402944,
-   -0.000061169922,-0.01344162,    0.0024626821,  0.021736089,
-   -0.007801671,   -0.034090221,   0.01880949,    0.054326009,
-   -0.043596379,   -0.099384367,   0.13207909,    0.46424159
+    -0.000061169922, -0.01344162,    0.0024626821,  0.021736089,
+    -0.007801671,   -0.034090221,   0.01880949,    0.054326009,
+    -0.043596379,   -0.099384367,   0.13207909,    0.46424159
 };
 
 /**
@@ -55,12 +56,13 @@ void atrac_generate_tables(void)
 
     /* Generate scale factors */
     if (!ff_atrac_sf_table[63])
-        for (i=0 ; i<64 ; i++)
+        for (i = 0 ; i < 64 ; i++)
             ff_atrac_sf_table[i] = pow(2.0, (i - 15) / 3.0);
 
     /* Generate the QMF window. */
     if (!qmf_window[47])
-        for (i=0 ; i<24; i++) {
+        for (i = 0 ; i < 24; i++)
+        {
             s = qmf_48tap_half[i] * 2.0;
             qmf_window[i] = qmf_window[47 - i] = s;
         }
@@ -84,12 +86,13 @@ void atrac_iqmf (float *inlo, float *inhi, unsigned int nIn, float *pOut, float 
     int   i, j;
     float   *p1, *p3;
 
-    memcpy(temp, delayBuf, 46*sizeof(float));
+    memcpy(temp, delayBuf, 46 * sizeof(float));
 
     p3 = temp + 46;
 
     /* loop1 */
-    for(i=0; i<nIn; i+=2){
+    for(i = 0; i < nIn; i += 2)
+    {
         p3[2*i+0] = inlo[i  ] + inhi[i  ];
         p3[2*i+1] = inlo[i  ] - inhi[i  ];
         p3[2*i+2] = inlo[i+1] + inhi[i+1];
@@ -98,11 +101,13 @@ void atrac_iqmf (float *inlo, float *inhi, unsigned int nIn, float *pOut, float 
 
     /* loop2 */
     p1 = temp;
-    for (j = nIn; j != 0; j--) {
+    for (j = nIn; j != 0; j--)
+    {
         float s1 = 0.0;
         float s2 = 0.0;
 
-        for (i = 0; i < 48; i += 2) {
+        for (i = 0; i < 48; i += 2)
+        {
             s1 += p1[i] * qmf_window[i];
             s2 += p1[i+1] * qmf_window[i+1];
         }
@@ -115,6 +120,6 @@ void atrac_iqmf (float *inlo, float *inhi, unsigned int nIn, float *pOut, float 
     }
 
     /* Update the delay buffer. */
-    memcpy(delayBuf, temp + nIn*2, 46*sizeof(float));
+    memcpy(delayBuf, temp + nIn * 2, 46 * sizeof(float));
 }
 

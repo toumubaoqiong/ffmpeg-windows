@@ -62,7 +62,8 @@
 #define LEVEL_ONE               1.0000000000000000
 
 /** Delta bit allocation strategy */
-typedef enum {
+typedef enum
+{
     DBA_REUSE = 0,
     DBA_NEW,
     DBA_NONE,
@@ -70,7 +71,8 @@ typedef enum {
 } AC3DeltaStrategy;
 
 /** Channel mode (audio coding mode) */
-typedef enum {
+typedef enum
+{
     AC3_CHMODE_DUALMONO = 0,
     AC3_CHMODE_MONO,
     AC3_CHMODE_STEREO,
@@ -81,7 +83,8 @@ typedef enum {
     AC3_CHMODE_3F2R
 } AC3ChannelMode;
 
-typedef struct AC3BitAllocParameters {
+typedef struct AC3BitAllocParameters
+{
     int sr_code;
     int sr_shift;
     int slow_gain, slow_decay, fast_decay, db_per_bit, floor;
@@ -92,7 +95,8 @@ typedef struct AC3BitAllocParameters {
  * @struct AC3HeaderInfo
  * Coded AC-3 header values up to the lfeon element, plus derived values.
  */
-typedef struct {
+typedef struct
+{
     /** @defgroup coded Coded elements
      * @{
      */
@@ -123,7 +127,8 @@ typedef struct {
     /** @} */
 } AC3HeaderInfo;
 
-typedef enum {
+typedef enum
+{
     EAC3_FRAME_TYPE_INDEPENDENT = 0,
     EAC3_FRAME_TYPE_DEPENDENT,
     EAC3_FRAME_TYPE_AC3_CONVERT,
@@ -133,7 +138,8 @@ typedef enum {
 /**
  * Encoding Options used by AVOption.
  */
-typedef struct AC3EncOptions {
+typedef struct AC3EncOptions
+{
     /* AC-3 metadata options*/
     int dialogue_level;
     int bitstream_mode;

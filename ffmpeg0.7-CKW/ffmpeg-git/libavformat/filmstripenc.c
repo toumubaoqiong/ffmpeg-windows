@@ -29,13 +29,15 @@
 
 #define RAND_TAG MKBETAG('R','a','n','d')
 
-typedef struct {
+typedef struct
+{
     int nb_frames;
 } FilmstripMuxContext;
 
 static int write_header(AVFormatContext *s)
 {
-    if (s->streams[0]->codec->pix_fmt != PIX_FMT_RGBA) {
+    if (s->streams[0]->codec->pix_fmt != PIX_FMT_RGBA)
+    {
         av_log(s, AV_LOG_ERROR, "only PIX_FMT_RGBA is supported\n");
         return AVERROR_INVALIDDATA;
     }
@@ -64,14 +66,15 @@ static int write_trailer(AVFormatContext *s)
     avio_wb16(pb, st->codec->width);
     avio_wb16(pb, st->codec->height);
     avio_wb16(pb, 0);  // leading
-    avio_wb16(pb, 1/av_q2d(st->codec->time_base));
+    avio_wb16(pb, 1 / av_q2d(st->codec->time_base));
     for (i = 0; i < 16; i++)
         avio_w8(pb, 0x00);  // reserved
     avio_flush(pb);
     return 0;
 }
 
-AVOutputFormat ff_filmstrip_muxer = {
+AVOutputFormat ff_filmstrip_muxer =
+{
     "filmstrip",
     NULL_IF_CONFIG_SMALL("Adobe Filmstrip"),
     NULL,

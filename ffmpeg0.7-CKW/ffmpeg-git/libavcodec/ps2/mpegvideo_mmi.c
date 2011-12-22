@@ -25,29 +25,35 @@
 #include "libavcodec/mpegvideo.h"
 
 static void dct_unquantize_h263_mmi(MpegEncContext *s,
-                                  DCTELEM *block, int n, int qscale)
+                                    DCTELEM *block, int n, int qscale)
 {
-    int level=0, qmul, qadd;
+    int level = 0, qmul, qadd;
     int nCoeffs;
 
-    assert(s->block_last_index[n]>=0);
+    assert(s->block_last_index[n] >= 0);
 
     qadd = (qscale - 1) | 1;
     qmul = qscale << 1;
 
-    if (s->mb_intra) {
-        if (!s->h263_aic) {
+    if (s->mb_intra)
+    {
+        if (!s->h263_aic)
+        {
             if (n < 4)
                 level = block[0] * s->y_dc_scale;
             else
                 level = block[0] * s->c_dc_scale;
-        }else {
+        }
+        else
+        {
             qadd = 0;
             level = block[0];
         }
-        nCoeffs= 63; //does not always use zigzag table
-    } else {
-        nCoeffs= s->intra_scantable.raster_end[ s->block_last_index[n] ];
+        nCoeffs = 63; //does not always use zigzag table
+    }
+    else
+    {
+        nCoeffs = s->intra_scantable.raster_end[ s->block_last_index[n] ];
     }
 
     __asm__ volatile(
@@ -76,14 +82,14 @@ static void dct_unquantize_h263_mmi(MpegEncContext *s,
         :: "r"(qmul), "r" (qadd), "r" (nCoeffs), "r" (block) : "$8", "$9", "$10", "$11", "$12", "$13", "$14", "memory" );
 
     if(s->mb_intra)
-        block[0]= level;
+        block[0] = level;
 }
 
 
 void MPV_common_init_mmi(MpegEncContext *s)
 {
     s->dct_unquantize_h263_intra =
-    s->dct_unquantize_h263_inter = dct_unquantize_h263_mmi;
+        s->dct_unquantize_h263_inter = dct_unquantize_h263_mmi;
 }
 
 

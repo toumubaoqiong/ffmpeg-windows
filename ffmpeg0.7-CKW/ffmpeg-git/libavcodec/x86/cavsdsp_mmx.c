@@ -117,10 +117,11 @@ static void cavs_idct8_add_mmx(uint8_t *dst, int16_t *block, int stride)
     int i;
     DECLARE_ALIGNED(8, int16_t, b2)[64];
 
-    for(i=0; i<2; i++){
+    for(i = 0; i < 2; i++)
+    {
         DECLARE_ALIGNED(8, uint64_t, tmp);
 
-        cavs_idct8_1d(block+4*i, ff_pw_4.a);
+        cavs_idct8_1d(block + 4 * i, ff_pw_4.a);
 
         __asm__ volatile(
             "psraw     $3, %%mm7  \n\t"
@@ -149,8 +150,9 @@ static void cavs_idct8_add_mmx(uint8_t *dst, int16_t *block, int stride)
         );
     }
 
-    for(i=0; i<2; i++){
-        cavs_idct8_1d(b2+4*i, ff_pw_64.a);
+    for(i = 0; i < 2; i++)
+    {
+        cavs_idct8_1d(b2 + 4 * i, ff_pw_64.a);
 
         __asm__ volatile(
             "psraw     $7, %%mm7  \n\t"
@@ -397,7 +399,7 @@ static void OPNAME ## cavs_qpel16_h_ ## MMX(uint8_t *dst, uint8_t *src, int dstS
     OPNAME ## cavs_qpel8_h_ ## MMX(dst  , src  , dstStride, srcStride);\
     OPNAME ## cavs_qpel8_h_ ## MMX(dst+8, src+8, dstStride, srcStride);\
 }\
-
+ 
 #define CAVS_MC(OPNAME, SIZE, MMX) \
 static void ff_ ## OPNAME ## cavs_qpel ## SIZE ## _mc20_ ## MMX(uint8_t *dst, uint8_t *src, int stride){\
     OPNAME ## cavs_qpel ## SIZE ## _h_ ## MMX(dst, src, stride, stride);\
@@ -414,7 +416,7 @@ static void ff_ ## OPNAME ## cavs_qpel ## SIZE ## _mc02_ ## MMX(uint8_t *dst, ui
 static void ff_ ## OPNAME ## cavs_qpel ## SIZE ## _mc03_ ## MMX(uint8_t *dst, uint8_t *src, int stride){\
     OPNAME ## cavs_qpel ## SIZE ## _v3_ ## MMX(dst, src, stride, stride);\
 }\
-
+ 
 #define PUT_OP(a,b,temp, size) "mov" #size " " #a ", " #b "    \n\t"
 #define AVG_3DNOW_OP(a,b,temp, size) \
 "mov" #size " " #b ", " #temp "   \n\t"\
@@ -431,22 +433,23 @@ QPEL_CAVS(put_,       PUT_OP, mmx2)
 QPEL_CAVS(avg_,  AVG_MMX2_OP, mmx2)
 
 CAVS_MC(put_, 8, 3dnow)
-CAVS_MC(put_, 16,3dnow)
+CAVS_MC(put_, 16, 3dnow)
 CAVS_MC(avg_, 8, 3dnow)
-CAVS_MC(avg_, 16,3dnow)
+CAVS_MC(avg_, 16, 3dnow)
 CAVS_MC(put_, 8, mmx2)
-CAVS_MC(put_, 16,mmx2)
+CAVS_MC(put_, 16, mmx2)
 CAVS_MC(avg_, 8, mmx2)
-CAVS_MC(avg_, 16,mmx2)
+CAVS_MC(avg_, 16, mmx2)
 
-static void ff_cavsdsp_init_mmx2(CAVSDSPContext* c, AVCodecContext *avctx) {
+static void ff_cavsdsp_init_mmx2(CAVSDSPContext *c, AVCodecContext *avctx)
+{
 #define dspfunc(PFX, IDX, NUM) \
     c->PFX ## _pixels_tab[IDX][ 0] = ff_ ## PFX ## NUM ## _mc00_mmx2; \
     c->PFX ## _pixels_tab[IDX][ 2] = ff_ ## PFX ## NUM ## _mc20_mmx2; \
     c->PFX ## _pixels_tab[IDX][ 4] = ff_ ## PFX ## NUM ## _mc01_mmx2; \
     c->PFX ## _pixels_tab[IDX][ 8] = ff_ ## PFX ## NUM ## _mc02_mmx2; \
     c->PFX ## _pixels_tab[IDX][12] = ff_ ## PFX ## NUM ## _mc03_mmx2; \
-
+ 
     dspfunc(put_cavs_qpel, 0, 16);
     dspfunc(put_cavs_qpel, 1, 8);
     dspfunc(avg_cavs_qpel, 0, 16);
@@ -455,14 +458,15 @@ static void ff_cavsdsp_init_mmx2(CAVSDSPContext* c, AVCodecContext *avctx) {
     c->cavs_idct8_add = cavs_idct8_add_mmx;
 }
 
-static void ff_cavsdsp_init_3dnow(CAVSDSPContext* c, AVCodecContext *avctx) {
+static void ff_cavsdsp_init_3dnow(CAVSDSPContext *c, AVCodecContext *avctx)
+{
 #define dspfunc(PFX, IDX, NUM) \
     c->PFX ## _pixels_tab[IDX][ 0] = ff_ ## PFX ## NUM ## _mc00_mmx2; \
     c->PFX ## _pixels_tab[IDX][ 2] = ff_ ## PFX ## NUM ## _mc20_3dnow; \
     c->PFX ## _pixels_tab[IDX][ 4] = ff_ ## PFX ## NUM ## _mc01_3dnow; \
     c->PFX ## _pixels_tab[IDX][ 8] = ff_ ## PFX ## NUM ## _mc02_3dnow; \
     c->PFX ## _pixels_tab[IDX][12] = ff_ ## PFX ## NUM ## _mc03_3dnow; \
-
+ 
     dspfunc(put_cavs_qpel, 0, 16);
     dspfunc(put_cavs_qpel, 1, 8);
     dspfunc(avg_cavs_qpel, 0, 16);

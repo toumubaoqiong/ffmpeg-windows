@@ -71,7 +71,8 @@
 #define IIR 1
 
 /** filter data */
-typedef struct {
+typedef struct
+{
     uint8_t     order; ///< number of taps in filter
     uint8_t     shift; ///< Right shift to apply to output of filter.
 
@@ -79,7 +80,8 @@ typedef struct {
 } FilterParams;
 
 /** sample data coding information */
-typedef struct {
+typedef struct
+{
     FilterParams filter_params[NUM_FILTERS];
     int32_t     coeff[NUM_FILTERS][MAX_FIR_ORDER];
 

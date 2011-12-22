@@ -27,7 +27,8 @@
 #include "avcodec.h"
 #include "bytestream.h"
 
-typedef struct AnmContext {
+typedef struct AnmContext
+{
     AVFrame frame;
     int palette[AVPALETTE_COUNT];
     int x;  ///< x coordinate position
@@ -41,12 +42,12 @@ static av_cold int decode_init(AVCodecContext *avctx)
 
     avctx->pix_fmt = PIX_FMT_PAL8;
 
-    if (avctx->extradata_size != 16*8 + 4*256)
+    if (avctx->extradata_size != 16 * 8 + 4 * 256)
         return -1;
 
     s->frame.reference = 1;
 
-    buf = avctx->extradata + 16*8;
+    buf = avctx->extradata + 16 * 8;
     for (i = 0; i < 256; i++)
         s->palette[i] = bytestream_get_le32(&buf);
 
@@ -74,24 +75,31 @@ static inline int op(uint8_t **dst, const uint8_t *dst_end,
                      int *x, int width, int linesize)
 {
     int remaining = width - *x;
-    while(count > 0) {
+    while(count > 0)
+    {
         int striplen = FFMIN(count, remaining);
-        if (buf) {
+        if (buf)
+        {
             striplen = FFMIN(striplen, buf_end - *buf);
             memcpy(*dst, *buf, striplen);
             *buf += striplen;
-        } else if (pixel >= 0)
+        }
+        else if (pixel >= 0)
             memset(*dst, pixel, striplen);
         *dst      += striplen;
         remaining -= striplen;
         count     -= striplen;
-        if (remaining <= 0) {
+        if (remaining <= 0)
+        {
             *dst      += linesize - width;
             remaining  = width;
         }
-        if (linesize > 0) {
+        if (linesize > 0)
+        {
             if (*dst >= dst_end) goto exhausted;
-        } else {
+        }
+        else
+        {
             if (*dst <= dst_end) goto exhausted;
         }
     }
@@ -114,25 +122,29 @@ static int decode_frame(AVCodecContext *avctx,
     uint8_t *dst, *dst_end;
     int count;
 
-    if(avctx->reget_buffer(avctx, &s->frame) < 0){
+    if(avctx->reget_buffer(avctx, &s->frame) < 0)
+    {
         av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
         return -1;
     }
     dst     = s->frame.data[0];
-    dst_end = s->frame.data[0] + s->frame.linesize[0]*avctx->height;
+    dst_end = s->frame.data[0] + s->frame.linesize[0] * avctx->height;
 
-    if (buf[0] != 0x42) {
+    if (buf[0] != 0x42)
+    {
         av_log_ask_for_sample(avctx, "unknown record type\n");
         return buf_size;
     }
-    if (buf[1]) {
+    if (buf[1])
+    {
         av_log_ask_for_sample(avctx, "padding bytes not supported\n");
         return buf_size;
     }
     buf += 4;
 
     s->x = 0;
-    do {
+    do
+    {
         /* if statements are ordered by probability */
 #define OP(buf, pixel, count) \
     op(&dst, dst_end, (buf), buf_end, (pixel), (count), &s->x, avctx->width, s->frame.linesize[0])
@@ -140,22 +152,29 @@ static int decode_frame(AVCodecContext *avctx,
         int type = bytestream_get_byte(&buf);
         count = type & 0x7F;
         type >>= 7;
-        if (count) {
+        if (count)
+        {
             if (OP(type ? NULL : &buf, -1, count)) break;
-        } else if (!type) {
+        }
+        else if (!type)
+        {
             int pixel;
             count = bytestream_get_byte(&buf);  /* count==0 gives nop */
             pixel = bytestream_get_byte(&buf);
             if (OP(NULL, pixel, count)) break;
-        } else {
+        }
+        else
+        {
             int pixel;
             type = bytestream_get_le16(&buf);
             count = type & 0x3FFF;
             type >>= 14;
-            if (!count) {
+            if (!count)
+            {
                 if (type == 0)
                     break; // stop
-                if (type == 2) {
+                if (type == 2)
+                {
                     av_log_ask_for_sample(avctx, "unknown opcode");
                     return AVERROR_INVALIDDATA;
                 }
@@ -165,12 +184,13 @@ static int decode_frame(AVCodecContext *avctx,
             if (type == 1) count += 0x4000;
             if (OP(type == 2 ? &buf : NULL, pixel, count)) break;
         }
-    } while (buf + 1 < buf_end);
+    }
+    while (buf + 1 < buf_end);
 
     memcpy(s->frame.data[1], s->palette, AVPALETTE_SIZE);
 
     *data_size = sizeof(AVFrame);
-    *(AVFrame*)data = s->frame;
+    *(AVFrame *)data = s->frame;
     return buf_size;
 }
 
@@ -182,7 +202,8 @@ static av_cold int decode_end(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec ff_anm_decoder = {
+AVCodec ff_anm_decoder =
+{
     "anm",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_ANM,

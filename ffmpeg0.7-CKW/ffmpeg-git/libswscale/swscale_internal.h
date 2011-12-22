@@ -61,12 +61,13 @@
 
 struct SwsContext;
 
-typedef int (*SwsFunc)(struct SwsContext *context, const uint8_t* src[],
+typedef int (*SwsFunc)(struct SwsContext *context, const uint8_t *src[],
                        int srcStride[], int srcSliceY, int srcSliceH,
-                       uint8_t* dst[], int dstStride[]);
+                       uint8_t *dst[], int dstStride[]);
 
 /* This struct should be aligned on at least a 32-byte boundary. */
-typedef struct SwsContext {
+typedef struct SwsContext
+{
     /**
      * info on struct for av_log
      */
@@ -161,11 +162,11 @@ typedef struct SwsContext {
 
     int dstY;                     ///< Last destination vertical line output from last slice.
     int flags;                    ///< Flags passed by the user to select scaler algorithm, optimizations, subsampling, etc...
-    void * yuvTable;            // pointer to the yuv->rgb table start so it can be freed()
-    uint8_t * table_rV[256];
-    uint8_t * table_gU[256];
+    void *yuvTable;             // pointer to the yuv->rgb table start so it can be freed()
+    uint8_t *table_rV[256];
+    uint8_t *table_gU[256];
     int    table_gV[256];
-    uint8_t * table_bU[256];
+    uint8_t *table_bU[256];
 
     //Colorspace stuff
     int contrast, brightness, saturation;    // for sws_getColorspaceDetails

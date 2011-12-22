@@ -37,7 +37,8 @@
 #define PS_AP_LINKS 3
 #define PS_MAX_AP_DELAY 5
 
-typedef struct {
+typedef struct
+{
     int    start;
     int    enable_iid;
     int    iid_quant;

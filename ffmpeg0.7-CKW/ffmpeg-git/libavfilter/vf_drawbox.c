@@ -31,7 +31,8 @@
 
 enum { Y, U, V, A };
 
-typedef struct {
+typedef struct
+{
     int x, y, w, h;
     unsigned char yuv_color[4];
     int vsub, hsub;   //< chroma subsampling
@@ -39,7 +40,7 @@ typedef struct {
 
 static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
 {
-    DrawBoxContext *drawbox= ctx->priv;
+    DrawBoxContext *drawbox = ctx->priv;
     char color_str[1024] = "black";
     uint8_t rgba_color[4];
 
@@ -62,7 +63,8 @@ static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
 
 static int query_formats(AVFilterContext *ctx)
 {
-    enum PixelFormat pix_fmts[] = {
+    enum PixelFormat pix_fmts[] =
+    {
         PIX_FMT_YUV444P,  PIX_FMT_YUV422P,  PIX_FMT_YUV420P,
         PIX_FMT_YUV411P,  PIX_FMT_YUV410P,
         PIX_FMT_YUVJ444P, PIX_FMT_YUVJ422P, PIX_FMT_YUVJ420P,
@@ -98,18 +100,21 @@ static void draw_slice(AVFilterLink *inlink, int y0, int h, int slice_dir)
     unsigned char *row[4];
     AVFilterBufferRef *picref = inlink->cur_buf;
 
-    for (y = FFMAX(yb, y0); y < (y0 + h) && y < (yb + drawbox->h); y++) {
+    for (y = FFMAX(yb, y0); y < (y0 + h) && y < (yb + drawbox->h); y++)
+    {
         row[0] = picref->data[0] + y * picref->linesize[0];
 
         for (plane = 1; plane < 3; plane++)
             row[plane] = picref->data[plane] +
-                picref->linesize[plane] * (y >> drawbox->vsub);
+                         picref->linesize[plane] * (y >> drawbox->vsub);
 
-        for (x = FFMAX(xb, 0); x < (xb + drawbox->w) && x < picref->video->w; x++) {
+        for (x = FFMAX(xb, 0); x < (xb + drawbox->w) && x < picref->video->w; x++)
+        {
             double alpha = (double)drawbox->yuv_color[A] / 255;
 
             if ((y - yb < 3) || (yb + drawbox->h - y < 4) ||
-                (x - xb < 3) || (xb + drawbox->w - x < 4)) {
+                    (x - xb < 3) || (xb + drawbox->w - x < 4))
+            {
                 row[0][x                 ] = (1 - alpha) * row[0][x                 ] + alpha * drawbox->yuv_color[Y];
                 row[1][x >> drawbox->hsub] = (1 - alpha) * row[1][x >> drawbox->hsub] + alpha * drawbox->yuv_color[U];
                 row[2][x >> drawbox->hsub] = (1 - alpha) * row[2][x >> drawbox->hsub] + alpha * drawbox->yuv_color[V];
@@ -120,24 +125,35 @@ static void draw_slice(AVFilterLink *inlink, int y0, int h, int slice_dir)
     avfilter_draw_slice(inlink->dst->outputs[0], y0, h, 1);
 }
 
-AVFilter avfilter_vf_drawbox = {
+AVFilter avfilter_vf_drawbox =
+{
     .name      = "drawbox",
     .description = NULL_IF_CONFIG_SMALL("Draw a colored box on the input video."),
     .priv_size = sizeof(DrawBoxContext),
     .init      = init,
 
     .query_formats   = query_formats,
-    .inputs    = (AVFilterPad[]) {{ .name             = "default",
-                                    .type             = AVMEDIA_TYPE_VIDEO,
-                                    .config_props     = config_input,
-                                    .get_video_buffer = avfilter_null_get_video_buffer,
-                                    .start_frame      = avfilter_null_start_frame,
-                                    .draw_slice       = draw_slice,
-                                    .end_frame        = avfilter_null_end_frame,
-                                    .min_perms        = AV_PERM_WRITE | AV_PERM_READ,
-                                    .rej_perms        = AV_PERM_PRESERVE },
-                                  { .name = NULL}},
-    .outputs   = (AVFilterPad[]) {{ .name             = "default",
-                                    .type             = AVMEDIA_TYPE_VIDEO, },
-                                  { .name = NULL}},
+    .inputs    = (AVFilterPad[])
+    {
+        {
+            .name             = "default",
+            .type             = AVMEDIA_TYPE_VIDEO,
+            .config_props     = config_input,
+            .get_video_buffer = avfilter_null_get_video_buffer,
+            .start_frame      = avfilter_null_start_frame,
+            .draw_slice       = draw_slice,
+            .end_frame        = avfilter_null_end_frame,
+            .min_perms        = AV_PERM_WRITE | AV_PERM_READ,
+            .rej_perms        = AV_PERM_PRESERVE
+        },
+        { .name = NULL}
+    },
+    .outputs   = (AVFilterPad[])
+    {
+        {
+            .name             = "default",
+            .type             = AVMEDIA_TYPE_VIDEO,
+        },
+        { .name = NULL}
+    },
 };

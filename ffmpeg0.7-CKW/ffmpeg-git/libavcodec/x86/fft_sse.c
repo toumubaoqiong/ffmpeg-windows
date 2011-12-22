@@ -24,7 +24,7 @@
 #include "fft.h"
 
 DECLARE_ASM_CONST(16, int, ff_m1m1m1m1)[4] =
-    { 1 << 31, 1 << 31, 1 << 31, 1 << 31 };
+{ 1 << 31, 1 << 31, 1 << 31, 1 << 31 };
 
 void ff_fft_dispatch_sse(FFTComplex *z, int nbits);
 void ff_fft_dispatch_interleave_sse(FFTComplex *z, int nbits);
@@ -35,8 +35,9 @@ void ff_fft_calc_sse(FFTContext *s, FFTComplex *z)
 
     ff_fft_dispatch_interleave_sse(z, s->nbits);
 
-    if(n <= 16) {
-        x86_reg i = -8*n;
+    if(n <= 16)
+    {
+        x86_reg i = -8 * n;
         __asm__ volatile(
             "1: \n"
             "movaps     (%0,%1), %%xmm0 \n"
@@ -58,17 +59,18 @@ void ff_fft_permute_sse(FFTContext *s, FFTComplex *z)
 {
     int n = 1 << s->nbits;
     int i;
-    for(i=0; i<n; i+=2) {
+    for(i = 0; i < n; i += 2)
+    {
         __asm__ volatile(
             "movaps %2, %%xmm0 \n"
             "movlps %%xmm0, %0 \n"
             "movhps %%xmm0, %1 \n"
             :"=m"(s->tmp_buf[s->revtab[i]]),
-             "=m"(s->tmp_buf[s->revtab[i+1]])
+            "=m"(s->tmp_buf[s->revtab[i+1]])
             :"m"(z[i])
         );
     }
-    memcpy(z, s->tmp_buf, n*sizeof(FFTComplex));
+    memcpy(z, s->tmp_buf, n * sizeof(FFTComplex));
 }
 
 void ff_imdct_calc_sse(FFTContext *s, FFTSample *output, const FFTSample *input)
@@ -77,10 +79,10 @@ void ff_imdct_calc_sse(FFTContext *s, FFTSample *output, const FFTSample *input)
     long n = s->mdct_size;
     long n4 = n >> 2;
 
-    ff_imdct_half_sse(s, output+n4, input);
+    ff_imdct_half_sse(s, output + n4, input);
 
     j = -n;
-    k = n-16;
+    k = n - 16;
     __asm__ volatile(
         "movaps "MANGLE(ff_m1m1m1m1)", %%xmm7 \n"
         "1: \n"

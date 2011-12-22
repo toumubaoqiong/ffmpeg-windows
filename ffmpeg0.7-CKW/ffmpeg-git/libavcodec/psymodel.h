@@ -32,7 +32,8 @@
 /**
  * single band psychoacoustic information
  */
-typedef struct FFPsyBand {
+typedef struct FFPsyBand
+{
     int   bits;
     float energy;
     float threshold;
@@ -43,7 +44,8 @@ typedef struct FFPsyBand {
 /**
  * windowing related information
  */
-typedef struct FFPsyWindowInfo {
+typedef struct FFPsyWindowInfo
+{
     int window_type[3];               ///< window type (short/long/transitional, etc.) - current, previous and next
     int window_shape;                 ///< window shape (sine/KBD/whatever)
     int num_windows;                  ///< number of windows in a frame
@@ -54,7 +56,8 @@ typedef struct FFPsyWindowInfo {
 /**
  * context used by psychoacoustic model
  */
-typedef struct FFPsyContext {
+typedef struct FFPsyContext
+{
     AVCodecContext *avctx;            ///< encoder context
     const struct FFPsyModel *model;   ///< encoder-specific model functions
 
@@ -66,18 +69,20 @@ typedef struct FFPsyContext {
 
     float pe[PSY_MAX_CHANS];          ///< total PE for each channel in the frame
 
-    struct {
+    struct
+    {
         int size;                     ///< size of the bitresevoir in bits
         int bits;                     ///< number of bits used in the bitresevoir
     } bitres;
 
-    void* model_priv_data;            ///< psychoacoustic model implementation private data
+    void *model_priv_data;            ///< psychoacoustic model implementation private data
 } FFPsyContext;
 
 /**
  * codec-specific psychoacoustic model implementation
  */
-typedef struct FFPsyModel {
+typedef struct FFPsyModel
+{
     const char *name;
     int  (*init)   (FFPsyContext *apc);
     FFPsyWindowInfo (*window)(FFPsyContext *ctx, const int16_t *audio, const int16_t *la, int channel, int prev_type);
@@ -98,7 +103,7 @@ typedef struct FFPsyModel {
  */
 av_cold int ff_psy_init(FFPsyContext *ctx, AVCodecContext *avctx,
                         int num_lens,
-                        const uint8_t **bands, const int* num_bands);
+                        const uint8_t **bands, const int *num_bands);
 
 /**
  * Suggest window sequence for channel.
@@ -144,7 +149,7 @@ struct FFPsyPreprocessContext;
 /**
  * psychoacoustic model audio preprocessing initialization
  */
-av_cold struct FFPsyPreprocessContext* ff_psy_preprocess_init(AVCodecContext *avctx);
+av_cold struct FFPsyPreprocessContext *ff_psy_preprocess_init(AVCodecContext *avctx);
 
 /**
  * Preprocess several channel in audio frame in order to compress it better.

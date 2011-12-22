@@ -23,7 +23,8 @@
 #include "aiff.h"
 #include "avio_internal.h"
 
-typedef struct {
+typedef struct
+{
     int64_t form;
     int64_t frames;
     int64_t ssnd;
@@ -40,7 +41,7 @@ static int aiff_write_header(AVFormatContext *s)
     /* First verify if format is ok */
     if (!enc->codec_tag)
         return -1;
-    if (enc->codec_tag != MKTAG('N','O','N','E'))
+    if (enc->codec_tag != MKTAG('N', 'O', 'N', 'E'))
         aifc = 1;
 
     /* FORM AIFF header */
@@ -49,9 +50,11 @@ static int aiff_write_header(AVFormatContext *s)
     avio_wb32(pb, 0);                    /* file length */
     ffio_wfourcc(pb, aifc ? "AIFC" : "AIFF");
 
-    if (aifc) { // compressed audio
+    if (aifc)   // compressed audio
+    {
         enc->bits_per_coded_sample = 16;
-        if (!enc->block_align) {
+        if (!enc->block_align)
+        {
             av_log(s, AV_LOG_ERROR, "block align not set\n");
             return -1;
         }
@@ -71,7 +74,8 @@ static int aiff_write_header(AVFormatContext *s)
 
     if (!enc->bits_per_coded_sample)
         enc->bits_per_coded_sample = av_get_bits_per_sample(enc->codec_id);
-    if (!enc->bits_per_coded_sample) {
+    if (!enc->bits_per_coded_sample)
+    {
         av_log(s, AV_LOG_ERROR, "could not compute bits per sample\n");
         return -1;
     }
@@ -81,9 +85,10 @@ static int aiff_write_header(AVFormatContext *s)
     avio_wb16(pb, enc->bits_per_coded_sample); /* Sample size */
 
     sample_rate = av_dbl2ext((double)enc->sample_rate);
-    avio_write(pb, (uint8_t*)&sample_rate, sizeof(sample_rate));
+    avio_write(pb, (uint8_t *)&sample_rate, sizeof(sample_rate));
 
-    if (aifc) {
+    if (aifc)
+    {
         avio_wl32(pb, enc->codec_tag);
         avio_wb16(pb, 0);
     }
@@ -119,19 +124,21 @@ static int aiff_write_trailer(AVFormatContext *s)
     /* Chunks sizes must be even */
     int64_t file_size, end_size;
     end_size = file_size = avio_tell(pb);
-    if (file_size & 1) {
+    if (file_size & 1)
+    {
         avio_w8(pb, 0);
         end_size++;
     }
 
-    if (s->pb->seekable) {
+    if (s->pb->seekable)
+    {
         /* File length */
         avio_seek(pb, aiff->form, SEEK_SET);
         avio_wb32(pb, file_size - aiff->form - 4);
 
         /* Number of sample frames */
         avio_seek(pb, aiff->frames, SEEK_SET);
-        avio_wb32(pb, (file_size-aiff->ssnd-12)/enc->block_align);
+        avio_wb32(pb, (file_size - aiff->ssnd - 12) / enc->block_align);
 
         /* Sound Data chunk size */
         avio_seek(pb, aiff->ssnd, SEEK_SET);
@@ -146,7 +153,8 @@ static int aiff_write_trailer(AVFormatContext *s)
     return 0;
 }
 
-AVOutputFormat ff_aiff_muxer = {
+AVOutputFormat ff_aiff_muxer =
+{
     "aiff",
     NULL_IF_CONFIG_SMALL("Audio IFF"),
     "audio/aiff",
@@ -157,5 +165,8 @@ AVOutputFormat ff_aiff_muxer = {
     aiff_write_header,
     aiff_write_packet,
     aiff_write_trailer,
-    .codec_tag= (const AVCodecTag* const []){ff_codec_aiff_tags, 0},
+    .codec_tag = (const AVCodecTag *const [])
+    {
+        ff_codec_aiff_tags, 0
+    },
 };

@@ -23,7 +23,8 @@
 #include "libavutil/imgutils.h"
 #include "avcodec.h"
 
-typedef struct DPXContext {
+typedef struct DPXContext
+{
     AVFrame picture;
     int big_endian;
     int bits_per_component;
@@ -42,7 +43,8 @@ static av_cold int encode_init(AVCodecContext *avctx)
     s->bits_per_component = 8;
     s->descriptor         = 50; /* RGB */
 
-    switch (avctx->pix_fmt) {
+    switch (avctx->pix_fmt)
+    {
     case PIX_FMT_RGB24:
         break;
     case PIX_FMT_RGBA:
@@ -79,17 +81,22 @@ static void encode_rgb48_10bit(AVCodecContext *avctx, const AVPicture *pic, uint
     const uint8_t *src = pic->data[0];
     int x, y;
 
-    for (y = 0; y < avctx->height; y++) {
-        for (x = 0; x < avctx->width; x++) {
+    for (y = 0; y < avctx->height; y++)
+    {
+        for (x = 0; x < avctx->width; x++)
+        {
             int value;
-            if ((avctx->pix_fmt & 1)) {
-                value = ((AV_RB16(src + 6*x + 4) & 0xFFC0) >> 4)
-                      | ((AV_RB16(src + 6*x + 2) & 0xFFC0) << 6)
-                      | ((AV_RB16(src + 6*x + 0) & 0xFFC0) << 16);
-            } else {
-                value = ((AV_RL16(src + 6*x + 4) & 0xFFC0) >> 4)
-                      | ((AV_RL16(src + 6*x + 2) & 0xFFC0) << 6)
-                      | ((AV_RL16(src + 6*x + 0) & 0xFFC0) << 16);
+            if ((avctx->pix_fmt & 1))
+            {
+                value = ((AV_RB16(src + 6 * x + 4) & 0xFFC0) >> 4)
+                        | ((AV_RB16(src + 6 * x + 2) & 0xFFC0) << 6)
+                        | ((AV_RB16(src + 6 * x + 0) & 0xFFC0) << 16);
+            }
+            else
+            {
+                value = ((AV_RL16(src + 6 * x + 4) & 0xFFC0) >> 4)
+                        | ((AV_RL16(src + 6 * x + 2) & 0xFFC0) << 6)
+                        | ((AV_RL16(src + 6 * x + 0) & 0xFFC0) << 16);
             }
             write32(dst, value);
             dst += 4;
@@ -110,7 +117,7 @@ static int encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_size,
     memset(buf, 0, HEADER_SIZE);
 
     /* File information header */
-    write32(buf,       MKBETAG('S','D','P','X'));
+    write32(buf,       MKBETAG('S', 'D', 'P', 'X'));
     write32(buf +   4, HEADER_SIZE);
     memcpy (buf +   8, "V1.0", 4);
     write32(buf +  20, 1); /* new image */
@@ -133,10 +140,11 @@ static int encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_size,
     write32(buf + 1628, avctx->sample_aspect_ratio.num);
     write32(buf + 1632, avctx->sample_aspect_ratio.den);
 
-    switch(s->bits_per_component) {
+    switch(s->bits_per_component)
+    {
     case 8:
     case 16:
-        size = avpicture_layout((AVPicture*)data, avctx->pix_fmt,
+        size = avpicture_layout((AVPicture *)data, avctx->pix_fmt,
                                 avctx->width, avctx->height,
                                 buf + HEADER_SIZE, buf_size - HEADER_SIZE);
         if (size < 0)
@@ -146,7 +154,7 @@ static int encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_size,
         size = avctx->height * avctx->width * 4;
         if (buf_size < HEADER_SIZE + size)
             return -1;
-        encode_rgb48_10bit(avctx, (AVPicture*)data, buf + HEADER_SIZE);
+        encode_rgb48_10bit(avctx, (AVPicture *)data, buf + HEADER_SIZE);
         break;
     default:
         av_log(avctx, AV_LOG_ERROR, "Unsupported bit depth: %d\n", s->bits_per_component);
@@ -159,18 +167,21 @@ static int encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_size,
     return size;
 }
 
-AVCodec ff_dpx_encoder = {
+AVCodec ff_dpx_encoder =
+{
     "dpx",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_DPX,
     sizeof(DPXContext),
     encode_init,
     encode_frame,
-    .pix_fmts= (const enum PixelFormat[]){
+    .pix_fmts = (const enum PixelFormat[])
+    {
         PIX_FMT_RGB24,
         PIX_FMT_RGBA,
         PIX_FMT_RGB48LE,
         PIX_FMT_RGB48BE,
-        PIX_FMT_NONE},
+        PIX_FMT_NONE
+    },
     .long_name = NULL_IF_CONFIG_SMALL("DPX image"),
 };

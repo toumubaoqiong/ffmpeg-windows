@@ -34,10 +34,13 @@ static uint32_t cbrt_tab[1 << 13];
 
 static void cbrt_tableinit(void)
 {
-    if (!cbrt_tab[(1<<13) - 1]) {
+    if (!cbrt_tab[(1<<13) - 1])
+    {
         int i;
-        for (i = 0; i < 1<<13; i++) {
-            union {
+        for (i = 0; i < 1 << 13; i++)
+        {
+            union
+            {
                 float f;
                 uint32_t i;
             } f;

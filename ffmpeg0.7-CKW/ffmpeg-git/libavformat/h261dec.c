@@ -25,51 +25,61 @@
 
 static int h261_probe(AVProbeData *p)
 {
-    uint32_t code= -1;
+    uint32_t code = -1;
     int i;
-    int valid_psc=0;
-    int invalid_psc=0;
-    int next_gn=0;
-    int src_fmt=0;
+    int valid_psc = 0;
+    int invalid_psc = 0;
+    int next_gn = 0;
+    int src_fmt = 0;
     GetBitContext gb;
 
-    init_get_bits(&gb, p->buf, p->buf_size*8);
+    init_get_bits(&gb, p->buf, p->buf_size * 8);
 
-    for(i=0; i<p->buf_size*8; i++){
-        if ((code & 0x01ff0000) || !(code & 0xff00)) {
-            code = (code<<8) + get_bits(&gb, 8);
+    for(i = 0; i < p->buf_size * 8; i++)
+    {
+        if ((code & 0x01ff0000) || !(code & 0xff00))
+        {
+            code = (code << 8) + get_bits(&gb, 8);
             i += 7;
-        } else
-            code = (code<<1) + get_bits1(&gb);
-        if ((code & 0xffff0000) == 0x10000) {
-            int gn= (code>>12)&0xf;
+        }
+        else
+            code = (code << 1) + get_bits1(&gb);
+        if ((code & 0xffff0000) == 0x10000)
+        {
+            int gn = (code >> 12) & 0xf;
             if(!gn)
-                src_fmt= code&8;
+                src_fmt = code & 8;
             if(gn != next_gn) invalid_psc++;
             else              valid_psc++;
 
-            if(src_fmt){ // CIF
-                next_gn= (gn+1     )%13;
-            }else{       //QCIF
-                next_gn= (gn+1+!!gn)% 7;
+            if(src_fmt)  // CIF
+            {
+                next_gn = (gn + 1     ) % 13;
+            }
+            else         //QCIF
+            {
+                next_gn = (gn + 1 + !!gn) % 7;
             }
         }
     }
-    if(valid_psc > 2*invalid_psc + 6){
+    if(valid_psc > 2 * invalid_psc + 6)
+    {
         return 50;
-    }else if(valid_psc > 2*invalid_psc + 2)
+    }
+    else if(valid_psc > 2 * invalid_psc + 2)
         return 25;
     return 0;
 }
 
-AVInputFormat ff_h261_demuxer = {
+AVInputFormat ff_h261_demuxer =
+{
     "h261",
     NULL_IF_CONFIG_SMALL("raw H.261"),
     0,
     h261_probe,
     ff_raw_video_read_header,
     ff_raw_read_partial_packet,
-    .flags= AVFMT_GENERIC_INDEX,
+    .flags = AVFMT_GENERIC_INDEX,
     .extensions = "h261",
     .value = CODEC_ID_H261,
 };

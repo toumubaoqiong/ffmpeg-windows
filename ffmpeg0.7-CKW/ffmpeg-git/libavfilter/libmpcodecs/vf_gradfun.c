@@ -41,7 +41,8 @@
 #include "libavutil/avutil.h"
 #include "libavutil/x86_cpu.h"
 
-struct vf_priv_s {
+struct vf_priv_s
+{
     int thresh;
     int radius;
     uint16_t *buf;
@@ -51,16 +52,17 @@ struct vf_priv_s {
                       uint8_t *src, int sstride, int width);
 };
 
-static const uint16_t __attribute__((aligned(16))) pw_7f[8] = {127,127,127,127,127,127,127,127};
-static const uint16_t __attribute__((aligned(16))) pw_ff[8] = {255,255,255,255,255,255,255,255};
-static const uint16_t __attribute__((aligned(16))) dither[8][8] = {
-    {  0, 96, 24,120,  6,102, 30,126 },
+static const uint16_t __attribute__((aligned(16))) pw_7f[8] = {127, 127, 127, 127, 127, 127, 127, 127};
+static const uint16_t __attribute__((aligned(16))) pw_ff[8] = {255, 255, 255, 255, 255, 255, 255, 255};
+static const uint16_t __attribute__((aligned(16))) dither[8][8] =
+{
+    {  0, 96, 24, 120,  6, 102, 30, 126 },
     { 64, 32, 88, 56, 70, 38, 94, 62 },
-    { 16,112,  8,104, 22,118, 14,110 },
+    { 16, 112,  8, 104, 22, 118, 14, 110 },
     { 80, 48, 72, 40, 86, 54, 78, 46 },
-    {  4,100, 28,124,  2, 98, 26,122 },
+    {  4, 100, 28, 124,  2, 98, 26, 122 },
     { 68, 36, 92, 60, 66, 34, 90, 58 },
-    { 20,116, 12,108, 18,114, 10,106 },
+    { 20, 116, 12, 108, 18, 114, 10, 106 },
     { 84, 52, 76, 44, 82, 50, 74, 42 },
 };
 
@@ -68,14 +70,15 @@ static void filter_line_c(uint8_t *dst, uint8_t *src, uint16_t *dc,
                           int width, int thresh, const uint16_t *dithers)
 {
     int x;
-    for (x=0; x<width; x++, dc+=x&1) {
-        int pix = src[x]<<7;
+    for (x = 0; x < width; x++, dc += x & 1)
+    {
+        int pix = src[x] << 7;
         int delta = dc[0] - pix;
         int m = abs(delta) * thresh >> 16;
-        m = FFMAX(0, 127-m);
-        m = m*m*delta >> 14;
+        m = FFMAX(0, 127 - m);
+        m = m * m * delta >> 14;
         pix += m + dithers[x&7];
-        dst[x] = av_clip_uint8(pix>>7);
+        dst[x] = av_clip_uint8(pix >> 7);
     }
 }
 
@@ -83,7 +86,8 @@ static void blur_line_c(uint16_t *dc, uint16_t *buf, uint16_t *buf1,
                         uint8_t *src, int sstride, int width)
 {
     int x, v, old;
-    for (x=0; x<width; x++) {
+    for (x = 0; x < width; x++)
+    {
         v = buf1[x] + src[2*x] + src[2*x+1] + src[2*x+sstride] + src[2*x+1+sstride];
         old = buf[x];
         buf[x] = v;
@@ -96,9 +100,10 @@ static void filter_line_mmx2(uint8_t *dst, uint8_t *src, uint16_t *dc,
                              int width, int thresh, const uint16_t *dithers)
 {
     intptr_t x;
-    if (width&3) {
+    if (width & 3)
+    {
         x = width&~3;
-        filter_line_c(dst+x, src+x, dc+x/2, width-x, thresh, dithers);
+        filter_line_c(dst + x, src + x, dc + x / 2, width - x, thresh, dithers);
         width = x;
     }
     x = -width;
@@ -134,7 +139,7 @@ static void filter_line_mmx2(uint8_t *dst, uint8_t *src, uint16_t *dc,
         "emms \n"
         :"+r"(x)
         :"r"(dst+width), "r"(src+width), "r"(dc+width/2),
-         "rm"(thresh), "m"(*dithers), "m"(*pw_7f)
+        "rm"(thresh), "m"(*dithers), "m"(*pw_7f)
         :"memory"
     );
 }
@@ -145,10 +150,11 @@ static void filter_line_ssse3(uint8_t *dst, uint8_t *src, uint16_t *dc,
                               int width, int thresh, const uint16_t *dithers)
 {
     intptr_t x;
-    if (width&7) {
+    if (width & 7)
+    {
         // could be 10% faster if I somehow eliminated this
         x = width&~7;
-        filter_line_c(dst+x, src+x, dc+x/2, width-x, thresh, dithers);
+        filter_line_c(dst + x, src + x, dc + x / 2, width - x, thresh, dithers);
         width = x;
     }
     x = -width;
@@ -182,7 +188,7 @@ static void filter_line_ssse3(uint8_t *dst, uint8_t *src, uint16_t *dc,
         "jl 1b \n"
         :"+&r"(x)
         :"r"(dst+width), "r"(src+width), "r"(dc+width/2),
-         "rm"(thresh), "m"(*dithers), "m"(*pw_7f)
+        "rm"(thresh), "m"(*dithers), "m"(*pw_7f)
         :"memory"
     );
 }
@@ -225,9 +231,12 @@ static void filter_line_ssse3(uint8_t *dst, uint8_t *src, uint16_t *dc,
 static void blur_line_sse2(uint16_t *dc, uint16_t *buf, uint16_t *buf1,
                            uint8_t *src, int sstride, int width)
 {
-    if (((intptr_t)src|sstride)&15) {
+    if (((intptr_t)src | sstride) & 15)
+    {
         BLURV("movdqu");
-    } else {
+    }
+    else
+    {
         BLURV("movdqa");
     }
 }
@@ -236,55 +245,60 @@ static void blur_line_sse2(uint16_t *dc, uint16_t *buf, uint16_t *buf1,
 static void filter(struct vf_priv_s *ctx, uint8_t *dst, uint8_t *src,
                    int width, int height, int dstride, int sstride, int r)
 {
-    int bstride = ((width+15)&~15)/2;
+    int bstride = ((width + 15)&~15) / 2;
     int y;
-    uint32_t dc_factor = (1<<21)/(r*r);
-    uint16_t *dc = ctx->buf+16;
-    uint16_t *buf = ctx->buf+bstride+32;
+    uint32_t dc_factor = (1 << 21) / (r * r);
+    uint16_t *dc = ctx->buf + 16;
+    uint16_t *buf = ctx->buf + bstride + 32;
     int thresh = ctx->thresh;
 
-    memset(dc, 0, (bstride+16)*sizeof(*buf));
-    for (y=0; y<r; y++)
-        ctx->blur_line(dc, buf+y*bstride, buf+(y-1)*bstride, src+2*y*sstride, sstride, width/2);
-    for (;;) {
-        if (y < height-r) {
-            int mod = ((y+r)/2)%r;
-            uint16_t *buf0 = buf+mod*bstride;
-            uint16_t *buf1 = buf+(mod?mod-1:r-1)*bstride;
+    memset(dc, 0, (bstride + 16)*sizeof(*buf));
+    for (y = 0; y < r; y++)
+        ctx->blur_line(dc, buf + y * bstride, buf + (y - 1)*bstride, src + 2 * y * sstride, sstride, width / 2);
+    for (;;)
+    {
+        if (y < height - r)
+        {
+            int mod = ((y + r) / 2) % r;
+            uint16_t *buf0 = buf + mod * bstride;
+            uint16_t *buf1 = buf + (mod ? mod - 1 : r - 1) * bstride;
             int x, v;
-            ctx->blur_line(dc, buf0, buf1, src+(y+r)*sstride, sstride, width/2);
-            for (x=v=0; x<r; x++)
+            ctx->blur_line(dc, buf0, buf1, src + (y + r)*sstride, sstride, width / 2);
+            for (x = v = 0; x < r; x++)
                 v += dc[x];
-            for (; x<width/2; x++) {
+            for (; x < width / 2; x++)
+            {
                 v += dc[x] - dc[x-r];
                 dc[x-r] = v * dc_factor >> 16;
             }
-            for (; x<(width+r+1)/2; x++)
+            for (; x < (width + r + 1) / 2; x++)
                 dc[x-r] = v * dc_factor >> 16;
-            for (x=-r/2; x<0; x++)
+            for (x = -r / 2; x < 0; x++)
                 dc[x] = dc[0];
         }
-        if (y == r) {
-            for (y=0; y<r; y++)
-                ctx->filter_line(dst+y*dstride, src+y*sstride, dc-r/2, width, thresh, dither[y&7]);
+        if (y == r)
+        {
+            for (y = 0; y < r; y++)
+                ctx->filter_line(dst + y * dstride, src + y * sstride, dc - r / 2, width, thresh, dither[y&7]);
         }
-        ctx->filter_line(dst+y*dstride, src+y*sstride, dc-r/2, width, thresh, dither[y&7]);
+        ctx->filter_line(dst + y * dstride, src + y * sstride, dc - r / 2, width, thresh, dither[y&7]);
         if (++y >= height) break;
-        ctx->filter_line(dst+y*dstride, src+y*sstride, dc-r/2, width, thresh, dither[y&7]);
+        ctx->filter_line(dst + y * dstride, src + y * sstride, dc - r / 2, width, thresh, dither[y&7]);
         if (++y >= height) break;
     }
 }
 
 static void get_image(struct vf_instance *vf, mp_image_t *mpi)
 {
-    if (mpi->flags&MP_IMGFLAG_PRESERVE) return; // don't change
+    if (mpi->flags & MP_IMGFLAG_PRESERVE) return; // don't change
     // ok, we can do pp in-place:
     vf->dmpi = vf_get_image(vf->next, mpi->imgfmt,
                             mpi->type, mpi->flags, mpi->width, mpi->height);
     mpi->planes[0] = vf->dmpi->planes[0];
     mpi->stride[0] = vf->dmpi->stride[0];
     mpi->width = vf->dmpi->width;
-    if (mpi->flags&MP_IMGFLAG_PLANAR){
+    if (mpi->flags & MP_IMGFLAG_PLANAR)
+    {
         mpi->planes[1] = vf->dmpi->planes[1];
         mpi->planes[2] = vf->dmpi->planes[2];
         mpi->stride[1] = vf->dmpi->stride[1];
@@ -298,27 +312,30 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
     mp_image_t *dmpi = vf->dmpi;
     int p;
 
-    if (!(mpi->flags&MP_IMGFLAG_DIRECT)) {
+    if (!(mpi->flags & MP_IMGFLAG_DIRECT))
+    {
         // no DR, so get a new image. hope we'll get DR buffer:
-        dmpi = vf_get_image(vf->next,mpi->imgfmt, MP_IMGTYPE_TEMP,
-                            MP_IMGFLAG_ACCEPT_STRIDE|MP_IMGFLAG_PREFER_ALIGNED_STRIDE,
+        dmpi = vf_get_image(vf->next, mpi->imgfmt, MP_IMGTYPE_TEMP,
+                            MP_IMGFLAG_ACCEPT_STRIDE | MP_IMGFLAG_PREFER_ALIGNED_STRIDE,
                             mpi->w, mpi->h);
     }
     vf_clone_mpi_attributes(dmpi, mpi);
 
-    for (p=0; p<mpi->num_planes; p++) {
+    for (p = 0; p < mpi->num_planes; p++)
+    {
         int w = mpi->w;
         int h = mpi->h;
         int r = vf->priv->radius;
-        if (p) {
+        if (p)
+        {
             w >>= mpi->chroma_x_shift;
             h >>= mpi->chroma_y_shift;
-            r = ((r>>mpi->chroma_x_shift) + (r>>mpi->chroma_y_shift)) / 2;
-            r = av_clip((r+1)&~1,4,32);
+            r = ((r >> mpi->chroma_x_shift) + (r >> mpi->chroma_y_shift)) / 2;
+            r = av_clip((r + 1)&~1, 4, 32);
         }
-        if (FFMIN(w,h) > 2*r)
+        if (FFMIN(w, h) > 2 * r)
             filter(vf->priv, dmpi->planes[p], mpi->planes[p], w, h,
-                             dmpi->stride[p], mpi->stride[p], r);
+                   dmpi->stride[p], mpi->stride[p], r);
         else if (dmpi->planes[p] != mpi->planes[p])
             memcpy_pic(dmpi->planes[p], mpi->planes[p], w, h,
                        dmpi->stride[p], mpi->stride[p]);
@@ -329,7 +346,8 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
 
 static int query_format(struct vf_instance *vf, unsigned int fmt)
 {
-    switch (fmt){
+    switch (fmt)
+    {
     case IMGFMT_YVU9:
     case IMGFMT_IF09:
     case IMGFMT_YV12:
@@ -344,7 +362,7 @@ static int query_format(struct vf_instance *vf, unsigned int fmt)
     case IMGFMT_422P:
     case IMGFMT_411P:
     case IMGFMT_HM12:
-        return vf_next_query_format(vf,fmt);
+        return vf_next_query_format(vf, fmt);
     }
     return 0;
 }
@@ -354,8 +372,8 @@ static int config(struct vf_instance *vf,
                   unsigned int flags, unsigned int outfmt)
 {
     free(vf->priv->buf);
-    vf->priv->buf = av_mallocz((((width+15)&~15)*(vf->priv->radius+1)/2+32)*sizeof(uint16_t));
-    return vf_next_config(vf,width,height,d_width,d_height,flags,outfmt);
+    vf->priv->buf = av_mallocz((((width + 15)&~15) * (vf->priv->radius + 1) / 2 + 32) * sizeof(uint16_t));
+    return vf_next_config(vf, width, height, d_width, d_height, flags, outfmt);
 }
 
 static void uninit(struct vf_instance *vf)
@@ -371,17 +389,17 @@ static int vf_open(vf_instance_t *vf, char *args)
     float thresh = 1.2;
     int radius = 16;
 
-    vf->get_image=get_image;
-    vf->put_image=put_image;
-    vf->query_format=query_format;
-    vf->config=config;
-    vf->uninit=uninit;
-    vf->priv=malloc(sizeof(struct vf_priv_s));
+    vf->get_image = get_image;
+    vf->put_image = put_image;
+    vf->query_format = query_format;
+    vf->config = config;
+    vf->uninit = uninit;
+    vf->priv = malloc(sizeof(struct vf_priv_s));
     memset(vf->priv, 0, sizeof(struct vf_priv_s));
 
     if (args) sscanf(args, "%f:%d", &thresh, &radius);
-    vf->priv->thresh = (1<<15)/av_clipf(thresh,0.51,255);
-    vf->priv->radius = av_clip((radius+1)&~1,4,32);
+    vf->priv->thresh = (1 << 15) / av_clipf(thresh, 0.51, 255);
+    vf->priv->radius = av_clip((radius + 1)&~1, 4, 32);
 
     vf->priv->blur_line = blur_line_c;
     vf->priv->filter_line = filter_line_c;
@@ -401,7 +419,8 @@ static int vf_open(vf_instance_t *vf, char *args)
     return 1;
 }
 
-const vf_info_t vf_info_gradfun = {
+const vf_info_t vf_info_gradfun =
+{
     "gradient deband",
     "gradfun",
     "Loren Merritt",

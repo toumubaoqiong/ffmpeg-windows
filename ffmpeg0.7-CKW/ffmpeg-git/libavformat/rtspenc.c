@@ -69,7 +69,8 @@ int ff_rtsp_setup_output_streams(AVFormatContext *s, const char *addr)
     ff_url_join(sdp_ctx.filename, sizeof(sdp_ctx.filename),
                 "rtsp", NULL, addr, -1, NULL);
     ctx_array[0] = &sdp_ctx;
-    if (av_sdp_create(ctx_array, 1, sdp, SDP_MAX_SIZE)) {
+    if (av_sdp_create(ctx_array, 1, sdp, SDP_MAX_SIZE))
+    {
         av_free(sdp);
         return AVERROR_INVALIDDATA;
     }
@@ -82,7 +83,8 @@ int ff_rtsp_setup_output_streams(AVFormatContext *s, const char *addr)
         return AVERROR_INVALIDDATA;
 
     /* Set up the RTSPStreams for each AVStream */
-    for (i = 0; i < s->nb_streams; i++) {
+    for (i = 0; i < s->nb_streams; i++)
+    {
         RTSPStream *rtsp_st;
 
         rtsp_st = av_mallocz(sizeof(RTSPStream));
@@ -124,7 +126,8 @@ static int rtsp_write_header(AVFormatContext *s)
     if (ret)
         return ret;
 
-    if (rtsp_write_record(s) < 0) {
+    if (rtsp_write_record(s) < 0)
+    {
         ff_rtsp_close_streams(s);
         ff_rtsp_close_connections(s);
         return AVERROR_INVALIDDATA;
@@ -142,7 +145,8 @@ static int tcp_write_packet(AVFormatContext *s, RTSPStream *rtsp_st)
 
     size = avio_close_dyn_buf(rtpctx->pb, &buf);
     ptr = buf;
-    while (size > 4) {
+    while (size > 4)
+    {
         uint32_t packet_len = AV_RB32(ptr);
         int id;
         /* The interleaving header is exactly 4 bytes, which happens to be
@@ -180,11 +184,13 @@ static int rtsp_write_packet(AVFormatContext *s, AVPacket *pkt)
     AVFormatContext *rtpctx;
     int ret;
 
-    while (1) {
+    while (1)
+    {
         n = poll(&p, 1, 0);
         if (n <= 0)
             break;
-        if (p.revents & POLLIN) {
+        if (p.revents & POLLIN)
+        {
             RTSPMessageHeader reply;
 
             /* Don't let ff_rtsp_read_reply handle interleaved packets,
@@ -229,7 +235,8 @@ static int rtsp_write_close(AVFormatContext *s)
     return 0;
 }
 
-AVOutputFormat ff_rtsp_muxer = {
+AVOutputFormat ff_rtsp_muxer =
+{
     "rtsp",
     NULL_IF_CONFIG_SMALL("RTSP output format"),
     NULL,

@@ -21,33 +21,36 @@
 
 #include "avformat.h"
 
-typedef struct ASSContext{
+typedef struct ASSContext
+{
     unsigned int extra_index;
-}ASSContext;
+} ASSContext;
 
 static int write_header(AVFormatContext *s)
 {
     ASSContext *ass = s->priv_data;
-    AVCodecContext *avctx= s->streams[0]->codec;
-    uint8_t *last= NULL;
+    AVCodecContext *avctx = s->streams[0]->codec;
+    uint8_t *last = NULL;
 
-    if(s->nb_streams != 1 || avctx->codec_id != CODEC_ID_SSA){
+    if(s->nb_streams != 1 || avctx->codec_id != CODEC_ID_SSA)
+    {
         av_log(s, AV_LOG_ERROR, "Exactly one ASS/SSA stream is needed.\n");
         return -1;
     }
 
-    while(ass->extra_index < avctx->extradata_size){
+    while(ass->extra_index < avctx->extradata_size)
+    {
         uint8_t *p  = avctx->extradata + ass->extra_index;
-        uint8_t *end= strchr(p, '\n');
-        if(!end) end= avctx->extradata + avctx->extradata_size;
+        uint8_t *end = strchr(p, '\n');
+        if(!end) end = avctx->extradata + avctx->extradata_size;
         else     end++;
 
-        avio_write(s->pb, p, end-p);
-        ass->extra_index += end-p;
+        avio_write(s->pb, p, end - p);
+        ass->extra_index += end - p;
 
         if(last && !memcmp(last, "[Events]", 8))
             break;
-        last=p;
+        last = p;
     }
 
     avio_flush(s->pb);
@@ -67,17 +70,18 @@ static int write_packet(AVFormatContext *s, AVPacket *pkt)
 static int write_trailer(AVFormatContext *s)
 {
     ASSContext *ass = s->priv_data;
-    AVCodecContext *avctx= s->streams[0]->codec;
+    AVCodecContext *avctx = s->streams[0]->codec;
 
     avio_write(s->pb, avctx->extradata      + ass->extra_index,
-                      avctx->extradata_size - ass->extra_index);
+               avctx->extradata_size - ass->extra_index);
 
     avio_flush(s->pb);
 
     return 0;
 }
 
-AVOutputFormat ff_ass_muxer = {
+AVOutputFormat ff_ass_muxer =
+{
     .name           = "ass",
     .long_name      = NULL_IF_CONFIG_SMALL("Advanced SubStation Alpha subtitle format"),
     .mime_type      = "text/x-ssa",

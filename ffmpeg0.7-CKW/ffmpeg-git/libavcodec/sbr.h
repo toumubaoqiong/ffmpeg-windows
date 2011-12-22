@@ -36,7 +36,8 @@
 /**
  * Spectral Band Replication header - spectrum parameters that invoke a reset if they differ from the previous header.
  */
-typedef struct {
+typedef struct
+{
     uint8_t bs_start_freq;
     uint8_t bs_stop_freq;
     uint8_t bs_xover_band;
@@ -56,7 +57,8 @@ typedef struct {
 /**
  * Spectral Band Replication per channel data
  */
-typedef struct {
+typedef struct
+{
     /**
      * @defgroup aac_bitstream     Main bitstream data variables
      * @{
@@ -109,7 +111,8 @@ typedef struct {
 /**
  * Spectral Band Replication
  */
-typedef struct {
+typedef struct
+{
     int                sample_rate;
     int                start;
     int                reset;

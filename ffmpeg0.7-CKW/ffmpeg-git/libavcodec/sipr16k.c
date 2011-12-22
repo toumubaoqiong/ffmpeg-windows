@@ -53,23 +53,24 @@ static void dequant(float *out, const int *idx, const float *cbs[])
     int i;
 
     for (i = 0; i < 4; i++)
-        memcpy(out + 3*i, cbs[i] + 3*idx[i], 3*sizeof(float));
+        memcpy(out + 3 * i, cbs[i] + 3 * idx[i], 3 * sizeof(float));
 
-    memcpy(out + 12, cbs[4] + 4*idx[4], 4*sizeof(float));
+    memcpy(out + 12, cbs[4] + 4 * idx[4], 4 * sizeof(float));
 }
 
-static void lsf_decode_fp_16k(float* lsf_history, float* isp_new,
-                              const int* parm, int ma_pred)
+static void lsf_decode_fp_16k(float *lsf_history, float *isp_new,
+                              const int *parm, int ma_pred)
 {
     int i;
     float isp_q[LP_FILTER_ORDER_16k];
 
     dequant(isp_q, parm, lsf_codebooks_16k);
 
-    for (i = 0; i < LP_FILTER_ORDER_16k; i++) {
+    for (i = 0; i < LP_FILTER_ORDER_16k; i++)
+    {
         isp_new[i] = (1 - qu[ma_pred]) * isp_q[i]
-                    +     qu[ma_pred]  * lsf_history[i]
-                    + mean_lsf_16k[i];
+                     +     qu[ma_pred]  * lsf_history[i]
+                     + mean_lsf_16k[i];
     }
 
     memcpy(lsf_history, isp_q, LP_FILTER_ORDER_16k * sizeof(float));
@@ -77,25 +78,29 @@ static void lsf_decode_fp_16k(float* lsf_history, float* isp_new,
 
 static int dec_delay3_1st(int index)
 {
-    if (index < 390) {
+    if (index < 390)
+    {
         return index + 88;
-    } else
+    }
+    else
         return 3 * index - 690;
 }
 
 static int dec_delay3_2nd(int index, int pit_min, int pit_max,
                           int pitch_lag_prev)
 {
-    if (index < 62) {
+    if (index < 62)
+    {
         int pitch_delay_min = av_clip(pitch_lag_prev - 10,
                                       pit_min, pit_max - 19);
         return 3 * pitch_delay_min + index - 2;
-    } else
+    }
+    else
         return 3 * pitch_lag_prev;
 }
 
-static void postfilter(float *out_data, float* synth, float* iir_mem,
-                       float* filt_mem[2], float* mem_preemph)
+static void postfilter(float *out_data, float *synth, float *iir_mem,
+                       float *filt_mem[2], float *mem_preemph)
 {
     float buf[30 + LP_FILTER_ORDER_16k];
     float *tmpbuf = buf + LP_FILTER_ORDER_16k;
@@ -106,7 +111,7 @@ static void postfilter(float *out_data, float* synth, float* iir_mem,
         filt_mem[0][i] = iir_mem[i] * ff_pow_0_5[i];
 
     memcpy(tmpbuf - LP_FILTER_ORDER_16k, mem_preemph,
-           LP_FILTER_ORDER_16k*sizeof(*buf));
+           LP_FILTER_ORDER_16k * sizeof(*buf));
 
     ff_celp_lp_synthesis_filterf(tmpbuf, filt_mem[1], synth, 30,
                                  LP_FILTER_ORDER_16k);
@@ -126,11 +131,11 @@ static void postfilter(float *out_data, float* synth, float* iir_mem,
                                  LP_FILTER_ORDER_16k);
 
 
-    memcpy(mem_preemph, out_data + 2*L_SUBFR_16k - LP_FILTER_ORDER_16k,
+    memcpy(mem_preemph, out_data + 2 * L_SUBFR_16k - LP_FILTER_ORDER_16k,
            LP_FILTER_ORDER_16k * sizeof(*synth));
 
     FFSWAP(float *, filt_mem[0], filt_mem[1]);
-    for (i = 0, s = 0; i < 30; i++, s += 1.0/30)
+    for (i = 0, s = 0; i < 30; i++, s += 1.0 / 30)
         out_data[i] = tmpbuf[i] + s * (synth[i] - tmpbuf[i]);
 }
 
@@ -165,7 +170,7 @@ static float acelp_decode_gain_codef(float gain_corr_factor, const float *fc_v,
         ff_dot_productf(quant_energy, ma_prediction_coeff, ma_pred_order);
 
     mr_energy = gain_corr_factor * exp(M_LN10 / 20. * mr_energy) /
-        sqrt((0.01 + ff_dot_productf(fc_v, fc_v, subframe_size)));
+                sqrt((0.01 + ff_dot_productf(fc_v, fc_v, subframe_size)));
     return mr_energy;
 }
 
@@ -201,27 +206,30 @@ void ff_sipr_decode_frame_16k(SiprContext *ctx, SiprParameters *params,
     memcpy(synth - LP_FILTER_ORDER_16k, ctx->synth,
            LP_FILTER_ORDER_16k * sizeof(*synth));
 
-    for (i = 0; i < SUBFRAME_COUNT_16k; i++) {
+    for (i = 0; i < SUBFRAME_COUNT_16k; i++)
+    {
         int i_subfr = i * L_SUBFR_16k;
         AMRFixed f;
         float gain_corr_factor;
         int pitch_delay_int;
         int pitch_delay_frac;
 
-        if (!i) {
+        if (!i)
+        {
             pitch_delay_3x = dec_delay3_1st(params->pitch_delay[i]);
-        } else
+        }
+        else
             pitch_delay_3x = dec_delay3_2nd(params->pitch_delay[i],
                                             PITCH_MIN, PITCH_MAX,
                                             ctx->pitch_lag_prev);
 
         pitch_fac = gain_pitch_cb_16k[params->gp_index[i]];
         f.pitch_fac = FFMIN(pitch_fac, 1.0);
-        f.pitch_lag = DIVIDE_BY_3(pitch_delay_3x+1);
+        f.pitch_lag = DIVIDE_BY_3(pitch_delay_3x + 1);
         ctx->pitch_lag_prev = f.pitch_lag;
 
         pitch_delay_int  = DIVIDE_BY_3(pitch_delay_3x + 2);
-        pitch_delay_frac = pitch_delay_3x + 2 - 3*pitch_delay_int;
+        pitch_delay_frac = pitch_delay_3x + 2 - 3 * pitch_delay_int;
 
         ff_acelp_interpolatef(&excitation[i_subfr],
                               &excitation[i_subfr] - pitch_delay_int + 1,
@@ -238,10 +246,10 @@ void ff_sipr_decode_frame_16k(SiprContext *ctx, SiprParameters *params,
 
         gain_corr_factor = gain_cb_16k[params->gc_index[i]];
         gain_code = gain_corr_factor *
-            acelp_decode_gain_codef(sqrt(L_SUBFR_16k), fixed_vector,
-                                    19.0 - 15.0/(0.05*M_LN10/M_LN2),
-                                    pred_16k, ctx->energy_history,
-                                    L_SUBFR_16k, 2);
+                    acelp_decode_gain_codef(sqrt(L_SUBFR_16k), fixed_vector,
+                                            19.0 - 15.0 / (0.05 * M_LN10 / M_LN2),
+                                            pred_16k, ctx->energy_history,
+                                            L_SUBFR_16k, 2);
 
         ctx->energy_history[1] = ctx->energy_history[0];
         ctx->energy_history[0] = 20.0 * log10f(gain_corr_factor);
@@ -259,7 +267,7 @@ void ff_sipr_decode_frame_16k(SiprContext *ctx, SiprParameters *params,
            LP_FILTER_ORDER_16k * sizeof(*synth));
 
     memmove(ctx->excitation, ctx->excitation + 2 * L_SUBFR_16k,
-            (L_INTERPOL+PITCH_MAX) * sizeof(float));
+            (L_INTERPOL + PITCH_MAX) * sizeof(float));
 
     postfilter(out_data, synth, ctx->iir_mem, ctx->filt_mem, ctx->mem_preemph);
 
@@ -271,7 +279,7 @@ void ff_sipr_init_16k(SiprContext *ctx)
     int i;
 
     for (i = 0; i < LP_FILTER_ORDER_16k; i++)
-        ctx->lsp_history_16k[i] = cos((i + 1) * M_PI/(LP_FILTER_ORDER_16k + 1));
+        ctx->lsp_history_16k[i] = cos((i + 1) * M_PI / (LP_FILTER_ORDER_16k + 1));
 
     ctx->filt_mem[0] = ctx->filt_buf[0];
     ctx->filt_mem[1] = ctx->filt_buf[1];

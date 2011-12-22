@@ -28,17 +28,20 @@
 #include "libavcodec/mpegvideo.h"
 #include "libavcodec/dnxhddata.h"
 
-typedef struct {
+typedef struct
+{
     uint16_t mb;
     int value;
 } RCCMPEntry;
 
-typedef struct {
+typedef struct
+{
     int ssd;
     int bits;
 } RCEntry;
 
-typedef struct DNXHDEncContext {
+typedef struct DNXHDEncContext
+{
     AVClass *class;
     MpegEncContext m; ///< Used for quantization dsp functions
 

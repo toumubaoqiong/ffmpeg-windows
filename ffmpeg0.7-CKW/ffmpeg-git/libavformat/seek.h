@@ -28,7 +28,8 @@
 /**
  * structure to store parser state of one AVStream
  */
-typedef struct AVParserStreamState {
+typedef struct AVParserStreamState
+{
     // saved members of AVStream
     AVCodecParserContext   *parser;
     AVPacket                cur_pkt;
@@ -43,7 +44,8 @@ typedef struct AVParserStreamState {
 /**
  * structure to store parser state of AVFormat
  */
-typedef struct AVParserState {
+typedef struct AVParserState
+{
     int64_t         fpos;                   ///< file position at the time of call
 
     // saved members of AVFormatContext

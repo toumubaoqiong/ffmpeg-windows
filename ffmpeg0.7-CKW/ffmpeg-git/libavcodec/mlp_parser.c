@@ -33,58 +33,63 @@
 #include "mlp_parser.h"
 #include "mlp.h"
 
-static const uint8_t mlp_quants[16] = {
+static const uint8_t mlp_quants[16] =
+{
     16, 20, 24, 0, 0, 0, 0, 0,
-     0,  0,  0, 0, 0, 0, 0, 0,
+    0,  0,  0, 0, 0, 0, 0, 0,
 };
 
-static const uint8_t mlp_channels[32] = {
+static const uint8_t mlp_channels[32] =
+{
     1, 2, 3, 4, 3, 4, 5, 3, 4, 5, 4, 5, 6, 4, 5, 4,
     5, 6, 5, 5, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 };
 
-static const uint64_t mlp_layout[32] = {
+static const uint64_t mlp_layout[32] =
+{
     AV_CH_LAYOUT_MONO,
     AV_CH_LAYOUT_STEREO,
     AV_CH_LAYOUT_2_1,
     AV_CH_LAYOUT_2_2,
-    AV_CH_LAYOUT_STEREO|AV_CH_LOW_FREQUENCY,
-    AV_CH_LAYOUT_2_1|AV_CH_LOW_FREQUENCY,
-    AV_CH_LAYOUT_2_2|AV_CH_LOW_FREQUENCY,
+    AV_CH_LAYOUT_STEREO | AV_CH_LOW_FREQUENCY,
+    AV_CH_LAYOUT_2_1 | AV_CH_LOW_FREQUENCY,
+    AV_CH_LAYOUT_2_2 | AV_CH_LOW_FREQUENCY,
     AV_CH_LAYOUT_SURROUND,
     AV_CH_LAYOUT_4POINT0,
     AV_CH_LAYOUT_5POINT0,
-    AV_CH_LAYOUT_SURROUND|AV_CH_LOW_FREQUENCY,
-    AV_CH_LAYOUT_4POINT0|AV_CH_LOW_FREQUENCY,
+    AV_CH_LAYOUT_SURROUND | AV_CH_LOW_FREQUENCY,
+    AV_CH_LAYOUT_4POINT0 | AV_CH_LOW_FREQUENCY,
     AV_CH_LAYOUT_5POINT1,
     AV_CH_LAYOUT_4POINT0,
     AV_CH_LAYOUT_5POINT0,
-    AV_CH_LAYOUT_SURROUND|AV_CH_LOW_FREQUENCY,
-    AV_CH_LAYOUT_4POINT0|AV_CH_LOW_FREQUENCY,
+    AV_CH_LAYOUT_SURROUND | AV_CH_LOW_FREQUENCY,
+    AV_CH_LAYOUT_4POINT0 | AV_CH_LOW_FREQUENCY,
     AV_CH_LAYOUT_5POINT1,
-    AV_CH_LAYOUT_2_2|AV_CH_LOW_FREQUENCY,
+    AV_CH_LAYOUT_2_2 | AV_CH_LOW_FREQUENCY,
     AV_CH_LAYOUT_5POINT0,
     AV_CH_LAYOUT_5POINT1,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
-static const uint8_t thd_chancount[13] = {
-//  LR    C   LFE  LRs LRvh  LRc LRrs  Cs   Ts  LRsd  LRw  Cvh  LFE2
-     2,   1,   1,   2,   2,   2,   2,   1,   1,   2,   2,   1,   1
+static const uint8_t thd_chancount[13] =
+{
+    //  LR    C   LFE  LRs LRvh  LRc LRrs  Cs   Ts  LRsd  LRw  Cvh  LFE2
+    2,   1,   1,   2,   2,   2,   2,   1,   1,   2,   2,   1,   1
 };
 
-static const uint64_t thd_layout[13] = {
-    AV_CH_FRONT_LEFT|AV_CH_FRONT_RIGHT,                     // LR
+static const uint64_t thd_layout[13] =
+{
+    AV_CH_FRONT_LEFT | AV_CH_FRONT_RIGHT,                   // LR
     AV_CH_FRONT_CENTER,                                     // C
     AV_CH_LOW_FREQUENCY,                                    // LFE
-    AV_CH_SIDE_LEFT|AV_CH_SIDE_RIGHT,                       // LRs
-    AV_CH_TOP_FRONT_LEFT|AV_CH_TOP_FRONT_RIGHT,             // LRvh
-    AV_CH_SIDE_LEFT|AV_CH_SIDE_RIGHT,                       // LRc
-    AV_CH_BACK_LEFT|AV_CH_BACK_RIGHT,                       // LRrs
+    AV_CH_SIDE_LEFT | AV_CH_SIDE_RIGHT,                     // LRs
+    AV_CH_TOP_FRONT_LEFT | AV_CH_TOP_FRONT_RIGHT,           // LRvh
+    AV_CH_SIDE_LEFT | AV_CH_SIDE_RIGHT,                     // LRc
+    AV_CH_BACK_LEFT | AV_CH_BACK_RIGHT,                     // LRrs
     AV_CH_BACK_CENTER,                                      // Cs
     AV_CH_TOP_BACK_CENTER,                                  // Ts
-    AV_CH_SIDE_LEFT|AV_CH_SIDE_RIGHT,                       // LRsd
-    AV_CH_FRONT_LEFT_OF_CENTER|AV_CH_FRONT_RIGHT_OF_CENTER, // LRw
+    AV_CH_SIDE_LEFT | AV_CH_SIDE_RIGHT,                     // LRsd
+    AV_CH_FRONT_LEFT_OF_CENTER | AV_CH_FRONT_RIGHT_OF_CENTER, // LRw
     AV_CH_TOP_BACK_CENTER,                                  // Cvh
     AV_CH_LOW_FREQUENCY                                     // LFE2
 };
@@ -130,13 +135,15 @@ int ff_mlp_read_major_sync(void *log, MLPHeaderInfo *mh, GetBitContext *gb)
 
     assert(get_bits_count(gb) == 0);
 
-    if (gb->size_in_bits < 28 << 3) {
+    if (gb->size_in_bits < 28 << 3)
+    {
         av_log(log, AV_LOG_ERROR, "packet too short, unable to read major sync\n");
         return -1;
     }
 
     checksum = ff_mlp_checksum16(gb->buffer, 26);
-    if (checksum != AV_RL16(gb->buffer+26)) {
+    if (checksum != AV_RL16(gb->buffer + 26))
+    {
         av_log(log, AV_LOG_ERROR, "major sync info header checksum error\n");
         return -1;
     }
@@ -146,7 +153,8 @@ int ff_mlp_read_major_sync(void *log, MLPHeaderInfo *mh, GetBitContext *gb)
 
     mh->stream_type = get_bits(gb, 8);
 
-    if (mh->stream_type == 0xbb) {
+    if (mh->stream_type == 0xbb)
+    {
         mh->group1_bits = mlp_quants[get_bits(gb, 4)];
         mh->group2_bits = mlp_quants[get_bits(gb, 4)];
 
@@ -157,7 +165,9 @@ int ff_mlp_read_major_sync(void *log, MLPHeaderInfo *mh, GetBitContext *gb)
         skip_bits(gb, 11);
 
         mh->channels_mlp = get_bits(gb, 5);
-    } else if (mh->stream_type == 0xba) {
+    }
+    else if (mh->stream_type == 0xba)
+    {
         mh->group1_bits = 24; // TODO: Is this information actually conveyed anywhere?
         mh->group2_bits = 0;
 
@@ -172,7 +182,8 @@ int ff_mlp_read_major_sync(void *log, MLPHeaderInfo *mh, GetBitContext *gb)
         skip_bits(gb, 2);
 
         mh->channels_thd_stream2 = get_bits(gb, 13);
-    } else
+    }
+    else
         return -1;
 
     mh->access_unit_size = 40 << (ratebits & 7);
@@ -223,21 +234,25 @@ static int mlp_parse(AVCodecParserContext *s,
     if (buf_size == 0)
         return 0;
 
-    if (!mp->in_sync) {
+    if (!mp->in_sync)
+    {
         // Not in sync - find a major sync header
 
-        for (i = 0; i < buf_size; i++) {
+        for (i = 0; i < buf_size; i++)
+        {
             mp->pc.state = (mp->pc.state << 8) | buf[i];
             if ((mp->pc.state & 0xfffffffe) == 0xf8726fba &&
-                // ignore if we do not have the data for the start of header
-                mp->pc.index + i >= 7) {
+                    // ignore if we do not have the data for the start of header
+                    mp->pc.index + i >= 7)
+            {
                 mp->in_sync = 1;
                 mp->bytes_left = 0;
                 break;
             }
         }
 
-        if (!mp->in_sync) {
+        if (!mp->in_sync)
+        {
             ff_combine_frame(&mp->pc, END_NOT_FOUND, &buf, &buf_size);
             return buf_size;
         }
@@ -247,28 +262,32 @@ static int mlp_parse(AVCodecParserContext *s,
         return i - 7;
     }
 
-    if (mp->bytes_left == 0) {
+    if (mp->bytes_left == 0)
+    {
         // Find length of this packet
 
         /* Copy overread bytes from last frame into buffer. */
-        for(; mp->pc.overread>0; mp->pc.overread--) {
-            mp->pc.buffer[mp->pc.index++]= mp->pc.buffer[mp->pc.overread_index++];
+        for(; mp->pc.overread > 0; mp->pc.overread--)
+        {
+            mp->pc.buffer[mp->pc.index++] = mp->pc.buffer[mp->pc.overread_index++];
         }
 
-        if (mp->pc.index + buf_size < 2) {
+        if (mp->pc.index + buf_size < 2)
+        {
             ff_combine_frame(&mp->pc, END_NOT_FOUND, &buf, &buf_size);
             return buf_size;
         }
 
         mp->bytes_left = ((mp->pc.index > 0 ? mp->pc.buffer[0] : buf[0]) << 8)
-                       |  (mp->pc.index > 1 ? mp->pc.buffer[1] : buf[1-mp->pc.index]);
+                         |  (mp->pc.index > 1 ? mp->pc.buffer[1] : buf[1-mp->pc.index]);
         mp->bytes_left = (mp->bytes_left & 0xfff) * 2;
         mp->bytes_left -= mp->pc.index;
     }
 
     next = (mp->bytes_left > buf_size) ? END_NOT_FOUND : mp->bytes_left;
 
-    if (ff_combine_frame(&mp->pc, next, &buf, &buf_size) < 0) {
+    if (ff_combine_frame(&mp->pc, next, &buf, &buf_size) < 0)
+    {
         mp->bytes_left -= buf_size;
         return buf_size;
     }
@@ -277,27 +296,33 @@ static int mlp_parse(AVCodecParserContext *s,
 
     sync_present = (AV_RB32(buf + 4) & 0xfffffffe) == 0xf8726fba;
 
-    if (!sync_present) {
+    if (!sync_present)
+    {
         /* The first nibble of a frame is a parity check of the 4-byte
          * access unit header and all the 2- or 4-byte substream headers. */
         // Only check when this isn't a sync frame - syncs have a checksum.
 
         parity_bits = 0;
-        for (i = -1; i < mp->num_substreams; i++) {
+        for (i = -1; i < mp->num_substreams; i++)
+        {
             parity_bits ^= buf[p++];
             parity_bits ^= buf[p++];
 
-            if (i < 0 || buf[p-2] & 0x80) {
+            if (i < 0 || buf[p-2] & 0x80)
+            {
                 parity_bits ^= buf[p++];
                 parity_bits ^= buf[p++];
             }
         }
 
-        if ((((parity_bits >> 4) ^ parity_bits) & 0xF) != 0xF) {
+        if ((((parity_bits >> 4) ^ parity_bits) & 0xF) != 0xF)
+        {
             av_log(avctx, AV_LOG_INFO, "mlpparse: Parity check failed.\n");
             goto lost_sync;
         }
-    } else {
+    }
+    else
+    {
         GetBitContext gb;
         MLPHeaderInfo mh;
 
@@ -313,20 +338,27 @@ static int mlp_parse(AVCodecParserContext *s,
         avctx->sample_rate = mh.group1_samplerate;
         avctx->frame_size = mh.access_unit_size;
 
-        if (mh.stream_type == 0xbb) {
+        if (mh.stream_type == 0xbb)
+        {
             /* MLP stream */
             avctx->channels = mlp_channels[mh.channels_mlp];
             avctx->channel_layout = mlp_layout[mh.channels_mlp];
-        } else { /* mh.stream_type == 0xba */
+        }
+        else     /* mh.stream_type == 0xba */
+        {
             /* TrueHD stream */
-            if (mh.channels_thd_stream2) {
+            if (mh.channels_thd_stream2)
+            {
                 avctx->channels = truehd_channels(mh.channels_thd_stream2);
                 avctx->channel_layout = truehd_layout(mh.channels_thd_stream2);
-            } else {
+            }
+            else
+            {
                 avctx->channels = truehd_channels(mh.channels_thd_stream1);
                 avctx->channel_layout = truehd_layout(mh.channels_thd_stream1);
             }
-            if (av_get_channel_layout_nb_channels(avctx->channel_layout) != avctx->channels) {
+            if (av_get_channel_layout_nb_channels(avctx->channel_layout) != avctx->channels)
+            {
                 avctx->channel_layout = 0;
                 av_log_ask_for_sample(avctx, "Unknown channel layout.");
             }
@@ -348,7 +380,8 @@ lost_sync:
     return 1;
 }
 
-AVCodecParser ff_mlp_parser = {
+AVCodecParser ff_mlp_parser =
+{
     { CODEC_ID_MLP, CODEC_ID_TRUEHD },
     sizeof(MLPParseContext),
     mlp_init,

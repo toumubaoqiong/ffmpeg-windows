@@ -31,47 +31,58 @@
 
 static int cavsvideo_probe(AVProbeData *p)
 {
-    uint32_t code= -1;
-    int pic=0, seq=0, slice_pos = 0;
+    uint32_t code = -1;
+    int pic = 0, seq = 0, slice_pos = 0;
     int i;
 
-    for(i=0; i<p->buf_size; i++){
-        code = (code<<8) + p->buf[i];
-        if ((code & 0xffffff00) == 0x100) {
-            if(code < CAVS_SEQ_START_CODE) {
+    for(i = 0; i < p->buf_size; i++)
+    {
+        code = (code << 8) + p->buf[i];
+        if ((code & 0xffffff00) == 0x100)
+        {
+            if(code < CAVS_SEQ_START_CODE)
+            {
                 /* slices have to be consecutive */
                 if(code < slice_pos)
                     return 0;
                 slice_pos = code;
-            } else {
+            }
+            else
+            {
                 slice_pos = 0;
             }
-            if (code == CAVS_SEQ_START_CODE) {
+            if (code == CAVS_SEQ_START_CODE)
+            {
                 seq++;
                 /* check for the only currently supported profile */
                 if(p->buf[i+1] != CAVS_PROFILE_JIZHUN)
                     return 0;
-            } else if ((code == CAVS_PIC_I_START_CODE) ||
-                       (code == CAVS_PIC_PB_START_CODE)) {
+            }
+            else if ((code == CAVS_PIC_I_START_CODE) ||
+                     (code == CAVS_PIC_PB_START_CODE))
+            {
                 pic++;
-            } else if ((code == CAVS_UNDEF_START_CODE) ||
-                       (code >  CAVS_VIDEO_EDIT_CODE)) {
+            }
+            else if ((code == CAVS_UNDEF_START_CODE) ||
+                     (code >  CAVS_VIDEO_EDIT_CODE))
+            {
                 return 0;
             }
         }
     }
-    if(seq && seq*9<=pic*10)
-        return AVPROBE_SCORE_MAX/2;
+    if(seq && seq * 9 <= pic * 10)
+        return AVPROBE_SCORE_MAX / 2;
     return 0;
 }
 
-AVInputFormat ff_cavsvideo_demuxer = {
+AVInputFormat ff_cavsvideo_demuxer =
+{
     "cavsvideo",
     NULL_IF_CONFIG_SMALL("raw Chinese AVS video"),
     0,
     cavsvideo_probe,
     ff_raw_video_read_header,
     ff_raw_read_partial_packet,
-    .flags= AVFMT_GENERIC_INDEX,
+    .flags = AVFMT_GENERIC_INDEX,
     .value = CODEC_ID_CAVS,
 };

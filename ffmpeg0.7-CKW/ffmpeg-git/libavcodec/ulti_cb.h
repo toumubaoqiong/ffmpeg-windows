@@ -22,7 +22,8 @@
 #ifndef AVCODEC_ULTI_CB_H
 #define AVCODEC_ULTI_CB_H
 
-static const unsigned char ulti_codebook[16384]={
+static const unsigned char ulti_codebook[16384] =
+{
     0x00, 0x01, 0x01, 0x02,
     0x00, 0x01, 0x02, 0x03,
     0x00, 0x02, 0x03, 0x04,

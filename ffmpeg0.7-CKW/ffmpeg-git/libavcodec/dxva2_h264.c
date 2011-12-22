@@ -24,7 +24,8 @@
 #include "h264.h"
 #include "h264data.h"
 
-struct dxva2_picture_context {
+struct dxva2_picture_context
+{
     DXVA_PicParams_H264   pp;
     DXVA_Qmatrix_H264     qm;
     unsigned              slice_count;
@@ -37,7 +38,7 @@ struct dxva2_picture_context {
 static void fill_picture_entry(DXVA_PicEntry_H264 *pic,
                                unsigned index, unsigned flag)
 {
-    assert((index&0x7f) == index && (flag&0x01) == flag);
+    assert((index & 0x7f) == index && (flag & 0x01) == flag);
     pic->bPicEntry = index | (flag << 7);
 }
 
@@ -56,16 +57,21 @@ static void fill_picture_parameters(struct dxva_context *ctx, const H264Context 
     /* Configure the set of references */
     pp->UsedForReferenceFlags  = 0;
     pp->NonExistingFrameFlags  = 0;
-    for (i = 0, j = 0; i < FF_ARRAY_ELEMS(pp->RefFrameList); i++) {
+    for (i = 0, j = 0; i < FF_ARRAY_ELEMS(pp->RefFrameList); i++)
+    {
         const Picture *r;
-        if (j < h->short_ref_count) {
+        if (j < h->short_ref_count)
+        {
             r = h->short_ref[j++];
-        } else {
+        }
+        else
+        {
             r = NULL;
             while (!r && j < h->short_ref_count + 16)
                 r = h->long_ref[j++ - h->short_ref_count];
         }
-        if (r) {
+        if (r)
+        {
             fill_picture_entry(&pp->RefFrameList[i],
                                ff_dxva2_get_surface_index(ctx, r),
                                r->long_ref != 0);
@@ -77,10 +83,12 @@ static void fill_picture_parameters(struct dxva_context *ctx, const H264Context 
 
             pp->FrameNumList[i] = r->long_ref ? r->pic_id : r->frame_num;
             if (r->reference & PICT_TOP_FIELD)
-                pp->UsedForReferenceFlags |= 1 << (2*i + 0);
+                pp->UsedForReferenceFlags |= 1 << (2 * i + 0);
             if (r->reference & PICT_BOTTOM_FIELD)
-                pp->UsedForReferenceFlags |= 1 << (2*i + 1);
-        } else {
+                pp->UsedForReferenceFlags |= 1 << (2 * i + 1);
+        }
+        else
+        {
             pp->RefFrameList[i].bPicEntry = 0xff;
             pp->FieldOrderCntList[i][0]   = 0;
             pp->FieldOrderCntList[i][1]   = 0;
@@ -117,11 +125,11 @@ static void fill_picture_parameters(struct dxva_context *ctx, const H264Context 
     pp->StatusReportFeedbackNumber    = 1 + ctx->report_id++;
     pp->CurrFieldOrderCnt[0] = 0;
     if ((s->picture_structure & PICT_TOP_FIELD) &&
-        current_picture->field_poc[0] != INT_MAX)
+            current_picture->field_poc[0] != INT_MAX)
         pp->CurrFieldOrderCnt[0] = current_picture->field_poc[0];
     pp->CurrFieldOrderCnt[1] = 0;
     if ((s->picture_structure & PICT_BOTTOM_FIELD) &&
-        current_picture->field_poc[1] != INT_MAX)
+            current_picture->field_poc[1] != INT_MAX)
         pp->CurrFieldOrderCnt[1] = current_picture->field_poc[1];
     pp->pic_init_qs_minus26           = h->pps.init_qs - 26;
     pp->chroma_qp_index_offset        = h->pps.chroma_qp_index_offset[0];
@@ -144,9 +152,9 @@ static void fill_picture_parameters(struct dxva_context *ctx, const H264Context 
     pp->num_slice_groups_minus1       = h->pps.slice_group_count - 1;
     pp->slice_group_map_type          = h->pps.mb_slice_group_map_type;
     pp->deblocking_filter_control_present_flag = h->pps.deblocking_filter_parameters_present;
-    pp->redundant_pic_cnt_present_flag= h->pps.redundant_pic_cnt_present;
+    pp->redundant_pic_cnt_present_flag = h->pps.redundant_pic_cnt_present;
     pp->Reserved8BitsB                = 0;
-    pp->slice_group_change_rate_minus1= 0;  /* XXX not implemented by FFmpeg */
+    pp->slice_group_change_rate_minus1 = 0; /* XXX not implemented by FFmpeg */
     //pp->SliceGroupMap[810];               /* XXX not implemented by FFmpeg */
 }
 
@@ -208,35 +216,47 @@ static void fill_slice_long(AVCodecContext *avctx, DXVA_Slice_H264_Long *slice,
     slice->slice_beta_offset_div2       = h->slice_beta_offset     / 2 - 26;
     slice->Reserved8Bits                = 0;
 
-    for (list = 0; list < 2; list++) {
+    for (list = 0; list < 2; list++)
+    {
         unsigned i;
-        for (i = 0; i < FF_ARRAY_ELEMS(slice->RefPicList[list]); i++) {
-            if (list < h->list_count && i < h->ref_count[list]) {
+        for (i = 0; i < FF_ARRAY_ELEMS(slice->RefPicList[list]); i++)
+        {
+            if (list < h->list_count && i < h->ref_count[list])
+            {
                 const Picture *r = &h->ref_list[list][i];
                 unsigned plane;
                 fill_picture_entry(&slice->RefPicList[list][i],
                                    ff_dxva2_get_surface_index(ctx, r),
                                    r->reference == PICT_BOTTOM_FIELD);
-                for (plane = 0; plane < 3; plane++) {
+                for (plane = 0; plane < 3; plane++)
+                {
                     int w, o;
-                    if (plane == 0 && h->luma_weight_flag[list]) {
+                    if (plane == 0 && h->luma_weight_flag[list])
+                    {
                         w = h->luma_weight[i][list][0];
                         o = h->luma_weight[i][list][1];
-                    } else if (plane >= 1 && h->chroma_weight_flag[list]) {
+                    }
+                    else if (plane >= 1 && h->chroma_weight_flag[list])
+                    {
                         w = h->chroma_weight[i][list][plane-1][0];
                         o = h->chroma_weight[i][list][plane-1][1];
-                    } else {
+                    }
+                    else
+                    {
                         w = 1 << (plane == 0 ? h->luma_log2_weight_denom :
-                                               h->chroma_log2_weight_denom);
+                                  h->chroma_log2_weight_denom);
                         o = 0;
                     }
                     slice->Weights[list][i][plane][0] = w;
                     slice->Weights[list][i][plane][1] = o;
                 }
-            } else {
+            }
+            else
+            {
                 unsigned plane;
                 slice->RefPicList[list][i].bPicEntry = 0xff;
-                for (plane = 0; plane < 3; plane++) {
+                for (plane = 0; plane < 3; plane++)
+                {
                     slice->Weights[list][i][plane][0] = 0;
                     slice->Weights[list][i][plane][1] = 0;
                 }
@@ -257,8 +277,8 @@ static void fill_slice_long(AVCodecContext *avctx, DXVA_Slice_H264_Long *slice,
 }
 
 static int commit_bitstream_and_slice_buffer(AVCodecContext *avctx,
-                                             DXVA2_DecodeBufferDesc *bs,
-                                             DXVA2_DecodeBufferDesc *sc)
+        DXVA2_DecodeBufferDesc *bs,
+        DXVA2_DecodeBufferDesc *sc)
 {
     const H264Context *h = avctx->priv_data;
     const MpegEncContext *s = &h->s;
@@ -276,13 +296,14 @@ static int commit_bitstream_and_slice_buffer(AVCodecContext *avctx,
 
     /* Create an annex B bitstream buffer with only slice NAL and finalize slice */
     if (FAILED(IDirectXVideoDecoder_GetBuffer(ctx->decoder,
-                                               DXVA2_BitStreamDateBufferType,
-                                               &dxva_data, &dxva_size)))
+               DXVA2_BitStreamDateBufferType,
+               &dxva_data, &dxva_size)))
         return -1;
     current = dxva_data;
     end = dxva_data + dxva_size;
 
-    for (i = 0; i < ctx_pic->slice_count; i++) {
+    for (i = 0; i < ctx_pic->slice_count; i++)
+    {
         static const uint8_t start_code[] = { 0, 0, 1 };
         static const unsigned start_code_size = sizeof(start_code);
         unsigned position, size;
@@ -295,11 +316,12 @@ static int commit_bitstream_and_slice_buffer(AVCodecContext *avctx,
         if (is_slice_short(ctx))
             slice = &ctx_pic->slice_short[i];
         else
-            slice = (DXVA_Slice_H264_Short*)&ctx_pic->slice_long[i];
+            slice = (DXVA_Slice_H264_Short *)&ctx_pic->slice_long[i];
 
         position = slice->BSNALunitDataLocation;
         size     = slice->SliceBytesInBuffer;
-        if (start_code_size + size > end - current) {
+        if (start_code_size + size > end - current)
+        {
             av_log(avctx, AV_LOG_ERROR, "Failed to build bitstream");
             break;
         }
@@ -307,8 +329,9 @@ static int commit_bitstream_and_slice_buffer(AVCodecContext *avctx,
         slice->BSNALunitDataLocation = current - dxva_data;
         slice->SliceBytesInBuffer    = start_code_size + size;
 
-        if (!is_slice_short(ctx)) {
-            DXVA_Slice_H264_Long *slice_long = (DXVA_Slice_H264_Long*)slice;
+        if (!is_slice_short(ctx))
+        {
+            DXVA_Slice_H264_Long *slice_long = (DXVA_Slice_H264_Long *)slice;
             if (i < ctx_pic->slice_count - 1)
                 slice_long->NumMbsForSlice =
                     slice_long[1].first_mb_in_slice - slice_long[0].first_mb_in_slice;
@@ -323,14 +346,15 @@ static int commit_bitstream_and_slice_buffer(AVCodecContext *avctx,
         current += size;
     }
     padding = FFMIN(128 - ((current - dxva_data) & 127), end - current);
-    if (slice && padding > 0) {
+    if (slice && padding > 0)
+    {
         memset(current, 0, padding);
         current += padding;
 
         slice->SliceBytesInBuffer += padding;
     }
     if (FAILED(IDirectXVideoDecoder_ReleaseBuffer(ctx->decoder,
-                                                  DXVA2_BitStreamDateBufferType)))
+               DXVA2_BitStreamDateBufferType)))
         return -1;
     if (i < ctx_pic->slice_count)
         return -1;
@@ -340,10 +364,13 @@ static int commit_bitstream_and_slice_buffer(AVCodecContext *avctx,
     bs->DataSize             = current - dxva_data;
     bs->NumMBsInBuffer       = mb_count;
 
-    if (is_slice_short(ctx)) {
+    if (is_slice_short(ctx))
+    {
         slice_data = ctx_pic->slice_short;
         slice_size = ctx_pic->slice_count * sizeof(*ctx_pic->slice_short);
-    } else {
+    }
+    else
+    {
         slice_data = ctx_pic->slice_long;
         slice_size = ctx_pic->slice_count * sizeof(*ctx_pic->slice_long);
     }
@@ -413,7 +440,7 @@ static int end_frame(AVCodecContext *avctx)
     H264Context *h = avctx->priv_data;
     MpegEncContext *s = &h->s;
     struct dxva2_picture_context *ctx_pic =
-        h->s.current_picture_ptr->hwaccel_picture_private;
+                h->s.current_picture_ptr->hwaccel_picture_private;
 
     if (ctx_pic->slice_count <= 0 || ctx_pic->bitstream_size <= 0)
         return -1;
@@ -423,7 +450,8 @@ static int end_frame(AVCodecContext *avctx)
                                      commit_bitstream_and_slice_buffer);
 }
 
-AVHWAccel ff_h264_dxva2_hwaccel = {
+AVHWAccel ff_h264_dxva2_hwaccel =
+{
     .name           = "h264_dxva2",
     .type           = AVMEDIA_TYPE_VIDEO,
     .id             = CODEC_ID_H264,

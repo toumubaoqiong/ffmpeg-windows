@@ -25,7 +25,8 @@
 #define SYNCWORD2 0x4E1F
 #define BURST_HEADER_SIZE 0x8
 
-enum IEC61937DataType {
+enum IEC61937DataType
+{
     IEC61937_AC3                = 0x01,          ///< AC-3 data
     IEC61937_MPEG1_LAYER1       = 0x04,          ///< MPEG-1 layer 1
     IEC61937_MPEG1_LAYER23      = 0x05,          ///< MPEG-1 layer 2 or 3 data or MPEG-2 without extension
@@ -48,7 +49,8 @@ enum IEC61937DataType {
     IEC61937_TRUEHD             = 0x16,          ///< TrueHD data
 };
 
-static const uint16_t spdif_mpeg_pkt_offset[2][3] = {
+static const uint16_t spdif_mpeg_pkt_offset[2][3] =
+{
     //LAYER1  LAYER2  LAYER3
     { 3072,    9216,   4608 }, // MPEG2 LSF
     { 1536,    4608,   4608 }, // MPEG1

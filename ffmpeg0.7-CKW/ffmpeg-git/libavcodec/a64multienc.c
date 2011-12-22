@@ -36,7 +36,7 @@
 #define CROP_SCREENS  1
 
 /* gray gradient */
-static const int mc_colors[5]={0x0,0xb,0xc,0xf,0x1};
+static const int mc_colors[5] = {0x0, 0xb, 0xc, 0xf, 0x1};
 
 /* other possible gradients - to be tested */
 //static const int mc_colors[5]={0x0,0x8,0xa,0xf,0x7};
@@ -50,11 +50,16 @@ static void to_meta_with_crop(AVCodecContext *avctx, AVFrame *p, int *dest)
     int width  = FFMIN(avctx->width , C64XRES);
     uint8_t *src = p->data[0];
 
-    for (blocky = 0; blocky < C64YRES; blocky += 8) {
-        for (blockx = 0; blockx < C64XRES; blockx += 8) {
-            for (y = blocky; y < blocky + 8 && y < C64YRES; y++) {
-                for (x = blockx; x < blockx + 8 && x < C64XRES; x += 2) {
-                    if(x < width && y < height) {
+    for (blocky = 0; blocky < C64YRES; blocky += 8)
+    {
+        for (blockx = 0; blockx < C64XRES; blockx += 8)
+        {
+            for (y = blocky; y < blocky + 8 && y < C64YRES; y++)
+            {
+                for (x = blockx; x < blockx + 8 && x < C64XRES; x += 2)
+                {
+                    if(x < width && y < height)
+                    {
                         /* build average over 2 pixels */
                         luma = (src[(x + 0 + y * p->linesize[0])] +
                                 src[(x + 1 + y * p->linesize[0])]) / 2;
@@ -86,11 +91,14 @@ static void render_charset(AVCodecContext *avctx, uint8_t *charset,
 
     /* generate lookup-tables for dither and index before looping */
     i = 0;
-    for (a=0; a < 256; a++) {
-        if(i < c->mc_pal_size -1 && a == c->mc_luma_vals[i + 1]) {
+    for (a = 0; a < 256; a++)
+    {
+        if(i < c->mc_pal_size - 1 && a == c->mc_luma_vals[i + 1])
+        {
             distance = c->mc_luma_vals[i + 1] - c->mc_luma_vals[i];
-            for(b = 0; b <= distance; b++) {
-                  dither[c->mc_luma_vals[i] + b] = b * (DITHERSTEPS - 1) / distance;
+            for(b = 0; b <= distance; b++)
+            {
+                dither[c->mc_luma_vals[i] + b] = b * (DITHERSTEPS - 1) / distance;
             }
             i++;
         }
@@ -100,12 +108,16 @@ static void render_charset(AVCodecContext *avctx, uint8_t *charset,
     }
 
     /* and render charset */
-    for (charpos = 0; charpos < CHARSET_CHARS; charpos++) {
+    for (charpos = 0; charpos < CHARSET_CHARS; charpos++)
+    {
         lowdiff  = 0;
         highdiff = 0;
-        for (y = 0; y < 8; y++) {
-            row1 = 0; row2 = 0;
-            for (x = 0; x < 4; x++) {
+        for (y = 0; y < 8; y++)
+        {
+            row1 = 0;
+            row2 = 0;
+            for (x = 0; x < 4; x++)
+            {
                 pix = best_cb[y * 4 + x];
 
                 /* accumulate error for brightest/darkest color */
@@ -116,40 +128,48 @@ static void render_charset(AVCodecContext *avctx, uint8_t *charset,
 
                 row1 <<= 2;
 
-                if (INTERLACED) {
+                if (INTERLACED)
+                {
                     row2 <<= 2;
                     if (interlaced_dither_patterns[dither[pix]][(y & 3) * 2 + 0][x & 3])
-                        row1 |= 3-(index2[pix] & 3);
+                        row1 |= 3 - (index2[pix] & 3);
                     else
-                        row1 |= 3-(index1[pix] & 3);
+                        row1 |= 3 - (index1[pix] & 3);
 
                     if (interlaced_dither_patterns[dither[pix]][(y & 3) * 2 + 1][x & 3])
-                        row2 |= 3-(index2[pix] & 3);
+                        row2 |= 3 - (index2[pix] & 3);
                     else
-                        row2 |= 3-(index1[pix] & 3);
+                        row2 |= 3 - (index1[pix] & 3);
                 }
-                else {
+                else
+                {
                     if (multi_dither_patterns[dither[pix]][(y & 3)][x & 3])
-                        row1 |= 3-(index2[pix] & 3);
+                        row1 |= 3 - (index2[pix] & 3);
                     else
-                        row1 |= 3-(index1[pix] & 3);
+                        row1 |= 3 - (index1[pix] & 3);
                 }
             }
             charset[y+0x000] = row1;
             if (INTERLACED) charset[y+0x800] = row2;
         }
         /* do we need to adjust pixels? */
-        if (highdiff > 0 && lowdiff > 0 && c->mc_use_5col) {
-            if (lowdiff > highdiff) {
+        if (highdiff > 0 && lowdiff > 0 && c->mc_use_5col)
+        {
+            if (lowdiff > highdiff)
+            {
                 for (x = 0; x < 32; x++)
                     best_cb[x] = FFMIN(c->mc_luma_vals[3], best_cb[x]);
-            } else {
+            }
+            else
+            {
                 for (x = 0; x < 32; x++)
                     best_cb[x] = FFMAX(c->mc_luma_vals[1], best_cb[x]);
             }
             charpos--;          /* redo now adjusted char */
-        /* no adjustment needed, all fine */
-        } else {
+            /* no adjustment needed, all fine */
+        }
+        else
+        {
             /* advance pointers */
             best_cb += 32;
             charset += 8;
@@ -177,9 +197,12 @@ static av_cold int a64multi_init_encoder(AVCodecContext *avctx)
     int a;
     av_lfg_init(&c->randctx, 1);
 
-    if (avctx->global_quality < 1) {
+    if (avctx->global_quality < 1)
+    {
         c->mc_lifetime = 4;
-    } else {
+    }
+    else
+    {
         c->mc_lifetime = avctx->global_quality /= FF_QP2LAMBDA;
     }
 
@@ -190,23 +213,26 @@ static av_cold int a64multi_init_encoder(AVCodecContext *avctx)
     c->mc_pal_size      = 4 + c->mc_use_5col;
 
     /* precalc luma values for later use */
-    for (a = 0; a < c->mc_pal_size; a++) {
-        c->mc_luma_vals[a]=a64_palette[mc_colors[a]][0] * 0.30 +
-                           a64_palette[mc_colors[a]][1] * 0.59 +
-                           a64_palette[mc_colors[a]][2] * 0.11;
+    for (a = 0; a < c->mc_pal_size; a++)
+    {
+        c->mc_luma_vals[a] = a64_palette[mc_colors[a]][0] * 0.30 +
+                             a64_palette[mc_colors[a]][1] * 0.59 +
+                             a64_palette[mc_colors[a]][2] * 0.11;
     }
 
     if (!(c->mc_meta_charset = av_malloc(32000 * c->mc_lifetime * sizeof(int))) ||
-       !(c->mc_best_cb       = av_malloc(CHARSET_CHARS * 32 * sizeof(int)))     ||
-       !(c->mc_charmap       = av_mallocz(1000 * c->mc_lifetime * sizeof(int))) ||
-       !(c->mc_colram        = av_mallocz(CHARSET_CHARS * sizeof(uint8_t)))     ||
-       !(c->mc_charset       = av_malloc(0x800 * (INTERLACED+1) * sizeof(uint8_t)))) {
+            !(c->mc_best_cb       = av_malloc(CHARSET_CHARS * 32 * sizeof(int)))     ||
+            !(c->mc_charmap       = av_mallocz(1000 * c->mc_lifetime * sizeof(int))) ||
+            !(c->mc_colram        = av_mallocz(CHARSET_CHARS * sizeof(uint8_t)))     ||
+            !(c->mc_charset       = av_malloc(0x800 * (INTERLACED + 1) * sizeof(uint8_t))))
+    {
         av_log(avctx, AV_LOG_ERROR, "Failed to allocate buffer memory.\n");
         return AVERROR(ENOMEM);
     }
 
     /* set up extradata */
-    if (!(avctx->extradata = av_mallocz(8 * 4 + FF_INPUT_BUFFER_PADDING_SIZE))) {
+    if (!(avctx->extradata = av_mallocz(8 * 4 + FF_INPUT_BUFFER_PADDING_SIZE)))
+    {
         av_log(avctx, AV_LOG_ERROR, "Failed to allocate memory for extradata.\n");
         return AVERROR(ENOMEM);
     }
@@ -219,7 +245,7 @@ static av_cold int a64multi_init_encoder(AVCodecContext *avctx)
     avctx->coded_frame->pict_type = FF_I_TYPE;
     avctx->coded_frame->key_frame = 1;
     if (!avctx->codec_tag)
-         avctx->codec_tag = AV_RL32("a64m");
+        avctx->codec_tag = AV_RL32("a64m");
 
     return 0;
 }
@@ -230,7 +256,8 @@ static void a64_compress_colram(unsigned char *buf, int *charmap, uint8_t *colra
     uint8_t temp;
     /* only needs to be done in 5col mode */
     /* XXX could be squeezed to 0x80 bytes */
-    for (a = 0; a < 256; a++) {
+    for (a = 0; a < 256; a++)
+    {
         temp  = colram[charmap[a + 0x000]] << 0;
         temp |= colram[charmap[a + 0x100]] << 1;
         temp |= colram[charmap[a + 0x200]] << 2;
@@ -264,31 +291,39 @@ static int a64multi_encode_frame(AVCodecContext *avctx, unsigned char *buf,
     int colram_size  = 0x100 * c->mc_use_5col;
     int screen_size;
 
-    if(CROP_SCREENS) {
-        b_height = FFMIN(avctx->height,C64YRES) >> 3;
-        b_width  = FFMIN(avctx->width ,C64XRES) >> 3;
+    if(CROP_SCREENS)
+    {
+        b_height = FFMIN(avctx->height, C64YRES) >> 3;
+        b_width  = FFMIN(avctx->width , C64XRES) >> 3;
         screen_size = b_width * b_height;
-    } else {
+    }
+    else
+    {
         b_height = C64YRES >> 3;
         b_width  = C64XRES >> 3;
         screen_size = 0x400;
     }
 
     /* no data, means end encoding asap */
-    if (!data) {
+    if (!data)
+    {
         /* all done, end encoding */
         if (!c->mc_lifetime) return 0;
         /* no more frames in queue, prepare to flush remaining frames */
-        if (!c->mc_frame_counter) {
+        if (!c->mc_frame_counter)
+        {
             num_frames = c->mc_lifetime;
             c->mc_lifetime = 0;
         }
         /* still frames in queue so limit lifetime to remaining frames */
         else c->mc_lifetime = c->mc_frame_counter;
-    /* still new data available */
-    } else {
+        /* still new data available */
+    }
+    else
+    {
         /* fill up mc_meta_charset with data until lifetime exceeds */
-        if (c->mc_frame_counter < c->mc_lifetime) {
+        if (c->mc_frame_counter < c->mc_lifetime)
+        {
             *p = *pict;
             p->pict_type = FF_I_TYPE;
             p->key_frame = 1;
@@ -300,10 +335,12 @@ static int a64multi_encode_frame(AVCodecContext *avctx, unsigned char *buf,
     }
 
     /* lifetime reached so now convert X frames at once */
-    if (c->mc_frame_counter == c->mc_lifetime) {
+    if (c->mc_frame_counter == c->mc_lifetime)
+    {
         req_size = 0;
         /* any frames to encode? */
-        if (c->mc_lifetime) {
+        if (c->mc_lifetime)
+        {
             /* calc optimal new charset + charmaps */
             ff_init_elbg(meta, 32, 1000 * c->mc_lifetime, best_cb, CHARSET_CHARS, 50, charmap, &c->randctx);
             ff_do_elbg  (meta, 32, 1000 * c->mc_lifetime, best_cb, CHARSET_CHARS, 50, charmap, &c->randctx);
@@ -312,7 +349,7 @@ static int a64multi_encode_frame(AVCodecContext *avctx, unsigned char *buf,
             render_charset(avctx, charset, colram);
 
             /* copy charset to buf */
-            memcpy(buf,charset, charset_size);
+            memcpy(buf, charset, charset_size);
 
             /* advance pointers */
             buf      += charset_size;
@@ -323,11 +360,14 @@ static int a64multi_encode_frame(AVCodecContext *avctx, unsigned char *buf,
         else memset(buf, 0, charset_size);
 
         /* write x frames to buf */
-        for (frame = 0; frame < c->mc_lifetime; frame++) {
+        for (frame = 0; frame < c->mc_lifetime; frame++)
+        {
             /* copy charmap to buf. buf is uchar*, charmap is int*, so no memcpy here, sorry */
-            for (y = 0; y < b_height; y++) {
-                for (x = 0; x < b_width; x++) {
-                    buf[y * b_width + x] = charmap[y * b_width + x];
+            for (y = 0; y < b_height; y++)
+            {
+                for (x = 0; x < b_width; x++)
+                {
+                    buf[y *b_width + x] = charmap[y * b_width + x];
                 }
             }
             /* advance pointers */
@@ -335,7 +375,8 @@ static int a64multi_encode_frame(AVCodecContext *avctx, unsigned char *buf,
             req_size += screen_size;
 
             /* compress and copy colram to buf */
-            if (c->mc_use_5col) {
+            if (c->mc_use_5col)
+            {
                 a64_compress_colram(buf, charmap, colram);
                 /* advance pointers */
                 buf += colram_size;
@@ -353,7 +394,8 @@ static int a64multi_encode_frame(AVCodecContext *avctx, unsigned char *buf,
         /* reset counter */
         c->mc_frame_counter = 0;
 
-        if (req_size > buf_size) {
+        if (req_size > buf_size)
+        {
             av_log(avctx, AV_LOG_ERROR, "buf size too small (need %d, got %d)\n", req_size, buf_size);
             return -1;
         }
@@ -362,7 +404,8 @@ static int a64multi_encode_frame(AVCodecContext *avctx, unsigned char *buf,
     return 0;
 }
 
-AVCodec ff_a64multi_encoder = {
+AVCodec ff_a64multi_encoder =
+{
     .name           = "a64multi",
     .type           = AVMEDIA_TYPE_VIDEO,
     .id             = CODEC_ID_A64_MULTI,
@@ -370,12 +413,16 @@ AVCodec ff_a64multi_encoder = {
     .init           = a64multi_init_encoder,
     .encode         = a64multi_encode_frame,
     .close          = a64multi_close_encoder,
-    .pix_fmts       = (const enum PixelFormat[]) {PIX_FMT_GRAY8, PIX_FMT_NONE},
+    .pix_fmts       = (const enum PixelFormat[])
+    {
+        PIX_FMT_GRAY8, PIX_FMT_NONE
+    },
     .long_name      = NULL_IF_CONFIG_SMALL("Multicolor charset for Commodore 64"),
     .capabilities   = CODEC_CAP_DELAY,
 };
 
-AVCodec ff_a64multi5_encoder = {
+AVCodec ff_a64multi5_encoder =
+{
     .name           = "a64multi5",
     .type           = AVMEDIA_TYPE_VIDEO,
     .id             = CODEC_ID_A64_MULTI5,
@@ -383,7 +430,10 @@ AVCodec ff_a64multi5_encoder = {
     .init           = a64multi_init_encoder,
     .encode         = a64multi_encode_frame,
     .close          = a64multi_close_encoder,
-    .pix_fmts       = (const enum PixelFormat[]) {PIX_FMT_GRAY8, PIX_FMT_NONE},
+    .pix_fmts       = (const enum PixelFormat[])
+    {
+        PIX_FMT_GRAY8, PIX_FMT_NONE
+    },
     .long_name      = NULL_IF_CONFIG_SMALL("Multicolor charset for Commodore 64, extended with 5th color (colram)"),
     .capabilities   = CODEC_CAP_DELAY,
 };

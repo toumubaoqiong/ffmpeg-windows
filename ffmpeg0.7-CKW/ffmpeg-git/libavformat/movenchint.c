@@ -33,7 +33,7 @@ int ff_mov_init_hinting(AVFormatContext *s, int index, int src_index)
     AVStream *src_st    = s->streams[src_index];
     int ret = AVERROR(ENOMEM);
 
-    track->tag = MKTAG('r','t','p',' ');
+    track->tag = MKTAG('r', 't', 'p', ' ');
     track->src_track = src_index;
 
     track->enc = avcodec_alloc_context();
@@ -101,10 +101,11 @@ static void sample_queue_push(HintSampleQueue *queue, AVPacket *pkt, int sample)
      * with immediates is more efficient. */
     if (pkt->size <= 14)
         return;
-    if (!queue->samples || queue->len >= queue->size) {
-        HintSample* samples;
+    if (!queue->samples || queue->len >= queue->size)
+    {
+        HintSample *samples;
         queue->size += 10;
-        samples = av_realloc(queue->samples, sizeof(HintSample)*queue->size);
+        samples = av_realloc(queue->samples, sizeof(HintSample) * queue->size);
         if (!samples)
             return;
         queue->samples = samples;
@@ -123,11 +124,14 @@ static void sample_queue_push(HintSampleQueue *queue, AVPacket *pkt, int sample)
 static void sample_queue_retain(HintSampleQueue *queue)
 {
     int i;
-    for (i = 0; i < queue->len; ) {
+    for (i = 0; i < queue->len; )
+    {
         HintSample *sample = &queue->samples[i];
-        if (!sample->own_data) {
-            uint8_t* ptr = av_malloc(sample->size);
-            if (!ptr) {
+        if (!sample->own_data)
+        {
+            uint8_t *ptr = av_malloc(sample->size);
+            if (!ptr)
+            {
                 /* Unable to allocate memory for this one, remove it */
                 memmove(queue->samples + i, queue->samples + i + 1,
                         sizeof(HintSample)*(queue->len - i - 1));
@@ -164,13 +168,14 @@ static int match_segments(const uint8_t *haystack, int h_len,
                           int *match_len_ptr)
 {
     int h_pos;
-    for (h_pos = 0; h_pos < h_len; h_pos++) {
+    for (h_pos = 0; h_pos < h_len; h_pos++)
+    {
         int match_len = 0;
         int match_h_pos, match_n_pos;
 
         /* Check how many bytes match at needle[n_pos] and haystack[h_pos] */
         while (h_pos + match_len < h_len && n_pos + match_len < n_len &&
-               needle[n_pos + match_len] == haystack[h_pos + match_len])
+                needle[n_pos + match_len] == haystack[h_pos + match_len])
             match_len++;
         if (match_len <= 8)
             continue;
@@ -180,7 +185,8 @@ static int match_segments(const uint8_t *haystack, int h_len,
         match_h_pos = h_pos;
         match_n_pos = n_pos;
         while (match_n_pos > 0 && match_h_pos > 0 &&
-               needle[match_n_pos - 1] == haystack[match_h_pos - 1]) {
+                needle[match_n_pos - 1] == haystack[match_h_pos - 1])
+        {
             match_n_pos--;
             match_h_pos--;
             match_len++;
@@ -215,7 +221,8 @@ static int find_sample_match(const uint8_t *data, int len,
                              int *match_sample, int *match_offset,
                              int *match_len)
 {
-    while (queue->len > 0) {
+    while (queue->len > 0)
+    {
         HintSample *sample = &queue->samples[0];
         /* If looking for matches in a new sample, skip the first 5 bytes,
          * since they often may be modified/removed in the output packet. */
@@ -223,7 +230,8 @@ static int find_sample_match(const uint8_t *data, int len,
             sample->offset = 5;
 
         if (match_segments(data, len, sample->data, sample->offset,
-                           sample->size, pos, match_offset, match_len) == 0) {
+                           sample->size, pos, match_offset, match_len) == 0)
+        {
             *match_sample = sample->sample_number;
             /* Next time, look for matches at this offset, with a little
              * margin to this match. */
@@ -233,11 +241,14 @@ static int find_sample_match(const uint8_t *data, int len,
             return 0;
         }
 
-        if (sample->offset < 10 && sample->size > 20) {
+        if (sample->offset < 10 && sample->size > 20)
+        {
             /* No match found from the start of the sample,
              * try from the middle of the sample instead. */
-            sample->offset = sample->size/2;
-        } else {
+            sample->offset = sample->size / 2;
+        }
+        else
+        {
             /* No match for this sample, remove it */
             sample_queue_pop(queue);
         }
@@ -248,7 +259,8 @@ static int find_sample_match(const uint8_t *data, int len,
 static void output_immediate(const uint8_t *data, int size,
                              AVIOContext *out, int *entries)
 {
-    while (size > 0) {
+    while (size > 0)
+    {
         int len = size;
         if (len > 14)
             len = 14;
@@ -283,7 +295,8 @@ static void describe_payload(const uint8_t *data, int size,
                              HintSampleQueue *queue)
 {
     /* Describe the payload using different constructors */
-    while (size > 0) {
+    while (size > 0)
+    {
         int match_sample, match_offset, match_len, pos;
         if (find_sample_match(data, size, queue, &pos, &match_sample,
                               &match_offset, &match_len) < 0)
@@ -322,7 +335,8 @@ static int write_hint_packets(AVIOContext *out, const uint8_t *data,
     avio_wb16(out, 0); /* packet count */
     avio_wb16(out, 0); /* reserved */
 
-    while (size > 4) {
+    while (size > 4)
+    {
         uint32_t packet_len = AV_RB32(data);
         uint16_t seq;
         uint32_t ts;
@@ -331,7 +345,8 @@ static int write_hint_packets(AVIOContext *out, const uint8_t *data,
         size -= 4;
         if (packet_len > size || packet_len <= 12)
             break;
-        if (data[1] >= 200 && data[1] <= 204) {
+        if (data[1] >= 200 && data[1] <= 204)
+        {
             /* RTCP packet, just skip */
             data += packet_len;
             size -= packet_len;
@@ -411,7 +426,7 @@ int ff_mov_add_hinted_packet(AVFormatContext *s, AVPacket *pkt,
      * for next time. */
     size = avio_close_dyn_buf(rtp_ctx->pb, &buf);
     if ((ret = ffio_open_dyn_packet_buf(&rtp_ctx->pb,
-                                       RTP_MAX_PACKET_SIZE)) < 0)
+                                        RTP_MAX_PACKET_SIZE)) < 0)
         goto done;
 
     if (size <= 0)
@@ -439,15 +454,17 @@ done:
     return ret;
 }
 
-void ff_mov_close_hinting(MOVTrack *track) {
-    AVFormatContext* rtp_ctx = track->rtp_ctx;
+void ff_mov_close_hinting(MOVTrack *track)
+{
+    AVFormatContext *rtp_ctx = track->rtp_ctx;
     uint8_t *ptr;
 
     av_freep(&track->enc);
     sample_queue_free(&track->sample_queue);
     if (!rtp_ctx)
         return;
-    if (rtp_ctx->pb) {
+    if (rtp_ctx->pb)
+    {
         av_write_trailer(rtp_ctx);
         avio_close_dyn_buf(rtp_ctx->pb, &ptr);
         av_free(ptr);

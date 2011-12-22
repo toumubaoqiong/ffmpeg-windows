@@ -52,8 +52,9 @@
 #define MM_PALETTE_COUNT    128
 #define MM_PALETTE_SIZE     (MM_PALETTE_COUNT*3)
 
-typedef struct {
-  unsigned int audio_pts, video_pts;
+typedef struct
+{
+    unsigned int audio_pts, video_pts;
 } MmDemuxContext;
 
 static int probe(AVProbeData *p)
@@ -81,7 +82,7 @@ static int probe(AVProbeData *p)
 }
 
 static int read_header(AVFormatContext *s,
-                           AVFormatParameters *ap)
+                       AVFormatParameters *ap)
 {
     MmDemuxContext *mm = s->priv_data;
     AVIOContext *pb = s->pb;
@@ -116,7 +117,8 @@ static int read_header(AVFormatContext *s,
     av_set_pts_info(st, 64, 1, frame_rate);
 
     /* audio stream */
-    if (length == MM_HEADER_LEN_AV) {
+    if (length == MM_HEADER_LEN_AV)
+    {
         st = av_new_stream(s, 0);
         if (!st)
             return AVERROR(ENOMEM);
@@ -134,23 +136,26 @@ static int read_header(AVFormatContext *s,
 }
 
 static int read_packet(AVFormatContext *s,
-                           AVPacket *pkt)
+                       AVPacket *pkt)
 {
     MmDemuxContext *mm = s->priv_data;
     AVIOContext *pb = s->pb;
     unsigned char preamble[MM_PREAMBLE_SIZE];
     unsigned int type, length;
 
-    while(1) {
+    while(1)
+    {
 
-        if (avio_read(pb, preamble, MM_PREAMBLE_SIZE) != MM_PREAMBLE_SIZE) {
+        if (avio_read(pb, preamble, MM_PREAMBLE_SIZE) != MM_PREAMBLE_SIZE)
+        {
             return AVERROR(EIO);
         }
 
         type = AV_RL16(&preamble[0]);
         length = AV_RL16(&preamble[2]);
 
-        switch(type) {
+        switch(type)
+        {
         case MM_TYPE_PALETTE :
         case MM_TYPE_INTER :
         case MM_TYPE_INTRA :
@@ -167,12 +172,12 @@ static int read_packet(AVFormatContext *s,
             pkt->size = length + MM_PREAMBLE_SIZE;
             pkt->stream_index = 0;
             pkt->pts = mm->video_pts;
-            if (type!=MM_TYPE_PALETTE)
+            if (type != MM_TYPE_PALETTE)
                 mm->video_pts++;
             return 0;
 
         case MM_TYPE_AUDIO :
-            if (av_get_packet(s->pb, pkt, length)<0)
+            if (av_get_packet(s->pb, pkt, length) < 0)
                 return AVERROR(ENOMEM);
             pkt->size = length;
             pkt->stream_index = 1;
@@ -188,7 +193,8 @@ static int read_packet(AVFormatContext *s,
     return 0;
 }
 
-AVInputFormat ff_mm_demuxer = {
+AVInputFormat ff_mm_demuxer =
+{
     "mm",
     NULL_IF_CONFIG_SMALL("American Laser Games MM format"),
     sizeof(MmDemuxContext),

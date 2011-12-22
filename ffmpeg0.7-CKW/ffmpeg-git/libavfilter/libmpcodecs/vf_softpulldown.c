@@ -29,7 +29,8 @@
 
 #include "libvo/fastmemcpy.h"
 
-struct vf_priv_s {
+struct vf_priv_s
+{
     int state;
     long long in;
     long long out;
@@ -49,9 +50,10 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
     vf->priv->in++;
 
     if ((state == 0 &&
-         !(flags & MP_IMGFIELD_TOP_FIRST)) ||
-        (state == 1 &&
-         flags & MP_IMGFIELD_TOP_FIRST)) {
+            !(flags & MP_IMGFIELD_TOP_FIRST)) ||
+            (state == 1 &&
+             flags & MP_IMGFIELD_TOP_FIRST))
+    {
         mp_msg(MSGT_VFILTER, MSGL_WARN,
                "softpulldown: Unexpected field flags: state=%d top_field_first=%d repeat_first_field=%d\n",
                state,
@@ -60,66 +62,76 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
         state ^= 1;
     }
 
-    if (state == 0) {
+    if (state == 0)
+    {
         ret = vf_next_put_image(vf, mpi, MP_NOPTS_VALUE);
         vf->priv->out++;
-        if (flags & MP_IMGFIELD_REPEAT_FIRST) {
+        if (flags & MP_IMGFIELD_REPEAT_FIRST)
+        {
             my_memcpy_pic(dmpi->planes[0],
-                       mpi->planes[0], mpi->w, mpi->h/2,
-                       dmpi->stride[0]*2, mpi->stride[0]*2);
-            if (mpi->flags & MP_IMGFLAG_PLANAR) {
+                          mpi->planes[0], mpi->w, mpi->h / 2,
+                          dmpi->stride[0] * 2, mpi->stride[0] * 2);
+            if (mpi->flags & MP_IMGFLAG_PLANAR)
+            {
                 my_memcpy_pic(dmpi->planes[1],
                               mpi->planes[1],
                               mpi->chroma_width,
-                              mpi->chroma_height/2,
-                              dmpi->stride[1]*2,
-                              mpi->stride[1]*2);
+                              mpi->chroma_height / 2,
+                              dmpi->stride[1] * 2,
+                              mpi->stride[1] * 2);
                 my_memcpy_pic(dmpi->planes[2],
                               mpi->planes[2],
                               mpi->chroma_width,
-                              mpi->chroma_height/2,
-                              dmpi->stride[2]*2,
-                              mpi->stride[2]*2);
+                              mpi->chroma_height / 2,
+                              dmpi->stride[2] * 2,
+                              mpi->stride[2] * 2);
             }
-            state=1;
+            state = 1;
         }
-    } else {
-        my_memcpy_pic(dmpi->planes[0]+dmpi->stride[0],
-                      mpi->planes[0]+mpi->stride[0], mpi->w, mpi->h/2,
-                      dmpi->stride[0]*2, mpi->stride[0]*2);
-        if (mpi->flags & MP_IMGFLAG_PLANAR) {
-            my_memcpy_pic(dmpi->planes[1]+dmpi->stride[1],
-                          mpi->planes[1]+mpi->stride[1],
-                          mpi->chroma_width, mpi->chroma_height/2,
-                          dmpi->stride[1]*2, mpi->stride[1]*2);
-            my_memcpy_pic(dmpi->planes[2]+dmpi->stride[2],
-                          mpi->planes[2]+mpi->stride[2],
-                          mpi->chroma_width, mpi->chroma_height/2,
-                          dmpi->stride[2]*2, mpi->stride[2]*2);
+    }
+    else
+    {
+        my_memcpy_pic(dmpi->planes[0] + dmpi->stride[0],
+                      mpi->planes[0] + mpi->stride[0], mpi->w, mpi->h / 2,
+                      dmpi->stride[0] * 2, mpi->stride[0] * 2);
+        if (mpi->flags & MP_IMGFLAG_PLANAR)
+        {
+            my_memcpy_pic(dmpi->planes[1] + dmpi->stride[1],
+                          mpi->planes[1] + mpi->stride[1],
+                          mpi->chroma_width, mpi->chroma_height / 2,
+                          dmpi->stride[1] * 2, mpi->stride[1] * 2);
+            my_memcpy_pic(dmpi->planes[2] + dmpi->stride[2],
+                          mpi->planes[2] + mpi->stride[2],
+                          mpi->chroma_width, mpi->chroma_height / 2,
+                          dmpi->stride[2] * 2, mpi->stride[2] * 2);
         }
         ret = vf_next_put_image(vf, dmpi, MP_NOPTS_VALUE);
         vf->priv->out++;
-        if (flags & MP_IMGFIELD_REPEAT_FIRST) {
+        if (flags & MP_IMGFIELD_REPEAT_FIRST)
+        {
             ret |= vf_next_put_image(vf, mpi, MP_NOPTS_VALUE);
             vf->priv->out++;
-            state=0;
-        } else {
+            state = 0;
+        }
+        else
+        {
             my_memcpy_pic(dmpi->planes[0],
-                          mpi->planes[0], mpi->w, mpi->h/2,
-                          dmpi->stride[0]*2, mpi->stride[0]*2);
-            if (mpi->flags & MP_IMGFLAG_PLANAR) {
+                          mpi->planes[0], mpi->w, mpi->h / 2,
+                          dmpi->stride[0] * 2, mpi->stride[0] * 2);
+            if (mpi->flags & MP_IMGFLAG_PLANAR)
+            {
                 my_memcpy_pic(dmpi->planes[1],
                               mpi->planes[1],
                               mpi->chroma_width,
-                              mpi->chroma_height/2,
-                              dmpi->stride[1]*2,
-                              mpi->stride[1]*2);
+                              mpi->chroma_height / 2,
+                              dmpi->stride[1] * 2,
+                              mpi->stride[1] * 2);
                 my_memcpy_pic(dmpi->planes[2],
                               mpi->planes[2],
                               mpi->chroma_width,
-                              mpi->chroma_height/2,
-                              dmpi->stride[2]*2,
-                              mpi->stride[2]*2);
+                              mpi->chroma_height / 2,
+                              dmpi->stride[2] * 2,
+                              mpi->stride[2] * 2);
             }
         }
     }
@@ -130,10 +142,10 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
 }
 
 static int config(struct vf_instance *vf,
-    int width, int height, int d_width, int d_height,
-    unsigned int flags, unsigned int outfmt)
+                  int width, int height, int d_width, int d_height,
+                  unsigned int flags, unsigned int outfmt)
 {
-    return vf_next_config(vf,width,height,d_width,d_height,flags,outfmt);
+    return vf_next_config(vf, width, height, d_width, d_height, flags, outfmt);
 }
 
 static void uninit(struct vf_instance *vf)
@@ -154,7 +166,8 @@ static int vf_open(vf_instance_t *vf, char *args)
     return 1;
 }
 
-const vf_info_t vf_info_softpulldown = {
+const vf_info_t vf_info_softpulldown =
+{
     "mpeg2 soft 3:2 pulldown",
     "softpulldown",
     "Tobias Diedrich <ranma+mplayer@tdiedrich.de>",

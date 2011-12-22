@@ -23,11 +23,13 @@
 
 #include "url.h"
 
-typedef struct {
+typedef struct
+{
     int id;
-}MMSStream;
+} MMSStream;
 
-typedef struct {
+typedef struct
+{
     URLContext *mms_hd;                  ///< TCP connection handle
     MMSStream *streams;
 
@@ -57,7 +59,7 @@ typedef struct {
     unsigned int nb_streams_allocated;   ///< allocated size of streams
 } MMSContext;
 
-int ff_mms_asf_header_parser(MMSContext * mms);
+int ff_mms_asf_header_parser(MMSContext *mms);
 int ff_mms_read_data(MMSContext *mms, uint8_t *buf, const int size);
-int ff_mms_read_header(MMSContext * mms, uint8_t * buf, const int size);
+int ff_mms_read_header(MMSContext *mms, uint8_t *buf, const int size);
 #endif

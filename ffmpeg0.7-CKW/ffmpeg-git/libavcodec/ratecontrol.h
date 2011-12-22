@@ -32,13 +32,15 @@
 #include <stdint.h>
 #include "libavutil/eval.h"
 
-typedef struct Predictor{
+typedef struct Predictor
+{
     double coeff;
     double count;
     double decay;
 } Predictor;
 
-typedef struct RateControlEntry{
+typedef struct RateControlEntry
+{
     int pict_type;
     float qscale;
     int mv_bits;
@@ -55,12 +57,13 @@ typedef struct RateControlEntry{
     int skip_count;
     int f_code;
     int b_code;
-}RateControlEntry;
+} RateControlEntry;
 
 /**
  * rate control context.
  */
-typedef struct RateControlContext{
+typedef struct RateControlContext
+{
     FILE *stats_file;
     int num_entries;              ///< number of RateControlEntries
     RateControlEntry *entry;
@@ -84,8 +87,8 @@ typedef struct RateControlContext{
     void *non_lavc_opaque;        ///< context for non lavc rc code (for example xvid)
     float dry_run_qscale;         ///< for xvid rc
     int last_picture_number;      ///< for xvid rc
-    AVExpr * rc_eq_eval;
-}RateControlContext;
+    AVExpr *rc_eq_eval;
+} RateControlContext;
 
 struct MpegEncContext;
 

@@ -29,7 +29,8 @@
 #include "libavutil/intreadwrite.h"
 #include "avformat.h"
 
-typedef struct BFIContext {
+typedef struct BFIContext
+{
     int nframes;
     int audio_frame;
     int video_frame;
@@ -37,7 +38,7 @@ typedef struct BFIContext {
     int avflag;
 } BFIContext;
 
-static int bfi_probe(AVProbeData * p)
+static int bfi_probe(AVProbeData *p)
 {
     /* Check file header */
     if (AV_RL32(p->buf) == MKTAG('B', 'F', '&', 'I'))
@@ -46,7 +47,7 @@ static int bfi_probe(AVProbeData * p)
         return 0;
 }
 
-static int bfi_read_header(AVFormatContext * s, AVFormatParameters * ap)
+static int bfi_read_header(AVFormatContext *s, AVFormatParameters *ap)
 {
     BFIContext *bfi = s->priv_data;
     AVIOContext *pb = s->pb;
@@ -81,7 +82,7 @@ static int bfi_read_header(AVFormatContext * s, AVFormatParameters * ap)
     vstream->codec->extradata      = av_malloc(768);
     vstream->codec->extradata_size = 768;
     avio_read(pb, vstream->codec->extradata,
-               vstream->codec->extradata_size);
+              vstream->codec->extradata_size);
 
     astream->codec->sample_rate = avio_rl32(pb);
 
@@ -104,22 +105,25 @@ static int bfi_read_header(AVFormatContext * s, AVFormatParameters * ap)
 }
 
 
-static int bfi_read_packet(AVFormatContext * s, AVPacket * pkt)
+static int bfi_read_packet(AVFormatContext *s, AVPacket *pkt)
 {
     BFIContext *bfi = s->priv_data;
     AVIOContext *pb = s->pb;
     int ret, audio_offset, video_offset, chunk_size, audio_size = 0;
-    if (bfi->nframes == 0 || url_feof(pb)) {
+    if (bfi->nframes == 0 || url_feof(pb))
+    {
         return AVERROR(EIO);
     }
 
     /* If all previous chunks were completely read, then find a new one... */
-    if (!bfi->avflag) {
+    if (!bfi->avflag)
+    {
         uint32_t state = 0;
-        while(state != MKTAG('S','A','V','I')){
+        while(state != MKTAG('S', 'A', 'V', 'I'))
+        {
             if (url_feof(pb))
                 return AVERROR(EIO);
-            state = 256*state + avio_r8(pb);
+            state = 256 * state + avio_r8(pb);
         }
         /* Now that the chunk's location is confirmed, we proceed... */
         chunk_size      = avio_rl32(pb);
@@ -139,7 +143,8 @@ static int bfi_read_packet(AVFormatContext * s, AVPacket * pkt)
         bfi->audio_frame += ret;
     }
 
-    else {
+    else
+    {
 
         //Tossing a video packet at the video decoder.
         ret = av_get_packet(pb, pkt, bfi->video_size);
@@ -158,7 +163,8 @@ static int bfi_read_packet(AVFormatContext * s, AVPacket * pkt)
     return ret;
 }
 
-AVInputFormat ff_bfi_demuxer = {
+AVInputFormat ff_bfi_demuxer =
+{
     "bfi",
     NULL_IF_CONFIG_SMALL("Brute Force & Ignorance"),
     sizeof(BFIContext),

@@ -35,12 +35,17 @@ void ff_dct_unquantize_h263_armv5te(DCTELEM *block, int qmul, int qadd, int coun
 static inline void dct_unquantize_h263_helper_c(DCTELEM *block, int qmul, int qadd, int count)
 {
     int i, level;
-    for (i = 0; i < count; i++) {
+    for (i = 0; i < count; i++)
+    {
         level = block[i];
-        if (level) {
-            if (level < 0) {
+        if (level)
+        {
+            if (level < 0)
+            {
                 level = level * qmul - qadd;
-            } else {
+            }
+            else
+            {
                 level = level * qmul + qadd;
             }
             block[i] = level;
@@ -50,46 +55,49 @@ static inline void dct_unquantize_h263_helper_c(DCTELEM *block, int qmul, int qa
 #endif
 
 static void dct_unquantize_h263_intra_armv5te(MpegEncContext *s,
-                                  DCTELEM *block, int n, int qscale)
+        DCTELEM *block, int n, int qscale)
 {
     int level, qmul, qadd;
     int nCoeffs;
 
-    assert(s->block_last_index[n]>=0);
+    assert(s->block_last_index[n] >= 0);
 
     qmul = qscale << 1;
 
-    if (!s->h263_aic) {
+    if (!s->h263_aic)
+    {
         if (n < 4)
             level = block[0] * s->y_dc_scale;
         else
             level = block[0] * s->c_dc_scale;
         qadd = (qscale - 1) | 1;
-    }else{
+    }
+    else
+    {
         qadd = 0;
         level = block[0];
     }
     if(s->ac_pred)
-        nCoeffs=63;
+        nCoeffs = 63;
     else
-        nCoeffs= s->inter_scantable.raster_end[ s->block_last_index[n] ];
+        nCoeffs = s->inter_scantable.raster_end[ s->block_last_index[n] ];
 
     ff_dct_unquantize_h263_armv5te(block, qmul, qadd, nCoeffs + 1);
     block[0] = level;
 }
 
 static void dct_unquantize_h263_inter_armv5te(MpegEncContext *s,
-                                  DCTELEM *block, int n, int qscale)
+        DCTELEM *block, int n, int qscale)
 {
     int qmul, qadd;
     int nCoeffs;
 
-    assert(s->block_last_index[n]>=0);
+    assert(s->block_last_index[n] >= 0);
 
     qadd = (qscale - 1) | 1;
     qmul = qscale << 1;
 
-    nCoeffs= s->inter_scantable.raster_end[ s->block_last_index[n] ];
+    nCoeffs = s->inter_scantable.raster_end[ s->block_last_index[n] ];
 
     ff_dct_unquantize_h263_armv5te(block, qmul, qadd, nCoeffs + 1);
 }

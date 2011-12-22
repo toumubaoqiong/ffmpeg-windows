@@ -19,7 +19,8 @@
  */
 
 /* layer 3 "granule" */
-typedef struct GranuleDef {
+typedef struct GranuleDef
+{
     uint8_t scfsi;
     int part2_3_length;
     int big_values;

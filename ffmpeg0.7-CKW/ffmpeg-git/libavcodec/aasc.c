@@ -32,7 +32,8 @@
 #include "dsputil.h"
 #include "msrledec.h"
 
-typedef struct AascContext {
+typedef struct AascContext
+{
     AVCodecContext *avctx;
     AVFrame frame;
 } AascContext;
@@ -57,8 +58,8 @@ static av_cold int aasc_decode_init(AVCodecContext *avctx)
 }
 
 static int aasc_decode_frame(AVCodecContext *avctx,
-                              void *data, int *data_size,
-                              AVPacket *avpkt)
+                             void *data, int *data_size,
+                             AVPacket *avpkt)
 {
     const uint8_t *buf = avpkt->data;
     int buf_size = avpkt->size;
@@ -67,7 +68,8 @@ static int aasc_decode_frame(AVCodecContext *avctx,
 
     s->frame.reference = 1;
     s->frame.buffer_hints = FF_BUFFER_HINTS_VALID | FF_BUFFER_HINTS_PRESERVE | FF_BUFFER_HINTS_REUSABLE;
-    if (avctx->reget_buffer(avctx, &s->frame)) {
+    if (avctx->reget_buffer(avctx, &s->frame))
+    {
         av_log(avctx, AV_LOG_ERROR, "reget_buffer() failed\n");
         return -1;
     }
@@ -75,16 +77,18 @@ static int aasc_decode_frame(AVCodecContext *avctx,
     compr = AV_RL32(buf);
     buf += 4;
     buf_size -= 4;
-    switch(compr){
+    switch(compr)
+    {
     case 0:
         stride = (avctx->width * 3 + 3) & ~3;
-        for(i = avctx->height - 1; i >= 0; i--){
-            memcpy(s->frame.data[0] + i*s->frame.linesize[0], buf, avctx->width*3);
+        for(i = avctx->height - 1; i >= 0; i--)
+        {
+            memcpy(s->frame.data[0] + i * s->frame.linesize[0], buf, avctx->width * 3);
             buf += stride;
         }
         break;
     case 1:
-        ff_msrle_decode(avctx, (AVPicture*)&s->frame, 8, buf - 4, buf_size + 4);
+        ff_msrle_decode(avctx, (AVPicture *)&s->frame, 8, buf - 4, buf_size + 4);
         break;
     default:
         av_log(avctx, AV_LOG_ERROR, "Unknown compression type %d\n", compr);
@@ -92,7 +96,7 @@ static int aasc_decode_frame(AVCodecContext *avctx,
     }
 
     *data_size = sizeof(AVFrame);
-    *(AVFrame*)data = s->frame;
+    *(AVFrame *)data = s->frame;
 
     /* report that the buffer was completely consumed */
     return buf_size;
@@ -109,7 +113,8 @@ static av_cold int aasc_decode_end(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec ff_aasc_decoder = {
+AVCodec ff_aasc_decoder =
+{
     "aasc",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_AASC,

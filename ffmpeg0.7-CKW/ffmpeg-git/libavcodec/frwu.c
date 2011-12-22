@@ -26,7 +26,8 @@
 
 static av_cold int decode_init(AVCodecContext *avctx)
 {
-    if (avctx->width & 1) {
+    if (avctx->width & 1)
+    {
         av_log(avctx, AV_LOG_ERROR, "FRWU needs even width\n");
         return -1;
     }
@@ -48,11 +49,13 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size,
     if (pic->data[0])
         avctx->release_buffer(avctx, pic);
 
-    if (avpkt->size < avctx->width * 2 * avctx->height + 4 + 2*8) {
+    if (avpkt->size < avctx->width * 2 * avctx->height + 4 + 2 * 8)
+    {
         av_log(avctx, AV_LOG_ERROR, "Packet is too small.\n");
         return -1;
     }
-    if (bytestream_get_le32(&buf) != AV_RL32("FRW1")) {
+    if (bytestream_get_le32(&buf) != AV_RL32("FRW1"))
+    {
         av_log(avctx, AV_LOG_ERROR, "incorrect marker\n");
         return -1;
     }
@@ -66,7 +69,8 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size,
     pic->interlaced_frame = 1;
     pic->top_field_first = 1;
 
-    for (field = 0; field < 2; field++) {
+    for (field = 0; field < 2; field++)
+    {
         int i;
         int field_h = (avctx->height + !field) >> 1;
         int field_size, min_field_size = avctx->width * 2 * field_h;
@@ -75,17 +79,20 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size,
             return -1;
         buf += 4; // flags? 0x80 == bottom field maybe?
         field_size = bytestream_get_le32(&buf);
-        if (field_size < min_field_size) {
+        if (field_size < min_field_size)
+        {
             av_log(avctx, AV_LOG_ERROR, "Field size %i is too small (required %i)\n", field_size, min_field_size);
             return -1;
         }
-        if (buf_end - buf < field_size) {
+        if (buf_end - buf < field_size)
+        {
             av_log(avctx, AV_LOG_ERROR, "Packet is too small, need %i, have %i\n", field_size, (int)(buf_end - buf));
             return -1;
         }
         if (field)
             dst += pic->linesize[0];
-        for (i = 0; i < field_h; i++) {
+        for (i = 0; i < field_h; i++)
+        {
             memcpy(dst, buf, avctx->width * 2);
             buf += avctx->width * 2;
             dst += pic->linesize[0] << 1;
@@ -94,7 +101,7 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size,
     }
 
     *data_size = sizeof(AVFrame);
-    *(AVFrame*)data = *pic;
+    *(AVFrame *)data = *pic;
 
     return avpkt->size;
 }
@@ -109,7 +116,8 @@ static av_cold int decode_close(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec ff_frwu_decoder = {
+AVCodec ff_frwu_decoder =
+{
     "FRWU",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_FRWU,

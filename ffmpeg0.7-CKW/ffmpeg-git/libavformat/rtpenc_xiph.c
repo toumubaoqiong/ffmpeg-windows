@@ -36,7 +36,8 @@ void ff_rtp_send_xiph(AVFormatContext *s1, const uint8_t *buff, int size)
     max_pkt_size = s->max_payload_size;
 
     // set xiph data type
-    switch (*buff) {
+    switch (*buff)
+    {
     case 0x01:   // vorbis id
     case 0x05:   // vorbis setup
     case 0x80:   // theora header
@@ -67,14 +68,16 @@ void ff_rtp_send_xiph(AVFormatContext *s1, const uint8_t *buff, int size)
     // 3 - last fragmement
     frag = size <= max_pkt_size ? 0 : 1;
 
-    if (!frag && !xdt) { // do we have a whole frame of raw data?
+    if (!frag && !xdt)   // do we have a whole frame of raw data?
+    {
         uint8_t *end_ptr = s->buf + 6 + max_pkt_size; // what we're allowed to write
         uint8_t *ptr     = s->buf_ptr + 2 + size; // what we're going to write
         int remaining    = end_ptr - ptr;
 
         assert(s->num_frames <= s->max_frames_per_packet);
         if ((s->num_frames > 0 && remaining < 0) ||
-            s->num_frames == s->max_frames_per_packet) {
+                s->num_frames == s->max_frames_per_packet)
+        {
             // send previous packets now; no room for new data
             ff_rtp_send_data(s1, s->buf, s->buf_ptr - s->buf, 0);
             s->num_frames = 0;
@@ -96,7 +99,9 @@ void ff_rtp_send_xiph(AVFormatContext *s1, const uint8_t *buff, int size)
         s->buf_ptr = q;
 
         return;
-    } else if (s->num_frames) {
+    }
+    else if (s->num_frames)
+    {
         // immediately send buffered frames if buffer is not raw data,
         // or if current frame is fragmented.
         ff_rtp_send_data(s1, s->buf, s->buf_ptr - s->buf, 0);
@@ -105,7 +110,8 @@ void ff_rtp_send_xiph(AVFormatContext *s1, const uint8_t *buff, int size)
     s->timestamp = s->cur_timestamp;
     s->num_frames = 0;
     s->buf_ptr = q;
-    while (size > 0) {
+    while (size > 0)
+    {
         int len = (!frag || frag == 3) ? size : max_pkt_size;
         q = s->buf_ptr;
 

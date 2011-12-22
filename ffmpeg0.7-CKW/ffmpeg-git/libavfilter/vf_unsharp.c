@@ -47,7 +47,8 @@
 #define CHROMA_WIDTH(link)  -((-link->w) >> (av_getav_pix_fmt_descriptors())[link->format].log2_chroma_w)
 #define CHROMA_HEIGHT(link) -((-link->h) >> (av_getav_pix_fmt_descriptors())[link->format].log2_chroma_h)
 
-typedef struct FilterParam {
+typedef struct FilterParam
+{
     int msize_x;                             ///< matrix width
     int msize_y;                             ///< matrix height
     int amount;                              ///< effect amount
@@ -55,10 +56,11 @@ typedef struct FilterParam {
     int steps_y;                             ///< vertical step count
     int scalebits;                           ///< bits to shift pixel
     int32_t halfscale;                       ///< amount to add to pixel
-    uint32_t *sc[(MAX_SIZE * MAX_SIZE) - 1]; ///< finite state machine storage
+    uint32_t *sc[(MAX_SIZE *MAX_SIZE) - 1];  ///< finite state machine storage
 } FilterParam;
 
-typedef struct {
+typedef struct
+{
     FilterParam luma;   ///< luma parameters (width, height, amount)
     FilterParam chroma; ///< chroma parameters (width, height, amount)
 } UnsharpContext;
@@ -71,7 +73,8 @@ static void unsharpen(uint8_t *dst, uint8_t *src, int dst_stride, int src_stride
     int32_t res;
     int x, y, z;
 
-    if (!fp->amount) {
+    if (!fp->amount)
+    {
         if (dst_stride == src_stride)
             memcpy(dst, src, src_stride * height);
         else
@@ -83,27 +86,37 @@ static void unsharpen(uint8_t *dst, uint8_t *src, int dst_stride, int src_stride
     for (y = 0; y < 2 * fp->steps_y; y++)
         memset(sc[y], 0, sizeof(sc[y][0]) * (width + 2 * fp->steps_x));
 
-    for (y = -fp->steps_y; y < height + fp->steps_y; y++) {
+    for (y = -fp->steps_y; y < height + fp->steps_y; y++)
+    {
         memset(sr, 0, sizeof(sr[0]) * (2 * fp->steps_x - 1));
-        for (x = -fp->steps_x; x < width + fp->steps_x; x++) {
+        for (x = -fp->steps_x; x < width + fp->steps_x; x++)
+        {
             tmp1 = x <= 0 ? src[0] : x >= width ? src[width-1] : src[x];
-            for (z = 0; z < fp->steps_x * 2; z += 2) {
-                tmp2 = sr[z + 0] + tmp1; sr[z + 0] = tmp1;
-                tmp1 = sr[z + 1] + tmp2; sr[z + 1] = tmp2;
+            for (z = 0; z < fp->steps_x * 2; z += 2)
+            {
+                tmp2 = sr[z + 0] + tmp1;
+                sr[z + 0] = tmp1;
+                tmp1 = sr[z + 1] + tmp2;
+                sr[z + 1] = tmp2;
             }
-            for (z = 0; z < fp->steps_y * 2; z += 2) {
-                tmp2 = sc[z + 0][x + fp->steps_x] + tmp1; sc[z + 0][x + fp->steps_x] = tmp1;
-                tmp1 = sc[z + 1][x + fp->steps_x] + tmp2; sc[z + 1][x + fp->steps_x] = tmp2;
+            for (z = 0; z < fp->steps_y * 2; z += 2)
+            {
+                tmp2 = sc[z + 0][x + fp->steps_x] + tmp1;
+                sc[z + 0][x + fp->steps_x] = tmp1;
+                tmp1 = sc[z + 1][x + fp->steps_x] + tmp2;
+                sc[z + 1][x + fp->steps_x] = tmp2;
             }
-            if (x >= fp->steps_x && y >= fp->steps_y) {
-                uint8_t* srx = src - fp->steps_y * src_stride + x - fp->steps_x;
-                uint8_t* dsx = dst - fp->steps_y * dst_stride + x - fp->steps_x;
+            if (x >= fp->steps_x && y >= fp->steps_y)
+            {
+                uint8_t *srx = src - fp->steps_y * src_stride + x - fp->steps_x;
+                uint8_t *dsx = dst - fp->steps_y * dst_stride + x - fp->steps_x;
 
-                res = (int32_t)*srx + ((((int32_t) * srx - (int32_t)((tmp1 + fp->halfscale) >> fp->scalebits)) * fp->amount) >> 16);
+                res = (int32_t) * srx + ((((int32_t) * srx - (int32_t)((tmp1 + fp->halfscale) >> fp->scalebits)) * fp->amount) >> 16);
                 *dsx = av_clip_uint8(res);
             }
         }
-        if (y >= 0) {
+        if (y >= 0)
+        {
             dst += dst_stride;
             src += src_stride;
         }
@@ -131,10 +144,11 @@ static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
 
     if (args)
         sscanf(args, "%d:%d:%lf:%d:%d:%lf", &lmsize_x, &lmsize_y, &lamount,
-                                            &cmsize_x, &cmsize_y, &camount);
+               &cmsize_x, &cmsize_y, &camount);
 
     if ((lamount && (lmsize_x < 2 || lmsize_y < 2)) ||
-        (camount && (cmsize_x < 2 || cmsize_y < 2))) {
+            (camount && (cmsize_x < 2 || cmsize_y < 2)))
+    {
         av_log(ctx, AV_LOG_ERROR,
                "Invalid value <2 for lmsize_x:%d or lmsize_y:%d or cmsize_x:%d or cmsize_y:%d\n",
                lmsize_x, lmsize_y, cmsize_x, cmsize_y);
@@ -149,7 +163,8 @@ static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
 
 static int query_formats(AVFilterContext *ctx)
 {
-    enum PixelFormat pix_fmts[] = {
+    enum PixelFormat pix_fmts[] =
+    {
         PIX_FMT_YUV420P,  PIX_FMT_YUV422P,  PIX_FMT_YUV444P,  PIX_FMT_YUV410P,
         PIX_FMT_YUV411P,  PIX_FMT_YUV440P,  PIX_FMT_YUVJ420P, PIX_FMT_YUVJ422P,
         PIX_FMT_YUVJ444P, PIX_FMT_YUVJ440P, PIX_FMT_NONE
@@ -220,7 +235,8 @@ static void draw_slice(AVFilterLink *link, int y, int h, int slice_dir)
 {
 }
 
-AVFilter avfilter_vf_unsharp = {
+AVFilter avfilter_vf_unsharp =
+{
     .name      = "unsharp",
     .description = NULL_IF_CONFIG_SMALL("Sharpen or blur the input video."),
 
@@ -230,15 +246,25 @@ AVFilter avfilter_vf_unsharp = {
     .uninit = uninit,
     .query_formats = query_formats,
 
-    .inputs    = (AVFilterPad[]) {{ .name             = "default",
-                                    .type             = AVMEDIA_TYPE_VIDEO,
-                                    .draw_slice       = draw_slice,
-                                    .end_frame        = end_frame,
-                                    .config_props     = config_props,
-                                    .min_perms        = AV_PERM_READ, },
-                                  { .name = NULL}},
+    .inputs    = (AVFilterPad[])
+    {
+        {
+            .name             = "default",
+            .type             = AVMEDIA_TYPE_VIDEO,
+            .draw_slice       = draw_slice,
+            .end_frame        = end_frame,
+            .config_props     = config_props,
+            .min_perms        = AV_PERM_READ,
+        },
+        { .name = NULL}
+    },
 
-    .outputs   = (AVFilterPad[]) {{ .name             = "default",
-                                    .type             = AVMEDIA_TYPE_VIDEO, },
-                                  { .name = NULL}},
+    .outputs   = (AVFilterPad[])
+    {
+        {
+            .name             = "default",
+            .type             = AVMEDIA_TYPE_VIDEO,
+        },
+        { .name = NULL}
+    },
 };

@@ -31,7 +31,8 @@
 
 static int md5_open(URLContext *h, const char *filename, int flags)
 {
-    if (PRIV_SIZE < av_getav_md5_size()) {
+    if (PRIV_SIZE < av_getav_md5_size())
+    {
         av_log(NULL, AV_LOG_ERROR, "Insuffient size for MD5 context\n");
         return -1;
     }
@@ -59,19 +60,22 @@ static int md5_close(URLContext *h)
 
     av_md5_final(h->priv_data, md5);
     for (i = 0; i < sizeof(md5); i++)
-        snprintf(buf + i*2, 3, "%02x", md5[i]);
+        snprintf(buf + i * 2, 3, "%02x", md5[i]);
     buf[i*2] = '\n';
 
     av_strstart(filename, "md5:", &filename);
 
-    if (*filename) {
+    if (*filename)
+    {
         err = ffurl_open(&out, filename, AVIO_WRONLY);
         if (err)
             return err;
-        err = ffurl_write(out, buf, i*2+1);
+        err = ffurl_write(out, buf, i * 2 + 1);
         ffurl_close(out);
-    } else {
-        if (fwrite(buf, 1, i*2+1, stdout) < i*2+1)
+    }
+    else
+    {
+        if (fwrite(buf, 1, i * 2 + 1, stdout) < i * 2 + 1)
             err = AVERROR(errno);
     }
 
@@ -83,7 +87,8 @@ static int md5_get_handle(URLContext *h)
     return (intptr_t)h->priv_data;
 }
 
-URLProtocol ff_md5_protocol = {
+URLProtocol ff_md5_protocol =
+{
     .name                = "md5",
     .url_open            = md5_open,
     .url_write           = md5_write,

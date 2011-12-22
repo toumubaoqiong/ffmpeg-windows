@@ -25,11 +25,13 @@
 #include "avformat.h"
 #include "riff.h"    /* for CodecTag */
 
-typedef struct voc_dec_context {
+typedef struct voc_dec_context
+{
     int64_t remaining_size;
 } VocDecContext;
 
-typedef enum voc_type {
+typedef enum voc_type
+{
     VOC_TYPE_EOF              = 0x00,
     VOC_TYPE_VOICE_DATA       = 0x01,
     VOC_TYPE_VOICE_DATA_CONT  = 0x02,

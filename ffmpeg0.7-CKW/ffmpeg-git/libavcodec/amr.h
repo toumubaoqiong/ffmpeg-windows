@@ -53,13 +53,15 @@ static inline void ff_amr_bit_reorder(uint16_t *out, int size,
     int field_size;
 
     memset(out, 0, size);
-    while ((field_size = *ord_table++)) {
+    while ((field_size = *ord_table++))
+    {
         int field = 0;
         int field_offset = *ord_table++;
-        while (field_size--) {
-           int bit = *ord_table++;
-           field <<= 1;
-           field |= data[bit >> 3] >> (bit & 7) & 1;
+        while (field_size--)
+        {
+            int bit = *ord_table++;
+            field <<= 1;
+            field |= data[bit >> 3] >> (bit & 7) & 1;
         }
         out[field_offset] = field;
     }

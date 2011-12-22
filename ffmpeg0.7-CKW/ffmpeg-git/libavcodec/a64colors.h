@@ -30,7 +30,8 @@
 #include <stdint.h>
 
 /* c64 palette in RGB */
-static const uint8_t a64_palette[16][3] = {
+static const uint8_t a64_palette[16][3] =
+{
     {0x00, 0x00, 0x00},
     {0xff, 0xff, 0xff},
     {0x68, 0x37, 0x2b},

@@ -28,7 +28,8 @@
 
 #define ADTS_HEADER_SIZE 7
 
-typedef struct {
+typedef struct
+{
     int write_adts;
     int objecttype;
     int sample_rate_index;

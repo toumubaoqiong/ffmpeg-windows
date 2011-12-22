@@ -51,7 +51,8 @@ void MPV_common_init_arm(MpegEncContext *s)
     MPV_common_init_iwmmxt(s);
 #endif
 
-    if (HAVE_NEON) {
+    if (HAVE_NEON)
+    {
         s->dct_unquantize_h263_intra = ff_dct_unquantize_h263_intra_neon;
         s->dct_unquantize_h263_inter = ff_dct_unquantize_h263_inter_neon;
     }

@@ -108,7 +108,7 @@ void RENAME(ff_yadif_filter_line)(uint8_t *dst,
                                   int w, int prefs, int mrefs, int parity, int mode)
 {
     uint8_t tmp[5*16];
-    uint8_t *tmpA= (uint8_t*)(((uint64_t)(tmp+15)) & ~15);
+    uint8_t *tmpA = (uint8_t *)(((uint64_t)(tmp + 15)) & ~15);
     int x;
 
 #define FILTER\
@@ -233,13 +233,16 @@ void RENAME(ff_yadif_filter_line)(uint8_t *dst,
         next+= STEP;\
     }
 
-    if (parity) {
+    if (parity)
+    {
 #define prev2 "prev"
 #define next2 "cur"
         FILTER
 #undef prev2
 #undef next2
-    } else {
+    }
+    else
+    {
 #define prev2 "cur"
 #define next2 "next"
         FILTER

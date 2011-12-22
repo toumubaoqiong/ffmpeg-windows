@@ -23,7 +23,8 @@
 #include "nut.h"
 #include "internal.h"
 
-const AVCodecTag ff_nut_subtitle_tags[] = {
+const AVCodecTag ff_nut_subtitle_tags[] =
+{
     { CODEC_ID_TEXT        , MKTAG('U', 'T', 'F', '8') },
     { CODEC_ID_SSA         , MKTAG('S', 'S', 'A',  0 ) },
     { CODEC_ID_DVD_SUBTITLE, MKTAG('D', 'V', 'D', 'S') },
@@ -31,7 +32,8 @@ const AVCodecTag ff_nut_subtitle_tags[] = {
     { CODEC_ID_NONE        , 0                         }
 };
 
-const AVCodecTag ff_nut_video_tags[] = {
+const AVCodecTag ff_nut_video_tags[] =
+{
     { CODEC_ID_RAWVIDEO, MKTAG('R', 'G', 'B', 15 ) },
     { CODEC_ID_RAWVIDEO, MKTAG('B', 'G', 'R', 15 ) },
     { CODEC_ID_RAWVIDEO, MKTAG('R', 'G', 'B', 16 ) },
@@ -82,40 +84,47 @@ const AVCodecTag ff_nut_video_tags[] = {
     { CODEC_ID_NONE    , 0                         }
 };
 
-void ff_nut_reset_ts(NUTContext *nut, AVRational time_base, int64_t val){
+void ff_nut_reset_ts(NUTContext *nut, AVRational time_base, int64_t val)
+{
     int i;
-    for(i=0; i<nut->avf->nb_streams; i++){
-        nut->stream[i].last_pts= av_rescale_rnd(
-            val,
-            time_base.num * (int64_t)nut->stream[i].time_base->den,
-            time_base.den * (int64_t)nut->stream[i].time_base->num,
-            AV_ROUND_DOWN);
+    for(i = 0; i < nut->avf->nb_streams; i++)
+    {
+        nut->stream[i].last_pts = av_rescale_rnd(
+                                      val,
+                                      time_base.num * (int64_t)nut->stream[i].time_base->den,
+                                      time_base.den * (int64_t)nut->stream[i].time_base->num,
+                                      AV_ROUND_DOWN);
     }
 }
 
-int64_t ff_lsb2full(StreamContext *stream, int64_t lsb){
-    int64_t mask = (1<<stream->msb_pts_shift)-1;
-    int64_t delta= stream->last_pts - mask/2;
+int64_t ff_lsb2full(StreamContext *stream, int64_t lsb)
+{
+    int64_t mask = (1 << stream->msb_pts_shift) - 1;
+    int64_t delta = stream->last_pts - mask / 2;
     return  ((lsb - delta)&mask) + delta;
 }
 
-int ff_nut_sp_pos_cmp(const Syncpoint *a, const Syncpoint *b){
+int ff_nut_sp_pos_cmp(const Syncpoint *a, const Syncpoint *b)
+{
     return ((a->pos - b->pos) >> 32) - ((b->pos - a->pos) >> 32);
 }
 
-int ff_nut_sp_pts_cmp(const Syncpoint *a, const Syncpoint *b){
+int ff_nut_sp_pts_cmp(const Syncpoint *a, const Syncpoint *b)
+{
     return ((a->ts - b->ts) >> 32) - ((b->ts - a->ts) >> 32);
 }
 
-void ff_nut_add_sp(NUTContext *nut, int64_t pos, int64_t back_ptr, int64_t ts){
-    Syncpoint *sp= av_mallocz(sizeof(Syncpoint));
-    struct AVTreeNode *node= av_mallocz(av_getav_tree_node_size());
+void ff_nut_add_sp(NUTContext *nut, int64_t pos, int64_t back_ptr, int64_t ts)
+{
+    Syncpoint *sp = av_mallocz(sizeof(Syncpoint));
+    struct AVTreeNode *node = av_mallocz(av_getav_tree_node_size());
 
-    sp->pos= pos;
-    sp->back_ptr= back_ptr;
-    sp->ts= ts;
+    sp->pos = pos;
+    sp->back_ptr = back_ptr;
+    sp->ts = ts;
     av_tree_insert(&nut->syncpoints, sp, (void *) ff_nut_sp_pos_cmp, &node);
-    if(node){
+    if(node)
+    {
         av_free(sp);
         av_free(node);
     }
@@ -133,7 +142,8 @@ void ff_nut_free_sp(NUTContext *nut)
     av_tree_destroy(nut->syncpoints);
 }
 
-const Dispositions ff_nut_dispositions[] = {
+const Dispositions ff_nut_dispositions[] =
+{
     {"default"     , AV_DISPOSITION_DEFAULT},
     {"dub"         , AV_DISPOSITION_DUB},
     {"original"    , AV_DISPOSITION_ORIGINAL},
@@ -143,7 +153,8 @@ const Dispositions ff_nut_dispositions[] = {
     {""            , 0}
 };
 
-const AVMetadataConv ff_nut_metadata_conv[] = {
+const AVMetadataConv ff_nut_metadata_conv[] =
+{
     { "Author",         "artist"      },
     { "X-CreationTime", "date"        },
     { "CreationTime",   "date"        },

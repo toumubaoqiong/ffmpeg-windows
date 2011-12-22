@@ -26,7 +26,8 @@
 
 static av_cold int decode_init(AVCodecContext *avctx)
 {
-    if (avctx->width & 1) {
+    if (avctx->width & 1)
+    {
         av_log(avctx, AV_LOG_ERROR, "v210 needs even width\n");
         return -1;
     }
@@ -51,7 +52,8 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size,
     if (pic->data[0])
         avctx->release_buffer(avctx, pic);
 
-    if (avpkt->size < stride * avctx->height) {
+    if (avpkt->size < stride * avctx->height)
+    {
         av_log(avctx, AV_LOG_ERROR, "packet too small\n");
         return -1;
     }
@@ -60,9 +62,9 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size,
     if (avctx->get_buffer(avctx, pic) < 0)
         return -1;
 
-    y = (uint16_t*)pic->data[0];
-    u = (uint16_t*)pic->data[1];
-    v = (uint16_t*)pic->data[2];
+    y = (uint16_t *)pic->data[0];
+    u = (uint16_t *)pic->data[1];
+    v = (uint16_t *)pic->data[2];
     pic->pict_type = FF_I_TYPE;
     pic->key_frame = 1;
 
@@ -74,22 +76,26 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size,
         *c++ = (val >> 14) & 0xFFC0; \
     } while (0)
 
-    for (h = 0; h < avctx->height; h++) {
-        const uint32_t *src = (const uint32_t*)psrc;
+    for (h = 0; h < avctx->height; h++)
+    {
+        const uint32_t *src = (const uint32_t *)psrc;
         uint32_t val;
-        for (w = 0; w < avctx->width - 5; w += 6) {
+        for (w = 0; w < avctx->width - 5; w += 6)
+        {
             READ_PIXELS(u, y, v);
             READ_PIXELS(y, u, y);
             READ_PIXELS(v, y, u);
             READ_PIXELS(y, v, y);
         }
-        if (w < avctx->width - 1) {
+        if (w < avctx->width - 1)
+        {
             READ_PIXELS(u, y, v);
 
             val  = av_le2ne32(*src++);
             *y++ =  val <<  6;
         }
-        if (w < avctx->width - 3) {
+        if (w < avctx->width - 3)
+        {
             *u++ = (val >>  4) & 0xFFC0;
             *y++ = (val >> 14) & 0xFFC0;
 
@@ -105,7 +111,7 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size,
     }
 
     *data_size = sizeof(AVFrame);
-    *(AVFrame*)data = *avctx->coded_frame;
+    *(AVFrame *)data = *avctx->coded_frame;
 
     return avpkt->size;
 }
@@ -120,7 +126,8 @@ static av_cold int decode_close(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec ff_v210_decoder = {
+AVCodec ff_v210_decoder =
+{
     "v210",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_V210,

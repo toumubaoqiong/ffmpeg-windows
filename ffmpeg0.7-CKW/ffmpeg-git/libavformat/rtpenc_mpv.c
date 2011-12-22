@@ -40,50 +40,65 @@ void ff_rtp_send_mpegvideo(AVFormatContext *s1, const uint8_t *buf1, int size)
     frame_type = 0;
     temporal_reference = 0;
 
-    while (size > 0) {
+    while (size > 0)
+    {
         int begin_of_sequence;
 
         begin_of_sequence = 0;
         len = max_packet_size - 4;
 
-        if (len >= size) {
+        if (len >= size)
+        {
             len = size;
             end_of_slice = 1;
-        } else {
+        }
+        else
+        {
             const uint8_t *r, *r1;
             int start_code;
 
             r1 = buf1;
-            while (1) {
+            while (1)
+            {
                 start_code = -1;
                 r = ff_find_start_code(r1, end, &start_code);
-                if((start_code & 0xFFFFFF00) == 0x100) {
+                if((start_code & 0xFFFFFF00) == 0x100)
+                {
                     /* New start code found */
-                    if (start_code == 0x100) {
+                    if (start_code == 0x100)
+                    {
                         frame_type = (r[1] & 0x38) >> 3;
                         temporal_reference = (int)r[0] << 2 | r[1] >> 6;
                     }
-                    if (start_code == 0x1B8) {
+                    if (start_code == 0x1B8)
+                    {
                         begin_of_sequence = 1;
                     }
 
-                    if (r - buf1 - 4 <= len) {
+                    if (r - buf1 - 4 <= len)
+                    {
                         /* The current slice fits in the packet */
-                        if (begin_of_slice == 0) {
+                        if (begin_of_slice == 0)
+                        {
                             /* no slice at the beginning of the packet... */
                             end_of_slice = 1;
                             len = r - buf1 - 4;
                             break;
                         }
                         r1 = r;
-                    } else {
-                        if ((r1 - buf1 > 4) && (r - r1 < max_packet_size)) {
+                    }
+                    else
+                    {
+                        if ((r1 - buf1 > 4) && (r - r1 < max_packet_size))
+                        {
                             len = r1 - buf1 - 4;
                             end_of_slice = 1;
                         }
                         break;
                     }
-                } else {
+                }
+                else
+                {
                     break;
                 }
             }

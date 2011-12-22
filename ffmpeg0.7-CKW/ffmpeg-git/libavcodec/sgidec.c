@@ -24,7 +24,8 @@
 #include "bytestream.h"
 #include "sgi.h"
 
-typedef struct SgiState {
+typedef struct SgiState
+{
     AVFrame picture;
     unsigned int width;
     unsigned int height;
@@ -42,31 +43,38 @@ typedef struct SgiState {
  * @param pixelstride pixel stride of input buffer
  * @return size of output in bytes, -1 if buffer overflows
  */
-static int expand_rle_row(const uint8_t *in_buf, const uint8_t* in_end,
-            unsigned char *out_buf, uint8_t* out_end, int pixelstride)
+static int expand_rle_row(const uint8_t *in_buf, const uint8_t *in_end,
+                          unsigned char *out_buf, uint8_t *out_end, int pixelstride)
 {
     unsigned char pixel, count;
     unsigned char *orig = out_buf;
 
-    while (1) {
+    while (1)
+    {
         if(in_buf + 1 > in_end) return -1;
         pixel = bytestream_get_byte(&in_buf);
-        if (!(count = (pixel & 0x7f))) {
+        if (!(count = (pixel & 0x7f)))
+        {
             return (out_buf - orig) / pixelstride;
         }
 
         /* Check for buffer overflow. */
-        if(out_buf + pixelstride * count >= out_end) return -1;
+        if(out_buf + pixelstride *count >= out_end) return -1;
 
-        if (pixel & 0x80) {
-            while (count--) {
+        if (pixel & 0x80)
+        {
+            while (count--)
+            {
                 *out_buf = bytestream_get_byte(&in_buf);
                 out_buf += pixelstride;
             }
-        } else {
+        }
+        else
+        {
             pixel = bytestream_get_byte(&in_buf);
 
-            while (count--) {
+            while (count--)
+            {
                 *out_buf = pixel;
                 out_buf += pixelstride;
             }
@@ -82,8 +90,8 @@ static int expand_rle_row(const uint8_t *in_buf, const uint8_t* in_end,
  * @param s the current image state
  * @return 0 if no error, else return error number.
  */
-static int read_rle_sgi(unsigned char* out_buf, const uint8_t *in_buf,
-                        const uint8_t *in_end, SgiState* s)
+static int read_rle_sgi(unsigned char *out_buf, const uint8_t *in_buf,
+                        const uint8_t *in_end, SgiState *s)
 {
     uint8_t *dest_row;
     unsigned int len = s->height * s->depth * 4;
@@ -92,21 +100,25 @@ static int read_rle_sgi(unsigned char* out_buf, const uint8_t *in_buf,
     unsigned int start_offset;
 
     /* size of  RLE offset and length tables */
-    if(len * 2  > in_end - in_buf) {
+    if(len * 2  > in_end - in_buf)
+    {
         return AVERROR_INVALIDDATA;
     }
 
     in_buf -= SGI_HEADER_SIZE;
-    for (z = 0; z < s->depth; z++) {
+    for (z = 0; z < s->depth; z++)
+    {
         dest_row = out_buf;
-        for (y = 0; y < s->height; y++) {
+        for (y = 0; y < s->height; y++)
+        {
             dest_row -= s->linesize;
             start_offset = bytestream_get_be32(&start_table);
-            if(start_offset > in_end - in_buf) {
+            if(start_offset > in_end - in_buf)
+            {
                 return AVERROR_INVALIDDATA;
             }
             if (expand_rle_row(in_buf + start_offset, in_end, dest_row + z,
-                dest_row + FFABS(s->linesize), s->depth) != s->width)
+                               dest_row + FFABS(s->linesize), s->depth) != s->width)
                 return AVERROR_INVALIDDATA;
         }
     }
@@ -122,23 +134,27 @@ static int read_rle_sgi(unsigned char* out_buf, const uint8_t *in_buf,
  * @param s the current image state
  * @return 0 if read success, otherwise return -1.
  */
-static int read_uncompressed_sgi(unsigned char* out_buf, uint8_t* out_end,
-                const uint8_t *in_buf, const uint8_t *in_end, SgiState* s)
+static int read_uncompressed_sgi(unsigned char *out_buf, uint8_t *out_end,
+                                 const uint8_t *in_buf, const uint8_t *in_end, SgiState *s)
 {
     int x, y, z;
     const uint8_t *ptr;
     unsigned int offset = s->height * s->width * s->bytes_per_channel;
 
     /* Test buffer size. */
-    if (offset * s->depth > in_end - in_buf) {
-       return -1;
+    if (offset * s->depth > in_end - in_buf)
+    {
+        return -1;
     }
 
-    for (y = s->height - 1; y >= 0; y--) {
+    for (y = s->height - 1; y >= 0; y--)
+    {
         out_end = out_buf + (y * s->linesize);
-        for (x = s->width; x > 0; x--) {
+        for (x = s->width; x > 0; x--)
+        {
             ptr = in_buf += s->bytes_per_channel;
-            for(z = 0; z < s->depth; z ++) {
+            for(z = 0; z < s->depth; z ++)
+            {
                 memcpy(out_end, ptr, s->bytes_per_channel);
                 out_end += s->bytes_per_channel;
                 ptr += offset;
@@ -162,13 +178,15 @@ static int decode_frame(AVCodecContext *avctx,
     int ret = 0;
     uint8_t *out_buf, *out_end;
 
-    if (buf_size < SGI_HEADER_SIZE){
+    if (buf_size < SGI_HEADER_SIZE)
+    {
         av_log(avctx, AV_LOG_ERROR, "buf_size too small (%d)\n", buf_size);
         return -1;
     }
 
     /* Test for SGI magic. */
-    if (bytestream_get_be16(&in_buf) != SGI_MAGIC) {
+    if (bytestream_get_be16(&in_buf) != SGI_MAGIC)
+    {
         av_log(avctx, AV_LOG_ERROR, "bad magic number\n");
         return -1;
     }
@@ -180,24 +198,33 @@ static int decode_frame(AVCodecContext *avctx,
     s->height = bytestream_get_be16(&in_buf);
     s->depth  = bytestream_get_be16(&in_buf);
 
-    if (s->bytes_per_channel != 1 && (s->bytes_per_channel != 2 || rle)) {
+    if (s->bytes_per_channel != 1 && (s->bytes_per_channel != 2 || rle))
+    {
         av_log(avctx, AV_LOG_ERROR, "wrong channel number\n");
         return -1;
     }
 
     /* Check for supported image dimensions. */
-    if (dimension != 2 && dimension != 3) {
+    if (dimension != 2 && dimension != 3)
+    {
         av_log(avctx, AV_LOG_ERROR, "wrong dimension number\n");
         return -1;
     }
 
-    if (s->depth == SGI_GRAYSCALE) {
+    if (s->depth == SGI_GRAYSCALE)
+    {
         avctx->pix_fmt = s->bytes_per_channel == 2 ? PIX_FMT_GRAY16BE : PIX_FMT_GRAY8;
-    } else if (s->depth == SGI_RGB) {
+    }
+    else if (s->depth == SGI_RGB)
+    {
         avctx->pix_fmt = s->bytes_per_channel == 2 ? PIX_FMT_RGB48BE : PIX_FMT_RGB24;
-    } else if (s->depth == SGI_RGBA && s->bytes_per_channel == 1) {
+    }
+    else if (s->depth == SGI_RGBA && s->bytes_per_channel == 1)
+    {
         avctx->pix_fmt = PIX_FMT_RGBA;
-    } else {
+    }
+    else
+    {
         av_log(avctx, AV_LOG_ERROR, "wrong picture format\n");
         return -1;
     }
@@ -210,7 +237,8 @@ static int decode_frame(AVCodecContext *avctx,
         avctx->release_buffer(avctx, p);
 
     p->reference = 0;
-    if (avctx->get_buffer(avctx, p) < 0) {
+    if (avctx->get_buffer(avctx, p) < 0)
+    {
         av_log(avctx, AV_LOG_ERROR, "get_buffer() failed.\n");
         return -1;
     }
@@ -225,22 +253,29 @@ static int decode_frame(AVCodecContext *avctx,
 
     /* Skip header. */
     in_buf += SGI_HEADER_SIZE - 12;
-    if (rle) {
+    if (rle)
+    {
         ret = read_rle_sgi(out_end, in_buf, in_end, s);
-    } else {
+    }
+    else
+    {
         ret = read_uncompressed_sgi(out_buf, out_end, in_buf, in_end, s);
     }
 
-    if (ret == 0) {
+    if (ret == 0)
+    {
         *picture   = s->picture;
         *data_size = sizeof(AVPicture);
         return buf_size;
-    } else {
+    }
+    else
+    {
         return -1;
     }
 }
 
-static av_cold int sgi_init(AVCodecContext *avctx){
+static av_cold int sgi_init(AVCodecContext *avctx)
+{
     SgiState *s = avctx->priv_data;
 
     avcodec_get_frame_defaults(&s->picture);
@@ -251,7 +286,7 @@ static av_cold int sgi_init(AVCodecContext *avctx){
 
 static av_cold int sgi_end(AVCodecContext *avctx)
 {
-    SgiState * const s = avctx->priv_data;
+    SgiState *const s = avctx->priv_data;
 
     if (s->picture.data[0])
         avctx->release_buffer(avctx, &s->picture);
@@ -259,7 +294,8 @@ static av_cold int sgi_end(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec ff_sgi_decoder = {
+AVCodec ff_sgi_decoder =
+{
     "sgi",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_SGI,

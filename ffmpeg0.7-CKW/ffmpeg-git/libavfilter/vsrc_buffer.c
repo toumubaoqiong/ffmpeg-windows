@@ -27,7 +27,8 @@
 #include "vsrc_buffer.h"
 #include "libavutil/imgutils.h"
 
-typedef struct {
+typedef struct
+{
     int64_t           pts;
     AVFrame           frame;
     int               has_frame;
@@ -45,53 +46,58 @@ int av_vsrc_buffer_add_frame2(AVFilterContext *buffer_filter, AVFrame *frame,
     BufferSourceContext *c = buffer_filter->priv;
     int ret;
 
-    if (c->has_frame) {
+    if (c->has_frame)
+    {
         av_log(buffer_filter, AV_LOG_ERROR,
                "Buffering several frames is not supported. "
                "Please consume all available frames before adding a new one.\n"
-            );
+              );
         //return -1;
     }
 
-    if(width != c->w || height != c->h || pix_fmt != c->pix_fmt){
-        AVFilterContext *scale= buffer_filter->outputs[0]->dst;
+    if(width != c->w || height != c->h || pix_fmt != c->pix_fmt)
+    {
+        AVFilterContext *scale = buffer_filter->outputs[0]->dst;
         AVFilterLink *link;
 
         av_log(buffer_filter, AV_LOG_INFO, "Changing filter graph input to accept %dx%d %d (%d %d)\n",
-               width,height,pix_fmt, c->pix_fmt, scale->outputs[0]->format);
+               width, height, pix_fmt, c->pix_fmt, scale->outputs[0]->format);
 
-        if(!scale || strcmp(scale->filter->name,"scale")){
-            AVFilter *f= avfilter_get_by_name("scale");
+        if(!scale || strcmp(scale->filter->name, "scale"))
+        {
+            AVFilter *f = avfilter_get_by_name("scale");
 
             av_log(buffer_filter, AV_LOG_INFO, "Inserting scaler filter\n");
             if(avfilter_open(&scale, f, "Input equalizer") < 0)
                 return -1;
 
-            if((ret=avfilter_init_filter(scale, sws_param, NULL))<0){
+            if((ret = avfilter_init_filter(scale, sws_param, NULL)) < 0)
+            {
                 avfilter_free(scale);
                 return ret;
             }
 
-            if((ret=avfilter_insert_filter(buffer_filter->outputs[0], scale, 0, 0))<0){
+            if((ret = avfilter_insert_filter(buffer_filter->outputs[0], scale, 0, 0)) < 0)
+            {
                 avfilter_free(scale);
                 return ret;
             }
 
-            scale->outputs[0]->format= c->pix_fmt;
+            scale->outputs[0]->format = c->pix_fmt;
         }
 
-        c->pix_fmt= scale->inputs[0]->format= pix_fmt;
-        c->w= scale->inputs[0]->w= width;
-        c->h= scale->inputs[0]->h= height;
+        c->pix_fmt = scale->inputs[0]->format = pix_fmt;
+        c->w = scale->inputs[0]->w = width;
+        c->h = scale->inputs[0]->h = height;
 
-        link= scale->outputs[0];
+        link = scale->outputs[0];
         if ((ret =  link->srcpad->config_props(link)) < 0)
             return ret;
     }
 
     memcpy(c->frame.data    , frame->data    , sizeof(frame->data));
     memcpy(c->frame.linesize, frame->linesize, sizeof(frame->linesize));
-    c->frame.interlaced_frame= frame->interlaced_frame;
+    c->frame.interlaced_frame = frame->interlaced_frame;
     c->frame.top_field_first = frame->top_field_first;
     c->frame.key_frame = frame->key_frame;
     c->frame.pict_type = frame->pict_type;
@@ -108,8 +114,8 @@ int av_vsrc_buffer_add_frame(AVFilterContext *buffer_filter, AVFrame *frame,
     BufferSourceContext *c = buffer_filter->priv;
 
     return av_vsrc_buffer_add_frame2(buffer_filter, frame,
-                              pts, pixel_aspect, c->w,
-                              c->h, c->pix_fmt, "");
+                                     pts, pixel_aspect, c->w,
+                                     c->h, c->pix_fmt, "");
 }
 
 static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
@@ -119,16 +125,19 @@ static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
     int n = 0;
 
     if (!args ||
-        (n = sscanf(args, "%d:%d:%127[^:]:%d:%d:%d:%d", &c->w, &c->h, pix_fmt_str,
-                    &c->time_base.num, &c->time_base.den,
-                    &c->pixel_aspect.num, &c->pixel_aspect.den)) != 7) {
+            (n = sscanf(args, "%d:%d:%127[^:]:%d:%d:%d:%d", &c->w, &c->h, pix_fmt_str,
+                        &c->time_base.num, &c->time_base.den,
+                        &c->pixel_aspect.num, &c->pixel_aspect.den)) != 7)
+    {
         av_log(ctx, AV_LOG_ERROR, "Expected 7 arguments, but %d found in '%s'\n", n, args);
         return AVERROR(EINVAL);
     }
-    if ((c->pix_fmt = av_get_pix_fmt(pix_fmt_str)) == PIX_FMT_NONE) {
+    if ((c->pix_fmt = av_get_pix_fmt(pix_fmt_str)) == PIX_FMT_NONE)
+    {
         char *tail;
         c->pix_fmt = strtol(pix_fmt_str, &tail, 10);
-        if (*tail || c->pix_fmt < 0 || c->pix_fmt >= PIX_FMT_NB) {
+        if (*tail || c->pix_fmt < 0 || c->pix_fmt >= PIX_FMT_NB)
+        {
             av_log(ctx, AV_LOG_ERROR, "Invalid pixel format string '%s'\n", pix_fmt_str);
             return AVERROR(EINVAL);
         }
@@ -164,7 +173,8 @@ static int request_frame(AVFilterLink *link)
     BufferSourceContext *c = link->src->priv;
     AVFilterBufferRef *picref;
 
-    if (!c->has_frame) {
+    if (!c->has_frame)
+    {
         av_log(link->src, AV_LOG_ERROR,
                "request_frame() called with no available frame!\n");
         //return -1;
@@ -202,7 +212,8 @@ static int poll_frame(AVFilterLink *link)
     return !!(c->has_frame);
 }
 
-AVFilter avfilter_vsrc_buffer = {
+AVFilter avfilter_vsrc_buffer =
+{
     .name      = "buffer",
     .description = NULL_IF_CONFIG_SMALL("Buffer video frames, and make them accessible to the filterchain."),
     .priv_size = sizeof(BufferSourceContext),
@@ -210,11 +221,21 @@ AVFilter avfilter_vsrc_buffer = {
 
     .init      = init,
 
-    .inputs    = (AVFilterPad[]) {{ .name = NULL }},
-    .outputs   = (AVFilterPad[]) {{ .name            = "default",
-                                    .type            = AVMEDIA_TYPE_VIDEO,
-                                    .request_frame   = request_frame,
-                                    .poll_frame      = poll_frame,
-                                    .config_props    = config_props, },
-                                  { .name = NULL}},
+    .inputs    = (AVFilterPad[])
+    {
+        {
+            .name = NULL
+        }
+    },
+    .outputs   = (AVFilterPad[])
+    {
+        {
+            .name            = "default",
+            .type            = AVMEDIA_TYPE_VIDEO,
+            .request_frame   = request_frame,
+            .poll_frame      = poll_frame,
+            .config_props    = config_props,
+        },
+        { .name = NULL}
+    },
 };

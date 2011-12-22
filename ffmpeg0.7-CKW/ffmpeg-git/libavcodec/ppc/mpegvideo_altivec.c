@@ -69,9 +69,9 @@ do { \
 
 #define FOUROF(a) {a,a,a,a}
 
-static int dct_quantize_altivec(MpegEncContext* s,
-                         DCTELEM* data, int n,
-                         int qscale, int* overflow)
+static int dct_quantize_altivec(MpegEncContext *s,
+                                DCTELEM *data, int n,
+                                int qscale, int *overflow)
 {
     int lastNonZero;
     vector float row0, row1, row2, row3, row4, row5, row6, row7;
@@ -118,9 +118,9 @@ static int dct_quantize_altivec(MpegEncContext* s,
     }
 
     // The following block could exist as a separate an altivec dct
-                // function.  However, if we put it inline, the DCT data can remain
-                // in the vector local variables, as floats, which we'll use during the
-                // quantize step...
+    // function.  However, if we put it inline, the DCT data can remain
+    // in the vector local variables, as floats, which we'll use during the
+    // quantize step...
     {
         const vector float vec_0_298631336 = (vector float)FOUROF(0.298631336f);
         const vector float vec_0_390180644 = (vector float)FOUROF(-0.390180644f);
@@ -138,8 +138,10 @@ static int dct_quantize_altivec(MpegEncContext* s,
 
         int whichPass, whichHalf;
 
-        for(whichPass = 1; whichPass<=2; whichPass++) {
-            for(whichHalf = 1; whichHalf<=2; whichHalf++) {
+        for(whichPass = 1; whichPass <= 2; whichPass++)
+        {
+            for(whichHalf = 1; whichHalf <= 2; whichHalf++)
+            {
                 vector float tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7;
                 vector float tmp10, tmp11, tmp12, tmp13;
                 vector float z1, z2, z3, z4, z5;
@@ -234,7 +236,8 @@ static int dct_quantize_altivec(MpegEncContext* s,
                 SWAP(row7, alt7);
             }
 
-            if (whichPass == 1) {
+            if (whichPass == 1)
+            {
                 // transpose the data for the second pass
 
                 // First, block transpose the upper right with lower left.
@@ -255,11 +258,12 @@ static int dct_quantize_altivec(MpegEncContext* s,
     // perform the quantize step, using the floating point data
     // still in the row/alt registers
     {
-        const int* biasAddr;
-        const vector signed int* qmat;
+        const int *biasAddr;
+        const vector signed int *qmat;
         vector float bias, negBias;
 
-        if (s->mb_intra) {
+        if (s->mb_intra)
+        {
             vector signed int baseVector;
 
             // We must cache element 0 in the intra case
@@ -267,15 +271,17 @@ static int dct_quantize_altivec(MpegEncContext* s,
             baseVector = vec_cts(vec_splat(row0, 0), 0);
             vec_ste(baseVector, 0, &oldBaseValue);
 
-            qmat = (vector signed int*)s->q_intra_matrix[qscale];
+            qmat = (vector signed int *)s->q_intra_matrix[qscale];
             biasAddr = &(s->intra_quant_bias);
-        } else {
-            qmat = (vector signed int*)s->q_inter_matrix[qscale];
+        }
+        else
+        {
+            qmat = (vector signed int *)s->q_inter_matrix[qscale];
             biasAddr = &(s->inter_quant_bias);
         }
 
         // Load the bias vector (We add 0.5 to the bias so that we're
-                                // rounding when we convert to int, instead of flooring.)
+        // rounding when we convert to int, instead of flooring.)
         {
             vector signed int biasInt;
             const vector float negOneFloat = (vector float)FOUROF(-1.0f);
@@ -297,21 +303,21 @@ static int dct_quantize_altivec(MpegEncContext* s,
             q7 = vec_ctf(qmat[14], QMAT_SHIFT);
 
             row0 = vec_sel(vec_madd(row0, q0, negBias), vec_madd(row0, q0, bias),
-                    vec_cmpgt(row0, zero));
+                           vec_cmpgt(row0, zero));
             row1 = vec_sel(vec_madd(row1, q1, negBias), vec_madd(row1, q1, bias),
-                    vec_cmpgt(row1, zero));
+                           vec_cmpgt(row1, zero));
             row2 = vec_sel(vec_madd(row2, q2, negBias), vec_madd(row2, q2, bias),
-                    vec_cmpgt(row2, zero));
+                           vec_cmpgt(row2, zero));
             row3 = vec_sel(vec_madd(row3, q3, negBias), vec_madd(row3, q3, bias),
-                    vec_cmpgt(row3, zero));
+                           vec_cmpgt(row3, zero));
             row4 = vec_sel(vec_madd(row4, q4, negBias), vec_madd(row4, q4, bias),
-                    vec_cmpgt(row4, zero));
+                           vec_cmpgt(row4, zero));
             row5 = vec_sel(vec_madd(row5, q5, negBias), vec_madd(row5, q5, bias),
-                    vec_cmpgt(row5, zero));
+                           vec_cmpgt(row5, zero));
             row6 = vec_sel(vec_madd(row6, q6, negBias), vec_madd(row6, q6, bias),
-                    vec_cmpgt(row6, zero));
+                           vec_cmpgt(row6, zero));
             row7 = vec_sel(vec_madd(row7, q7, negBias), vec_madd(row7, q7, bias),
-                    vec_cmpgt(row7, zero));
+                           vec_cmpgt(row7, zero));
 
             q0 = vec_ctf(qmat[1], QMAT_SHIFT);
             q1 = vec_ctf(qmat[3], QMAT_SHIFT);
@@ -323,21 +329,21 @@ static int dct_quantize_altivec(MpegEncContext* s,
             q7 = vec_ctf(qmat[15], QMAT_SHIFT);
 
             alt0 = vec_sel(vec_madd(alt0, q0, negBias), vec_madd(alt0, q0, bias),
-                    vec_cmpgt(alt0, zero));
+                           vec_cmpgt(alt0, zero));
             alt1 = vec_sel(vec_madd(alt1, q1, negBias), vec_madd(alt1, q1, bias),
-                    vec_cmpgt(alt1, zero));
+                           vec_cmpgt(alt1, zero));
             alt2 = vec_sel(vec_madd(alt2, q2, negBias), vec_madd(alt2, q2, bias),
-                    vec_cmpgt(alt2, zero));
+                           vec_cmpgt(alt2, zero));
             alt3 = vec_sel(vec_madd(alt3, q3, negBias), vec_madd(alt3, q3, bias),
-                    vec_cmpgt(alt3, zero));
+                           vec_cmpgt(alt3, zero));
             alt4 = vec_sel(vec_madd(alt4, q4, negBias), vec_madd(alt4, q4, bias),
-                    vec_cmpgt(alt4, zero));
+                           vec_cmpgt(alt4, zero));
             alt5 = vec_sel(vec_madd(alt5, q5, negBias), vec_madd(alt5, q5, bias),
-                    vec_cmpgt(alt5, zero));
+                           vec_cmpgt(alt5, zero));
             alt6 = vec_sel(vec_madd(alt6, q6, negBias), vec_madd(alt6, q6, bias),
-                    vec_cmpgt(alt6, zero));
+                           vec_cmpgt(alt6, zero));
             alt7 = vec_sel(vec_madd(alt7, q7, negBias), vec_madd(alt7, q7, bias),
-                    vec_cmpgt(alt7, zero));
+                           vec_cmpgt(alt7, zero));
         }
 
 
@@ -377,81 +383,84 @@ static int dct_quantize_altivec(MpegEncContext* s,
         }
 
         {
-        vector bool char zero_01, zero_23, zero_45, zero_67;
-        vector signed char scanIndexes_01, scanIndexes_23, scanIndexes_45, scanIndexes_67;
-        vector signed char negOne = vec_splat_s8(-1);
-        vector signed char* scanPtr =
-                (vector signed char*)(s->intra_scantable.inverse);
-        signed char lastNonZeroChar;
+            vector bool char zero_01, zero_23, zero_45, zero_67;
+            vector signed char scanIndexes_01, scanIndexes_23, scanIndexes_45, scanIndexes_67;
+            vector signed char negOne = vec_splat_s8(-1);
+            vector signed char *scanPtr =
+                (vector signed char *)(s->intra_scantable.inverse);
+            signed char lastNonZeroChar;
 
-        // Determine the largest non-zero index.
-        zero_01 = vec_pack(vec_cmpeq(data0, (vector signed short)zero),
-                vec_cmpeq(data1, (vector signed short)zero));
-        zero_23 = vec_pack(vec_cmpeq(data2, (vector signed short)zero),
-                vec_cmpeq(data3, (vector signed short)zero));
-        zero_45 = vec_pack(vec_cmpeq(data4, (vector signed short)zero),
-                vec_cmpeq(data5, (vector signed short)zero));
-        zero_67 = vec_pack(vec_cmpeq(data6, (vector signed short)zero),
-                vec_cmpeq(data7, (vector signed short)zero));
+            // Determine the largest non-zero index.
+            zero_01 = vec_pack(vec_cmpeq(data0, (vector signed short)zero),
+                               vec_cmpeq(data1, (vector signed short)zero));
+            zero_23 = vec_pack(vec_cmpeq(data2, (vector signed short)zero),
+                               vec_cmpeq(data3, (vector signed short)zero));
+            zero_45 = vec_pack(vec_cmpeq(data4, (vector signed short)zero),
+                               vec_cmpeq(data5, (vector signed short)zero));
+            zero_67 = vec_pack(vec_cmpeq(data6, (vector signed short)zero),
+                               vec_cmpeq(data7, (vector signed short)zero));
 
-        // 64 biggest values
-        scanIndexes_01 = vec_sel(scanPtr[0], negOne, zero_01);
-        scanIndexes_23 = vec_sel(scanPtr[1], negOne, zero_23);
-        scanIndexes_45 = vec_sel(scanPtr[2], negOne, zero_45);
-        scanIndexes_67 = vec_sel(scanPtr[3], negOne, zero_67);
+            // 64 biggest values
+            scanIndexes_01 = vec_sel(scanPtr[0], negOne, zero_01);
+            scanIndexes_23 = vec_sel(scanPtr[1], negOne, zero_23);
+            scanIndexes_45 = vec_sel(scanPtr[2], negOne, zero_45);
+            scanIndexes_67 = vec_sel(scanPtr[3], negOne, zero_67);
 
-        // 32 largest values
-        scanIndexes_01 = vec_max(scanIndexes_01, scanIndexes_23);
-        scanIndexes_45 = vec_max(scanIndexes_45, scanIndexes_67);
+            // 32 largest values
+            scanIndexes_01 = vec_max(scanIndexes_01, scanIndexes_23);
+            scanIndexes_45 = vec_max(scanIndexes_45, scanIndexes_67);
 
-        // 16 largest values
-        scanIndexes_01 = vec_max(scanIndexes_01, scanIndexes_45);
+            // 16 largest values
+            scanIndexes_01 = vec_max(scanIndexes_01, scanIndexes_45);
 
-        // 8 largest values
-        scanIndexes_01 = vec_max(vec_mergeh(scanIndexes_01, negOne),
-                vec_mergel(scanIndexes_01, negOne));
+            // 8 largest values
+            scanIndexes_01 = vec_max(vec_mergeh(scanIndexes_01, negOne),
+                                     vec_mergel(scanIndexes_01, negOne));
 
-        // 4 largest values
-        scanIndexes_01 = vec_max(vec_mergeh(scanIndexes_01, negOne),
-                vec_mergel(scanIndexes_01, negOne));
+            // 4 largest values
+            scanIndexes_01 = vec_max(vec_mergeh(scanIndexes_01, negOne),
+                                     vec_mergel(scanIndexes_01, negOne));
 
-        // 2 largest values
-        scanIndexes_01 = vec_max(vec_mergeh(scanIndexes_01, negOne),
-                vec_mergel(scanIndexes_01, negOne));
+            // 2 largest values
+            scanIndexes_01 = vec_max(vec_mergeh(scanIndexes_01, negOne),
+                                     vec_mergel(scanIndexes_01, negOne));
 
-        // largest value
-        scanIndexes_01 = vec_max(vec_mergeh(scanIndexes_01, negOne),
-                vec_mergel(scanIndexes_01, negOne));
+            // largest value
+            scanIndexes_01 = vec_max(vec_mergeh(scanIndexes_01, negOne),
+                                     vec_mergel(scanIndexes_01, negOne));
 
-        scanIndexes_01 = vec_splat(scanIndexes_01, 0);
+            scanIndexes_01 = vec_splat(scanIndexes_01, 0);
 
 
-        vec_ste(scanIndexes_01, 0, &lastNonZeroChar);
+            vec_ste(scanIndexes_01, 0, &lastNonZeroChar);
 
-        lastNonZero = lastNonZeroChar;
+            lastNonZero = lastNonZeroChar;
 
-        // While the data is still in vectors we check for the transpose IDCT permute
-        // and handle it using the vector unit if we can.  This is the permute used
-        // by the altivec idct, so it is common when using the altivec dct.
+            // While the data is still in vectors we check for the transpose IDCT permute
+            // and handle it using the vector unit if we can.  This is the permute used
+            // by the altivec idct, so it is common when using the altivec dct.
 
-        if ((lastNonZero > 0) && (s->dsp.idct_permutation_type == FF_TRANSPOSE_IDCT_PERM)) {
-            TRANSPOSE8(data0, data1, data2, data3, data4, data5, data6, data7);
-        }
+            if ((lastNonZero > 0) && (s->dsp.idct_permutation_type == FF_TRANSPOSE_IDCT_PERM))
+            {
+                TRANSPOSE8(data0, data1, data2, data3, data4, data5, data6, data7);
+            }
 
-        vec_st(data0, 0, data);
-        vec_st(data1, 16, data);
-        vec_st(data2, 32, data);
-        vec_st(data3, 48, data);
-        vec_st(data4, 64, data);
-        vec_st(data5, 80, data);
-        vec_st(data6, 96, data);
-        vec_st(data7, 112, data);
+            vec_st(data0, 0, data);
+            vec_st(data1, 16, data);
+            vec_st(data2, 32, data);
+            vec_st(data3, 48, data);
+            vec_st(data4, 64, data);
+            vec_st(data5, 80, data);
+            vec_st(data6, 96, data);
+            vec_st(data7, 112, data);
         }
     }
 
     // special handling of block[0]
-    if (s->mb_intra) {
-        if (!s->h263_aic) {
+    if (s->mb_intra)
+    {
+        if (!s->h263_aic)
+        {
             if (n < 4)
                 oldBaseValue /= s->y_dc_scale;
             else
@@ -465,10 +474,11 @@ static int dct_quantize_altivec(MpegEncContext* s,
     // We handled the transpose permutation above and we don't
     // need to permute the "no" permutation case.
     if ((lastNonZero > 0) &&
-        (s->dsp.idct_permutation_type != FF_TRANSPOSE_IDCT_PERM) &&
-        (s->dsp.idct_permutation_type != FF_NO_IDCT_PERM)) {
+            (s->dsp.idct_permutation_type != FF_TRANSPOSE_IDCT_PERM) &&
+            (s->dsp.idct_permutation_type != FF_NO_IDCT_PERM))
+    {
         ff_block_permute(data, s->dsp.idct_permutation,
-                s->intra_scantable.scantable, lastNonZero);
+                         s->intra_scantable.scantable, lastNonZero);
     }
 
     return lastNonZero;
@@ -477,29 +487,34 @@ static int dct_quantize_altivec(MpegEncContext* s,
 /* AltiVec version of dct_unquantize_h263
    this code assumes `block' is 16 bytes-aligned */
 static void dct_unquantize_h263_altivec(MpegEncContext *s,
-                                 DCTELEM *block, int n, int qscale)
+                                        DCTELEM *block, int n, int qscale)
 {
     int i, level, qmul, qadd;
     int nCoeffs;
 
-    assert(s->block_last_index[n]>=0);
+    assert(s->block_last_index[n] >= 0);
 
     qadd = (qscale - 1) | 1;
     qmul = qscale << 1;
 
-    if (s->mb_intra) {
-        if (!s->h263_aic) {
+    if (s->mb_intra)
+    {
+        if (!s->h263_aic)
+        {
             if (n < 4)
                 block[0] = block[0] * s->y_dc_scale;
             else
                 block[0] = block[0] * s->c_dc_scale;
-        }else
+        }
+        else
             qadd = 0;
         i = 1;
-        nCoeffs= 63; //does not always use zigzag table
-    } else {
+        nCoeffs = 63; //does not always use zigzag table
+    }
+    else
+    {
         i = 0;
-        nCoeffs= s->intra_scantable.raster_end[ s->block_last_index[n] ];
+        nCoeffs = s->intra_scantable.raster_end[ s->block_last_index[n] ];
     }
 
     {
@@ -517,12 +532,17 @@ static void dct_unquantize_h263_altivec(MpegEncContext *s,
 
 #if 0   // block *is* 16 bytes-aligned, it seems.
         // first make sure block[j] is 16 bytes-aligned
-        for(j = 0; (j <= nCoeffs) && ((((unsigned long)block) + (j << 1)) & 0x0000000F) ; j++) {
+        for(j = 0; (j <= nCoeffs) && ((((unsigned long)block) + (j << 1)) & 0x0000000F) ; j++)
+        {
             level = block[j];
-            if (level) {
-                if (level < 0) {
+            if (level)
+            {
+                if (level < 0)
+                {
                     level = level * qmul - qadd;
-                } else {
+                }
+                else
+                {
                     level = level * qmul + qadd;
                 }
                 block[j] = level;
@@ -532,7 +552,8 @@ static void dct_unquantize_h263_altivec(MpegEncContext *s,
 
         // vectorize all the 16 bytes-aligned blocks
         // of 8 elements
-        for(; (j + 7) <= nCoeffs ; j+=8) {
+        for(; (j + 7) <= nCoeffs ; j += 8)
+        {
             blockv = vec_ld(j << 1, block);
             blockv_neg = vec_cmplt(blockv, vczero);
             blockv_null = vec_cmpeq(blockv, vczero);
@@ -549,19 +570,25 @@ static void dct_unquantize_h263_altivec(MpegEncContext *s,
         // using good old scalar units.
         // (we could do it using a truncated vector,
         // but I'm not sure it's worth the hassle)
-        for(; j <= nCoeffs ; j++) {
+        for(; j <= nCoeffs ; j++)
+        {
             level = block[j];
-            if (level) {
-                if (level < 0) {
+            if (level)
+            {
+                if (level < 0)
+                {
                     level = level * qmul - qadd;
-                } else {
+                }
+                else
+                {
                     level = level * qmul + qadd;
                 }
                 block[j] = level;
             }
         }
 
-        if (i == 1) {
+        if (i == 1)
+        {
             // cheat. this avoid special-casing the first iteration
             block[0] = backup_0;
         }
@@ -573,9 +600,11 @@ void MPV_common_init_altivec(MpegEncContext *s)
 {
     if (!(av_get_cpu_flags() & AV_CPU_FLAG_ALTIVEC)) return;
 
-    if (s->avctx->lowres==0) {
+    if (s->avctx->lowres == 0)
+    {
         if ((s->avctx->idct_algo == FF_IDCT_AUTO) ||
-            (s->avctx->idct_algo == FF_IDCT_ALTIVEC)) {
+                (s->avctx->idct_algo == FF_IDCT_ALTIVEC))
+        {
             s->dsp.idct_put = idct_put_altivec;
             s->dsp.idct_add = idct_add_altivec;
             s->dsp.idct_permutation_type = FF_TRANSPOSE_IDCT_PERM;
@@ -584,21 +613,24 @@ void MPV_common_init_altivec(MpegEncContext *s)
 
     // Test to make sure that the dct required alignments are met.
     if ((((long)(s->q_intra_matrix) & 0x0f) != 0) ||
-        (((long)(s->q_inter_matrix) & 0x0f) != 0)) {
+            (((long)(s->q_inter_matrix) & 0x0f) != 0))
+    {
         av_log(s->avctx, AV_LOG_INFO, "Internal Error: q-matrix blocks must be 16-byte aligned "
-                "to use AltiVec DCT. Reverting to non-AltiVec version.\n");
+               "to use AltiVec DCT. Reverting to non-AltiVec version.\n");
         return;
     }
 
-    if (((long)(s->intra_scantable.inverse) & 0x0f) != 0) {
+    if (((long)(s->intra_scantable.inverse) & 0x0f) != 0)
+    {
         av_log(s->avctx, AV_LOG_INFO, "Internal Error: scan table blocks must be 16-byte aligned "
-                "to use AltiVec DCT. Reverting to non-AltiVec version.\n");
+               "to use AltiVec DCT. Reverting to non-AltiVec version.\n");
         return;
     }
 
 
     if ((s->avctx->dct_algo == FF_DCT_AUTO) ||
-            (s->avctx->dct_algo == FF_DCT_ALTIVEC)) {
+            (s->avctx->dct_algo == FF_DCT_ALTIVEC))
+    {
 #if 0 /* seems to cause trouble under some circumstances */
         s->dct_quantize = dct_quantize_altivec;
 #endif

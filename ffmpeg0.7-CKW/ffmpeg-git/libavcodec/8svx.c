@@ -30,15 +30,18 @@
 #include "avcodec.h"
 
 /** decoder context */
-typedef struct EightSvxContext {
+typedef struct EightSvxContext
+{
     int16_t fib_acc;
     const int16_t *table;
 } EightSvxContext;
 
-static const int16_t fibonacci[16]   = { -34<<8, -21<<8, -13<<8,  -8<<8, -5<<8, -3<<8, -2<<8, -1<<8,
-                                          0, 1<<8, 2<<8, 3<<8, 5<<8, 8<<8, 13<<8, 21<<8 };
-static const int16_t exponential[16] = { -128<<8, -64<<8, -32<<8, -16<<8, -8<<8, -4<<8, -2<<8, -1<<8,
-                                          0, 1<<8, 2<<8, 4<<8, 8<<8, 16<<8, 32<<8, 64<<8 };
+static const int16_t fibonacci[16]   = { -34 << 8, -21 << 8, -13 << 8,  -8 << 8, -5 << 8, -3 << 8, -2 << 8, -1 << 8,
+                                       0, 1 << 8, 2 << 8, 3 << 8, 5 << 8, 8 << 8, 13 << 8, 21 << 8
+                                       };
+static const int16_t exponential[16] = { -128 << 8, -64 << 8, -32 << 8, -16 << 8, -8 << 8, -4 << 8, -2 << 8, -1 << 8,
+                                       0, 1 << 8, 2 << 8, 4 << 8, 8 << 8, 16 << 8, 32 << 8, 64 << 8
+                                       };
 
 /** decode a frame */
 static int eightsvx_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
@@ -54,7 +57,8 @@ static int eightsvx_decode_frame(AVCodecContext *avctx, void *data, int *data_si
     if((*data_size >> 2) < buf_size)
         return -1;
 
-    if(avctx->frame_number == 0) {
+    if(avctx->frame_number == 0)
+    {
         esc->fib_acc = buf[1] << 8;
         buf_size -= 2;
         buf += 2;
@@ -62,7 +66,8 @@ static int eightsvx_decode_frame(AVCodecContext *avctx, void *data, int *data_si
 
     *data_size = buf_size << 2;
 
-    while(buf < buf_end) {
+    while(buf < buf_end)
+    {
         uint8_t d = *buf++;
         esc->fib_acc += esc->table[d & 0x0f];
         *out_data++ = esc->fib_acc;
@@ -78,36 +83,39 @@ static av_cold int eightsvx_decode_init(AVCodecContext *avctx)
 {
     EightSvxContext *esc = avctx->priv_data;
 
-    switch(avctx->codec->id) {
-        case CODEC_ID_8SVX_FIB:
-          esc->table = fibonacci;
-          break;
-        case CODEC_ID_8SVX_EXP:
-          esc->table = exponential;
-          break;
-        default:
-          return -1;
+    switch(avctx->codec->id)
+    {
+    case CODEC_ID_8SVX_FIB:
+        esc->table = fibonacci;
+        break;
+    case CODEC_ID_8SVX_EXP:
+        esc->table = exponential;
+        break;
+    default:
+        return -1;
     }
     avctx->sample_fmt = AV_SAMPLE_FMT_S16;
     return 0;
 }
 
-AVCodec ff_eightsvx_fib_decoder = {
-  .name           = "8svx_fib",
-  .type           = AVMEDIA_TYPE_AUDIO,
-  .id             = CODEC_ID_8SVX_FIB,
-  .priv_data_size = sizeof (EightSvxContext),
-  .init           = eightsvx_decode_init,
-  .decode         = eightsvx_decode_frame,
-  .long_name      = NULL_IF_CONFIG_SMALL("8SVX fibonacci"),
+AVCodec ff_eightsvx_fib_decoder =
+{
+    .name           = "8svx_fib",
+    .type           = AVMEDIA_TYPE_AUDIO,
+    .id             = CODEC_ID_8SVX_FIB,
+    .priv_data_size = sizeof (EightSvxContext),
+    .init           = eightsvx_decode_init,
+    .decode         = eightsvx_decode_frame,
+    .long_name      = NULL_IF_CONFIG_SMALL("8SVX fibonacci"),
 };
 
-AVCodec ff_eightsvx_exp_decoder = {
-  .name           = "8svx_exp",
-  .type           = AVMEDIA_TYPE_AUDIO,
-  .id             = CODEC_ID_8SVX_EXP,
-  .priv_data_size = sizeof (EightSvxContext),
-  .init           = eightsvx_decode_init,
-  .decode         = eightsvx_decode_frame,
-  .long_name      = NULL_IF_CONFIG_SMALL("8SVX exponential"),
+AVCodec ff_eightsvx_exp_decoder =
+{
+    .name           = "8svx_exp",
+    .type           = AVMEDIA_TYPE_AUDIO,
+    .id             = CODEC_ID_8SVX_EXP,
+    .priv_data_size = sizeof (EightSvxContext),
+    .init           = eightsvx_decode_init,
+    .decode         = eightsvx_decode_frame,
+    .long_name      = NULL_IF_CONFIG_SMALL("8SVX exponential"),
 };

@@ -89,16 +89,17 @@ void ff_h264dsp_init(H264DSPContext *c, const int bit_depth)
     c->h264_h_loop_filter_chroma_intra = FUNC(h264_h_loop_filter_chroma_intra, depth);\
     c->h264_loop_filter_strength= NULL;
 
-    switch (bit_depth) {
-        case 9:
-            H264_DSP(9);
-            break;
-        case 10:
-            H264_DSP(10);
-            break;
-        default:
-            H264_DSP(8);
-            break;
+    switch (bit_depth)
+    {
+    case 9:
+        H264_DSP(9);
+        break;
+    case 10:
+        H264_DSP(10);
+        break;
+    default:
+        H264_DSP(8);
+        break;
     }
 
     //if (ARCH_ARM) ff_h264dsp_init_arm(c, bit_depth);

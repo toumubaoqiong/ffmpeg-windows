@@ -159,6 +159,6 @@ void mp_msg(int mod, int lev, const char *format, ... );
 #   endif
 #endif /* __GNUC__ */
 
-const char* filename_recode(const char* filename);
+const char *filename_recode(const char *filename);
 
 #endif /* MPLAYER_MP_MSG_H */

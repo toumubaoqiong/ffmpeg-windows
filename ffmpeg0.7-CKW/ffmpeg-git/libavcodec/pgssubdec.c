@@ -34,7 +34,8 @@
 
 #define RGBA(r,g,b,a) (((a) << 24) | ((r) << 16) | ((g) << 8) | (b))
 
-enum SegmentType {
+enum SegmentType
+{
     PALETTE_SEGMENT      = 0x14,
     PICTURE_SEGMENT      = 0x15,
     PRESENTATION_SEGMENT = 0x16,
@@ -42,14 +43,16 @@ enum SegmentType {
     DISPLAY_SEGMENT      = 0x80,
 };
 
-typedef struct PGSSubPresentation {
+typedef struct PGSSubPresentation
+{
     int x;
     int y;
     int id_number;
     int object_number;
 } PGSSubPresentation;
 
-typedef struct PGSSubPicture {
+typedef struct PGSSubPicture
+{
     int          w;
     int          h;
     uint8_t      *rle;
@@ -57,7 +60,8 @@ typedef struct PGSSubPicture {
     unsigned int rle_remaining_len;
 } PGSSubPicture;
 
-typedef struct PGSSubContext {
+typedef struct PGSSubContext
+{
     PGSSubPresentation presentation;
     uint32_t           clut[256];
     PGSSubPicture      picture;
@@ -106,14 +110,16 @@ static int decode_rle(AVCodecContext *avctx, AVSubtitle *sub,
     pixel_count = 0;
     line_count  = 0;
 
-    while (buf < rle_bitmap_end && line_count < sub->rects[0]->h) {
+    while (buf < rle_bitmap_end && line_count < sub->rects[0]->h)
+    {
         uint8_t flags, color;
         int run;
 
         color = bytestream_get_byte(&buf);
         run   = 1;
 
-        if (color == 0x00) {
+        if (color == 0x00)
+        {
             flags = bytestream_get_byte(&buf);
             run   = flags & 0x3f;
             if (flags & 0x40)
@@ -121,10 +127,13 @@ static int decode_rle(AVCodecContext *avctx, AVSubtitle *sub,
             color = flags & 0x80 ? bytestream_get_byte(&buf) : 0;
         }
 
-        if (run > 0 && pixel_count + run <= sub->rects[0]->w * sub->rects[0]->h) {
+        if (run > 0 && pixel_count + run <= sub->rects[0]->w * sub->rects[0]->h)
+        {
             memset(sub->rects[0]->pict.data[0] + pixel_count, color, run);
             pixel_count += run;
-        } else if (!run) {
+        }
+        else if (!run)
+        {
             /*
              * New Line. Check if correct pixels decoded, if not display warning
              * and adjust bitmap pointer to correct new line position.
@@ -136,7 +145,8 @@ static int decode_rle(AVCodecContext *avctx, AVSubtitle *sub,
         }
     }
 
-    if (pixel_count < sub->rects[0]->w * sub->rects[0]->h) {
+    if (pixel_count < sub->rects[0]->w * sub->rects[0]->h)
+    {
         av_log(avctx, AV_LOG_ERROR, "Insufficient RLE data for subtitle\n");
         return -1;
     }
@@ -158,7 +168,7 @@ static int decode_rle(AVCodecContext *avctx, AVSubtitle *sub,
  * @todo TODO: Enable support for RLE data over multiple packets
  */
 static int parse_picture_segment(AVCodecContext *avctx,
-                                  const uint8_t *buf, int buf_size)
+                                 const uint8_t *buf, int buf_size)
 {
     PGSSubContext *ctx = avctx->priv_data;
 
@@ -175,7 +185,8 @@ static int parse_picture_segment(AVCodecContext *avctx,
     /* Read the Sequence Description to determine if start of RLE data or appended to previous RLE */
     sequence_desc = bytestream_get_byte(&buf);
 
-    if (!(sequence_desc & 0x80)) {
+    if (!(sequence_desc & 0x80))
+    {
         /* Additional RLE data */
         if (buf_size > ctx->picture.rle_remaining_len)
             return -1;
@@ -192,14 +203,15 @@ static int parse_picture_segment(AVCodecContext *avctx,
     buf_size -= 7;
 
     /* Decode rle bitmap length, stored size includes width/height data */
-    rle_bitmap_len = bytestream_get_be24(&buf) - 2*2;
+    rle_bitmap_len = bytestream_get_be24(&buf) - 2 * 2;
 
     /* Get bitmap dimensions from data */
     width  = bytestream_get_be16(&buf);
     height = bytestream_get_be16(&buf);
 
     /* Make sure the bitmap is not too large */
-    if (avctx->width < width || avctx->height < height) {
+    if (avctx->width < width || avctx->height < height)
+    {
         av_log(avctx, AV_LOG_ERROR, "Bitmap dimensions larger then video.\n");
         return -1;
     }
@@ -243,7 +255,8 @@ static void parse_palette_segment(AVCodecContext *avctx,
     /* Skip two null bytes */
     buf += 2;
 
-    while (buf < buf_end) {
+    while (buf < buf_end)
+    {
         color_id  = bytestream_get_byte(&buf);
         y         = bytestream_get_byte(&buf);
         cr        = bytestream_get_byte(&buf);
@@ -256,7 +269,7 @@ static void parse_palette_segment(AVCodecContext *avctx,
         av_dlog(avctx, "Color %d := (%d,%d,%d,%d)\n", color_id, r, g, b, alpha);
 
         /* Store color in palette */
-        ctx->clut[color_id] = RGBA(r,g,b,alpha);
+        ctx->clut[color_id] = RGBA(r, g, b, alpha);
     }
 }
 
@@ -319,10 +332,12 @@ static void parse_presentation_segment(AVCodecContext *avctx,
 
     av_dlog(avctx, "Subtitle Placement x=%d, y=%d\n", x, y);
 
-    if (x > avctx->width || y > avctx->height) {
+    if (x > avctx->width || y > avctx->height)
+    {
         av_log(avctx, AV_LOG_ERROR, "Subtitle out of video bounds. x = %d, y = %d, video width = %d, video height = %d.\n",
                x, y, avctx->width, avctx->height);
-        x = 0; y = 0;
+        x = 0;
+        y = 0;
     }
 
     /* Fill in dimensions */
@@ -378,7 +393,8 @@ static int display_end_segment(AVCodecContext *avctx, void *data,
     /* Process bitmap */
     sub->rects[0]->pict.linesize[0] = ctx->picture.w;
 
-    if (ctx->picture.rle) {
+    if (ctx->picture.rle)
+    {
         if (ctx->picture.rle_remaining_len)
             av_log(avctx, AV_LOG_ERROR, "RLE data length %u is %u bytes shorter than expected\n",
                    ctx->picture.rle_data_len, ctx->picture.rle_remaining_len);
@@ -409,7 +425,8 @@ static int decode(AVCodecContext *avctx, void *data, int *data_size,
 
     av_log(avctx, AV_LOG_INFO, "PGS sub packet:\n");
 
-    for (i = 0; i < buf_size; i++) {
+    for (i = 0; i < buf_size; i++)
+    {
         av_log(avctx, AV_LOG_INFO, "%02x ", buf[i]);
         if (i % 16 == 15)
             av_log(avctx, AV_LOG_INFO, "\n");
@@ -428,7 +445,8 @@ static int decode(AVCodecContext *avctx, void *data, int *data_size,
     buf_end = buf + buf_size;
 
     /* Step through buffer to identify segments */
-    while (buf < buf_end) {
+    while (buf < buf_end)
+    {
         segment_type   = bytestream_get_byte(&buf);
         segment_length = bytestream_get_be16(&buf);
 
@@ -437,7 +455,8 @@ static int decode(AVCodecContext *avctx, void *data, int *data_size,
         if (segment_type != DISPLAY_SEGMENT && segment_length > buf_end - buf)
             break;
 
-        switch (segment_type) {
+        switch (segment_type)
+        {
         case PALETTE_SEGMENT:
             parse_palette_segment(avctx, buf, segment_length);
             break;
@@ -472,7 +491,8 @@ static int decode(AVCodecContext *avctx, void *data, int *data_size,
     return buf_size;
 }
 
-AVCodec ff_pgssub_decoder = {
+AVCodec ff_pgssub_decoder =
+{
     "pgssub",
     AVMEDIA_TYPE_SUBTITLE,
     CODEC_ID_HDMV_PGS_SUBTITLE,

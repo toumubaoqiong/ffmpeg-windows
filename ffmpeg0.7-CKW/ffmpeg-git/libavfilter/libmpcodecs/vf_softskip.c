@@ -27,7 +27,8 @@
 #include "mp_image.h"
 #include "vf.h"
 
-struct vf_priv_s {
+struct vf_priv_s
+{
     int skipflag;
 };
 
@@ -39,12 +40,13 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
         return vf->priv->skipflag = 0;
 
     dmpi = vf_get_image(vf->next, mpi->imgfmt,
-        MP_IMGTYPE_EXPORT, 0, mpi->width, mpi->height);
+                        MP_IMGTYPE_EXPORT, 0, mpi->width, mpi->height);
     vf_clone_mpi_attributes(dmpi, mpi);
 
     dmpi->planes[0] = mpi->planes[0];
     dmpi->stride[0] = mpi->stride[0];
-    if (dmpi->flags&MP_IMGFLAG_PLANAR) {
+    if (dmpi->flags & MP_IMGFLAG_PLANAR)
+    {
         dmpi->planes[1] = mpi->planes[1];
         dmpi->stride[1] = mpi->stride[1];
         dmpi->planes[2] = mpi->planes[2];
@@ -54,9 +56,10 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
     return vf_next_put_image(vf, dmpi, pts);
 }
 
-static int control(struct vf_instance *vf, int request, void* data)
+static int control(struct vf_instance *vf, int request, void *data)
 {
-    switch (request) {
+    switch (request)
+    {
     case VFCTRL_SKIP_NEXT_FRAME:
         vf->priv->skipflag = 1;
         return CONTROL_TRUE;
@@ -68,7 +71,8 @@ static int control(struct vf_instance *vf, int request, void* data)
 static int query_format(struct vf_instance *vf, unsigned int fmt)
 {
     /* FIXME - figure out which other formats work */
-    switch (fmt) {
+    switch (fmt)
+    {
     case IMGFMT_YV12:
     case IMGFMT_IYUV:
     case IMGFMT_I420:
@@ -92,7 +96,8 @@ static int vf_open(vf_instance_t *vf, char *args)
     return 1;
 }
 
-const vf_info_t vf_info_softskip = {
+const vf_info_t vf_info_softskip =
+{
     "soft (post-filter) frame skipping for encoding",
     "softskip",
     "Rich Felker",

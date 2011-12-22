@@ -198,12 +198,13 @@ typedef int (*me_cmp_func)(void /*MpegEncContext*/ *s, uint8_t *blk1/*align widt
 /**
  * Scantable.
  */
-typedef struct ScanTable{
+typedef struct ScanTable
+{
     const uint8_t *scantable;
     uint8_t permutated[64];
     uint8_t raster_end[64];
 #if ARCH_PPC
-                /** Used by dct_quantize_altivec to find last-non-zero */
+    /** Used by dct_quantize_altivec to find last-non-zero */
     DECLARE_ALIGNED(16, uint8_t, inverse)[64];
 #endif
 } ScanTable;
@@ -228,7 +229,8 @@ void ff_put_signed_pixels_clamped_c(const DCTELEM *block, uint8_t *dest, int lin
 /**
  * DSPContext.
  */
-typedef struct DSPContext {
+typedef struct DSPContext
+{
     /* pixel ops : interface with DCT */
     void (*get_pixels)(DCTELEM *block/*align 16*/, const uint8_t *pixels/*align 8*/, int line_size);
     void (*diff_pixels)(DCTELEM *block/*align 16*/, const uint8_t *s1/*align 8*/, const uint8_t *s2/*align 8*/, int stride);
@@ -262,12 +264,12 @@ typedef struct DSPContext {
      * global motion compensation.
      */
     void (*gmc )(uint8_t *dst/*align 8*/, uint8_t *src/*align 1*/, int stride, int h, int ox, int oy,
-                    int dxx, int dxy, int dyx, int dyy, int shift, int r, int width, int height);
+                 int dxx, int dxy, int dyx, int dyy, int shift, int r, int width, int height);
     void (*clear_block)(DCTELEM *block/*align 16*/);
     void (*clear_blocks)(DCTELEM *blocks/*align 16*/);
-    int (*pix_sum)(uint8_t * pix, int line_size);
-    int (*pix_norm1)(uint8_t * pix, int line_size);
-// 16x16 8x8 4x4 2x2 16x8 8x4 4x2 8x16 4x8 2x4
+    int (*pix_sum)(uint8_t *pix, int line_size);
+    int (*pix_norm1)(uint8_t *pix, int line_size);
+    // 16x16 8x8 4x4 2x2 16x8 8x4 4x2 8x16 4x8 2x4
 
     me_cmp_func sad[6]; /* identical to pix_absAxA except additional void * */
     me_cmp_func sse[6];
@@ -380,7 +382,7 @@ typedef struct DSPContext {
     /* huffyuv specific */
     void (*add_bytes)(uint8_t *dst/*align 16*/, uint8_t *src/*align 16*/, int w);
     void (*add_bytes_l2)(uint8_t *dst/*align 16*/, uint8_t *src1/*align 16*/, uint8_t *src2/*align 16*/, int w);
-    void (*diff_bytes)(uint8_t *dst/*align 16*/, uint8_t *src1/*align 16*/, uint8_t *src2/*align 1*/,int w);
+    void (*diff_bytes)(uint8_t *dst/*align 16*/, uint8_t *src1/*align 16*/, uint8_t *src2/*align 1*/, int w);
     /**
      * subtract huffyuv's variant of median prediction
      * note, this might read from src1[-1], src2[-1]
@@ -533,7 +535,7 @@ typedef struct DSPContext {
     /* intrax8 functions */
     void (*x8_spatial_compensation[12])(uint8_t *src , uint8_t *dst, int linesize);
     void (*x8_setup_spatial_compensation)(uint8_t *src, uint8_t *dst, int linesize,
-           int * range, int * sum,  int edges);
+                                          int *range, int *sum,  int edges);
 
     /**
      * Calculate scalar product of two vectors.
@@ -579,7 +581,7 @@ typedef struct DSPContext {
 } DSPContext;
 
 void dsputil_static_init(void);
-void dsputil_init(DSPContext* p, AVCodecContext *avctx);
+void dsputil_init(DSPContext *p, AVCodecContext *avctx);
 
 int ff_check_alignment(void);
 
@@ -589,7 +591,7 @@ int ff_check_alignment(void);
  */
 void ff_block_permute(DCTELEM *block, uint8_t *permutation, const uint8_t *scantable, int last);
 
-void ff_set_cmp(DSPContext* c, me_cmp_func *cmp, int type);
+void ff_set_cmp(DSPContext *c, me_cmp_func *cmp, int type);
 
 #define         BYTE_VEC32(c)   ((c)*0x01010101UL)
 #define         BYTE_VEC64(c)   ((c)*0x0001000100010001UL)
@@ -614,25 +616,27 @@ static inline uint64_t no_rnd_avg64(uint64_t a, uint64_t b)
     return (a & b) + (((a ^ b) & ~BYTE_VEC64(0x01)) >> 1);
 }
 
-static inline int get_penalty_factor(int lambda, int lambda2, int type){
-    switch(type&0xFF){
+static inline int get_penalty_factor(int lambda, int lambda2, int type)
+{
+    switch(type & 0xFF)
+    {
     default:
     case FF_CMP_SAD:
-        return lambda>>FF_LAMBDA_SHIFT;
+        return lambda >> FF_LAMBDA_SHIFT;
     case FF_CMP_DCT:
-        return (3*lambda)>>(FF_LAMBDA_SHIFT+1);
+        return (3 * lambda) >> (FF_LAMBDA_SHIFT + 1);
     case FF_CMP_W53:
-        return (4*lambda)>>(FF_LAMBDA_SHIFT);
+        return (4 * lambda) >> (FF_LAMBDA_SHIFT);
     case FF_CMP_W97:
-        return (2*lambda)>>(FF_LAMBDA_SHIFT);
+        return (2 * lambda) >> (FF_LAMBDA_SHIFT);
     case FF_CMP_SATD:
     case FF_CMP_DCT264:
-        return (2*lambda)>>FF_LAMBDA_SHIFT;
+        return (2 * lambda) >> FF_LAMBDA_SHIFT;
     case FF_CMP_RD:
     case FF_CMP_PSNR:
     case FF_CMP_SSE:
     case FF_CMP_NSSE:
-        return lambda2>>FF_LAMBDA_SHIFT;
+        return lambda2 >> FF_LAMBDA_SHIFT;
     case FF_CMP_BIT:
         return 1;
     }
@@ -645,22 +649,22 @@ static inline int get_penalty_factor(int lambda, int lambda2, int type){
  */
 #define emms_c()
 
-void dsputil_init_alpha(DSPContext* c, AVCodecContext *avctx);
-void dsputil_init_arm(DSPContext* c, AVCodecContext *avctx);
-void dsputil_init_bfin(DSPContext* c, AVCodecContext *avctx);
-void dsputil_init_mlib(DSPContext* c, AVCodecContext *avctx);
-void dsputil_init_mmi(DSPContext* c, AVCodecContext *avctx);
-void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx);
-void dsputil_init_ppc(DSPContext* c, AVCodecContext *avctx);
-void dsputil_init_sh4(DSPContext* c, AVCodecContext *avctx);
-void dsputil_init_vis(DSPContext* c, AVCodecContext *avctx);
+void dsputil_init_alpha(DSPContext *c, AVCodecContext *avctx);
+void dsputil_init_arm(DSPContext *c, AVCodecContext *avctx);
+void dsputil_init_bfin(DSPContext *c, AVCodecContext *avctx);
+void dsputil_init_mlib(DSPContext *c, AVCodecContext *avctx);
+void dsputil_init_mmi(DSPContext *c, AVCodecContext *avctx);
+void dsputil_init_mmx(DSPContext *c, AVCodecContext *avctx);
+void dsputil_init_ppc(DSPContext *c, AVCodecContext *avctx);
+void dsputil_init_sh4(DSPContext *c, AVCodecContext *avctx);
+void dsputil_init_vis(DSPContext *c, AVCodecContext *avctx);
 
 void ff_dsputil_init_dwt(DSPContext *c);
-void ff_rv30dsp_init(DSPContext* c, AVCodecContext *avctx);
-void ff_rv40dsp_init(DSPContext* c, AVCodecContext *avctx);
-void ff_intrax8dsp_init(DSPContext* c, AVCodecContext *avctx);
-void ff_mlp_init(DSPContext* c, AVCodecContext *avctx);
-void ff_mlp_init_x86(DSPContext* c, AVCodecContext *avctx);
+void ff_rv30dsp_init(DSPContext *c, AVCodecContext *avctx);
+void ff_rv40dsp_init(DSPContext *c, AVCodecContext *avctx);
+void ff_intrax8dsp_init(DSPContext *c, AVCodecContext *avctx);
+void ff_mlp_init(DSPContext *c, AVCodecContext *avctx);
+void ff_mlp_init_x86(DSPContext *c, AVCodecContext *avctx);
 
 #if HAVE_MMX
 
@@ -746,76 +750,76 @@ static int name16(void /*MpegEncContext*/ *s, uint8_t *dst, uint8_t *src, int st
 static inline void copy_block2(uint8_t *dst, const uint8_t *src, int dstStride, int srcStride, int h)
 {
     int i;
-    for(i=0; i<h; i++)
+    for(i = 0; i < h; i++)
     {
         AV_WN16(dst   , AV_RN16(src   ));
-        dst+=dstStride;
-        src+=srcStride;
+        dst += dstStride;
+        src += srcStride;
     }
 }
 
 static inline void copy_block4(uint8_t *dst, const uint8_t *src, int dstStride, int srcStride, int h)
 {
     int i;
-    for(i=0; i<h; i++)
+    for(i = 0; i < h; i++)
     {
         AV_WN32(dst   , AV_RN32(src   ));
-        dst+=dstStride;
-        src+=srcStride;
+        dst += dstStride;
+        src += srcStride;
     }
 }
 
 static inline void copy_block8(uint8_t *dst, const uint8_t *src, int dstStride, int srcStride, int h)
 {
     int i;
-    for(i=0; i<h; i++)
+    for(i = 0; i < h; i++)
     {
         AV_WN32(dst   , AV_RN32(src   ));
-        AV_WN32(dst+4 , AV_RN32(src+4 ));
-        dst+=dstStride;
-        src+=srcStride;
+        AV_WN32(dst + 4 , AV_RN32(src + 4 ));
+        dst += dstStride;
+        src += srcStride;
     }
 }
 
 static inline void copy_block9(uint8_t *dst, const uint8_t *src, int dstStride, int srcStride, int h)
 {
     int i;
-    for(i=0; i<h; i++)
+    for(i = 0; i < h; i++)
     {
         AV_WN32(dst   , AV_RN32(src   ));
-        AV_WN32(dst+4 , AV_RN32(src+4 ));
-        dst[8]= src[8];
-        dst+=dstStride;
-        src+=srcStride;
+        AV_WN32(dst + 4 , AV_RN32(src + 4 ));
+        dst[8] = src[8];
+        dst += dstStride;
+        src += srcStride;
     }
 }
 
 static inline void copy_block16(uint8_t *dst, const uint8_t *src, int dstStride, int srcStride, int h)
 {
     int i;
-    for(i=0; i<h; i++)
+    for(i = 0; i < h; i++)
     {
         AV_WN32(dst   , AV_RN32(src   ));
-        AV_WN32(dst+4 , AV_RN32(src+4 ));
-        AV_WN32(dst+8 , AV_RN32(src+8 ));
-        AV_WN32(dst+12, AV_RN32(src+12));
-        dst+=dstStride;
-        src+=srcStride;
+        AV_WN32(dst + 4 , AV_RN32(src + 4 ));
+        AV_WN32(dst + 8 , AV_RN32(src + 8 ));
+        AV_WN32(dst + 12, AV_RN32(src + 12));
+        dst += dstStride;
+        src += srcStride;
     }
 }
 
 static inline void copy_block17(uint8_t *dst, const uint8_t *src, int dstStride, int srcStride, int h)
 {
     int i;
-    for(i=0; i<h; i++)
+    for(i = 0; i < h; i++)
     {
         AV_WN32(dst   , AV_RN32(src   ));
-        AV_WN32(dst+4 , AV_RN32(src+4 ));
-        AV_WN32(dst+8 , AV_RN32(src+8 ));
-        AV_WN32(dst+12, AV_RN32(src+12));
-        dst[16]= src[16];
-        dst+=dstStride;
-        src+=srcStride;
+        AV_WN32(dst + 4 , AV_RN32(src + 4 ));
+        AV_WN32(dst + 8 , AV_RN32(src + 8 ));
+        AV_WN32(dst + 12, AV_RN32(src + 12));
+        dst[16] = src[16];
+        dst += dstStride;
+        src += srcStride;
     }
 }
 

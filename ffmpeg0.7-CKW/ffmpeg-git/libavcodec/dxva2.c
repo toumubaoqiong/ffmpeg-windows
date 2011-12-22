@@ -52,11 +52,13 @@ int ff_dxva2_commit_buffer(AVCodecContext *avctx,
     int      result;
 
     if (FAILED(IDirectXVideoDecoder_GetBuffer(ctx->decoder, type,
-                                              &dxva_data, &dxva_size))) {
+               &dxva_data, &dxva_size)))
+    {
         av_log(avctx, AV_LOG_ERROR, "Failed to get a buffer for %d\n", type);
         return -1;
     }
-    if (size <= dxva_size) {
+    if (size <= dxva_size)
+    {
         memcpy(dxva_data, data, size);
 
         memset(dsc, 0, sizeof(*dsc));
@@ -65,11 +67,14 @@ int ff_dxva2_commit_buffer(AVCodecContext *avctx,
         dsc->NumMBsInBuffer       = mb_count;
 
         result = 0;
-    } else {
+    }
+    else
+    {
         av_log(avctx, AV_LOG_ERROR, "Buffer for type %d was too small\n", type);
         result = -1;
     }
-    if (FAILED(IDirectXVideoDecoder_ReleaseBuffer(ctx->decoder, type))) {
+    if (FAILED(IDirectXVideoDecoder_ReleaseBuffer(ctx->decoder, type)))
+    {
         av_log(avctx, AV_LOG_ERROR, "Failed to release buffer type %d\n", type);
         result = -1;
     }
@@ -80,8 +85,8 @@ int ff_dxva2_common_end_frame(AVCodecContext *avctx, MpegEncContext *s,
                               const void *pp, unsigned pp_size,
                               const void *qm, unsigned qm_size,
                               int (*commit_bs_si)(AVCodecContext *,
-                                                  DXVA2_DecodeBufferDesc *bs,
-                                                  DXVA2_DecodeBufferDesc *slice))
+                                      DXVA2_DecodeBufferDesc *bs,
+                                      DXVA2_DecodeBufferDesc *slice))
 {
     struct dxva_context *ctx = avctx->hwaccel_context;
     unsigned               buffer_count = 0;
@@ -90,8 +95,9 @@ int ff_dxva2_common_end_frame(AVCodecContext *avctx, MpegEncContext *s,
     int      result;
 
     if (FAILED(IDirectXVideoDecoder_BeginFrame(ctx->decoder,
-                                               ff_dxva2_get_surface(s->current_picture_ptr),
-                                               NULL))) {
+               ff_dxva2_get_surface(s->current_picture_ptr),
+               NULL)))
+    {
         av_log(avctx, AV_LOG_ERROR, "Failed to begin frame\n");
         return -1;
     }
@@ -99,18 +105,21 @@ int ff_dxva2_common_end_frame(AVCodecContext *avctx, MpegEncContext *s,
     result = ff_dxva2_commit_buffer(avctx, ctx, &buffer[buffer_count],
                                     DXVA2_PictureParametersBufferType,
                                     pp, pp_size, 0);
-    if (result) {
+    if (result)
+    {
         av_log(avctx, AV_LOG_ERROR,
                "Failed to add picture parameter buffer\n");
         goto end;
     }
     buffer_count++;
 
-    if (qm_size > 0) {
+    if (qm_size > 0)
+    {
         result = ff_dxva2_commit_buffer(avctx, ctx, &buffer[buffer_count],
                                         DXVA2_InverseQuantizationMatrixBufferType,
                                         qm, qm_size, 0);
-        if (result) {
+        if (result)
+        {
             av_log(avctx, AV_LOG_ERROR,
                    "Failed to add inverse quantization matrix buffer\n");
             goto end;
@@ -121,7 +130,8 @@ int ff_dxva2_common_end_frame(AVCodecContext *avctx, MpegEncContext *s,
     result = commit_bs_si(avctx,
                           &buffer[buffer_count + 0],
                           &buffer[buffer_count + 1]);
-    if (result) {
+    if (result)
+    {
         av_log(avctx, AV_LOG_ERROR,
                "Failed to add bitstream or slice control buffer\n");
         goto end;
@@ -136,13 +146,15 @@ int ff_dxva2_common_end_frame(AVCodecContext *avctx, MpegEncContext *s,
     exec.NumCompBuffers      = buffer_count;
     exec.pCompressedBuffers  = buffer;
     exec.pExtensionData      = NULL;
-    if (FAILED(IDirectXVideoDecoder_Execute(ctx->decoder, &exec))) {
+    if (FAILED(IDirectXVideoDecoder_Execute(ctx->decoder, &exec)))
+    {
         av_log(avctx, AV_LOG_ERROR, "Failed to execute\n");
         result = -1;
     }
 
 end:
-    if (FAILED(IDirectXVideoDecoder_EndFrame(ctx->decoder, NULL))) {
+    if (FAILED(IDirectXVideoDecoder_EndFrame(ctx->decoder, NULL)))
+    {
         av_log(avctx, AV_LOG_ERROR, "Failed to end frame\n");
         result = -1;
     }

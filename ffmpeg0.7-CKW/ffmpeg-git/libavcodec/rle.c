@@ -35,12 +35,15 @@ static int count_pixels(const uint8_t *start, int len, int bpp, int same)
     const uint8_t *pos;
     int count = 1;
 
-    for(pos = start + bpp; count < FFMIN(127, len); pos += bpp, count ++) {
-        if(same != !memcmp(pos-bpp, pos, bpp)) {
-            if(!same) {
+    for(pos = start + bpp; count < FFMIN(127, len); pos += bpp, count ++)
+    {
+        if(same != !memcmp(pos - bpp, pos, bpp))
+        {
+            if(!same)
+            {
                 /* if bpp == 1, then 0 1 1 0 is more efficiently encoded as a single
                  * raw block of pixels.  for larger bpp, RLE is as good or better */
-                if(bpp == 1 && count + 1 < FFMIN(127, len) && *pos != *(pos+1))
+                if(bpp == 1 && count + 1 < FFMIN(127, len) && *pos != *(pos + 1))
                     continue;
 
                 /* if RLE can encode the next block better than as a raw block,
@@ -60,17 +63,21 @@ int ff_rle_encode(uint8_t *outbuf, int out_size, const uint8_t *ptr , int bpp, i
     int count, x;
     uint8_t *out = outbuf;
 
-    for(x = 0; x < w; x += count) {
+    for(x = 0; x < w; x += count)
+    {
         /* see if we can encode the next set of pixels with RLE */
-        if((count = count_pixels(ptr, w-x, bpp, 1)) > 1) {
+        if((count = count_pixels(ptr, w - x, bpp, 1)) > 1)
+        {
             if(out + bpp + 1 > outbuf + out_size) return -1;
             *out++ = (count ^ xor_rep) + add_rep;
             memcpy(out, ptr, bpp);
             out += bpp;
-        } else {
+        }
+        else
+        {
             /* fall back on uncompressed */
-            count = count_pixels(ptr, w-x, bpp, 0);
-            if(out + bpp*count >= outbuf + out_size) return -1;
+            count = count_pixels(ptr, w - x, bpp, 0);
+            if(out + bpp *count >= outbuf + out_size) return -1;
             *out++ = (count ^ xor_raw) + add_raw;
 
             memcpy(out, ptr, bpp * count);

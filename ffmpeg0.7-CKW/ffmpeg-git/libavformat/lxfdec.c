@@ -30,7 +30,8 @@
 #define LXF_SAMPLERATE          48000
 #define LXF_MAX_AUDIO_PACKET    (8008*15*4) ///< 15-channel 32-bit NTSC audio frame
 
-static const AVCodecTag lxf_tags[] = {
+static const AVCodecTag lxf_tags[] =
+{
     { CODEC_ID_MJPEG,       0 },
     { CODEC_ID_MPEG1VIDEO,  1 },
     { CODEC_ID_MPEG2VIDEO,  2 },    //MpMl, 4:2:0
@@ -44,7 +45,8 @@ static const AVCodecTag lxf_tags[] = {
     { CODEC_ID_NONE,        0 },
 };
 
-typedef struct {
+typedef struct
+{
     int channels;                       ///< number of audio channels. zero means no audio
     uint8_t temp[LXF_MAX_AUDIO_PACKET]; ///< temp buffer for de-planarizing the audio data
     int frame_number;                   ///< current video frame
@@ -89,11 +91,12 @@ static int sync(AVFormatContext *s, uint8_t *header)
     if ((ret = avio_read(s->pb, buf, LXF_IDENT_LENGTH)) != LXF_IDENT_LENGTH)
         return ret < 0 ? ret : AVERROR_EOF;
 
-    while (memcmp(buf, LXF_IDENT, LXF_IDENT_LENGTH)) {
+    while (memcmp(buf, LXF_IDENT, LXF_IDENT_LENGTH))
+    {
         if (url_feof(s->pb))
             return AVERROR_EOF;
 
-        memmove(buf, &buf[1], LXF_IDENT_LENGTH-1);
+        memmove(buf, &buf[1], LXF_IDENT_LENGTH - 1);
         buf[LXF_IDENT_LENGTH-1] = avio_r8(s->pb);
     }
 
@@ -121,8 +124,9 @@ static int get_packet_header(AVFormatContext *s, uint8_t *header, uint32_t *form
 
     //read the rest of the packet header
     if ((ret = avio_read(pb, header + LXF_IDENT_LENGTH,
-                          LXF_PACKET_HEADER_SIZE - LXF_IDENT_LENGTH)) !=
-                          LXF_PACKET_HEADER_SIZE - LXF_IDENT_LENGTH) {
+                         LXF_PACKET_HEADER_SIZE - LXF_IDENT_LENGTH)) !=
+            LXF_PACKET_HEADER_SIZE - LXF_IDENT_LENGTH)
+    {
         return ret < 0 ? ret : AVERROR_EOF;
     }
 
@@ -133,16 +137,18 @@ static int get_packet_header(AVFormatContext *s, uint8_t *header, uint32_t *form
     ret     = AV_RL32(&header[36]);
 
     //type
-    switch (AV_RL32(&header[16])) {
+    switch (AV_RL32(&header[16]))
+    {
     case 0:
         //video
         //skip VBI data and metadata
         avio_skip(pb, (int64_t)(uint32_t)AV_RL32(&header[44]) +
-                      (int64_t)(uint32_t)AV_RL32(&header[52]));
+                  (int64_t)(uint32_t)AV_RL32(&header[52]));
         break;
     case 1:
         //audio
-        if (!(st = s->streams[1])) {
+        if (!(st = s->streams[1]))
+        {
             av_log(s, AV_LOG_INFO, "got audio packet, but no audio stream present\n");
             break;
         }
@@ -152,16 +158,26 @@ static int get_packet_header(AVFormatContext *s, uint8_t *header, uint32_t *form
         *format                          = AV_RL32(&header[40]);
         st->codec->bits_per_coded_sample = (*format >> 6) & 0x3F;
 
-        if (st->codec->bits_per_coded_sample != (*format & 0x3F)) {
+        if (st->codec->bits_per_coded_sample != (*format & 0x3F))
+        {
             av_log(s, AV_LOG_WARNING, "only tightly packed PCM currently supported\n");
             return AVERROR_PATCHWELCOME;
         }
 
-        switch (st->codec->bits_per_coded_sample) {
-        case 16: st->codec->codec_id = CODEC_ID_PCM_S16LE; break;
-        case 20: st->codec->codec_id = CODEC_ID_PCM_LXF;   break;
-        case 24: st->codec->codec_id = CODEC_ID_PCM_S24LE; break;
-        case 32: st->codec->codec_id = CODEC_ID_PCM_S32LE; break;
+        switch (st->codec->bits_per_coded_sample)
+        {
+        case 16:
+            st->codec->codec_id = CODEC_ID_PCM_S16LE;
+            break;
+        case 20:
+            st->codec->codec_id = CODEC_ID_PCM_LXF;
+            break;
+        case 24:
+            st->codec->codec_id = CODEC_ID_PCM_S24LE;
+            break;
+        case 32:
+            st->codec->codec_id = CODEC_ID_PCM_S32LE;
+            break;
         default:
             av_log(s, AV_LOG_WARNING,
                    "only 16-, 20-, 24- and 32-bit PCM currently supported\n");
@@ -173,9 +189,12 @@ static int get_packet_header(AVFormatContext *s, uint8_t *header, uint32_t *form
 
         //use audio packet size to determine video standard
         //for NTSC we have one 8008-sample audio frame per five video frames
-        if (samples == LXF_SAMPLERATE * 5005 / 30000) {
+        if (samples == LXF_SAMPLERATE * 5005 / 30000)
+        {
             av_set_pts_info(s->streams[0], 64, 1001, 30000);
-        } else {
+        }
+        else
+        {
             //assume PAL, but warn if we don't have 1920 samples
             if (samples != LXF_SAMPLERATE / 25)
                 av_log(s, AV_LOG_WARNING,
@@ -208,7 +227,8 @@ static int lxf_read_header(AVFormatContext *s, AVFormatParameters *ap)
     if ((ret = get_packet_header(s, header, &format)) < 0)
         return ret;
 
-    if (ret != LXF_HEADER_DATA_SIZE) {
+    if (ret != LXF_HEADER_DATA_SIZE)
+    {
         av_log(s, AV_LOG_ERROR, "expected %d B size header, got %d\n",
                LXF_HEADER_DATA_SIZE, ret);
         return AVERROR_INVALIDDATA;
@@ -242,7 +262,8 @@ static int lxf_read_header(AVFormatContext *s, AVFormatParameters *ap)
     if ((video_params >> 22) & 1)
         av_log(s, AV_LOG_WARNING, "VBI data not yet supported\n");
 
-    if ((lxf->channels = (disk_params >> 2) & 0xF)) {
+    if ((lxf->channels = (disk_params >> 2) & 0xF))
+    {
         if (!(st = av_new_stream(s, 1)))
             return AVERROR(ENOMEM);
 
@@ -253,7 +274,8 @@ static int lxf_read_header(AVFormatContext *s, AVFormatParameters *ap)
         av_set_pts_info(st, 64, 1, st->codec->sample_rate);
     }
 
-    if (format == 1) {
+    if (format == 1)
+    {
         //skip extended field data
         avio_skip(s->pb, (uint32_t)AV_RL32(&header[40]));
     }
@@ -292,20 +314,23 @@ static int lxf_read_packet(AVFormatContext *s, AVPacket *pkt)
 
     stream = AV_RL32(&header[16]);
 
-    if (stream > 1) {
+    if (stream > 1)
+    {
         av_log(s, AV_LOG_WARNING, "got packet with illegal stream index %u\n", stream);
         return AVERROR(EAGAIN);
     }
 
-    if (stream == 1 && !(ast = s->streams[1])) {
+    if (stream == 1 && !(ast = s->streams[1]))
+    {
         av_log(s, AV_LOG_ERROR, "got audio packet without having an audio stream\n");
         return AVERROR_INVALIDDATA;
     }
 
     //make sure the data fits in the de-planerization buffer
-    if (ast && ret > LXF_MAX_AUDIO_PACKET) {
+    if (ast && ret > LXF_MAX_AUDIO_PACKET)
+    {
         av_log(s, AV_LOG_ERROR, "audio packet too large (%i > %i)\n",
-            ret, LXF_MAX_AUDIO_PACKET);
+               ret, LXF_MAX_AUDIO_PACKET);
         return AVERROR_INVALIDDATA;
     }
 
@@ -315,17 +340,21 @@ static int lxf_read_packet(AVFormatContext *s, AVPacket *pkt)
     //read non-20-bit audio data into lxf->temp so we can deplanarize it
     buf = ast && ast->codec->codec_id != CODEC_ID_PCM_LXF ? lxf->temp : pkt->data;
 
-    if ((ret2 = avio_read(pb, buf, ret)) != ret) {
+    if ((ret2 = avio_read(pb, buf, ret)) != ret)
+    {
         av_free_packet(pkt);
         return ret2 < 0 ? ret2 : AVERROR_EOF;
     }
 
     pkt->stream_index = stream;
 
-    if (ast) {
+    if (ast)
+    {
         if(ast->codec->codec_id != CODEC_ID_PCM_LXF)
             deplanarize(lxf, ast, pkt->data, ret);
-    } else {
+    }
+    else
+    {
         //picture type (0 = closed I, 1 = open I, 2 = P, 3 = B)
         if (((format >> 22) & 0x3) < 2)
             pkt->flags |= AV_PKT_FLAG_KEY;
@@ -336,13 +365,17 @@ static int lxf_read_packet(AVFormatContext *s, AVPacket *pkt)
     return ret;
 }
 
-AVInputFormat ff_lxf_demuxer = {
+AVInputFormat ff_lxf_demuxer =
+{
     .name           = "lxf",
     .long_name      = NULL_IF_CONFIG_SMALL("VR native stream format (LXF)"),
     .priv_data_size = sizeof(LXFDemuxContext),
     .read_probe     = lxf_probe,
     .read_header    = lxf_read_header,
     .read_packet    = lxf_read_packet,
-    .codec_tag      = (const AVCodecTag* const []){lxf_tags, 0},
+    .codec_tag      = (const AVCodecTag *const [])
+    {
+        lxf_tags, 0
+    },
 };
 

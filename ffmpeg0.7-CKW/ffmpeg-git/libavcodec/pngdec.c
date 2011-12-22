@@ -32,7 +32,8 @@
 
 //#define DEBUG
 
-typedef struct PNGDecContext {
+typedef struct PNGDecContext
+{
     DSPContext dsp;
 
     const uint8_t *bytestream;
@@ -67,12 +68,14 @@ typedef struct PNGDecContext {
 } PNGDecContext;
 
 /* Mask to determine which y pixels can be written in a pass */
-static const uint8_t png_pass_dsp_ymask[NB_PASSES] = {
+static const uint8_t png_pass_dsp_ymask[NB_PASSES] =
+{
     0xff, 0xff, 0x0f, 0xcc, 0x33, 0xff, 0x55,
 };
 
 /* Mask to determine which pixels to overwrite while displaying */
-static const uint8_t png_pass_dsp_mask[NB_PASSES] = {
+static const uint8_t png_pass_dsp_mask[NB_PASSES] =
+{
     0xff, 0x0f, 0xff, 0x33, 0xff, 0x55, 0xff
 };
 
@@ -89,15 +92,18 @@ static void png_put_interlaced_row(uint8_t *dst, int width,
 
     mask = ff_png_pass_mask[pass];
     dsp_mask = png_pass_dsp_mask[pass];
-    switch(bits_per_pixel) {
+    switch(bits_per_pixel)
+    {
     case 1:
         /* we must initialize the line to zero before writing to it */
         if (pass == 0)
             memset(dst, 0, (width + 7) >> 3);
         src_x = 0;
-        for(x = 0; x < width; x++) {
+        for(x = 0; x < width; x++)
+        {
             j = (x & 7);
-            if ((dsp_mask << j) & 0x80) {
+            if ((dsp_mask << j) & 0x80)
+            {
                 b = (src[src_x >> 3] >> (7 - (src_x & 7))) & 1;
                 dst[x >> 3] |= b << (7 - j);
             }
@@ -109,20 +115,27 @@ static void png_put_interlaced_row(uint8_t *dst, int width,
         bpp = bits_per_pixel >> 3;
         d = dst;
         s = src;
-        if (color_type == PNG_COLOR_TYPE_RGB_ALPHA) {
-            for(x = 0; x < width; x++) {
+        if (color_type == PNG_COLOR_TYPE_RGB_ALPHA)
+        {
+            for(x = 0; x < width; x++)
+            {
                 j = x & 7;
-                if ((dsp_mask << j) & 0x80) {
+                if ((dsp_mask << j) & 0x80)
+                {
                     *(uint32_t *)d = (s[3] << 24) | (s[0] << 16) | (s[1] << 8) | s[2];
                 }
                 d += bpp;
                 if ((mask << j) & 0x80)
                     s += bpp;
             }
-        } else {
-            for(x = 0; x < width; x++) {
+        }
+        else
+        {
+            for(x = 0; x < width; x++)
+            {
                 j = x & 7;
-                if ((dsp_mask << j) & 0x80) {
+                if ((dsp_mask << j) & 0x80)
+                {
                     memcpy(d, s, bpp);
                 }
                 d += bpp;
@@ -137,7 +150,8 @@ static void png_put_interlaced_row(uint8_t *dst, int width,
 void ff_add_png_paeth_prediction(uint8_t *dst, uint8_t *src, uint8_t *top, int w, int bpp)
 {
     int i;
-    for(i = 0; i < w; i++) {
+    for(i = 0; i < w; i++)
+    {
         int a, b, c, p, pa, pb, pc;
 
         a = dst[i - bpp];
@@ -196,22 +210,28 @@ static void png_filter_row(DSPContext *dsp, uint8_t *dst, int filter_type,
 {
     int i, p, r, g, b, a;
 
-    switch(filter_type) {
+    switch(filter_type)
+    {
     case PNG_FILTER_VALUE_NONE:
         memcpy(dst, src, size);
         break;
     case PNG_FILTER_VALUE_SUB:
-        for(i = 0; i < bpp; i++) {
+        for(i = 0; i < bpp; i++)
+        {
             dst[i] = src[i];
         }
-        if(bpp == 4) {
-            p = *(int*)dst;
-            for(; i < size; i+=bpp) {
-                int s = *(int*)(src+i);
-                p = ((s&0x7f7f7f7f) + (p&0x7f7f7f7f)) ^ ((s^p)&0x80808080);
-                *(int*)(dst+i) = p;
+        if(bpp == 4)
+        {
+            p = *(int *)dst;
+            for(; i < size; i += bpp)
+            {
+                int s = *(int *)(src + i);
+                p = ((s & 0x7f7f7f7f) + (p & 0x7f7f7f7f)) ^ ((s ^ p) & 0x80808080);
+                *(int *)(dst + i) = p;
             }
-        } else {
+        }
+        else
+        {
 #define OP_SUB(x,s,l) x+s
             UNROLL_FILTER(OP_SUB);
         }
@@ -220,7 +240,8 @@ static void png_filter_row(DSPContext *dsp, uint8_t *dst, int filter_type,
         dsp->add_bytes_l2(dst, src, last, size);
         break;
     case PNG_FILTER_VALUE_AVG:
-        for(i = 0; i < bpp; i++) {
+        for(i = 0; i < bpp; i++)
+        {
             p = (last[i] >> 1);
             dst[i] = p + src[i];
         }
@@ -228,17 +249,19 @@ static void png_filter_row(DSPContext *dsp, uint8_t *dst, int filter_type,
         UNROLL_FILTER(OP_AVG);
         break;
     case PNG_FILTER_VALUE_PAETH:
-        for(i = 0; i < bpp; i++) {
+        for(i = 0; i < bpp; i++)
+        {
             p = last[i];
             dst[i] = p + src[i];
         }
-        if(bpp > 1 && size > 4) {
+        if(bpp > 1 && size > 4)
+        {
             // would write off the end of the array if we let it process the last pixel with bpp=3
-            int w = bpp==4 ? size : size-3;
-            dsp->add_png_paeth_prediction(dst+i, src+i, last+i, w-i, bpp);
+            int w = bpp == 4 ? size : size - 3;
+            dsp->add_png_paeth_prediction(dst + i, src + i, last + i, w - i, bpp);
             i = w;
         }
-        ff_add_png_paeth_prediction(dst+i, src+i, last+i, size-i, bpp);
+        ff_add_png_paeth_prediction(dst + i, src + i, last + i, size - i, bpp);
         break;
     }
 }
@@ -248,14 +271,16 @@ static av_always_inline void convert_to_rgb32_loco(uint8_t *dst, const uint8_t *
     int j;
     unsigned int r, g, b, a;
 
-    for(j = 0;j < width; j++) {
+    for(j = 0; j < width; j++)
+    {
         r = src[0];
         g = src[1];
         b = src[2];
         a = src[3];
-        if(loco) {
-            r = (r+g)&0xff;
-            b = (b+g)&0xff;
+        if(loco)
+        {
+            r = (r + g) & 0xff;
+            b = (b + g) & 0xff;
         }
         *(uint32_t *)dst = (a << 24) | (r << 16) | (g << 8) | b;
         dst += 4;
@@ -274,7 +299,8 @@ static void convert_to_rgb32(uint8_t *dst, const uint8_t *src, int width, int lo
 static void deloco_rgb24(uint8_t *dst, int size)
 {
     int i;
-    for(i=0; i<size; i+=3) {
+    for(i = 0; i < size; i += 3)
+    {
         int g = dst[i+1];
         dst[i+0] += g;
         dst[i+2] += g;
@@ -287,15 +313,19 @@ static void png_handle_row(PNGDecContext *s)
     uint8_t *ptr, *last_row;
     int got_line;
 
-    if (!s->interlace_type) {
+    if (!s->interlace_type)
+    {
         ptr = s->image_buf + s->image_linesize * s->y;
         /* need to swap bytes correctly for RGB_ALPHA */
-        if (s->color_type == PNG_COLOR_TYPE_RGB_ALPHA) {
+        if (s->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
+        {
             png_filter_row(&s->dsp, s->tmp_row, s->crow_buf[0], s->crow_buf + 1,
                            s->last_row, s->row_size, s->bpp);
             convert_to_rgb32(ptr, s->tmp_row, s->width, s->filter_type == PNG_FILTER_TYPE_LOCO);
-            FFSWAP(uint8_t*, s->last_row, s->tmp_row);
-        } else {
+            FFSWAP(uint8_t *, s->last_row, s->tmp_row);
+        }
+        else
+        {
             /* in normal case, we avoid one copy */
             if (s->y == 0)
                 last_row = s->last_row;
@@ -307,46 +337,57 @@ static void png_handle_row(PNGDecContext *s)
         }
         /* loco lags by 1 row so that it doesn't interfere with top prediction */
         if (s->filter_type == PNG_FILTER_TYPE_LOCO &&
-            s->color_type == PNG_COLOR_TYPE_RGB && s->y > 0)
+                s->color_type == PNG_COLOR_TYPE_RGB && s->y > 0)
             deloco_rgb24(ptr - s->image_linesize, s->row_size);
         s->y++;
-        if (s->y == s->height) {
+        if (s->y == s->height)
+        {
             s->state |= PNG_ALLIMAGE;
             if (s->filter_type == PNG_FILTER_TYPE_LOCO &&
-                s->color_type == PNG_COLOR_TYPE_RGB)
+                    s->color_type == PNG_COLOR_TYPE_RGB)
                 deloco_rgb24(ptr, s->row_size);
         }
-    } else {
+    }
+    else
+    {
         got_line = 0;
-        for(;;) {
+        for(;;)
+        {
             ptr = s->image_buf + s->image_linesize * s->y;
-            if ((ff_png_pass_ymask[s->pass] << (s->y & 7)) & 0x80) {
+            if ((ff_png_pass_ymask[s->pass] << (s->y & 7)) & 0x80)
+            {
                 /* if we already read one row, it is time to stop to
                    wait for the next one */
                 if (got_line)
                     break;
                 png_filter_row(&s->dsp, s->tmp_row, s->crow_buf[0], s->crow_buf + 1,
                                s->last_row, s->pass_row_size, s->bpp);
-                FFSWAP(uint8_t*, s->last_row, s->tmp_row);
+                FFSWAP(uint8_t *, s->last_row, s->tmp_row);
                 got_line = 1;
             }
-            if ((png_pass_dsp_ymask[s->pass] << (s->y & 7)) & 0x80) {
+            if ((png_pass_dsp_ymask[s->pass] << (s->y & 7)) & 0x80)
+            {
                 /* NOTE: RGB32 is handled directly in png_put_interlaced_row */
                 png_put_interlaced_row(ptr, s->width, s->bits_per_pixel, s->pass,
                                        s->color_type, s->last_row);
             }
             s->y++;
-            if (s->y == s->height) {
-                for(;;) {
-                    if (s->pass == NB_PASSES - 1) {
+            if (s->y == s->height)
+            {
+                for(;;)
+                {
+                    if (s->pass == NB_PASSES - 1)
+                    {
                         s->state |= PNG_ALLIMAGE;
                         goto the_end;
-                    } else {
+                    }
+                    else
+                    {
                         s->pass++;
                         s->y = 0;
                         s->pass_row_size = ff_png_pass_row_size(s->pass,
-                                                             s->bits_per_pixel,
-                                                             s->width);
+                                                                s->bits_per_pixel,
+                                                                s->width);
                         s->crow_size = s->pass_row_size + 1;
                         if (s->pass_row_size != 0)
                             break;
@@ -355,7 +396,8 @@ static void png_handle_row(PNGDecContext *s)
                 }
             }
         }
-    the_end: ;
+the_end:
+        ;
     }
 }
 
@@ -370,13 +412,17 @@ static int png_decode_idat(PNGDecContext *s, int length)
         return -1;
 
     /* decode one line if possible */
-    while (s->zstream.avail_in > 0) {
+    while (s->zstream.avail_in > 0)
+    {
         ret = inflate(&s->zstream, Z_PARTIAL_FLUSH);
-        if (ret != Z_OK && ret != Z_STREAM_END) {
+        if (ret != Z_OK && ret != Z_STREAM_END)
+        {
             return -1;
         }
-        if (s->zstream.avail_out == 0) {
-            if (!(s->state & PNG_ALLIMAGE)) {
+        if (s->zstream.avail_out == 0)
+        {
+            if (!(s->state & PNG_ALLIMAGE))
+            {
                 png_handle_row(s);
             }
             s->zstream.avail_out = s->crow_size;
@@ -392,7 +438,7 @@ static int decode_frame(AVCodecContext *avctx,
 {
     const uint8_t *buf = avpkt->data;
     int buf_size = avpkt->size;
-    PNGDecContext * const s = avctx->priv_data;
+    PNGDecContext *const s = avctx->priv_data;
     AVFrame *picture = data;
     AVFrame *p;
     uint8_t *crow_buf_base = NULL;
@@ -400,21 +446,21 @@ static int decode_frame(AVCodecContext *avctx,
     int ret, crc;
 
     FFSWAP(AVFrame *, s->current_picture, s->last_picture);
-    avctx->coded_frame= s->current_picture;
+    avctx->coded_frame = s->current_picture;
     p = s->current_picture;
 
-    s->bytestream_start=
-    s->bytestream= buf;
-    s->bytestream_end= buf + buf_size;
+    s->bytestream_start =
+        s->bytestream = buf;
+    s->bytestream_end = buf + buf_size;
 
     /* check signature */
     if (memcmp(s->bytestream, ff_pngsig, 8) != 0 &&
-        memcmp(s->bytestream, ff_mngsig, 8) != 0)
+            memcmp(s->bytestream, ff_mngsig, 8) != 0)
         return -1;
-    s->bytestream+= 8;
-    s->y=
-    s->state=0;
-//    memset(s, 0, sizeof(PNGDecContext));
+    s->bytestream += 8;
+    s->y =
+        s->state = 0;
+    //    memset(s, 0, sizeof(PNGDecContext));
     /* init the zlib */
     s->zstream.zalloc = ff_png_zalloc;
     s->zstream.zfree = ff_png_zfree;
@@ -422,7 +468,8 @@ static int decode_frame(AVCodecContext *avctx,
     ret = inflateInit(&s->zstream);
     if (ret != Z_OK)
         return -1;
-    for(;;) {
+    for(;;)
+    {
         int tag32;
         if (s->bytestream >= s->bytestream_end)
             goto fail;
@@ -436,14 +483,16 @@ static int decode_frame(AVCodecContext *avctx,
                 ((tag >> 8) & 0xff),
                 ((tag >> 16) & 0xff),
                 ((tag >> 24) & 0xff), length);
-        switch(tag) {
+        switch(tag)
+        {
         case MKTAG('I', 'H', 'D', 'R'):
             if (length != 13)
                 goto fail;
             s->width = bytestream_get_be32(&s->bytestream);
             s->height = bytestream_get_be32(&s->bytestream);
-            if(av_image_check_size(s->width, s->height, 0, avctx)){
-                s->width= s->height= 0;
+            if(av_image_check_size(s->width, s->height, 0, avctx))
+            {
+                s->width = s->height = 0;
                 goto fail;
             }
             s->bit_depth = *s->bytestream++;
@@ -460,7 +509,8 @@ static int decode_frame(AVCodecContext *avctx,
         case MKTAG('I', 'D', 'A', 'T'):
             if (!(s->state & PNG_IHDR))
                 goto fail;
-            if (!(s->state & PNG_IDAT)) {
+            if (!(s->state & PNG_IDAT))
+            {
                 /* init image info */
                 avctx->width = s->width;
                 avctx->height = s->height;
@@ -471,50 +521,71 @@ static int decode_frame(AVCodecContext *avctx,
                 s->row_size = (avctx->width * s->bits_per_pixel + 7) >> 3;
 
                 if (s->bit_depth == 8 &&
-                    s->color_type == PNG_COLOR_TYPE_RGB) {
+                        s->color_type == PNG_COLOR_TYPE_RGB)
+                {
                     avctx->pix_fmt = PIX_FMT_RGB24;
-                } else if (s->bit_depth == 8 &&
-                           s->color_type == PNG_COLOR_TYPE_RGB_ALPHA) {
+                }
+                else if (s->bit_depth == 8 &&
+                         s->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
+                {
                     avctx->pix_fmt = PIX_FMT_RGB32;
-                } else if (s->bit_depth == 8 &&
-                           s->color_type == PNG_COLOR_TYPE_GRAY) {
+                }
+                else if (s->bit_depth == 8 &&
+                         s->color_type == PNG_COLOR_TYPE_GRAY)
+                {
                     avctx->pix_fmt = PIX_FMT_GRAY8;
-                } else if (s->bit_depth == 16 &&
-                           s->color_type == PNG_COLOR_TYPE_GRAY) {
+                }
+                else if (s->bit_depth == 16 &&
+                         s->color_type == PNG_COLOR_TYPE_GRAY)
+                {
                     avctx->pix_fmt = PIX_FMT_GRAY16BE;
-                } else if (s->bit_depth == 16 &&
-                           s->color_type == PNG_COLOR_TYPE_RGB) {
+                }
+                else if (s->bit_depth == 16 &&
+                         s->color_type == PNG_COLOR_TYPE_RGB)
+                {
                     avctx->pix_fmt = PIX_FMT_RGB48BE;
-                } else if (s->bit_depth == 1 &&
-                           s->color_type == PNG_COLOR_TYPE_GRAY) {
+                }
+                else if (s->bit_depth == 1 &&
+                         s->color_type == PNG_COLOR_TYPE_GRAY)
+                {
                     avctx->pix_fmt = PIX_FMT_MONOBLACK;
-                } else if (s->color_type == PNG_COLOR_TYPE_PALETTE) {
+                }
+                else if (s->color_type == PNG_COLOR_TYPE_PALETTE)
+                {
                     avctx->pix_fmt = PIX_FMT_PAL8;
-                } else if (s->color_type == PNG_COLOR_TYPE_GRAY_ALPHA) {
+                }
+                else if (s->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
+                {
                     avctx->pix_fmt = PIX_FMT_Y400A;
-                } else {
+                }
+                else
+                {
                     goto fail;
                 }
                 if(p->data[0])
                     avctx->release_buffer(avctx, p);
 
-                p->reference= 0;
-                if(avctx->get_buffer(avctx, p) < 0){
+                p->reference = 0;
+                if(avctx->get_buffer(avctx, p) < 0)
+                {
                     av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
                     goto fail;
                 }
-                p->pict_type= FF_I_TYPE;
-                p->key_frame= 1;
+                p->pict_type = FF_I_TYPE;
+                p->key_frame = 1;
                 p->interlaced_frame = !!s->interlace_type;
 
                 /* compute the compressed row size */
-                if (!s->interlace_type) {
+                if (!s->interlace_type)
+                {
                     s->crow_size = s->row_size + 1;
-                } else {
+                }
+                else
+                {
                     s->pass = 0;
                     s->pass_row_size = ff_png_pass_row_size(s->pass,
-                                                         s->bits_per_pixel,
-                                                         s->width);
+                                                            s->bits_per_pixel,
+                                                            s->width);
                     s->crow_size = s->pass_row_size + 1;
                 }
                 av_dlog(avctx, "row_size=%d crow_size =%d\n",
@@ -529,7 +600,8 @@ static int decode_frame(AVCodecContext *avctx,
                 if (!s->last_row)
                     goto fail;
                 if (s->interlace_type ||
-                    s->color_type == PNG_COLOR_TYPE_RGB_ALPHA) {
+                        s->color_type == PNG_COLOR_TYPE_RGB_ALPHA)
+                {
                     s->tmp_row = av_malloc(s->row_size);
                     if (!s->tmp_row)
                         goto fail;
@@ -551,42 +623,45 @@ static int decode_frame(AVCodecContext *avctx,
             crc = bytestream_get_be32(&s->bytestream);
             break;
         case MKTAG('P', 'L', 'T', 'E'):
-            {
-                int n, i, r, g, b;
+        {
+            int n, i, r, g, b;
 
-                if ((length % 3) != 0 || length > 256 * 3)
-                    goto skip_tag;
-                /* read the palette */
-                n = length / 3;
-                for(i=0;i<n;i++) {
-                    r = *s->bytestream++;
-                    g = *s->bytestream++;
-                    b = *s->bytestream++;
-                    s->palette[i] = (0xff << 24) | (r << 16) | (g << 8) | b;
-                }
-                for(;i<256;i++) {
-                    s->palette[i] = (0xff << 24);
-                }
-                s->state |= PNG_PLTE;
-                crc = bytestream_get_be32(&s->bytestream);
+            if ((length % 3) != 0 || length > 256 * 3)
+                goto skip_tag;
+            /* read the palette */
+            n = length / 3;
+            for(i = 0; i < n; i++)
+            {
+                r = *s->bytestream++;
+                g = *s->bytestream++;
+                b = *s->bytestream++;
+                s->palette[i] = (0xff << 24) | (r << 16) | (g << 8) | b;
             }
-            break;
-        case MKTAG('t', 'R', 'N', 'S'):
+            for(; i < 256; i++)
             {
-                int v, i;
+                s->palette[i] = (0xff << 24);
+            }
+            s->state |= PNG_PLTE;
+            crc = bytestream_get_be32(&s->bytestream);
+        }
+        break;
+        case MKTAG('t', 'R', 'N', 'S'):
+        {
+            int v, i;
 
-                /* read the transparency. XXX: Only palette mode supported */
-                if (s->color_type != PNG_COLOR_TYPE_PALETTE ||
+            /* read the transparency. XXX: Only palette mode supported */
+            if (s->color_type != PNG_COLOR_TYPE_PALETTE ||
                     length > 256 ||
                     !(s->state & PNG_PLTE))
-                    goto skip_tag;
-                for(i=0;i<length;i++) {
-                    v = *s->bytestream++;
-                    s->palette[i] = (s->palette[i] & 0x00ffffff) | (v << 24);
-                }
-                crc = bytestream_get_be32(&s->bytestream);
+                goto skip_tag;
+            for(i = 0; i < length; i++)
+            {
+                v = *s->bytestream++;
+                s->palette[i] = (s->palette[i] & 0x00ffffff) | (v << 24);
             }
-            break;
+            crc = bytestream_get_be32(&s->bytestream);
+        }
+        break;
         case MKTAG('I', 'E', 'N', 'D'):
             if (!(s->state & PNG_ALLIMAGE))
                 goto fail;
@@ -594,21 +669,25 @@ static int decode_frame(AVCodecContext *avctx,
             goto exit_loop;
         default:
             /* skip tag */
-        skip_tag:
+skip_tag:
             s->bytestream += length + 4;
             break;
         }
     }
- exit_loop:
-     /* handle p-frames only if a predecessor frame is available */
-     if(s->last_picture->data[0] != NULL) {
-         if(!(avpkt->flags & AV_PKT_FLAG_KEY)) {
+exit_loop:
+    /* handle p-frames only if a predecessor frame is available */
+    if(s->last_picture->data[0] != NULL)
+    {
+        if(!(avpkt->flags & AV_PKT_FLAG_KEY))
+        {
             int i, j;
             uint8_t *pd = s->current_picture->data[0];
             uint8_t *pd_last = s->last_picture->data[0];
 
-            for(j=0; j < s->height; j++) {
-                for(i=0; i < s->width * s->bpp; i++) {
+            for(j = 0; j < s->height; j++)
+            {
+                for(i = 0; i < s->width * s->bpp; i++)
+                {
                     pd[i] += pd_last[i];
                 }
                 pd += s->image_linesize;
@@ -617,23 +696,24 @@ static int decode_frame(AVCodecContext *avctx,
         }
     }
 
-    *picture= *s->current_picture;
+    *picture = *s->current_picture;
     *data_size = sizeof(AVFrame);
 
     ret = s->bytestream - s->bytestream_start;
- the_end:
+the_end:
     inflateEnd(&s->zstream);
     av_free(crow_buf_base);
     s->crow_buf = NULL;
     av_freep(&s->last_row);
     av_freep(&s->tmp_row);
     return ret;
- fail:
+fail:
     ret = -1;
     goto the_end;
 }
 
-static av_cold int png_dec_init(AVCodecContext *avctx){
+static av_cold int png_dec_init(AVCodecContext *avctx)
+{
     PNGDecContext *s = avctx->priv_data;
 
     s->current_picture = &s->picture1;
@@ -657,7 +737,8 @@ static av_cold int png_dec_end(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec ff_png_decoder = {
+AVCodec ff_png_decoder =
+{
     "png",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_PNG,

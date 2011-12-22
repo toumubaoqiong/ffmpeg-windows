@@ -33,11 +33,12 @@ void ff_rtp_send_vp8(AVFormatContext *s1, const uint8_t *buf, int size)
     max_packet_size = s->max_payload_size - 1; // minus one for header byte
 
     *s->buf_ptr++ = 1; // 0b1 indicates start of frame
-    while (size > 0) {
+    while (size > 0)
+    {
         len = FFMIN(size, max_packet_size);
 
         memcpy(s->buf_ptr, buf, len);
-        ff_rtp_send_data(s1, s->buf, len+1, size == len); // marker bit is last packet in frame
+        ff_rtp_send_data(s1, s->buf, len + 1, size == len); // marker bit is last packet in frame
 
         size         -= len;
         buf          += len;

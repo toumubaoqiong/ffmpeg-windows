@@ -62,7 +62,7 @@ int rtp_set_remote_url(URLContext *h, const char *uri);
  * The same routine is used with RDT too, even if RDT doesn't use normal
  * RTP packets otherwise.
  */
-void rtp_send_punch_packets(URLContext* rtp_handle);
+void rtp_send_punch_packets(URLContext *rtp_handle);
 
 /**
  * some rtp servers assume client is dead if they don't hear from them...
@@ -77,7 +77,8 @@ int rtp_check_and_send_back_rr(RTPDemuxContext *s, int count);
 int rtp_get_rtcp_file_handle(URLContext *h);
 
 // these statistics are used for rtcp receiver reports...
-typedef struct {
+typedef struct
+{
     uint16_t max_seq;           ///< highest sequence number seen
     uint32_t cycles;            ///< shifted count of sequence number cycles
     uint32_t base_seq;          ///< base sequence number
@@ -105,14 +106,15 @@ typedef struct {
  * @param flags flags from the RTP packet header (RTP_FLAG_*)
  */
 typedef int (*DynamicPayloadPacketHandlerProc) (AVFormatContext *ctx,
-                                                PayloadContext *s,
-                                                AVStream *st,
-                                                AVPacket * pkt,
-                                                uint32_t *timestamp,
-                                                const uint8_t * buf,
-                                                int len, int flags);
+        PayloadContext *s,
+        AVStream *st,
+        AVPacket *pkt,
+        uint32_t *timestamp,
+        const uint8_t *buf,
+        int len, int flags);
 
-struct RTPDynamicProtocolHandler_s {
+struct RTPDynamicProtocolHandler_s
+{
     // fields from AVRtpDynamicPayloadType_s
     const char enc_name[50];    /* XXX: still why 50 ? ;-) */
     enum AVMediaType codec_type;
@@ -133,7 +135,8 @@ struct RTPDynamicProtocolHandler_s {
     struct RTPDynamicProtocolHandler_s *next;
 };
 
-typedef struct RTPPacket {
+typedef struct RTPPacket
+{
     uint16_t seq;
     uint8_t *buf;
     int len;
@@ -142,7 +145,8 @@ typedef struct RTPPacket {
 } RTPPacket;
 
 // moved out of rtp.c, because the h264 decoder needs to know about this structure..
-struct RTPDemuxContext {
+struct RTPDemuxContext
+{
     AVFormatContext *ic;
     AVStream *st;
     int payload_type;
@@ -164,7 +168,7 @@ struct RTPDemuxContext {
 
     /** Fields for packet reordering @{ */
     int prev_ret;     ///< The return value of the actual parsing of the previous packet
-    RTPPacket* queue; ///< A sorted queue of buffered packets not yet returned
+    RTPPacket *queue; ///< A sorted queue of buffered packets not yet returned
     int queue_len;    ///< The number of packets in queue
     int queue_size;   ///< The size of queue, or 0 if reordering is disabled
     /*@}*/
@@ -194,9 +198,9 @@ struct RTPDemuxContext {
 
 void ff_register_dynamic_payload_handler(RTPDynamicProtocolHandler *handler);
 RTPDynamicProtocolHandler *ff_rtp_handler_find_by_name(const char *name,
-                                                  enum AVMediaType codec_type);
+        enum AVMediaType codec_type);
 RTPDynamicProtocolHandler *ff_rtp_handler_find_by_id(int id,
-                                                enum AVMediaType codec_type);
+        enum AVMediaType codec_type);
 
 int ff_rtsp_next_attr_and_value(const char **p, char *attr, int attr_size, char *value, int value_size); ///< from rtsp.c, but used by rtp dynamic protocol handlers.
 

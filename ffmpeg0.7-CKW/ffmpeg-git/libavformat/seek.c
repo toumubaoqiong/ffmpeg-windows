@@ -30,7 +30,8 @@
 /**
  * helper structure describing keyframe search state of one stream
  */
-typedef struct {
+typedef struct
+{
     int64_t     pos_lo;      ///< position of the frame with low timestamp in file or INT64_MAX if not found (yet)
     int64_t     ts_lo;       ///< frame presentation timestamp or same as pos_lo for byte seeking
 
@@ -114,13 +115,18 @@ static void search_hi_lo_keyframes(AVFormatContext *s,
     int64_t ts;         // PTS in stream-local time base or position for byte seeking
     AVRational ts_tb;   // Time base of the stream or 1:1 for byte seeking
 
-    for (;;) {
-        if (av_read_frame(s, &pkt) < 0) {
+    for (;;)
+    {
+        if (av_read_frame(s, &pkt) < 0)
+        {
             // EOF or error, make sure high flags are set
-            for (idx = 0; idx < s->nb_streams; ++idx) {
-                if (s->streams[idx]->discard < AVDISCARD_ALL) {
+            for (idx = 0; idx < s->nb_streams; ++idx)
+            {
+                if (s->streams[idx]->discard < AVDISCARD_ALL)
+                {
                     sp = &sync[idx];
-                    if (sp->pos_hi == INT64_MAX) {
+                    if (sp->pos_hi == INT64_MAX)
+                    {
                         // no high frame exists for this stream
                         (*found_hi)++;
                         sp->ts_hi  = INT64_MAX;
@@ -162,19 +168,24 @@ static void search_hi_lo_keyframes(AVFormatContext *s,
 
         // Evaluate key frames with known TS (or any frames, if AVSEEK_FLAG_ANY set).
         if (pts != AV_NOPTS_VALUE &&
-            ((flg & AV_PKT_FLAG_KEY) || (flags & AVSEEK_FLAG_ANY))) {
-            if (flags & AVSEEK_FLAG_BYTE) {
+                ((flg & AV_PKT_FLAG_KEY) || (flags & AVSEEK_FLAG_ANY)))
+        {
+            if (flags & AVSEEK_FLAG_BYTE)
+            {
                 // for byte seeking, use position as timestamp
                 ts        = pos;
                 ts_tb.num = 1;
                 ts_tb.den = 1;
-            } else {
+            }
+            else
+            {
                 // otherwise, get stream time_base
                 ts    = pts;
                 ts_tb = st->time_base;
             }
 
-            if (sp->first_ts == AV_NOPTS_VALUE) {
+            if (sp->first_ts == AV_NOPTS_VALUE)
+            {
                 // Note down termination timestamp for the next iteration - when
                 // we encounter a packet with the same timestamp, we will ignore
                 // any further packets for this stream in next iteration (as they
@@ -184,12 +195,15 @@ static void search_hi_lo_keyframes(AVFormatContext *s,
             }
 
             if (sp->term_ts != AV_NOPTS_VALUE &&
-                av_compare_ts(ts, ts_tb, sp->term_ts, sp->term_ts_tb) > 0) {
+                    av_compare_ts(ts, ts_tb, sp->term_ts, sp->term_ts_tb) > 0)
+            {
                 // past the end position from last iteration, ignore packet
-                if (!sp->terminated) {
+                if (!sp->terminated)
+                {
                     sp->terminated = 1;
                     ++terminated_count;
-                    if (sp->pos_hi == INT64_MAX) {
+                    if (sp->pos_hi == INT64_MAX)
+                    {
                         // no high frame exists for this stream
                         (*found_hi)++;
                         sp->ts_hi  = INT64_MAX;
@@ -201,33 +215,42 @@ static void search_hi_lo_keyframes(AVFormatContext *s,
                 continue;
             }
 
-            if (av_compare_ts(ts, ts_tb, timestamp, timebase) <= 0) {
+            if (av_compare_ts(ts, ts_tb, timestamp, timebase) <= 0)
+            {
                 // keyframe found before target timestamp
-                if (sp->pos_lo == INT64_MAX) {
+                if (sp->pos_lo == INT64_MAX)
+                {
                     // found first keyframe lower than target timestamp
                     (*found_lo)++;
                     sp->ts_lo  = ts;
                     sp->pos_lo = pos;
-                } else if (sp->ts_lo < ts) {
+                }
+                else if (sp->ts_lo < ts)
+                {
                     // found a better match (closer to target timestamp)
                     sp->ts_lo  = ts;
                     sp->pos_lo = pos;
                 }
             }
-            if (av_compare_ts(ts, ts_tb, timestamp, timebase) >= 0) {
+            if (av_compare_ts(ts, ts_tb, timestamp, timebase) >= 0)
+            {
                 // keyframe found after target timestamp
-                if (sp->pos_hi == INT64_MAX) {
+                if (sp->pos_hi == INT64_MAX)
+                {
                     // found first keyframe higher than target timestamp
                     (*found_hi)++;
                     sp->ts_hi  = ts;
                     sp->pos_hi = pos;
-                    if (*found_hi >= keyframes_to_find && first_iter) {
+                    if (*found_hi >= keyframes_to_find && first_iter)
+                    {
                         // We found high frame for all. They may get updated
                         // to TS closer to target TS in later iterations (which
                         // will stop at start position of previous iteration).
                         break;
                     }
-                } else if (sp->ts_hi > ts) {
+                }
+                else if (sp->ts_hi > ts)
+                {
                     // found a better match (actually, shouldn't happen)
                     sp->ts_hi  = ts;
                     sp->pos_hi = pos;
@@ -260,16 +283,22 @@ int64_t ff_gen_syncpoint_search(AVFormatContext *s,
     int first_iter = 1;
     AVRational time_base;
 
-    if (flags & AVSEEK_FLAG_BYTE) {
+    if (flags & AVSEEK_FLAG_BYTE)
+    {
         // for byte seeking, we have exact 1:1 "timestamps" - positions
         time_base.num = 1;
         time_base.den = 1;
-    } else {
-        if (stream_index >= 0) {
+    }
+    else
+    {
+        if (stream_index >= 0)
+        {
             // we have a reference stream, which time base we use
             st = s->streams[stream_index];
             time_base = st->time_base;
-        } else {
+        }
+        else
+        {
             // no reference stream, use AV_TIME_BASE as reference time base
             time_base.num = 1;
             time_base.den = AV_TIME_BASE;
@@ -282,7 +311,8 @@ int64_t ff_gen_syncpoint_search(AVFormatContext *s,
         // cannot allocate helper structure
         return -1;
 
-    for (i = 0; i < s->nb_streams; ++i) {
+    for (i = 0; i < s->nb_streams; ++i)
+    {
         st = s->streams[i];
         sp = &sync[i];
 
@@ -302,7 +332,8 @@ int64_t ff_gen_syncpoint_search(AVFormatContext *s,
             ++keyframes_to_find;
     }
 
-    if (!keyframes_to_find) {
+    if (!keyframes_to_find)
+    {
         // no stream active, error
         av_free(sync);
         return -1;
@@ -312,7 +343,8 @@ int64_t ff_gen_syncpoint_search(AVFormatContext *s,
     // and just after requested timestamp/position.
     step = s->pb->buffer_size;
     curpos = FFMAX(pos - step / 2, 0);
-    for (;;) {
+    for (;;)
+    {
         avio_seek(s->pb, curpos, SEEK_SET);
         search_hi_lo_keyframes(s,
                                ts, time_base,
@@ -332,12 +364,14 @@ int64_t ff_gen_syncpoint_search(AVFormatContext *s,
         step *= 2;
 
         // switch termination positions
-        for (i = 0; i < s->nb_streams; ++i) {
+        for (i = 0; i < s->nb_streams; ++i)
+        {
             st = s->streams[i];
             st->cur_dts = AV_NOPTS_VALUE;
 
             sp = &sync[i];
-            if (sp->first_ts != AV_NOPTS_VALUE) {
+            if (sp->first_ts != AV_NOPTS_VALUE)
+            {
                 sp->term_ts    = sp->first_ts;
                 sp->term_ts_tb = sp->first_ts_tb;
                 sp->first_ts   = AV_NOPTS_VALUE;
@@ -352,30 +386,36 @@ int64_t ff_gen_syncpoint_search(AVFormatContext *s,
     // closest to ts and between ts_min and ts_max.
     pos = INT64_MAX;
 
-    for (i = 0; i < s->nb_streams; ++i) {
+    for (i = 0; i < s->nb_streams; ++i)
+    {
         st = s->streams[i];
-        if (st->discard < AVDISCARD_ALL) {
+        if (st->discard < AVDISCARD_ALL)
+        {
             sp = &sync[i];
             min_distance = INT64_MAX;
             // Find timestamp closest to requested timestamp within min/max limits.
             if (sp->pos_lo != INT64_MAX
-                && av_compare_ts(ts_min, time_base, sp->ts_lo, st->time_base) <= 0
-                && av_compare_ts(sp->ts_lo, st->time_base, ts_max, time_base) <= 0) {
+                    && av_compare_ts(ts_min, time_base, sp->ts_lo, st->time_base) <= 0
+                    && av_compare_ts(sp->ts_lo, st->time_base, ts_max, time_base) <= 0)
+            {
                 // low timestamp is in range
                 min_distance = ts_distance(ts, time_base, sp->ts_lo, st->time_base);
                 min_pos = sp->pos_lo;
             }
             if (sp->pos_hi != INT64_MAX
-                && av_compare_ts(ts_min, time_base, sp->ts_hi, st->time_base) <= 0
-                && av_compare_ts(sp->ts_hi, st->time_base, ts_max, time_base) <= 0) {
+                    && av_compare_ts(ts_min, time_base, sp->ts_hi, st->time_base) <= 0
+                    && av_compare_ts(sp->ts_hi, st->time_base, ts_max, time_base) <= 0)
+            {
                 // high timestamp is in range, check distance
                 distance = ts_distance(sp->ts_hi, st->time_base, ts, time_base);
-                if (distance < min_distance) {
+                if (distance < min_distance)
+                {
                     min_distance = distance;
                     min_pos = sp->pos_hi;
                 }
             }
-            if (min_distance == INT64_MAX) {
+            if (min_distance == INT64_MAX)
+            {
                 // no timestamp is in range, cannot seek
                 av_free(sync);
                 return -1;
@@ -400,7 +440,8 @@ AVParserState *ff_store_parser_state(AVFormatContext *s)
         return NULL;
 
     state->stream_states = av_malloc(sizeof(AVParserStreamState) * s->nb_streams);
-    if (!state->stream_states) {
+    if (!state->stream_states)
+    {
         av_free(state);
         return NULL;
     }
@@ -420,7 +461,8 @@ AVParserState *ff_store_parser_state(AVFormatContext *s)
 
     // copy stream structures
     state->nb_streams = s->nb_streams;
-    for (i = 0; i < s->nb_streams; i++) {
+    for (i = 0; i < s->nb_streams; i++)
+    {
         st = s->streams[i];
         ss = &state->stream_states[i];
 
@@ -465,7 +507,8 @@ void ff_restore_parser_state(AVFormatContext *s, AVParserState *state)
     s->raw_packet_buffer_remaining_size = state->raw_packet_buffer_remaining_size;
 
     // copy stream structures
-    for (i = 0; i < state->nb_streams; i++) {
+    for (i = 0; i < state->nb_streams; i++)
+    {
         st = s->streams[i];
         ss = &state->stream_states[i];
 
@@ -486,7 +529,8 @@ void ff_restore_parser_state(AVFormatContext *s, AVParserState *state)
 static void free_packet_list(AVPacketList *pktl)
 {
     AVPacketList *cur;
-    while (pktl) {
+    while (pktl)
+    {
         cur = pktl;
         pktl = cur->next;
         av_free_packet(&cur->pkt);
@@ -502,7 +546,8 @@ void ff_free_parser_state(AVFormatContext *s, AVParserState *state)
     if (!state)
         return;
 
-    for (i = 0; i < state->nb_streams; i++) {
+    for (i = 0; i < state->nb_streams; i++)
+    {
         ss = &state->stream_states[i];
         if (ss->parser)
             av_parser_close(ss->parser);

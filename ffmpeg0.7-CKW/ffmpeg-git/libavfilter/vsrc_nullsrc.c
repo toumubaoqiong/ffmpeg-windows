@@ -26,7 +26,8 @@
 #include "libavutil/parseutils.h"
 #include "avfilter.h"
 
-static const char *var_names[] = {
+static const char *var_names[] =
+{
     "E",
     "PHI",
     "PI",
@@ -34,7 +35,8 @@ static const char *var_names[] = {
     NULL
 };
 
-enum var_name {
+enum var_name
+{
     VAR_E,
     VAR_PHI,
     VAR_PI,
@@ -42,7 +44,8 @@ enum var_name {
     VAR_VARS_NB
 };
 
-typedef struct {
+typedef struct
+{
     int w, h;
     char tb_expr[256];
     double var_values[VAR_VARS_NB];
@@ -59,7 +62,8 @@ static int init(AVFilterContext *ctx, const char *args, void *opaque)
     if (args)
         sscanf(args, "%d:%d:%255[^:]", &priv->w, &priv->h, priv->tb_expr);
 
-    if (priv->w <= 0 || priv->h <= 0) {
+    if (priv->w <= 0 || priv->h <= 0)
+    {
         av_log(ctx, AV_LOG_ERROR, "Non-positive size values are not acceptable.\n");
         return AVERROR(EINVAL);
     }
@@ -81,12 +85,14 @@ static int config_props(AVFilterLink *outlink)
     priv->var_values[VAR_AVTB] = av_q2d(AV_TIME_BASE_Q);
 
     if ((ret = av_expr_parse_and_eval(&res, priv->tb_expr, var_names, priv->var_values,
-                                      NULL, NULL, NULL, NULL, NULL, 0, NULL)) < 0) {
+                                      NULL, NULL, NULL, NULL, NULL, 0, NULL)) < 0)
+    {
         av_log(ctx, AV_LOG_ERROR, "Invalid expression '%s' for timebase.\n", priv->tb_expr);
         return ret;
     }
     tb = av_d2q(res, INT_MAX);
-    if (tb.num <= 0 || tb.den <= 0) {
+    if (tb.num <= 0 || tb.den <= 0)
+    {
         av_log(ctx, AV_LOG_ERROR,
                "Invalid non-positive value for the timebase %d/%d.\n",
                tb.num, tb.den);
@@ -108,16 +114,23 @@ static int request_frame(AVFilterLink *link)
     return -1;
 }
 
-AVFilter avfilter_vsrc_nullsrc = {
+AVFilter avfilter_vsrc_nullsrc =
+{
     .name        = "nullsrc",
     .description = NULL_IF_CONFIG_SMALL("Null video source, never return images."),
 
     .init       = init,
     .priv_size = sizeof(NullContext),
 
-    .inputs    = (AVFilterPad[]) {{ .name = NULL}},
+    .inputs    = (AVFilterPad[])
+    {
+        {
+            .name = NULL
+        }
+    },
 
-    .outputs   = (AVFilterPad[]) {
+    .outputs   = (AVFilterPad[])
+    {
         {
             .name            = "default",
             .type            = AVMEDIA_TYPE_VIDEO,

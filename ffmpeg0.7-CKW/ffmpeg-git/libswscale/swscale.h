@@ -126,13 +126,15 @@ FFMPEGLIB_API const int *sws_getCoefficients(int colorspace);
 
 // when used for filters they must have an odd number of elements
 // coeffs cannot be shared between vectors
-typedef struct {
+typedef struct
+{
     double *coeff;              ///< pointer to the list of coefficients
     int length;                 ///< number of coefficients in the vector
 } SwsVector;
 
 // vectors can be shared
-typedef struct {
+typedef struct
+{
     SwsVector *lumH;
     SwsVector *lumV;
     SwsVector *chrH;
@@ -191,9 +193,9 @@ FFMPEGLIB_API void sws_freeContext(struct SwsContext *swsContext);
  *       written
  */
 FFMPEGLIB_API struct SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat,
-                                  int dstW, int dstH, enum PixelFormat dstFormat,
-                                  int flags, SwsFilter *srcFilter,
-                                  SwsFilter *dstFilter, const double *param);
+        int dstW, int dstH, enum PixelFormat dstFormat,
+        int flags, SwsFilter *srcFilter,
+        SwsFilter *dstFilter, const double *param);
 #endif
 
 /**
@@ -222,15 +224,15 @@ FFMPEGLIB_API struct SwsContext *sws_getContext(int srcW, int srcH, enum PixelFo
  *                  the destination image
  * @return          the height of the output slice
  */
-FFMPEGLIB_API int sws_scale(struct SwsContext *context, const uint8_t* const srcSlice[], const int srcStride[],
-              int srcSliceY, int srcSliceH, uint8_t* const dst[], const int dstStride[]);
+FFMPEGLIB_API int sws_scale(struct SwsContext *context, const uint8_t *const srcSlice[], const int srcStride[],
+                            int srcSliceY, int srcSliceH, uint8_t *const dst[], const int dstStride[]);
 #if LIBSWSCALE_VERSION_MAJOR < 1
 /**
  * @deprecated Use sws_scale() instead.
  */
-FFMPEGLIB_API int sws_scale_ordered(struct SwsContext *context, const uint8_t* const src[],
-                      int srcStride[], int srcSliceY, int srcSliceH,
-                      uint8_t* dst[], int dstStride[]) attribute_deprecated;
+FFMPEGLIB_API int sws_scale_ordered(struct SwsContext *context, const uint8_t *const src[],
+                                    int srcStride[], int srcSliceY, int srcSliceH,
+                                    uint8_t *dst[], int dstStride[]) attribute_deprecated;
 #endif
 
 /**
@@ -239,15 +241,15 @@ FFMPEGLIB_API int sws_scale_ordered(struct SwsContext *context, const uint8_t* c
  * @return -1 if not supported
  */
 FFMPEGLIB_API int sws_setColorspaceDetails(struct SwsContext *c, const int inv_table[4],
-                             int srcRange, const int table[4], int dstRange,
-                             int brightness, int contrast, int saturation);
+        int srcRange, const int table[4], int dstRange,
+        int brightness, int contrast, int saturation);
 
 /**
  * @return -1 if not supported
  */
 FFMPEGLIB_API int sws_getColorspaceDetails(struct SwsContext *c, int **inv_table,
-                             int *srcRange, int **table, int *dstRange,
-                             int *brightness, int *contrast, int *saturation);
+        int *srcRange, int **table, int *dstRange,
+        int *brightness, int *contrast, int *saturation);
 
 /**
  * Allocates and returns an uninitialized vector with length coefficients.
@@ -308,9 +310,9 @@ FFMPEGLIB_API void sws_printVec2(SwsVector *a, AVClass *log_ctx, int log_level);
 FFMPEGLIB_API void sws_freeVec(SwsVector *a);
 
 FFMPEGLIB_API SwsFilter *sws_getDefaultFilter(float lumaGBlur, float chromaGBlur,
-                                float lumaSharpen, float chromaSharpen,
-                                float chromaHShift, float chromaVShift,
-                                int verbose);
+        float lumaSharpen, float chromaSharpen,
+        float chromaHShift, float chromaVShift,
+        int verbose);
 FFMPEGLIB_API void sws_freeFilter(SwsFilter *filter);
 
 /**
@@ -327,10 +329,10 @@ FFMPEGLIB_API void sws_freeFilter(SwsFilter *filter);
  * are assumed to remain the same.
  */
 FFMPEGLIB_API struct SwsContext *sws_getCachedContext(struct SwsContext *context,
-                                        int srcW, int srcH, enum PixelFormat srcFormat,
-                                        int dstW, int dstH, enum PixelFormat dstFormat,
-                                        int flags, SwsFilter *srcFilter,
-                                        SwsFilter *dstFilter, const double *param);
+        int srcW, int srcH, enum PixelFormat srcFormat,
+        int dstW, int dstH, enum PixelFormat dstFormat,
+        int flags, SwsFilter *srcFilter,
+        SwsFilter *dstFilter, const double *param);
 
 /**
  * Converts an 8bit paletted frame into a frame with a color depth of 32-bits.

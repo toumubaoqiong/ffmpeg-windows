@@ -44,17 +44,20 @@
  * one anonymous toplevel variant for this, to maintain the structure.
  */
 
-struct segment {
+struct segment
+{
     int duration;
     char url[MAX_URL_SIZE];
 };
 
-struct variant {
+struct variant
+{
     int bandwidth;
     char url[MAX_URL_SIZE];
 };
 
-typedef struct AppleHTTPContext {
+typedef struct AppleHTTPContext
+{
     char playlisturl[MAX_URL_SIZE];
     int target_duration;
     int start_seq_no;
@@ -94,14 +97,16 @@ static void free_variant_list(AppleHTTPContext *s)
     s->n_variants = 0;
 }
 
-struct variant_info {
+struct variant_info
+{
     char bandwidth[20];
 };
 
 static void handle_variant_args(struct variant_info *info, const char *key,
                                 int key_len, char **dest, int *dest_len)
 {
-    if (!strncmp(key, "BANDWIDTH=", key_len)) {
+    if (!strncmp(key, "BANDWIDTH=", key_len))
+    {
         *dest     =        info->bandwidth;
         *dest_len = sizeof(info->bandwidth);
     }
@@ -124,29 +129,45 @@ static int parse_playlist(URLContext *h, const char *url)
 
     free_segment_list(s);
     s->finished = 0;
-    while (!url_feof(in)) {
+    while (!url_feof(in))
+    {
         read_chomp_line(in, line, sizeof(line));
-        if (av_strstart(line, "#EXT-X-STREAM-INF:", &ptr)) {
+        if (av_strstart(line, "#EXT-X-STREAM-INF:", &ptr))
+        {
             struct variant_info info = {{0}};
             is_variant = 1;
             ff_parse_key_value(ptr, (ff_parse_key_val_cb) handle_variant_args,
-                               &info);
+            &info);
             bandwidth = atoi(info.bandwidth);
-        } else if (av_strstart(line, "#EXT-X-TARGETDURATION:", &ptr)) {
+        }
+        else if (av_strstart(line, "#EXT-X-TARGETDURATION:", &ptr))
+        {
             s->target_duration = atoi(ptr);
-        } else if (av_strstart(line, "#EXT-X-MEDIA-SEQUENCE:", &ptr)) {
+        }
+        else if (av_strstart(line, "#EXT-X-MEDIA-SEQUENCE:", &ptr))
+        {
             s->start_seq_no = atoi(ptr);
-        } else if (av_strstart(line, "#EXT-X-ENDLIST", &ptr)) {
+        }
+        else if (av_strstart(line, "#EXT-X-ENDLIST", &ptr))
+        {
             s->finished = 1;
-        } else if (av_strstart(line, "#EXTINF:", &ptr)) {
+        }
+        else if (av_strstart(line, "#EXTINF:", &ptr))
+        {
             is_segment = 1;
             duration = atoi(ptr);
-        } else if (av_strstart(line, "#", NULL)) {
+        }
+        else if (av_strstart(line, "#", NULL))
+        {
             continue;
-        } else if (line[0]) {
-            if (is_segment) {
+        }
+        else if (line[0])
+        {
+            if (is_segment)
+            {
                 struct segment *seg = av_malloc(sizeof(struct segment));
-                if (!seg) {
+                if (!seg)
+                {
                     ret = AVERROR(ENOMEM);
                     goto fail;
                 }
@@ -154,9 +175,12 @@ static int parse_playlist(URLContext *h, const char *url)
                 ff_make_absolute_url(seg->url, sizeof(seg->url), url, line);
                 dynarray_add(&s->segments, &s->n_segments, seg);
                 is_segment = 0;
-            } else if (is_variant) {
+            }
+            else if (is_variant)
+            {
                 struct variant *var = av_malloc(sizeof(struct variant));
-                if (!var) {
+                if (!var)
+                {
                     ret = AVERROR(ENOMEM);
                     goto fail;
                 }
@@ -189,12 +213,17 @@ static int applehttp_open(URLContext *h, const char *uri, int flags)
     h->priv_data = s;
     h->is_streamed = 1;
 
-    if (av_strstart(uri, "applehttp+", &nested_url)) {
+    if (av_strstart(uri, "applehttp+", &nested_url))
+    {
         av_strlcpy(s->playlisturl, nested_url, sizeof(s->playlisturl));
-    } else if (av_strstart(uri, "applehttp://", &nested_url)) {
+    }
+    else if (av_strstart(uri, "applehttp://", &nested_url))
+    {
         av_strlcpy(s->playlisturl, "http://", sizeof(s->playlisturl));
         av_strlcat(s->playlisturl, nested_url, sizeof(s->playlisturl));
-    } else {
+    }
+    else
+    {
         av_log(NULL, AV_LOG_ERROR, "Unsupported url %s\n", uri);
         ret = AVERROR(EINVAL);
         goto fail;
@@ -203,21 +232,25 @@ static int applehttp_open(URLContext *h, const char *uri, int flags)
     if ((ret = parse_playlist(h, s->playlisturl)) < 0)
         goto fail;
 
-    if (s->n_segments == 0 && s->n_variants > 0) {
+    if (s->n_segments == 0 && s->n_variants > 0)
+    {
         int max_bandwidth = 0, maxvar = -1;
-        for (i = 0; i < s->n_variants; i++) {
-            if (s->variants[i]->bandwidth > max_bandwidth || i == 0) {
+        for (i = 0; i < s->n_variants; i++)
+        {
+            if (s->variants[i]->bandwidth > max_bandwidth || i == 0)
+            {
                 max_bandwidth = s->variants[i]->bandwidth;
                 maxvar = i;
             }
         }
         av_strlcpy(s->playlisturl, s->variants[maxvar]->url,
-                   sizeof(s->playlisturl));
+        sizeof(s->playlisturl));
         if ((ret = parse_playlist(h, s->playlisturl)) < 0)
             goto fail;
     }
 
-    if (s->n_segments == 0) {
+    if (s->n_segments == 0)
+    {
         av_log(NULL, AV_LOG_WARNING, "Empty playlist\n");
         ret = AVERROR(EIO);
         goto fail;
@@ -240,43 +273,50 @@ static int applehttp_read(URLContext *h, uint8_t *buf, int size)
     int ret;
 
 start:
-    if (s->seg_hd) {
+    if (s->seg_hd)
+    {
         ret = ffurl_read(s->seg_hd, buf, size);
         if (ret > 0)
             return ret;
     }
-    if (s->seg_hd) {
+    if (s->seg_hd)
+    {
         ffurl_close(s->seg_hd);
         s->seg_hd = NULL;
         s->cur_seq_no++;
     }
 retry:
-    if (!s->finished) {
+    if (!s->finished)
+    {
         int64_t now = av_gettime();
-        if (now - s->last_load_time >= s->target_duration*1000000)
+        if (now - s->last_load_time >= s->target_duration * 1000000)
             if ((ret = parse_playlist(h, s->playlisturl)) < 0)
                 return ret;
     }
-    if (s->cur_seq_no < s->start_seq_no) {
+    if (s->cur_seq_no < s->start_seq_no)
+    {
         av_log(NULL, AV_LOG_WARNING,
-               "skipping %d segments ahead, expired from playlist\n",
-               s->start_seq_no - s->cur_seq_no);
+        "skipping %d segments ahead, expired from playlist\n",
+        s->start_seq_no - s->cur_seq_no);
         s->cur_seq_no = s->start_seq_no;
     }
-    if (s->cur_seq_no - s->start_seq_no >= s->n_segments) {
+    if (s->cur_seq_no - s->start_seq_no >= s->n_segments)
+    {
         if (s->finished)
             return AVERROR_EOF;
-        while (av_gettime() - s->last_load_time < s->target_duration*1000000) {
+        while (av_gettime() - s->last_load_time < s->target_duration * 1000000)
+        {
             if (url_interrupt_cb())
                 return AVERROR_EXIT;
-            usleep(100*1000);
+            usleep(100 * 1000);
         }
         goto retry;
     }
     url = s->segments[s->cur_seq_no - s->start_seq_no]->url,
     av_log(NULL, AV_LOG_DEBUG, "opening %s\n", url);
     ret = ffurl_open(&s->seg_hd, url, AVIO_RDONLY);
-    if (ret < 0) {
+    if (ret < 0)
+    {
         if (url_interrupt_cb())
             return AVERROR_EXIT;
         av_log(NULL, AV_LOG_WARNING, "Unable to open %s\n", url);
@@ -297,7 +337,8 @@ static int applehttp_close(URLContext *h)
     return 0;
 }
 
-URLProtocol ff_applehttp_protocol = {
+URLProtocol ff_applehttp_protocol =
+{
     .name      = "applehttp",
     .url_open  = applehttp_open,
     .url_read  = applehttp_read,

@@ -33,7 +33,8 @@
 #define C64XRES 320
 #define C64YRES 200
 
-typedef struct A64Context {
+typedef struct A64Context
+{
     /* general variables */
     AVFrame picture;
 

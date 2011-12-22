@@ -81,12 +81,13 @@
 
 
 // FIXME: must be changed to set alpha to 255 instead of 0
-static int vis_420P_ARGB32(SwsContext *c, uint8_t* src[], int srcStride[], int srcSliceY,
-                           int srcSliceH, uint8_t* dst[], int dstStride[])
+static int vis_420P_ARGB32(SwsContext *c, uint8_t *src[], int srcStride[], int srcSliceY,
+                           int srcSliceH, uint8_t *dst[], int dstStride[])
 {
     int y, out1, out2, out3, out4, out5, out6;
 
-    for(y=0;y < srcSliceH;++y) {
+    for(y = 0; y < srcSliceH; ++y)
+    {
         __asm__ volatile (
             YUV2RGB_INIT
             "wr %%g0, 0xd2, %%asi        \n\t" /* ASI_FL16_P */
@@ -124,9 +125,9 @@ static int vis_420P_ARGB32(SwsContext *c, uint8_t* src[], int srcStride[], int s
             "add %3, 32, %3  \n\t" //delay slot
             : "=r" (out1), "=r" (out2), "=r" (out3), "=r" (out4), "=r" (out5), "=r" (out6)
             : "0" (src[0]+(y+srcSliceY)*srcStride[0]), "1" (src[1]+((y+srcSliceY)>>1)*srcStride[1]),
-                "2" (src[2]+((y+srcSliceY)>>1)*srcStride[2]), "3" (dst[0]+(y+srcSliceY)*dstStride[0]),
-                "4" (c->dstW),
-                "5" (c->sparc_coeffs)
+            "2" (src[2]+((y+srcSliceY)>>1)*srcStride[2]), "3" (dst[0]+(y+srcSliceY)*dstStride[0]),
+            "4" (c->dstW),
+            "5" (c->sparc_coeffs)
         );
     }
 
@@ -134,12 +135,13 @@ static int vis_420P_ARGB32(SwsContext *c, uint8_t* src[], int srcStride[], int s
 }
 
 // FIXME: must be changed to set alpha to 255 instead of 0
-static int vis_422P_ARGB32(SwsContext *c, uint8_t* src[], int srcStride[], int srcSliceY,
-                           int srcSliceH, uint8_t* dst[], int dstStride[])
+static int vis_422P_ARGB32(SwsContext *c, uint8_t *src[], int srcStride[], int srcSliceY,
+                           int srcSliceH, uint8_t *dst[], int dstStride[])
 {
     int y, out1, out2, out3, out4, out5, out6;
 
-    for(y=0;y < srcSliceH;++y) {
+    for(y = 0; y < srcSliceH; ++y)
+    {
         __asm__ volatile (
             YUV2RGB_INIT
             "wr %%g0, 0xd2, %%asi        \n\t" /* ASI_FL16_P */
@@ -177,9 +179,9 @@ static int vis_422P_ARGB32(SwsContext *c, uint8_t* src[], int srcStride[], int s
             "add %3, 32, %3  \n\t" //delay slot
             : "=r" (out1), "=r" (out2), "=r" (out3), "=r" (out4), "=r" (out5), "=r" (out6)
             : "0" (src[0]+(y+srcSliceY)*srcStride[0]), "1" (src[1]+(y+srcSliceY)*srcStride[1]),
-                "2" (src[2]+(y+srcSliceY)*srcStride[2]), "3" (dst[0]+(y+srcSliceY)*dstStride[0]),
-                "4" (c->dstW),
-                "5" (c->sparc_coeffs)
+            "2" (src[2]+(y+srcSliceY)*srcStride[2]), "3" (dst[0]+(y+srcSliceY)*dstStride[0]),
+            "4" (c->dstW),
+            "5" (c->sparc_coeffs)
         );
     }
 
@@ -188,23 +190,25 @@ static int vis_422P_ARGB32(SwsContext *c, uint8_t* src[], int srcStride[], int s
 
 SwsFunc ff_yuv2rgb_init_vis(SwsContext *c)
 {
-    c->sparc_coeffs[5]=c->yCoeff;
-    c->sparc_coeffs[6]=c->vgCoeff;
-    c->sparc_coeffs[7]=c->vrCoeff;
-    c->sparc_coeffs[8]=c->ubCoeff;
-    c->sparc_coeffs[9]=c->ugCoeff;
+    c->sparc_coeffs[5] = c->yCoeff;
+    c->sparc_coeffs[6] = c->vgCoeff;
+    c->sparc_coeffs[7] = c->vrCoeff;
+    c->sparc_coeffs[8] = c->ubCoeff;
+    c->sparc_coeffs[9] = c->ugCoeff;
 
-    c->sparc_coeffs[0]=(((int16_t)c->yOffset*(int16_t)c->yCoeff >>11) & 0xffff) * 0x0001000100010001ULL;
-    c->sparc_coeffs[1]=(((int16_t)c->uOffset*(int16_t)c->ubCoeff>>11) & 0xffff) * 0x0001000100010001ULL;
-    c->sparc_coeffs[2]=(((int16_t)c->uOffset*(int16_t)c->ugCoeff>>11) & 0xffff) * 0x0001000100010001ULL;
-    c->sparc_coeffs[3]=(((int16_t)c->vOffset*(int16_t)c->vgCoeff>>11) & 0xffff) * 0x0001000100010001ULL;
-    c->sparc_coeffs[4]=(((int16_t)c->vOffset*(int16_t)c->vrCoeff>>11) & 0xffff) * 0x0001000100010001ULL;
+    c->sparc_coeffs[0] = (((int16_t)c->yOffset * (int16_t)c->yCoeff >> 11) & 0xffff) * 0x0001000100010001ULL;
+    c->sparc_coeffs[1] = (((int16_t)c->uOffset * (int16_t)c->ubCoeff >> 11) & 0xffff) * 0x0001000100010001ULL;
+    c->sparc_coeffs[2] = (((int16_t)c->uOffset * (int16_t)c->ugCoeff >> 11) & 0xffff) * 0x0001000100010001ULL;
+    c->sparc_coeffs[3] = (((int16_t)c->vOffset * (int16_t)c->vgCoeff >> 11) & 0xffff) * 0x0001000100010001ULL;
+    c->sparc_coeffs[4] = (((int16_t)c->vOffset * (int16_t)c->vrCoeff >> 11) & 0xffff) * 0x0001000100010001ULL;
 
-    if (c->dstFormat == PIX_FMT_RGB32 && c->srcFormat == PIX_FMT_YUV422P && (c->dstW & 7)==0) {
+    if (c->dstFormat == PIX_FMT_RGB32 && c->srcFormat == PIX_FMT_YUV422P && (c->dstW & 7) == 0)
+    {
         av_log(c, AV_LOG_INFO, "SPARC VIS accelerated YUV422P -> RGB32 (WARNING: alpha value is wrong)\n");
         return vis_422P_ARGB32;
     }
-    else if (c->dstFormat == PIX_FMT_RGB32 && c->srcFormat == PIX_FMT_YUV420P && (c->dstW & 7)==0) {
+    else if (c->dstFormat == PIX_FMT_RGB32 && c->srcFormat == PIX_FMT_YUV420P && (c->dstW & 7) == 0)
+    {
         av_log(c, AV_LOG_INFO, "SPARC VIS accelerated YUV420P -> RGB32 (WARNING: alpha value is wrong)\n");
         return vis_420P_ARGB32;
     }

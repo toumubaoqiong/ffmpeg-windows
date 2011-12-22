@@ -40,7 +40,8 @@
 #include "libavutil/intreadwrite.h"
 #include "avcodec.h"
 
-typedef struct DPCMContext {
+typedef struct DPCMContext
+{
     int channels;
     short roq_square_array[256];
     long sample[2];//for SOL_DPCM
@@ -49,51 +50,57 @@ typedef struct DPCMContext {
 
 #define SE_16BIT(x)  if (x & 0x8000) x -= 0x10000;
 
-static const int interplay_delta_table[] = {
-         0,      1,      2,      3,      4,      5,      6,      7,
-         8,      9,     10,     11,     12,     13,     14,     15,
-        16,     17,     18,     19,     20,     21,     22,     23,
-        24,     25,     26,     27,     28,     29,     30,     31,
-        32,     33,     34,     35,     36,     37,     38,     39,
-        40,     41,     42,     43,     47,     51,     56,     61,
-        66,     72,     79,     86,     94,    102,    112,    122,
-       133,    145,    158,    173,    189,    206,    225,    245,
-       267,    292,    318,    348,    379,    414,    452,    493,
-       538,    587,    640,    699,    763,    832,    908,    991,
-      1081,   1180,   1288,   1405,   1534,   1673,   1826,   1993,
-      2175,   2373,   2590,   2826,   3084,   3365,   3672,   4008,
-      4373,   4772,   5208,   5683,   6202,   6767,   7385,   8059,
-      8794,   9597,  10472,  11428,  12471,  13609,  14851,  16206,
-     17685,  19298,  21060,  22981,  25078,  27367,  29864,  32589,
+static const int interplay_delta_table[] =
+{
+    0,      1,      2,      3,      4,      5,      6,      7,
+    8,      9,     10,     11,     12,     13,     14,     15,
+    16,     17,     18,     19,     20,     21,     22,     23,
+    24,     25,     26,     27,     28,     29,     30,     31,
+    32,     33,     34,     35,     36,     37,     38,     39,
+    40,     41,     42,     43,     47,     51,     56,     61,
+    66,     72,     79,     86,     94,    102,    112,    122,
+    133,    145,    158,    173,    189,    206,    225,    245,
+    267,    292,    318,    348,    379,    414,    452,    493,
+    538,    587,    640,    699,    763,    832,    908,    991,
+    1081,   1180,   1288,   1405,   1534,   1673,   1826,   1993,
+    2175,   2373,   2590,   2826,   3084,   3365,   3672,   4008,
+    4373,   4772,   5208,   5683,   6202,   6767,   7385,   8059,
+    8794,   9597,  10472,  11428,  12471,  13609,  14851,  16206,
+    17685,  19298,  21060,  22981,  25078,  27367,  29864,  32589,
     -29973, -26728, -23186, -19322, -15105, -10503,  -5481,     -1,
-         1,      1,   5481,  10503,  15105,  19322,  23186,  26728,
-     29973, -32589, -29864, -27367, -25078, -22981, -21060, -19298,
+    1,      1,   5481,  10503,  15105,  19322,  23186,  26728,
+    29973, -32589, -29864, -27367, -25078, -22981, -21060, -19298,
     -17685, -16206, -14851, -13609, -12471, -11428, -10472,  -9597,
-     -8794,  -8059,  -7385,  -6767,  -6202,  -5683,  -5208,  -4772,
-     -4373,  -4008,  -3672,  -3365,  -3084,  -2826,  -2590,  -2373,
-     -2175,  -1993,  -1826,  -1673,  -1534,  -1405,  -1288,  -1180,
-     -1081,   -991,   -908,   -832,   -763,   -699,   -640,   -587,
-      -538,   -493,   -452,   -414,   -379,   -348,   -318,   -292,
-      -267,   -245,   -225,   -206,   -189,   -173,   -158,   -145,
-      -133,   -122,   -112,   -102,    -94,    -86,    -79,    -72,
-       -66,    -61,    -56,    -51,    -47,    -43,    -42,    -41,
-       -40,    -39,    -38,    -37,    -36,    -35,    -34,    -33,
-       -32,    -31,    -30,    -29,    -28,    -27,    -26,    -25,
-       -24,    -23,    -22,    -21,    -20,    -19,    -18,    -17,
-       -16,    -15,    -14,    -13,    -12,    -11,    -10,     -9,
-        -8,     -7,     -6,     -5,     -4,     -3,     -2,     -1
+    -8794,  -8059,  -7385,  -6767,  -6202,  -5683,  -5208,  -4772,
+    -4373,  -4008,  -3672,  -3365,  -3084,  -2826,  -2590,  -2373,
+    -2175,  -1993,  -1826,  -1673,  -1534,  -1405,  -1288,  -1180,
+    -1081,   -991,   -908,   -832,   -763,   -699,   -640,   -587,
+    -538,   -493,   -452,   -414,   -379,   -348,   -318,   -292,
+    -267,   -245,   -225,   -206,   -189,   -173,   -158,   -145,
+    -133,   -122,   -112,   -102,    -94,    -86,    -79,    -72,
+    -66,    -61,    -56,    -51,    -47,    -43,    -42,    -41,
+    -40,    -39,    -38,    -37,    -36,    -35,    -34,    -33,
+    -32,    -31,    -30,    -29,    -28,    -27,    -26,    -25,
+    -24,    -23,    -22,    -21,    -20,    -19,    -18,    -17,
+    -16,    -15,    -14,    -13,    -12,    -11,    -10,     -9,
+    -8,     -7,     -6,     -5,     -4,     -3,     -2,     -1
 
 };
 
 static const int sol_table_old[16] =
-    { 0x0,  0x1,  0x2 , 0x3,  0x6,  0xA,  0xF, 0x15,
-    -0x15, -0xF, -0xA, -0x6, -0x3, -0x2, -0x1, 0x0};
+{
+    0x0,  0x1,  0x2 , 0x3,  0x6,  0xA,  0xF, 0x15,
+    -0x15, -0xF, -0xA, -0x6, -0x3, -0x2, -0x1, 0x0
+};
 
 static const int sol_table_new[16] =
-    { 0x0,  0x1,  0x2,  0x3,  0x6,  0xA,  0xF,  0x15,
-      0x0, -0x1, -0x2, -0x3, -0x6, -0xA, -0xF, -0x15};
+{
+    0x0,  0x1,  0x2,  0x3,  0x6,  0xA,  0xF,  0x15,
+    0x0, -0x1, -0x2, -0x3, -0x6, -0xA, -0xF, -0x15
+};
 
-static const int sol_table_16[128] = {
+static const int sol_table_16[128] =
+{
     0x000, 0x008, 0x010, 0x020, 0x030, 0x040, 0x050, 0x060, 0x070, 0x080,
     0x090, 0x0A0, 0x0B0, 0x0C0, 0x0D0, 0x0E0, 0x0F0, 0x100, 0x110, 0x120,
     0x130, 0x140, 0x150, 0x160, 0x170, 0x180, 0x190, 0x1A0, 0x1B0, 0x1C0,
@@ -120,11 +127,13 @@ static av_cold int dpcm_decode_init(AVCodecContext *avctx)
     s->channels = avctx->channels;
     s->sample[0] = s->sample[1] = 0;
 
-    switch(avctx->codec->id) {
+    switch(avctx->codec->id)
+    {
 
     case CODEC_ID_ROQ_DPCM:
         /* initialize square table */
-        for (i = 0; i < 128; i++) {
+        for (i = 0; i < 128; i++)
+        {
             square = i * i;
             s->roq_square_array[i] = square;
             s->roq_square_array[i + 128] = -square;
@@ -133,17 +142,18 @@ static av_cold int dpcm_decode_init(AVCodecContext *avctx)
 
 
     case CODEC_ID_SOL_DPCM:
-        switch(avctx->codec_tag){
+        switch(avctx->codec_tag)
+        {
         case 1:
-            s->sol_table=sol_table_old;
+            s->sol_table = sol_table_old;
             s->sample[0] = s->sample[1] = 0x80;
             break;
         case 2:
-            s->sol_table=sol_table_new;
+            s->sol_table = sol_table_new;
             s->sample[0] = s->sample[1] = 0x80;
             break;
         case 3:
-            s->sol_table=sol_table_16;
+            s->sol_table = sol_table_16;
             break;
         default:
             av_log(avctx, AV_LOG_ERROR, "Unknown SOL subcodec\n");
@@ -178,15 +188,17 @@ static int dpcm_decode_frame(AVCodecContext *avctx,
         return 0;
 
     // almost every DPCM variant expands one byte of data into two
-    if(*data_size/2 < buf_size)
+    if(*data_size / 2 < buf_size)
         return -1;
 
-    switch(avctx->codec->id) {
+    switch(avctx->codec->id)
+    {
 
     case CODEC_ID_ROQ_DPCM:
         if (s->channels == 1)
             predictor[0] = AV_RL16(&buf[6]);
-        else {
+        else
+        {
             predictor[0] = buf[7] << 8;
             predictor[1] = buf[6] << 8;
         }
@@ -194,7 +206,8 @@ static int dpcm_decode_frame(AVCodecContext *avctx,
         SE_16BIT(predictor[1]);
 
         /* decode the samples */
-        for (in = 8, out = 0; in < buf_size; in++, out++) {
+        for (in = 8, out = 0; in < buf_size; in++, out++)
+        {
             predictor[channel_number] += s->roq_square_array[buf[in]];
             predictor[channel_number] = av_clip_int16(predictor[channel_number]);
             output_samples[out] = predictor[channel_number];
@@ -210,14 +223,16 @@ static int dpcm_decode_frame(AVCodecContext *avctx,
         in += 2;
         SE_16BIT(predictor[0])
         output_samples[out++] = predictor[0];
-        if (s->channels == 2) {
+        if (s->channels == 2)
+        {
             predictor[1] = AV_RL16(&buf[in]);
             in += 2;
             SE_16BIT(predictor[1])
             output_samples[out++] = predictor[1];
         }
 
-        while (in < buf_size) {
+        while (in < buf_size)
+        {
             predictor[channel_number] += interplay_delta_table[buf[in++]];
             predictor[channel_number] = av_clip_int16(predictor[channel_number]);
             output_samples[out++] = predictor[channel_number];
@@ -234,13 +249,15 @@ static int dpcm_decode_frame(AVCodecContext *avctx,
         predictor[0] = AV_RL16(&buf[in]);
         in += 2;
         SE_16BIT(predictor[0]);
-        if (s->channels == 2) {
+        if (s->channels == 2)
+        {
             predictor[1] = AV_RL16(&buf[in]);
             in += 2;
             SE_16BIT(predictor[1]);
         }
 
-        while (in < buf_size) {
+        while (in < buf_size)
+        {
             byte = buf[in++];
             diff = (byte & 0xFC) << 8;
             if ((byte & 0x03) == 3)
@@ -263,10 +280,12 @@ static int dpcm_decode_frame(AVCodecContext *avctx,
         break;
     case CODEC_ID_SOL_DPCM:
         in = 0;
-        if (avctx->codec_tag != 3) {
-            if(*data_size/4 < buf_size)
+        if (avctx->codec_tag != 3)
+        {
+            if(*data_size / 4 < buf_size)
                 return -1;
-            while (in < buf_size) {
+            while (in < buf_size)
+            {
                 int n1, n2;
                 n1 = (buf[in] >> 4) & 0xF;
                 n2 = buf[in++] & 0xF;
@@ -279,8 +298,11 @@ static int dpcm_decode_frame(AVCodecContext *avctx,
                 if (s->sample[s->channels - 1] > 255) s->sample[s->channels - 1] = 255;
                 output_samples[out++] = (s->sample[s->channels - 1] - 128) << 8;
             }
-        } else {
-            while (in < buf_size) {
+        }
+        else
+        {
+            while (in < buf_size)
+            {
                 int n;
                 n = buf[in++];
                 if (n & 0x80) s->sample[channel_number] -= s->sol_table[n & 0x7F];

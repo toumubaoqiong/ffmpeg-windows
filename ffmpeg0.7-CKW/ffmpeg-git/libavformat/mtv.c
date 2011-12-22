@@ -35,7 +35,8 @@
 #define VIDEO_SID 0
 #define AUDIO_SID 1
 
-typedef struct MTVDemuxContext {
+typedef struct MTVDemuxContext
+{
 
     unsigned int file_size;         ///< filesize, not always right
     unsigned int segments;          ///< number of 512 byte segments
@@ -54,7 +55,7 @@ typedef struct MTVDemuxContext {
 static int mtv_probe(AVProbeData *p)
 {
     /* Magic is 'AMV' */
-    if(*(p->buf) != 'A' || *(p->buf+1) != 'M' || *(p->buf+2) != 'V')
+    if(*(p->buf) != 'A' || *(p->buf + 1) != 'M' || *(p->buf + 2) != 'V')
         return 0;
 
     /* Check for nonzero in bpp and (width|height) header fields */
@@ -65,13 +66,13 @@ static int mtv_probe(AVProbeData *p)
     if(!AV_RL16(&p->buf[52]) || !AV_RL16(&p->buf[54]))
     {
         if(!!AV_RL16(&p->buf[56]))
-            return AVPROBE_SCORE_MAX/2;
+            return AVPROBE_SCORE_MAX / 2;
         else
             return 0;
     }
 
     if(p->buf[51] != 16)
-        return AVPROBE_SCORE_MAX/4; // But we are going to assume 16bpp anyway ..
+        return AVPROBE_SCORE_MAX / 4; // But we are going to assume 16bpp anyway ..
 
     return AVPROBE_SCORE_MAX;
 }
@@ -98,12 +99,12 @@ static int mtv_read_header(AVFormatContext *s, AVFormatParameters *ap)
     /* Calculate width and height if missing from header */
 
     if(!mtv->img_width)
-        mtv->img_width=mtv->img_segment_size / (mtv->img_bpp>>3)
-                        / mtv->img_height;
+        mtv->img_width = mtv->img_segment_size / (mtv->img_bpp >> 3)
+                         / mtv->img_height;
 
     if(!mtv->img_height)
-        mtv->img_height=mtv->img_segment_size / (mtv->img_bpp>>3)
-                        / mtv->img_width;
+        mtv->img_height = mtv->img_segment_size / (mtv->img_bpp >> 3)
+                          / mtv->img_width;
 
     avio_skip(pb, 4);
     audio_subsegments = avio_rl16(pb);
@@ -173,7 +174,8 @@ static int mtv_read_packet(AVFormatContext *s, AVPacket *pkt)
         pkt->pos -= MTV_AUDIO_PADDING_SIZE;
         pkt->stream_index = AUDIO_SID;
 
-    }else
+    }
+    else
     {
         ret = av_get_packet(pb, pkt, mtv->img_segment_size);
         if(ret < 0)
@@ -187,8 +189,8 @@ static int mtv_read_packet(AVFormatContext *s, AVPacket *pkt)
          * just swap bytes as they come
          */
 
-        for(i=0;i<mtv->img_segment_size/2;i++)
-            *((uint16_t *)pkt->data+i) = av_bswap16(*((uint16_t *)pkt->data+i));
+        for(i = 0; i < mtv->img_segment_size / 2; i++)
+            *((uint16_t *)pkt->data + i) = av_bswap16(*((uint16_t *)pkt->data + i));
 #endif
         pkt->stream_index = VIDEO_SID;
     }
@@ -196,7 +198,8 @@ static int mtv_read_packet(AVFormatContext *s, AVPacket *pkt)
     return ret;
 }
 
-AVInputFormat ff_mtv_demuxer = {
+AVInputFormat ff_mtv_demuxer =
+{
     "MTV",
     NULL_IF_CONFIG_SMALL("MTV format"),
     sizeof(MTVDemuxContext),

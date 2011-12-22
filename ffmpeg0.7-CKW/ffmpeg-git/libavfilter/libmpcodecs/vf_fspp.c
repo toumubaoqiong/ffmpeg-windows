@@ -60,21 +60,23 @@
 //===========================================================================//
 #define BLOCKSZ 12
 
-static const short custom_threshold[64]=
-// values (296) can't be too high
-// -it causes too big quant dependence
-// or maybe overflow(check), which results in some flashing
-{ 71, 296, 295, 237,  71,  40,  38,  19,
-  245, 193, 185, 121, 102,  73,  53,  27,
-  158, 129, 141, 107,  97,  73,  50,  26,
-  102, 116, 109,  98,  82,  66,  45,  23,
-  71,  94,  95,  81,  70,  56,  38,  20,
-  56,  77,  74,  66,  56,  44,  30,  15,
-  38,  53,  50,  45,  38,  30,  21,  11,
-  20,  27,  26,  23,  20,  15,  11,   5
+static const short custom_threshold[64] =
+    // values (296) can't be too high
+    // -it causes too big quant dependence
+    // or maybe overflow(check), which results in some flashing
+{
+    71, 296, 295, 237,  71,  40,  38,  19,
+    245, 193, 185, 121, 102,  73,  53,  27,
+    158, 129, 141, 107,  97,  73,  50,  26,
+    102, 116, 109,  98,  82,  66,  45,  23,
+    71,  94,  95,  81,  70,  56,  38,  20,
+    56,  77,  74,  66,  56,  44,  30,  15,
+    38,  53,  50,  45,  38,  30,  21,  11,
+    20,  27,  26,  23,  20,  15,  11,   5
 };
 
-static const uint8_t  __attribute__((aligned(32))) dither[8][8]={
+static const uint8_t  __attribute__((aligned(32))) dither[8][8] =
+{
     {  0,  48,  12,  60,   3,  51,  15,  63, },
     { 32,  16,  44,  28,  35,  19,  47,  31, },
     {  8,  56,   4,  52,  11,  59,   7,  55, },
@@ -85,7 +87,8 @@ static const uint8_t  __attribute__((aligned(32))) dither[8][8]={
     { 42,  26,  38,  22,  41,  25,  37,  21, },
 };
 
-struct vf_priv_s { //align 16 !
+struct vf_priv_s   //align 16 !
+{
     uint64_t threshold_mtx_noq[8*2];
     uint64_t threshold_mtx[8*2];//used in both C & MMX (& later SSE2) versions
 
@@ -105,16 +108,19 @@ struct vf_priv_s { //align 16 !
 
 //This func reads from 1 slice, 1 and clears 0 & 1
 static void store_slice_c(uint8_t *dst, int16_t *src, int dst_stride, int src_stride, int width, int height, int log2_scale)
-{int y, x;
+{
+    int y, x;
 #define STORE(pos)                                                        \
     temp= (src[x + pos] + (d[pos]>>log2_scale))>>(6-log2_scale);        \
     src[x + pos]=src[x + pos - 8*src_stride]=0;                                \
     if(temp & 0x100) temp= ~(temp>>31);                                        \
     dst[x + pos]= temp;
 
-    for(y=0; y<height; y++){
-        const uint8_t *d= dither[y];
-        for(x=0; x<width; x+=8){
+    for(y = 0; y < height; y++)
+    {
+        const uint8_t *d = dither[y];
+        for(x = 0; x < width; x += 8)
+        {
             int temp;
             STORE(0);
             STORE(1);
@@ -125,23 +131,26 @@ static void store_slice_c(uint8_t *dst, int16_t *src, int dst_stride, int src_st
             STORE(6);
             STORE(7);
         }
-        src+=src_stride;
-        dst+=dst_stride;
+        src += src_stride;
+        dst += dst_stride;
     }
 }
 
 //This func reads from 2 slices, 0 & 2  and clears 2-nd
 static void store_slice2_c(uint8_t *dst, int16_t *src, int dst_stride, int src_stride, int width, int height, int log2_scale)
-{int y, x;
+{
+    int y, x;
 #define STORE2(pos)                                                        \
     temp= (src[x + pos] + src[x + pos + 16*src_stride] + (d[pos]>>log2_scale))>>(6-log2_scale);        \
     src[x + pos + 16*src_stride]=0;                                        \
     if(temp & 0x100) temp= ~(temp>>31);                                        \
     dst[x + pos]= temp;
 
-    for(y=0; y<height; y++){
-        const uint8_t *d= dither[y];
-        for(x=0; x<width; x+=8){
+    for(y = 0; y < height; y++)
+    {
+        const uint8_t *d = dither[y];
+        for(x = 0; x < width; x += 8)
+        {
             int temp;
             STORE2(0);
             STORE2(1);
@@ -152,21 +161,21 @@ static void store_slice2_c(uint8_t *dst, int16_t *src, int dst_stride, int src_s
             STORE2(6);
             STORE2(7);
         }
-        src+=src_stride;
-        dst+=dst_stride;
+        src += src_stride;
+        dst += dst_stride;
     }
 }
 
-static void mul_thrmat_c(struct vf_priv_s *p,int q)
+static void mul_thrmat_c(struct vf_priv_s *p, int q)
 {
     int a;
-    for(a=0;a<64;a++)
-        ((short*)p->threshold_mtx)[a]=q * ((short*)p->threshold_mtx_noq)[a];//ints faster in C
+    for(a = 0; a < 64; a++)
+        ((short *)p->threshold_mtx)[a] = q * ((short *)p->threshold_mtx_noq)[a]; //ints faster in C
 }
 
-static void column_fidct_c(int16_t* thr_adr, DCTELEM *data, DCTELEM *output, int cnt);
-static void row_idct_c(DCTELEM* workspace,
-                       int16_t* output_adr, int output_stride, int cnt);
+static void column_fidct_c(int16_t *thr_adr, DCTELEM *data, DCTELEM *output, int cnt);
+static void row_idct_c(DCTELEM *workspace,
+                       int16_t *output_adr, int output_stride, int cnt);
 static void row_fdct_c(DCTELEM *data, const uint8_t *pixels, int line_size, int cnt);
 
 //this is rather ugly, but there is no need for function pointers
@@ -182,10 +191,10 @@ static void row_fdct_c(DCTELEM *data, const uint8_t *pixels, int line_size, int 
 //This func reads from 1 slice, 1 and clears 0 & 1
 static void store_slice_mmx(uint8_t *dst, int16_t *src, long dst_stride, long src_stride, long width, long height, long log2_scale)
 {
-    const uint8_t *od=&dither[0][0];
-    const uint8_t *end=&dither[height][0];
-    width = (width+7)&~7;
-    dst_stride-=width;
+    const uint8_t *od = &dither[0][0];
+    const uint8_t *end = &dither[height][0];
+    width = (width + 7)&~7;
+    dst_stride -= width;
     //src_stride=(src_stride-width)*2;
     __asm__ volatile(
         "mov %5, %%"REG_d"                \n\t"
@@ -242,18 +251,18 @@ static void store_slice_mmx(uint8_t *dst, int16_t *src, long dst_stride, long sr
 
         :
         : "m" (width), "m" (src_stride), "erm" (od), "m" (dst_stride), "erm" (end),
-          "m" (log2_scale), "m" (src), "m" (dst) //input
+        "m" (log2_scale), "m" (src), "m" (dst) //input
         : "%"REG_a, "%"REG_c, "%"REG_d, "%"REG_S, "%"REG_D
-        );
+    );
 }
 
 //This func reads from 2 slices, 0 & 2  and clears 2-nd
 static void store_slice2_mmx(uint8_t *dst, int16_t *src, long dst_stride, long src_stride, long width, long height, long log2_scale)
 {
-    const uint8_t *od=&dither[0][0];
-    const uint8_t *end=&dither[height][0];
-    width = (width+7)&~7;
-    dst_stride-=width;
+    const uint8_t *od = &dither[0][0];
+    const uint8_t *end = &dither[height][0];
+    width = (width + 7)&~7;
+    dst_stride -= width;
     //src_stride=(src_stride-width)*2;
     __asm__ volatile(
         "mov %5, %%"REG_d"                \n\t"
@@ -310,14 +319,14 @@ static void store_slice2_mmx(uint8_t *dst, int16_t *src, long dst_stride, long s
 
         :
         : "m" (width), "m" (src_stride), "erm" (od), "m" (dst_stride), "erm" (end),
-          "m" (log2_scale), "m" (src), "m" (dst) //input
+        "m" (log2_scale), "m" (src), "m" (dst) //input
         : "%"REG_a, "%"REG_c, "%"REG_d, "%"REG_D, "%"REG_S
-        );
+    );
 }
 
 static void mul_thrmat_mmx(struct vf_priv_s *p, int q)
 {
-    uint64_t *adr=&p->threshold_mtx_noq[0];
+    uint64_t *adr = &p->threshold_mtx_noq[0];
     __asm__ volatile(
         "movd %0, %%mm7                \n\t"
         "add $8*8*2, %%"REG_D"            \n\t"
@@ -390,12 +399,12 @@ static void mul_thrmat_mmx(struct vf_priv_s *p, int q)
 
         : "+g" (q), "+S" (adr), "+D" (adr)
         :
-        );
+    );
 }
 
-static void column_fidct_mmx(int16_t* thr_adr,  DCTELEM *data,  DCTELEM *output,  int cnt);
-static void row_idct_mmx(DCTELEM* workspace,
-                         int16_t* output_adr,  int output_stride,  int cnt);
+static void column_fidct_mmx(int16_t *thr_adr,  DCTELEM *data,  DCTELEM *output,  int cnt);
+static void row_idct_mmx(DCTELEM *workspace,
+                         int16_t *output_adr,  int output_stride,  int cnt);
 static void row_fdct_mmx(DCTELEM *data,  const uint8_t *pixels,  int line_size,  int cnt);
 
 #define store_slice_s store_slice_mmx
@@ -412,77 +421,87 @@ static void filter(struct vf_priv_s *p, uint8_t *dst, uint8_t *src,
                    uint8_t *qp_store, int qp_stride, int is_luma)
 {
     int x, x0, y, es, qy, t;
-    const int stride= is_luma ? p->temp_stride : (width+16);//((width+16+15)&(~15))
-    const int step=6-p->log2_count;
-    const int qps= 3 + is_luma;
+    const int stride = is_luma ? p->temp_stride : (width + 16); //((width+16+15)&(~15))
+    const int step = 6 - p->log2_count;
+    const int qps = 3 + is_luma;
     int32_t __attribute__((aligned(32))) block_align[4*8*BLOCKSZ+ 4*8*BLOCKSZ];
-    DCTELEM *block= (DCTELEM *)block_align;
-    DCTELEM *block3=(DCTELEM *)(block_align+4*8*BLOCKSZ);
+    DCTELEM *block = (DCTELEM *)block_align;
+    DCTELEM *block3 = (DCTELEM *)(block_align + 4 * 8 * BLOCKSZ);
 
-    memset(block3, 0, 4*8*BLOCKSZ);
+    memset(block3, 0, 4 * 8 * BLOCKSZ);
 
     //p->src=src-src_stride*8-8;//!
     if (!src || !dst) return; // HACK avoid crash for Y8 colourspace
-    for(y=0; y<height; y++){
-        int index= 8 + 8*stride + y*stride;
-        fast_memcpy(p->src + index, src + y*src_stride, width);//this line can be avoided by using DR & user fr.buffers
-        for(x=0; x<8; x++){
-            p->src[index         - x - 1]= p->src[index +         x    ];
-            p->src[index + width + x    ]= p->src[index + width - x - 1];
+    for(y = 0; y < height; y++)
+    {
+        int index = 8 + 8 * stride + y * stride;
+        fast_memcpy(p->src + index, src + y * src_stride, width); //this line can be avoided by using DR & user fr.buffers
+        for(x = 0; x < 8; x++)
+        {
+            p->src[index         - x - 1] = p->src[index +         x    ];
+            p->src[index + width + x    ] = p->src[index + width - x - 1];
         }
     }
-    for(y=0; y<8; y++){
-        fast_memcpy(p->src + (      7-y)*stride, p->src + (      y+8)*stride, stride);
-        fast_memcpy(p->src + (height+8+y)*stride, p->src + (height-y+7)*stride, stride);
+    for(y = 0; y < 8; y++)
+    {
+        fast_memcpy(p->src + (      7 - y)*stride, p->src + (      y + 8)*stride, stride);
+        fast_memcpy(p->src + (height + 8 + y)*stride, p->src + (height - y + 7)*stride, stride);
     }
     //FIXME (try edge emu)
 
-    for(y=8; y<24; y++)
-        memset(p->temp+ 8 +y*stride, 0,width*sizeof(int16_t));
+    for(y = 8; y < 24; y++)
+        memset(p->temp + 8 + y * stride, 0, width * sizeof(int16_t));
 
-    for(y=step; y<height+8; y+=step){    //step= 1,2
-        qy=y-4;
-        if (qy>height-1) qy=height-1;
-        if (qy<0) qy=0;
-        qy=(qy>>qps)*qp_stride;
-        row_fdct_s(block, p->src + y*stride +2-(y&1), stride, 2);
-        for(x0=0; x0<width+8-8*(BLOCKSZ-1); x0+=8*(BLOCKSZ-1)){
-            row_fdct_s(block+8*8, p->src + y*stride+8+x0 +2-(y&1), stride, 2*(BLOCKSZ-1));
+    for(y = step; y < height + 8; y += step) //step= 1,2
+    {
+        qy = y - 4;
+        if (qy > height - 1) qy = height - 1;
+        if (qy < 0) qy = 0;
+        qy = (qy >> qps) * qp_stride;
+        row_fdct_s(block, p->src + y * stride + 2 - (y & 1), stride, 2);
+        for(x0 = 0; x0 < width + 8 - 8 * (BLOCKSZ - 1); x0 += 8 * (BLOCKSZ - 1))
+        {
+            row_fdct_s(block + 8 * 8, p->src + y * stride + 8 + x0 + 2 - (y & 1), stride, 2 * (BLOCKSZ - 1));
             if(p->qp)
-                column_fidct_s((int16_t*)(&p->threshold_mtx[0]), block+0*8, block3+0*8, 8*(BLOCKSZ-1)); //yes, this is a HOTSPOT
+                column_fidct_s((int16_t *)(&p->threshold_mtx[0]), block + 0 * 8, block3 + 0 * 8, 8 * (BLOCKSZ - 1)); //yes, this is a HOTSPOT
             else
-                for (x=0; x<8*(BLOCKSZ-1); x+=8) {
-                    t=x+x0-2; //correct t=x+x0-2-(y&1), but its the same
-                    if (t<0) t=0;//t always < width-2
-                    t=qp_store[qy+(t>>qps)];
-                    t=norm_qscale(t, p->mpeg2);
-                    if (t!=p->prev_q) p->prev_q=t, mul_thrmat_s(p, t);
-                    column_fidct_s((int16_t*)(&p->threshold_mtx[0]), block+x*8, block3+x*8, 8); //yes, this is a HOTSPOT
+                for (x = 0; x < 8 * (BLOCKSZ - 1); x += 8)
+                {
+                    t = x + x0 - 2; //correct t=x+x0-2-(y&1), but its the same
+                    if (t < 0) t = 0; //t always < width-2
+                    t = qp_store[qy+(t>>qps)];
+                    t = norm_qscale(t, p->mpeg2);
+                    if (t != p->prev_q) p->prev_q = t, mul_thrmat_s(p, t);
+                    column_fidct_s((int16_t *)(&p->threshold_mtx[0]), block + x * 8, block3 + x * 8, 8); //yes, this is a HOTSPOT
                 }
-            row_idct_s(block3+0*8, p->temp + (y&15)*stride+x0+2-(y&1), stride, 2*(BLOCKSZ-1));
-            memmove(block, block+(BLOCKSZ-1)*64, 8*8*sizeof(DCTELEM)); //cycling
-            memmove(block3, block3+(BLOCKSZ-1)*64, 6*8*sizeof(DCTELEM));
+            row_idct_s(block3 + 0 * 8, p->temp + (y & 15)*stride + x0 + 2 - (y & 1), stride, 2 * (BLOCKSZ - 1));
+            memmove(block, block + (BLOCKSZ - 1) * 64, 8 * 8 * sizeof(DCTELEM)); //cycling
+            memmove(block3, block3 + (BLOCKSZ - 1) * 64, 6 * 8 * sizeof(DCTELEM));
         }
         //
-        es=width+8-x0; //  8, ...
-        if (es>8)
-            row_fdct_s(block+8*8, p->src + y*stride+8+x0 +2-(y&1), stride, (es-4)>>2);
-        column_fidct_s((int16_t*)(&p->threshold_mtx[0]), block, block3, es&(~1));
-        row_idct_s(block3+0*8, p->temp + (y&15)*stride+x0+2-(y&1), stride, es>>2);
-        {const int y1=y-8+step;//l5-7  l4-6
-            if (!(y1&7) && y1) {
-                if (y1&8) store_slice_s(dst + (y1-8)*dst_stride, p->temp+ 8 +8*stride,
-                                        dst_stride, stride, width, 8, 5-p->log2_count);
-                else store_slice2_s(dst + (y1-8)*dst_stride, p->temp+ 8 +0*stride,
-                                    dst_stride, stride, width, 8, 5-p->log2_count);
-            } }
+        es = width + 8 - x0; //  8, ...
+        if (es > 8)
+            row_fdct_s(block + 8 * 8, p->src + y * stride + 8 + x0 + 2 - (y & 1), stride, (es - 4) >> 2);
+        column_fidct_s((int16_t *)(&p->threshold_mtx[0]), block, block3, es&(~1));
+        row_idct_s(block3 + 0 * 8, p->temp + (y & 15)*stride + x0 + 2 - (y & 1), stride, es >> 2);
+        {
+            const int y1 = y - 8 + step; //l5-7  l4-6
+            if (!(y1 & 7) && y1)
+            {
+                if (y1 & 8) store_slice_s(dst + (y1 - 8)*dst_stride, p->temp + 8 + 8 * stride,
+                                              dst_stride, stride, width, 8, 5 - p->log2_count);
+                else store_slice2_s(dst + (y1 - 8)*dst_stride, p->temp + 8 + 0 * stride,
+                                        dst_stride, stride, width, 8, 5 - p->log2_count);
+            }
+        }
     }
 
-    if (y&7) {  // == height & 7
-        if (y&8) store_slice_s(dst + ((y-8)&~7)*dst_stride, p->temp+ 8 +8*stride,
-                               dst_stride, stride, width, y&7, 5-p->log2_count);
-        else store_slice2_s(dst + ((y-8)&~7)*dst_stride, p->temp+ 8 +0*stride,
-                            dst_stride, stride, width, y&7, 5-p->log2_count);
+    if (y & 7)  // == height & 7
+    {
+        if (y & 8) store_slice_s(dst + ((y - 8)&~7)*dst_stride, p->temp + 8 + 8 * stride,
+                                     dst_stride, stride, width, y & 7, 5 - p->log2_count);
+        else store_slice2_s(dst + ((y - 8)&~7)*dst_stride, p->temp + 8 + 0 * stride,
+                                dst_stride, stride, width, y & 7, 5 - p->log2_count);
     }
 }
 
@@ -490,76 +509,86 @@ static int config(struct vf_instance *vf,
                   int width, int height, int d_width, int d_height,
                   unsigned int flags, unsigned int outfmt)
 {
-    int h= (height+16+15)&(~15);
+    int h = (height + 16 + 15) & (~15);
 
-    vf->priv->temp_stride= (width+16+15)&(~15);
-    vf->priv->temp= (int16_t*)av_mallocz(vf->priv->temp_stride*3*8*sizeof(int16_t));
+    vf->priv->temp_stride = (width + 16 + 15) & (~15);
+    vf->priv->temp = (int16_t *)av_mallocz(vf->priv->temp_stride * 3 * 8 * sizeof(int16_t));
     //this can also be avoided, see above
-    vf->priv->src = (uint8_t*)av_malloc(vf->priv->temp_stride*h*sizeof(uint8_t));
+    vf->priv->src = (uint8_t *)av_malloc(vf->priv->temp_stride * h * sizeof(uint8_t));
 
-    return vf_next_config(vf,width,height,d_width,d_height,flags,outfmt);
+    return vf_next_config(vf, width, height, d_width, d_height, flags, outfmt);
 }
 
 static void get_image(struct vf_instance *vf, mp_image_t *mpi)
 {
-    if(mpi->flags&MP_IMGFLAG_PRESERVE) return; // don't change
+    if(mpi->flags & MP_IMGFLAG_PRESERVE) return; // don't change
     // ok, we can do pp in-place (or pp disabled):
-    vf->dmpi=vf_get_image(vf->next,mpi->imgfmt,
-                          mpi->type, mpi->flags, mpi->width, mpi->height);
-    mpi->planes[0]=vf->dmpi->planes[0];
-    mpi->stride[0]=vf->dmpi->stride[0];
-    mpi->width=vf->dmpi->width;
-    if(mpi->flags&MP_IMGFLAG_PLANAR){
-        mpi->planes[1]=vf->dmpi->planes[1];
-        mpi->planes[2]=vf->dmpi->planes[2];
-        mpi->stride[1]=vf->dmpi->stride[1];
-        mpi->stride[2]=vf->dmpi->stride[2];
+    vf->dmpi = vf_get_image(vf->next, mpi->imgfmt,
+                            mpi->type, mpi->flags, mpi->width, mpi->height);
+    mpi->planes[0] = vf->dmpi->planes[0];
+    mpi->stride[0] = vf->dmpi->stride[0];
+    mpi->width = vf->dmpi->width;
+    if(mpi->flags & MP_IMGFLAG_PLANAR)
+    {
+        mpi->planes[1] = vf->dmpi->planes[1];
+        mpi->planes[2] = vf->dmpi->planes[2];
+        mpi->stride[1] = vf->dmpi->stride[1];
+        mpi->stride[2] = vf->dmpi->stride[2];
     }
-    mpi->flags|=MP_IMGFLAG_DIRECT;
+    mpi->flags |= MP_IMGFLAG_DIRECT;
 }
 
 static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
 {
     mp_image_t *dmpi;
-    if(!(mpi->flags&MP_IMGFLAG_DIRECT)){
+    if(!(mpi->flags & MP_IMGFLAG_DIRECT))
+    {
         // no DR, so get a new image! hope we'll get DR buffer:
-        dmpi=vf_get_image(vf->next,mpi->imgfmt,
-                          MP_IMGTYPE_TEMP,
-                          MP_IMGFLAG_ACCEPT_STRIDE|MP_IMGFLAG_PREFER_ALIGNED_STRIDE,
-                          mpi->width,mpi->height);
+        dmpi = vf_get_image(vf->next, mpi->imgfmt,
+                            MP_IMGTYPE_TEMP,
+                            MP_IMGFLAG_ACCEPT_STRIDE | MP_IMGFLAG_PREFER_ALIGNED_STRIDE,
+                            mpi->width, mpi->height);
         vf_clone_mpi_attributes(dmpi, mpi);
-    }else{
-        dmpi=vf->dmpi;
+    }
+    else
+    {
+        dmpi = vf->dmpi;
     }
 
-    vf->priv->mpeg2= mpi->qscale_type;
-    if(mpi->pict_type != 3 && mpi->qscale && !vf->priv->qp){
+    vf->priv->mpeg2 = mpi->qscale_type;
+    if(mpi->pict_type != 3 && mpi->qscale && !vf->priv->qp)
+    {
         int w = mpi->qstride;
         int h = (mpi->h + 15) >> 4;
-        if (!w) {
+        if (!w)
+        {
             w = (mpi->w + 15) >> 4;
             h = 1;
         }
         if(!vf->priv->non_b_qp)
-            vf->priv->non_b_qp= malloc(w*h);
-        fast_memcpy(vf->priv->non_b_qp, mpi->qscale, w*h);
+            vf->priv->non_b_qp = malloc(w * h);
+        fast_memcpy(vf->priv->non_b_qp, mpi->qscale, w * h);
     }
-    if(vf->priv->log2_count || !(mpi->flags&MP_IMGFLAG_DIRECT)){
-        char *qp_tab= vf->priv->non_b_qp;
+    if(vf->priv->log2_count || !(mpi->flags & MP_IMGFLAG_DIRECT))
+    {
+        char *qp_tab = vf->priv->non_b_qp;
         if(vf->priv->bframes || !qp_tab)
-            qp_tab= mpi->qscale;
+            qp_tab = mpi->qscale;
 
-        if(qp_tab || vf->priv->qp){
+        if(qp_tab || vf->priv->qp)
+        {
             filter(vf->priv, dmpi->planes[0], mpi->planes[0], dmpi->stride[0], mpi->stride[0],
                    mpi->w, mpi->h, qp_tab, mpi->qstride, 1);
             filter(vf->priv, dmpi->planes[1], mpi->planes[1], dmpi->stride[1], mpi->stride[1],
-                   mpi->w>>mpi->chroma_x_shift, mpi->h>>mpi->chroma_y_shift, qp_tab, mpi->qstride, 0);
+                   mpi->w >> mpi->chroma_x_shift, mpi->h >> mpi->chroma_y_shift, qp_tab, mpi->qstride, 0);
             filter(vf->priv, dmpi->planes[2], mpi->planes[2], dmpi->stride[2], mpi->stride[2],
-                   mpi->w>>mpi->chroma_x_shift, mpi->h>>mpi->chroma_y_shift, qp_tab, mpi->qstride, 0);
-        }else{
+                   mpi->w >> mpi->chroma_x_shift, mpi->h >> mpi->chroma_y_shift, qp_tab, mpi->qstride, 0);
+        }
+        else
+        {
             memcpy_pic(dmpi->planes[0], mpi->planes[0], mpi->w, mpi->h, dmpi->stride[0], mpi->stride[0]);
-            memcpy_pic(dmpi->planes[1], mpi->planes[1], mpi->w>>mpi->chroma_x_shift, mpi->h>>mpi->chroma_y_shift, dmpi->stride[1], mpi->stride[1]);
-            memcpy_pic(dmpi->planes[2], mpi->planes[2], mpi->w>>mpi->chroma_x_shift, mpi->h>>mpi->chroma_y_shift, dmpi->stride[2], mpi->stride[2]);
+            memcpy_pic(dmpi->planes[1], mpi->planes[1], mpi->w >> mpi->chroma_x_shift, mpi->h >> mpi->chroma_y_shift, dmpi->stride[1], mpi->stride[1]);
+            memcpy_pic(dmpi->planes[2], mpi->planes[2], mpi->w >> mpi->chroma_x_shift, mpi->h >> mpi->chroma_y_shift, dmpi->stride[2], mpi->stride[2]);
         }
     }
 
@@ -569,7 +598,7 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
 #if HAVE_MMX2
     if(gCpuCaps.hasMMX2) __asm__ volatile ("sfence\n\t");
 #endif
-    return vf_next_put_image(vf,dmpi, pts);
+    return vf_next_put_image(vf, dmpi, pts);
 }
 
 static void uninit(struct vf_instance *vf)
@@ -577,23 +606,24 @@ static void uninit(struct vf_instance *vf)
     if(!vf->priv) return;
 
     av_free(vf->priv->temp);
-    vf->priv->temp= NULL;
+    vf->priv->temp = NULL;
     av_free(vf->priv->src);
-    vf->priv->src= NULL;
+    vf->priv->src = NULL;
     //free(vf->priv->avctx);
     //vf->priv->avctx= NULL;
     free(vf->priv->non_b_qp);
-    vf->priv->non_b_qp= NULL;
+    vf->priv->non_b_qp = NULL;
 
     av_free(vf->priv);
-    vf->priv=NULL;
+    vf->priv = NULL;
 }
 
 //===========================================================================//
 
 static int query_format(struct vf_instance *vf, unsigned int fmt)
 {
-    switch(fmt){
+    switch(fmt)
+    {
     case IMGFMT_YVU9:
     case IMGFMT_IF09:
     case IMGFMT_YV12:
@@ -605,49 +635,50 @@ static int query_format(struct vf_instance *vf, unsigned int fmt)
     case IMGFMT_444P:
     case IMGFMT_422P:
     case IMGFMT_411P:
-        return vf_next_query_format(vf,fmt);
+        return vf_next_query_format(vf, fmt);
     }
     return 0;
 }
 
-static int control(struct vf_instance *vf, int request, void* data)
+static int control(struct vf_instance *vf, int request, void *data)
 {
-    switch(request){
+    switch(request)
+    {
     case VFCTRL_QUERY_MAX_PP_LEVEL:
         return 5;
     case VFCTRL_SET_PP_LEVEL:
-        vf->priv->log2_count= *((unsigned int*)data);
-        if (vf->priv->log2_count < 4) vf->priv->log2_count=4;
+        vf->priv->log2_count = *((unsigned int *)data);
+        if (vf->priv->log2_count < 4) vf->priv->log2_count = 4;
         return CONTROL_TRUE;
     }
-    return vf_next_control(vf,request,data);
+    return vf_next_control(vf, request, data);
 }
 
 static int vf_open(vf_instance_t *vf, char *args)
 {
-    int i=0, bias;
+    int i = 0, bias;
     int custom_threshold_m[64];
-    int log2c=-1;
+    int log2c = -1;
 
-    vf->config=config;
-    vf->put_image=put_image;
-    vf->get_image=get_image;
-    vf->query_format=query_format;
-    vf->uninit=uninit;
-    vf->control= control;
-    vf->priv=av_mallocz(sizeof(struct vf_priv_s));//assumes align 16 !
+    vf->config = config;
+    vf->put_image = put_image;
+    vf->get_image = get_image;
+    vf->query_format = query_format;
+    vf->uninit = uninit;
+    vf->control = control;
+    vf->priv = av_mallocz(sizeof(struct vf_priv_s)); //assumes align 16 !
 
     init_avcodec();
 
     //vf->priv->avctx= avcodec_alloc_context();
     //dsputil_init(&vf->priv->dsp, vf->priv->avctx);
 
-    vf->priv->log2_count= 4;
+    vf->priv->log2_count = 4;
     vf->priv->bframes = 0;
 
     if (args) sscanf(args, "%d:%d:%d:%d", &log2c, &vf->priv->qp, &i, &vf->priv->bframes);
 
-    if( log2c >=4 && log2c <=5 )
+    if( log2c >= 4 && log2c <= 5 )
         vf->priv->log2_count = log2c;
     else if( log2c >= 6 )
         vf->priv->log2_count = 5;
@@ -658,28 +689,30 @@ static int vf_open(vf_instance_t *vf, char *args)
     if (i < -15) i = -15;
     if (i > 32) i = 32;
 
-    bias= (1<<4)+i; //regulable
-    vf->priv->prev_q=0;
+    bias = (1 << 4) + i; //regulable
+    vf->priv->prev_q = 0;
     //
-    for(i=0;i<64;i++) //FIXME: tune custom_threshold[] and remove this !
-        custom_threshold_m[i]=(int)(custom_threshold[i]*(bias/71.)+ 0.5);
-    for(i=0;i<8;i++){
-        vf->priv->threshold_mtx_noq[2*i]=(uint64_t)custom_threshold_m[i*8+2]
-            |(((uint64_t)custom_threshold_m[i*8+6])<<16)
-            |(((uint64_t)custom_threshold_m[i*8+0])<<32)
-            |(((uint64_t)custom_threshold_m[i*8+4])<<48);
-        vf->priv->threshold_mtx_noq[2*i+1]=(uint64_t)custom_threshold_m[i*8+5]
-            |(((uint64_t)custom_threshold_m[i*8+3])<<16)
-            |(((uint64_t)custom_threshold_m[i*8+1])<<32)
-            |(((uint64_t)custom_threshold_m[i*8+7])<<48);
+    for(i = 0; i < 64; i++) //FIXME: tune custom_threshold[] and remove this !
+        custom_threshold_m[i] = (int)(custom_threshold[i] * (bias / 71.) + 0.5);
+    for(i = 0; i < 8; i++)
+    {
+        vf->priv->threshold_mtx_noq[2*i] = (uint64_t)custom_threshold_m[i*8+2]
+                                           | (((uint64_t)custom_threshold_m[i*8+6]) << 16)
+                                           | (((uint64_t)custom_threshold_m[i*8+0]) << 32)
+                                           | (((uint64_t)custom_threshold_m[i*8+4]) << 48);
+        vf->priv->threshold_mtx_noq[2*i+1] = (uint64_t)custom_threshold_m[i*8+5]
+                                             | (((uint64_t)custom_threshold_m[i*8+3]) << 16)
+                                             | (((uint64_t)custom_threshold_m[i*8+1]) << 32)
+                                             | (((uint64_t)custom_threshold_m[i*8+7]) << 48);
     }
 
-    if (vf->priv->qp) vf->priv->prev_q=vf->priv->qp, mul_thrmat_s(vf->priv, vf->priv->qp);
+    if (vf->priv->qp) vf->priv->prev_q = vf->priv->qp, mul_thrmat_s(vf->priv, vf->priv->qp);
 
     return 1;
 }
 
-const vf_info_t vf_info_fspp = {
+const vf_info_t vf_info_fspp =
+{
     "fast simple postprocess",
     "fspp",
     "Michael Niedermayer, Nikolaj Poroshin",
@@ -709,60 +742,62 @@ const vf_info_t vf_info_fspp = {
 
 #if HAVE_MMX
 
-DECLARE_ASM_CONST(8, uint64_t, MM_FIX_0_382683433)=FIX64(0.382683433, 14);
-DECLARE_ASM_CONST(8, uint64_t, MM_FIX_0_541196100)=FIX64(0.541196100, 14);
-DECLARE_ASM_CONST(8, uint64_t, MM_FIX_0_707106781)=FIX64(0.707106781, 14);
-DECLARE_ASM_CONST(8, uint64_t, MM_FIX_1_306562965)=FIX64(1.306562965, 14);
+DECLARE_ASM_CONST(8, uint64_t, MM_FIX_0_382683433) = FIX64(0.382683433, 14);
+DECLARE_ASM_CONST(8, uint64_t, MM_FIX_0_541196100) = FIX64(0.541196100, 14);
+DECLARE_ASM_CONST(8, uint64_t, MM_FIX_0_707106781) = FIX64(0.707106781, 14);
+DECLARE_ASM_CONST(8, uint64_t, MM_FIX_1_306562965) = FIX64(1.306562965, 14);
 
-DECLARE_ASM_CONST(8, uint64_t, MM_FIX_1_414213562_A)=FIX64(1.414213562, 14);
+DECLARE_ASM_CONST(8, uint64_t, MM_FIX_1_414213562_A) = FIX64(1.414213562, 14);
 
-DECLARE_ASM_CONST(8, uint64_t, MM_FIX_1_847759065)=FIX64(1.847759065, 13);
-DECLARE_ASM_CONST(8, uint64_t, MM_FIX_2_613125930)=FIX64(-2.613125930, 13); //-
-DECLARE_ASM_CONST(8, uint64_t, MM_FIX_1_414213562)=FIX64(1.414213562, 13);
-DECLARE_ASM_CONST(8, uint64_t, MM_FIX_1_082392200)=FIX64(1.082392200, 13);
+DECLARE_ASM_CONST(8, uint64_t, MM_FIX_1_847759065) = FIX64(1.847759065, 13);
+DECLARE_ASM_CONST(8, uint64_t, MM_FIX_2_613125930) = FIX64(-2.613125930, 13); //-
+DECLARE_ASM_CONST(8, uint64_t, MM_FIX_1_414213562) = FIX64(1.414213562, 13);
+DECLARE_ASM_CONST(8, uint64_t, MM_FIX_1_082392200) = FIX64(1.082392200, 13);
 //for t3,t5,t7 == 0 shortcut
-DECLARE_ASM_CONST(8, uint64_t, MM_FIX_0_847759065)=FIX64(0.847759065, 14);
-DECLARE_ASM_CONST(8, uint64_t, MM_FIX_0_566454497)=FIX64(0.566454497, 14);
-DECLARE_ASM_CONST(8, uint64_t, MM_FIX_0_198912367)=FIX64(0.198912367, 14);
+DECLARE_ASM_CONST(8, uint64_t, MM_FIX_0_847759065) = FIX64(0.847759065, 14);
+DECLARE_ASM_CONST(8, uint64_t, MM_FIX_0_566454497) = FIX64(0.566454497, 14);
+DECLARE_ASM_CONST(8, uint64_t, MM_FIX_0_198912367) = FIX64(0.198912367, 14);
 
-DECLARE_ASM_CONST(8, uint64_t, MM_DESCALE_RND)=C64(4);
-DECLARE_ASM_CONST(8, uint64_t, MM_2)=C64(2);
+DECLARE_ASM_CONST(8, uint64_t, MM_DESCALE_RND) = C64(4);
+DECLARE_ASM_CONST(8, uint64_t, MM_2) = C64(2);
 
 #else /* !HAVE_MMX */
 
 typedef int32_t int_simd16_t;
-static const int16_t FIX_0_382683433=FIX(0.382683433, 14);
-static const int16_t FIX_0_541196100=FIX(0.541196100, 14);
-static const int16_t FIX_0_707106781=FIX(0.707106781, 14);
-static const int16_t FIX_1_306562965=FIX(1.306562965, 14);
-static const int16_t FIX_1_414213562_A=FIX(1.414213562, 14);
-static const int16_t FIX_1_847759065=FIX(1.847759065, 13);
-static const int16_t FIX_2_613125930=FIX(-2.613125930, 13); //-
-static const int16_t FIX_1_414213562=FIX(1.414213562, 13);
-static const int16_t FIX_1_082392200=FIX(1.082392200, 13);
+static const int16_t FIX_0_382683433 = FIX(0.382683433, 14);
+static const int16_t FIX_0_541196100 = FIX(0.541196100, 14);
+static const int16_t FIX_0_707106781 = FIX(0.707106781, 14);
+static const int16_t FIX_1_306562965 = FIX(1.306562965, 14);
+static const int16_t FIX_1_414213562_A = FIX(1.414213562, 14);
+static const int16_t FIX_1_847759065 = FIX(1.847759065, 13);
+static const int16_t FIX_2_613125930 = FIX(-2.613125930, 13); //-
+static const int16_t FIX_1_414213562 = FIX(1.414213562, 13);
+static const int16_t FIX_1_082392200 = FIX(1.082392200, 13);
 
 #endif
 
 #if !HAVE_MMX
 
-static void column_fidct_c(int16_t* thr_adr, DCTELEM *data, DCTELEM *output, int cnt)
+static void column_fidct_c(int16_t *thr_adr, DCTELEM *data, DCTELEM *output, int cnt)
 {
     int_simd16_t tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7;
     int_simd16_t tmp10, tmp11, tmp12, tmp13;
-    int_simd16_t z1,z2,z3,z4,z5, z10, z11, z12, z13;
+    int_simd16_t z1, z2, z3, z4, z5, z10, z11, z12, z13;
     int_simd16_t d0, d1, d2, d3, d4, d5, d6, d7;
 
-    DCTELEM* dataptr;
-    DCTELEM* wsptr;
+    DCTELEM *dataptr;
+    DCTELEM *wsptr;
     int16_t *threshold;
     int ctr;
 
     dataptr = data;
     wsptr = output;
 
-    for (; cnt > 0; cnt-=2) { //start positions
-        threshold=(int16_t*)thr_adr;//threshold_mtx
-        for (ctr = DCTSIZE; ctr > 0; ctr--) {
+    for (; cnt > 0; cnt -= 2) //start positions
+    {
+        threshold = (int16_t *)thr_adr; //threshold_mtx
+        for (ctr = DCTSIZE; ctr > 0; ctr--)
+        {
             // Process columns from input, add to output.
             tmp0 = dataptr[DCTSIZE*0] + dataptr[DCTSIZE*7];
             tmp7 = dataptr[DCTSIZE*0] - dataptr[DCTSIZE*7];
@@ -786,7 +821,7 @@ static void column_fidct_c(int16_t* thr_adr, DCTELEM *data, DCTELEM *output, int
             d0 = tmp10 + tmp11;
             d4 = tmp10 - tmp11;
 
-            z1 = MULTIPLY16H((tmp12 + tmp13) <<2, FIX_0_707106781);
+            z1 = MULTIPLY16H((tmp12 + tmp13) << 2, FIX_0_707106781);
             d2 = tmp13 + z1;
             d6 = tmp13 - z1;
 
@@ -796,11 +831,11 @@ static void column_fidct_c(int16_t* thr_adr, DCTELEM *data, DCTELEM *output, int
             THRESHOLD(tmp1, d2, threshold[2*8]);
             THRESHOLD(tmp2, d4, threshold[4*8]);
             THRESHOLD(tmp3, d6, threshold[6*8]);
-            tmp0+=2;
-            tmp10 = (tmp0 + tmp2)>>2;
-            tmp11 = (tmp0 - tmp2)>>2;
+            tmp0 += 2;
+            tmp10 = (tmp0 + tmp2) >> 2;
+            tmp11 = (tmp0 - tmp2) >> 2;
 
-            tmp13 = (tmp1 + tmp3)>>2; //+2 !  (psnr decides)
+            tmp13 = (tmp1 + tmp3) >> 2; //+2 !  (psnr decides)
             tmp12 = MULTIPLY16H((tmp1 - tmp3), FIX_1_414213562_A) - tmp13; //<<2
 
             tmp0 = tmp10 + tmp13; //->temps
@@ -814,10 +849,10 @@ static void column_fidct_c(int16_t* thr_adr, DCTELEM *data, DCTELEM *output, int
             tmp11 = tmp5 + tmp6;
             tmp12 = tmp6 + tmp7;
 
-            z5 = MULTIPLY16H((tmp10 - tmp12)<<2, FIX_0_382683433);
-            z2 = MULTIPLY16H(tmp10 <<2, FIX_0_541196100) + z5;
-            z4 = MULTIPLY16H(tmp12 <<2, FIX_1_306562965) + z5;
-            z3 = MULTIPLY16H(tmp11 <<2, FIX_0_707106781);
+            z5 = MULTIPLY16H((tmp10 - tmp12) << 2, FIX_0_382683433);
+            z2 = MULTIPLY16H(tmp10 << 2, FIX_0_541196100) + z5;
+            z4 = MULTIPLY16H(tmp12 << 2, FIX_1_306562965) + z5;
+            z3 = MULTIPLY16H(tmp11 << 2, FIX_0_707106781);
 
             z11 = tmp7 + z3;
             z13 = tmp7 - z3;
@@ -836,12 +871,12 @@ static void column_fidct_c(int16_t* thr_adr, DCTELEM *data, DCTELEM *output, int
 
             //Simd version uses here a shortcut for the tmp5,tmp6,tmp7 == 0
             z13 = tmp6 + tmp5;
-            z10 = (tmp6 - tmp5)<<1;
+            z10 = (tmp6 - tmp5) << 1;
             z11 = tmp4 + tmp7;
-            z12 = (tmp4 - tmp7)<<1;
+            z12 = (tmp4 - tmp7) << 1;
 
-            tmp7 = (z11 + z13)>>2; //+2 !
-            tmp11 = MULTIPLY16H((z11 - z13)<<1, FIX_1_414213562);
+            tmp7 = (z11 + z13) >> 2; //+2 !
+            tmp11 = MULTIPLY16H((z11 - z13) << 1, FIX_1_414213562);
             z5 =    MULTIPLY16H(z10 + z12, FIX_1_847759065);
             tmp10 = MULTIPLY16H(z12, FIX_1_082392200) - z5;
             tmp12 = MULTIPLY16H(z10, FIX_2_613125930) + z5; // - !!
@@ -850,27 +885,27 @@ static void column_fidct_c(int16_t* thr_adr, DCTELEM *data, DCTELEM *output, int
             tmp5 = tmp11 - tmp6;
             tmp4 = tmp10 + tmp5;
 
-            wsptr[DCTSIZE*0]+=  (tmp0 + tmp7);
-            wsptr[DCTSIZE*1]+=  (tmp1 + tmp6);
-            wsptr[DCTSIZE*2]+=  (tmp2 + tmp5);
-            wsptr[DCTSIZE*3]+=  (tmp3 - tmp4);
-            wsptr[DCTSIZE*4]+=  (tmp3 + tmp4);
-            wsptr[DCTSIZE*5]+=  (tmp2 - tmp5);
-            wsptr[DCTSIZE*6]=  (tmp1 - tmp6);
-            wsptr[DCTSIZE*7]=  (tmp0 - tmp7);
+            wsptr[DCTSIZE*0] +=  (tmp0 + tmp7);
+            wsptr[DCTSIZE*1] +=  (tmp1 + tmp6);
+            wsptr[DCTSIZE*2] +=  (tmp2 + tmp5);
+            wsptr[DCTSIZE*3] +=  (tmp3 - tmp4);
+            wsptr[DCTSIZE*4] +=  (tmp3 + tmp4);
+            wsptr[DCTSIZE*5] +=  (tmp2 - tmp5);
+            wsptr[DCTSIZE*6] =  (tmp1 - tmp6);
+            wsptr[DCTSIZE*7] =  (tmp0 - tmp7);
             //
             dataptr++; //next column
             wsptr++;
             threshold++;
         }
-        dataptr+=8; //skip each second start pos
-        wsptr  +=8;
+        dataptr += 8; //skip each second start pos
+        wsptr  += 8;
     }
 }
 
 #else /* HAVE_MMX */
 
-static void column_fidct_mmx(int16_t* thr_adr,  DCTELEM *data,  DCTELEM *output,  int cnt)
+static void column_fidct_mmx(int16_t *thr_adr,  DCTELEM *data,  DCTELEM *output,  int cnt)
 {
     uint64_t __attribute__((aligned(8))) temps[4];
     __asm__ volatile(
@@ -925,9 +960,9 @@ static void column_fidct_mmx(int16_t* thr_adr,  DCTELEM *data,  DCTELEM *output,
         "psubusw 0*16(%%"REG_d"), %%mm5    \n\t"
         "psubusw %%mm6, %%mm2          \n\t"
 
-//This func is totally compute-bound,  operates at huge speed. So,  DC shortcut
-// at this place isn't worthwhile due to BTB miss penalty (checked on Pent. 3).
-//However,  typical numbers: nondc - 29%%,  dc - 46%%,  zero - 25%%. All <> 0 case is very rare.
+        //This func is totally compute-bound,  operates at huge speed. So,  DC shortcut
+        // at this place isn't worthwhile due to BTB miss penalty (checked on Pent. 3).
+        //However,  typical numbers: nondc - 29%%,  dc - 46%%,  zero - 25%%. All <> 0 case is very rare.
         "paddw "MANGLE(MM_2)", %%mm5            \n\t"
         "movq %%mm2, %%mm6             \n\t"
 
@@ -1018,7 +1053,7 @@ static void column_fidct_mmx(int16_t* thr_adr,  DCTELEM *data,  DCTELEM *output,
         "movq %%mm6, 2*8+%3            \n\t"
         "psubw %%mm2, %%mm1            \n\t" //z13
 
-//===
+        //===
         "paddw %%mm2, %%mm0            \n\t" //z11
         "movq %%mm1, %%mm5             \n\t"
 
@@ -1074,7 +1109,7 @@ static void column_fidct_mmx(int16_t* thr_adr,  DCTELEM *data,  DCTELEM *output,
         //movq [edi+"DCTSIZE_S"*7*2], mm6
         // t4 t5 - - - t6 t7 -
         //--- t4 (mm0) may be <>0; mm1, mm5, mm6 == 0
-//Typical numbers: nondc - 19%%,  dc - 26%%,  zero - 55%%. zero case alone isn't worthwhile
+        //Typical numbers: nondc - 19%%,  dc - 26%%,  zero - 55%%. zero case alone isn't worthwhile
         "movq 0*8+%3, %%mm4            \n\t"
         "movq %%mm0, %%mm1             \n\t"
 
@@ -1233,7 +1268,7 @@ static void column_fidct_mmx(int16_t* thr_adr,  DCTELEM *data,  DCTELEM *output,
         "add $8, %%"REG_D"               \n\t"
 
         "4:                     \n\t"
-//=part 2 (the same)===========================================================
+        //=part 2 (the same)===========================================================
         "movq "DCTSIZE_S"*0*2(%%"REG_S"), %%mm1 \n\t"
         //
         "movq "DCTSIZE_S"*3*2(%%"REG_S"), %%mm7 \n\t"
@@ -1283,9 +1318,9 @@ static void column_fidct_mmx(int16_t* thr_adr,  DCTELEM *data,  DCTELEM *output,
         "psubusw 1*8+0*16(%%"REG_d"), %%mm5 \n\t"
         "psubusw %%mm6, %%mm2          \n\t"
 
-//This func is totally compute-bound,  operates at huge speed. So,  DC shortcut
-// at this place isn't worthwhile due to BTB miss penalty (checked on Pent. 3).
-//However,  typical numbers: nondc - 29%%,  dc - 46%%,  zero - 25%%. All <> 0 case is very rare.
+        //This func is totally compute-bound,  operates at huge speed. So,  DC shortcut
+        // at this place isn't worthwhile due to BTB miss penalty (checked on Pent. 3).
+        //However,  typical numbers: nondc - 29%%,  dc - 46%%,  zero - 25%%. All <> 0 case is very rare.
         "paddw "MANGLE(MM_2)", %%mm5            \n\t"
         "movq %%mm2, %%mm6             \n\t"
 
@@ -1376,7 +1411,7 @@ static void column_fidct_mmx(int16_t* thr_adr,  DCTELEM *data,  DCTELEM *output,
         "movq %%mm6, 2*8+%3            \n\t"
         "psubw %%mm2, %%mm1            \n\t" //z13
 
-//===
+        //===
         "paddw %%mm2, %%mm0            \n\t" //z11
         "movq %%mm1, %%mm5             \n\t"
 
@@ -1432,7 +1467,7 @@ static void column_fidct_mmx(int16_t* thr_adr,  DCTELEM *data,  DCTELEM *output,
         //movq [edi+"DCTSIZE_S"*7*2], mm6
         // t4 t5 - - - t6 t7 -
         //--- t4 (mm0) may be <>0; mm1, mm5, mm6 == 0
-//Typical numbers: nondc - 19%%,  dc - 26%%,  zero - 55%%. zero case alone isn't worthwhile
+        //Typical numbers: nondc - 19%%,  dc - 26%%,  zero - 55%%. zero case alone isn't worthwhile
         "movq 0*8+%3, %%mm4            \n\t"
         "movq %%mm0, %%mm1             \n\t"
 
@@ -1598,33 +1633,34 @@ static void column_fidct_mmx(int16_t* thr_adr,  DCTELEM *data,  DCTELEM *output,
         : "+S"(data), "+D"(output), "+c"(cnt), "=o"(temps)
         : "d"(thr_adr)
         : "%"REG_a
-        );
+    );
 }
 
 #endif // HAVE_MMX
 
 #if !HAVE_MMX
 
-static void row_idct_c(DCTELEM* workspace,
-                       int16_t* output_adr, int output_stride, int cnt)
+static void row_idct_c(DCTELEM *workspace,
+                       int16_t *output_adr, int output_stride, int cnt)
 {
     int_simd16_t tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7;
     int_simd16_t tmp10, tmp11, tmp12, tmp13;
     int_simd16_t z5, z10, z11, z12, z13;
-    int16_t* outptr;
-    DCTELEM* wsptr;
+    int16_t *outptr;
+    DCTELEM *wsptr;
 
-    cnt*=4;
+    cnt *= 4;
     wsptr = workspace;
     outptr = output_adr;
-    for (; cnt > 0; cnt--) {
+    for (; cnt > 0; cnt--)
+    {
         // Even part
         //Simd version reads 4x4 block and transposes it
         tmp10 = ( wsptr[2] +  wsptr[3]);
         tmp11 = ( wsptr[2] -  wsptr[3]);
 
         tmp13 = ( wsptr[0] +  wsptr[1]);
-        tmp12 = (MULTIPLY16H( wsptr[0] - wsptr[1], FIX_1_414213562_A)<<2) - tmp13;//this shift order to avoid overflow
+        tmp12 = (MULTIPLY16H( wsptr[0] - wsptr[1], FIX_1_414213562_A) << 2) - tmp13; //this shift order to avoid overflow
 
         tmp0 = tmp10 + tmp13; //->temps
         tmp3 = tmp10 - tmp13; //->temps
@@ -1649,19 +1685,19 @@ static void row_idct_c(DCTELEM* workspace,
         tmp10 = MULTIPLY16H(z12, FIX_1_082392200) - z5;
         tmp12 = MULTIPLY16H(z10, FIX_2_613125930) + z5; // - FIX_
 
-        tmp6 = (tmp12<<3) - tmp7;
-        tmp5 = (tmp11<<3) - tmp6;
-        tmp4 = (tmp10<<3) + tmp5;
+        tmp6 = (tmp12 << 3) - tmp7;
+        tmp5 = (tmp11 << 3) - tmp6;
+        tmp4 = (tmp10 << 3) + tmp5;
 
         // Final output stage: descale and write column
-        outptr[0*output_stride]+= DESCALE(tmp0 + tmp7, 3);
-        outptr[1*output_stride]+= DESCALE(tmp1 + tmp6, 3);
-        outptr[2*output_stride]+= DESCALE(tmp2 + tmp5, 3);
-        outptr[3*output_stride]+= DESCALE(tmp3 - tmp4, 3);
-        outptr[4*output_stride]+= DESCALE(tmp3 + tmp4, 3);
-        outptr[5*output_stride]+= DESCALE(tmp2 - tmp5, 3);
-        outptr[6*output_stride]+= DESCALE(tmp1 - tmp6, 3); //no += ?
-        outptr[7*output_stride]+= DESCALE(tmp0 - tmp7, 3); //no += ?
+        outptr[0*output_stride] += DESCALE(tmp0 + tmp7, 3);
+        outptr[1*output_stride] += DESCALE(tmp1 + tmp6, 3);
+        outptr[2*output_stride] += DESCALE(tmp2 + tmp5, 3);
+        outptr[3*output_stride] += DESCALE(tmp3 - tmp4, 3);
+        outptr[4*output_stride] += DESCALE(tmp3 + tmp4, 3);
+        outptr[5*output_stride] += DESCALE(tmp2 - tmp5, 3);
+        outptr[6*output_stride] += DESCALE(tmp1 - tmp6, 3); //no += ?
+        outptr[7*output_stride] += DESCALE(tmp0 - tmp7, 3); //no += ?
         outptr++;
 
         wsptr += DCTSIZE;       // advance pointer to next row
@@ -1670,8 +1706,8 @@ static void row_idct_c(DCTELEM* workspace,
 
 #else /* HAVE_MMX */
 
-static void row_idct_mmx (DCTELEM* workspace,
-                          int16_t* output_adr,  int output_stride,  int cnt)
+static void row_idct_mmx (DCTELEM *workspace,
+                          int16_t *output_adr,  int output_stride,  int cnt)
 {
     uint64_t __attribute__((aligned(8))) temps[4];
     __asm__ volatile(
@@ -1867,7 +1903,7 @@ static void row_idct_mmx (DCTELEM* workspace,
         : "+S"(workspace), "+D"(output_adr), "+c"(cnt), "=o"(temps)
         : "a"(output_stride*sizeof(short))
         : "%"REG_d
-        );
+    );
 }
 
 #endif // HAVE_MMX
@@ -1881,11 +1917,12 @@ static void row_fdct_c(DCTELEM *data, const uint8_t *pixels, int line_size, int 
     int_simd16_t z1, z2, z3, z4, z5, z11, z13;
     DCTELEM *dataptr;
 
-    cnt*=4;
+    cnt *= 4;
     // Pass 1: process rows.
 
     dataptr = data;
-    for (; cnt > 0; cnt--) {
+    for (; cnt > 0; cnt--)
+    {
         tmp0 = pixels[line_size*0] + pixels[line_size*7];
         tmp7 = pixels[line_size*0] - pixels[line_size*7];
         tmp1 = pixels[line_size*1] + pixels[line_size*6];
@@ -1907,15 +1944,15 @@ static void row_fdct_c(DCTELEM *data, const uint8_t *pixels, int line_size, int 
         dataptr[2] = tmp10 + tmp11;
         dataptr[3] = tmp10 - tmp11;
 
-        z1 = MULTIPLY16H((tmp12 + tmp13)<<2, FIX_0_707106781);
+        z1 = MULTIPLY16H((tmp12 + tmp13) << 2, FIX_0_707106781);
         dataptr[0] = tmp13 + z1;
         dataptr[1] = tmp13 - z1;
 
         // Odd part
 
-        tmp10 = (tmp4 + tmp5) <<2;
-        tmp11 = (tmp5 + tmp6) <<2;
-        tmp12 = (tmp6 + tmp7) <<2;
+        tmp10 = (tmp4 + tmp5) << 2;
+        tmp11 = (tmp5 + tmp6) << 2;
+        tmp12 = (tmp6 + tmp7) << 2;
 
         z5 = MULTIPLY16H(tmp10 - tmp12, FIX_0_382683433);
         z2 = MULTIPLY16H(tmp10, FIX_0_541196100) + z5;

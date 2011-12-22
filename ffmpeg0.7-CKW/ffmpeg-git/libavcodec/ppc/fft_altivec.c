@@ -44,16 +44,17 @@ static void ff_imdct_half_altivec(FFTContext *s, FFTSample *output, const FFTSam
     int n8 = n >> 3;
     int n32 = n >> 5;
     const uint16_t *revtabj = s->revtab;
-    const uint16_t *revtabk = s->revtab+n4;
-    const vec_f *tcos = (const vec_f*)(s->tcos+n8);
-    const vec_f *tsin = (const vec_f*)(s->tsin+n8);
-    const vec_f *pin = (const vec_f*)(input+n4);
-    vec_f *pout = (vec_f*)(output+n4);
+    const uint16_t *revtabk = s->revtab + n4;
+    const vec_f *tcos = (const vec_f *)(s->tcos + n8);
+    const vec_f *tsin = (const vec_f *)(s->tsin + n8);
+    const vec_f *pin = (const vec_f *)(input + n4);
+    vec_f *pout = (vec_f *)(output + n4);
 
     /* pre rotation */
-    k = n32-1;
-    do {
-        vec_f cos,sin,cos0,sin0,cos1,sin1,re,im,r0,i0,r1,i1,a,b,c,d;
+    k = n32 - 1;
+    do
+    {
+        vec_f cos, sin, cos0, sin0, cos1, sin1, re, im, r0, i0, r1, i1, a, b, c, d;
 #define CMULA(p,o0,o1,o2,o3)\
         a = pin[ k*2+p];                       /* { z[k].re,    z[k].im,    z[k+1].re,  z[k+1].im  } */\
         b = pin[-k*2-p-1];                     /* { z[-k-2].re, z[-k-2].im, z[-k-1].re, z[-k-1].im } */\
@@ -81,22 +82,24 @@ static void ff_imdct_half_altivec(FFTContext *s, FFTSample *output, const FFTSam
         sin0 = tsin[k];
         cos1 = tcos[-k-1];
         sin1 = tsin[-k-1];
-        CMULA(0, 0,1,2,3);
-        CMULA(1, 2,3,0,1);
+        CMULA(0, 0, 1, 2, 3);
+        CMULA(1, 2, 3, 0, 1);
         STORE8(0);
         STORE8(1);
         revtabj += 4;
         revtabk -= 4;
         k--;
-    } while(k >= 0);
+    }
+    while(k >= 0);
 
-    ff_fft_calc_altivec(s, (FFTComplex*)output);
+    ff_fft_calc_altivec(s, (FFTComplex *)output);
 
     /* post rotation + reordering */
     j = -n32;
-    k = n32-1;
-    do {
-        vec_f cos,sin,re,im,a,b,c,d;
+    k = n32 - 1;
+    do
+    {
+        vec_f cos, sin, re, im, a, b, c, d;
 #define CMULB(d0,d1,o)\
         re = pout[o*2];\
         im = pout[o*2+1];\
@@ -105,15 +108,16 @@ static void ff_imdct_half_altivec(FFTContext *s, FFTSample *output, const FFTSam
         d0 = im*sin - re*cos;\
         d1 = re*sin + im*cos;
 
-        CMULB(a,b,j);
-        CMULB(c,d,k);
-        pout[2*j]   = vec_perm(a, d, vcprm(0,s3,1,s2));
-        pout[2*j+1] = vec_perm(a, d, vcprm(2,s1,3,s0));
-        pout[2*k]   = vec_perm(c, b, vcprm(0,s3,1,s2));
-        pout[2*k+1] = vec_perm(c, b, vcprm(2,s1,3,s0));
+        CMULB(a, b, j);
+        CMULB(c, d, k);
+        pout[2*j]   = vec_perm(a, d, vcprm(0, s3, 1, s2));
+        pout[2*j+1] = vec_perm(a, d, vcprm(2, s1, 3, s0));
+        pout[2*k]   = vec_perm(c, b, vcprm(0, s3, 1, s2));
+        pout[2*k+1] = vec_perm(c, b, vcprm(2, s1, 3, s0));
         j++;
         k--;
-    } while(k >= 0);
+    }
+    while(k >= 0);
 }
 
 static void ff_imdct_calc_altivec(FFTContext *s, FFTSample *output, const FFTSample *input)
@@ -122,17 +126,18 @@ static void ff_imdct_calc_altivec(FFTContext *s, FFTSample *output, const FFTSam
     int n = 1 << s->mdct_bits;
     int n4 = n >> 2;
     int n16 = n >> 4;
-    vec_u32 sign = {1U<<31,1U<<31,1U<<31,1U<<31};
-    vec_u32 *p0 = (vec_u32*)(output+n4);
-    vec_u32 *p1 = (vec_u32*)(output+n4*3);
+    vec_u32 sign = {1U << 31, 1U << 31, 1U << 31, 1U << 31};
+    vec_u32 *p0 = (vec_u32 *)(output + n4);
+    vec_u32 *p1 = (vec_u32 *)(output + n4 * 3);
 
-    ff_imdct_half_altivec(s, output+n4, input);
+    ff_imdct_half_altivec(s, output + n4, input);
 
-    for (k = 0; k < n16; k++) {
+    for (k = 0; k < n16; k++)
+    {
         vec_u32 a = p0[k] ^ sign;
         vec_u32 b = p1[-k-1];
-        p0[-k-1] = vec_perm(a, a, vcprm(3,2,1,0));
-        p1[k]    = vec_perm(b, b, vcprm(3,2,1,0));
+        p0[-k-1] = vec_perm(a, a, vcprm(3, 2, 1, 0));
+        p1[k]    = vec_perm(b, b, vcprm(3, 2, 1, 0));
     }
 }
 #endif /* HAVE_GNU_AS */

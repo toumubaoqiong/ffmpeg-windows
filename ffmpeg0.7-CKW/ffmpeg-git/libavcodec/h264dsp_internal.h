@@ -87,16 +87,16 @@ static void FUNCC(biweight_h264_pixels ## W ## x ## H)(uint8_t *p_dst, uint8_t *
     } \
 }
 
-H264_WEIGHT(16,16)
-H264_WEIGHT(16,8)
-H264_WEIGHT(8,16)
-H264_WEIGHT(8,8)
-H264_WEIGHT(8,4)
-H264_WEIGHT(4,8)
-H264_WEIGHT(4,4)
-H264_WEIGHT(4,2)
-H264_WEIGHT(2,4)
-H264_WEIGHT(2,2)
+H264_WEIGHT(16, 16)
+H264_WEIGHT(16, 8)
+H264_WEIGHT(8, 16)
+H264_WEIGHT(8, 8)
+H264_WEIGHT(8, 4)
+H264_WEIGHT(4, 8)
+H264_WEIGHT(4, 4)
+H264_WEIGHT(4, 2)
+H264_WEIGHT(2, 4)
+H264_WEIGHT(2, 2)
 
 #undef op_scale1
 #undef op_scale2
@@ -104,16 +104,19 @@ H264_WEIGHT(2,2)
 
 static av_always_inline av_flatten void FUNCC(h264_loop_filter_luma)(uint8_t *p_pix, int xstride, int ystride, int alpha, int beta, int8_t *tc0)
 {
-    pixel *pix = (pixel*)p_pix;
+    pixel *pix = (pixel *)p_pix;
     int i, d;
-    xstride >>= sizeof(pixel)-1;
-    ystride >>= sizeof(pixel)-1;
-    for( i = 0; i < 4; i++ ) {
-        if( tc0[i] < 0 ) {
-            pix += 4*ystride;
+    xstride >>= sizeof(pixel) - 1;
+    ystride >>= sizeof(pixel) - 1;
+    for( i = 0; i < 4; i++ )
+    {
+        if( tc0[i] < 0 )
+        {
+            pix += 4 * ystride;
             continue;
         }
-        for( d = 0; d < 4; d++ ) {
+        for( d = 0; d < 4; d++ )
+        {
             const int p0 = pix[-1*xstride];
             const int p1 = pix[-2*xstride];
             const int p2 = pix[-3*xstride];
@@ -122,20 +125,23 @@ static av_always_inline av_flatten void FUNCC(h264_loop_filter_luma)(uint8_t *p_
             const int q2 = pix[2*xstride];
 
             if( FFABS( p0 - q0 ) < alpha &&
-                FFABS( p1 - p0 ) < beta &&
-                FFABS( q1 - q0 ) < beta ) {
+                    FFABS( p1 - p0 ) < beta &&
+                    FFABS( q1 - q0 ) < beta )
+            {
 
                 int tc = tc0[i];
                 int i_delta;
 
-                if( FFABS( p2 - p0 ) < beta ) {
+                if( FFABS( p2 - p0 ) < beta )
+                {
                     if(tc0[i])
-                    pix[-2*xstride] = p1 + av_clip( (( p2 + ( ( p0 + q0 + 1 ) >> 1 ) ) >> 1) - p1, -tc0[i], tc0[i] );
+                        pix[-2*xstride] = p1 + av_clip( (( p2 + ( ( p0 + q0 + 1 ) >> 1 ) ) >> 1) - p1, -tc0[i], tc0[i] );
                     tc++;
                 }
-                if( FFABS( q2 - q0 ) < beta ) {
+                if( FFABS( q2 - q0 ) < beta )
+                {
                     if(tc0[i])
-                    pix[   xstride] = q1 + av_clip( (( q2 + ( ( p0 + q0 + 1 ) >> 1 ) ) >> 1) - q1, -tc0[i], tc0[i] );
+                        pix[   xstride] = q1 + av_clip( (( q2 + ( ( p0 + q0 + 1 ) >> 1 ) ) >> 1) - q1, -tc0[i], tc0[i] );
                     tc++;
                 }
 
@@ -158,11 +164,12 @@ static void FUNCC(h264_h_loop_filter_luma)(uint8_t *pix, int stride, int alpha, 
 
 static av_always_inline av_flatten void FUNCC(h264_loop_filter_luma_intra)(uint8_t *p_pix, int xstride, int ystride, int alpha, int beta)
 {
-    pixel *pix = (pixel*)p_pix;
+    pixel *pix = (pixel *)p_pix;
     int d;
-    xstride >>= sizeof(pixel)-1;
-    ystride >>= sizeof(pixel)-1;
-    for( d = 0; d < 16; d++ ) {
+    xstride >>= sizeof(pixel) - 1;
+    ystride >>= sizeof(pixel) - 1;
+    for( d = 0; d < 16; d++ )
+    {
         const int p2 = pix[-3*xstride];
         const int p1 = pix[-2*xstride];
         const int p0 = pix[-1*xstride];
@@ -172,36 +179,44 @@ static av_always_inline av_flatten void FUNCC(h264_loop_filter_luma_intra)(uint8
         const int q2 = pix[ 2*xstride];
 
         if( FFABS( p0 - q0 ) < alpha &&
-            FFABS( p1 - p0 ) < beta &&
-            FFABS( q1 - q0 ) < beta ) {
+                FFABS( p1 - p0 ) < beta &&
+                FFABS( q1 - q0 ) < beta )
+        {
 
-            if(FFABS( p0 - q0 ) < (( alpha >> 2 ) + 2 )){
+            if(FFABS( p0 - q0 ) < (( alpha >> 2 ) + 2 ))
+            {
                 if( FFABS( p2 - p0 ) < beta)
                 {
                     const int p3 = pix[-4*xstride];
                     /* p0', p1', p2' */
-                    pix[-1*xstride] = ( p2 + 2*p1 + 2*p0 + 2*q0 + q1 + 4 ) >> 3;
+                    pix[-1*xstride] = ( p2 + 2 * p1 + 2 * p0 + 2 * q0 + q1 + 4 ) >> 3;
                     pix[-2*xstride] = ( p2 + p1 + p0 + q0 + 2 ) >> 2;
-                    pix[-3*xstride] = ( 2*p3 + 3*p2 + p1 + p0 + q0 + 4 ) >> 3;
-                } else {
+                    pix[-3*xstride] = ( 2 * p3 + 3 * p2 + p1 + p0 + q0 + 4 ) >> 3;
+                }
+                else
+                {
                     /* p0' */
-                    pix[-1*xstride] = ( 2*p1 + p0 + q1 + 2 ) >> 2;
+                    pix[-1*xstride] = ( 2 * p1 + p0 + q1 + 2 ) >> 2;
                 }
                 if( FFABS( q2 - q0 ) < beta)
                 {
                     const int q3 = pix[3*xstride];
                     /* q0', q1', q2' */
-                    pix[0*xstride] = ( p1 + 2*p0 + 2*q0 + 2*q1 + q2 + 4 ) >> 3;
+                    pix[0*xstride] = ( p1 + 2 * p0 + 2 * q0 + 2 * q1 + q2 + 4 ) >> 3;
                     pix[1*xstride] = ( p0 + q0 + q1 + q2 + 2 ) >> 2;
-                    pix[2*xstride] = ( 2*q3 + 3*q2 + q1 + q0 + p0 + 4 ) >> 3;
-                } else {
-                    /* q0' */
-                    pix[0*xstride] = ( 2*q1 + q0 + p1 + 2 ) >> 2;
+                    pix[2*xstride] = ( 2 * q3 + 3 * q2 + q1 + q0 + p0 + 4 ) >> 3;
                 }
-            }else{
+                else
+                {
+                    /* q0' */
+                    pix[0*xstride] = ( 2 * q1 + q0 + p1 + 2 ) >> 2;
+                }
+            }
+            else
+            {
                 /* p0', q0' */
-                pix[-1*xstride] = ( 2*p1 + p0 + q1 + 2 ) >> 2;
-                pix[ 0*xstride] = ( 2*q1 + q0 + p1 + 2 ) >> 2;
+                pix[-1*xstride] = ( 2 * p1 + p0 + q1 + 2 ) >> 2;
+                pix[ 0*xstride] = ( 2 * q1 + q0 + p1 + 2 ) >> 2;
             }
         }
         pix += ystride;
@@ -218,25 +233,29 @@ static void FUNCC(h264_h_loop_filter_luma_intra)(uint8_t *pix, int stride, int a
 
 static av_always_inline av_flatten void FUNCC(h264_loop_filter_chroma)(uint8_t *p_pix, int xstride, int ystride, int alpha, int beta, int8_t *tc0)
 {
-    pixel *pix = (pixel*)p_pix;
+    pixel *pix = (pixel *)p_pix;
     int i, d;
-    xstride >>= sizeof(pixel)-1;
-    ystride >>= sizeof(pixel)-1;
-    for( i = 0; i < 4; i++ ) {
+    xstride >>= sizeof(pixel) - 1;
+    ystride >>= sizeof(pixel) - 1;
+    for( i = 0; i < 4; i++ )
+    {
         const int tc = tc0[i];
-        if( tc <= 0 ) {
-            pix += 2*ystride;
+        if( tc <= 0 )
+        {
+            pix += 2 * ystride;
             continue;
         }
-        for( d = 0; d < 2; d++ ) {
+        for( d = 0; d < 2; d++ )
+        {
             const int p0 = pix[-1*xstride];
             const int p1 = pix[-2*xstride];
             const int q0 = pix[0];
             const int q1 = pix[1*xstride];
 
             if( FFABS( p0 - q0 ) < alpha &&
-                FFABS( p1 - p0 ) < beta &&
-                FFABS( q1 - q0 ) < beta ) {
+                    FFABS( p1 - p0 ) < beta &&
+                    FFABS( q1 - q0 ) < beta )
+            {
 
                 int delta = av_clip( (((q0 - p0 ) << 2) + (p1 - q1) + 4) >> 3, -tc, tc );
 
@@ -258,22 +277,24 @@ static void FUNCC(h264_h_loop_filter_chroma)(uint8_t *pix, int stride, int alpha
 
 static av_always_inline av_flatten void FUNCC(h264_loop_filter_chroma_intra)(uint8_t *p_pix, int xstride, int ystride, int alpha, int beta)
 {
-    pixel *pix = (pixel*)p_pix;
+    pixel *pix = (pixel *)p_pix;
     int d;
-    xstride >>= sizeof(pixel)-1;
-    ystride >>= sizeof(pixel)-1;
-    for( d = 0; d < 8; d++ ) {
+    xstride >>= sizeof(pixel) - 1;
+    ystride >>= sizeof(pixel) - 1;
+    for( d = 0; d < 8; d++ )
+    {
         const int p0 = pix[-1*xstride];
         const int p1 = pix[-2*xstride];
         const int q0 = pix[0];
         const int q1 = pix[1*xstride];
 
         if( FFABS( p0 - q0 ) < alpha &&
-            FFABS( p1 - p0 ) < beta &&
-            FFABS( q1 - q0 ) < beta ) {
+                FFABS( p1 - p0 ) < beta &&
+                FFABS( q1 - q0 ) < beta )
+        {
 
-            pix[-xstride] = ( 2*p1 + p0 + q1 + 2 ) >> 2;   /* p0' */
-            pix[0]        = ( 2*q1 + q0 + p1 + 2 ) >> 2;   /* q0' */
+            pix[-xstride] = ( 2 * p1 + p0 + q1 + 2 ) >> 2; /* p0' */
+            pix[0]        = ( 2 * q1 + q0 + p1 + 2 ) >> 2; /* q0' */
         }
         pix += ystride;
     }

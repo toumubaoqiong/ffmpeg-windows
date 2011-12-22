@@ -28,13 +28,15 @@
 static const uint32_t monoblack_pal[] = { 0x000000, 0xFFFFFF };
 static const uint32_t rgb565_masks[]  = { 0xF800, 0x07E0, 0x001F };
 
-static av_cold int bmp_encode_init(AVCodecContext *avctx){
+static av_cold int bmp_encode_init(AVCodecContext *avctx)
+{
     BMPContext *s = avctx->priv_data;
 
-    avcodec_get_frame_defaults((AVFrame*)&s->picture);
-    avctx->coded_frame = (AVFrame*)&s->picture;
+    avcodec_get_frame_defaults((AVFrame *)&s->picture);
+    avctx->coded_frame = (AVFrame *)&s->picture;
 
-    switch (avctx->pix_fmt) {
+    switch (avctx->pix_fmt)
+    {
     case PIX_FMT_BGR24:
         avctx->bits_per_coded_sample = 24;
         break;
@@ -63,20 +65,22 @@ static av_cold int bmp_encode_init(AVCodecContext *avctx){
     return 0;
 }
 
-static int bmp_encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_size, void *data){
+static int bmp_encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_size, void *data)
+{
     BMPContext *s = avctx->priv_data;
     AVFrame *pict = data;
-    AVFrame * const p= (AVFrame*)&s->picture;
+    AVFrame *const p = (AVFrame *)&s->picture;
     int n_bytes_image, n_bytes_per_row, n_bytes, i, n, hsize;
     const uint32_t *pal = NULL;
     int pad_bytes_per_row, pal_entries = 0, compression = BMP_RGB;
     int bit_count = avctx->bits_per_coded_sample;
     uint8_t *ptr;
-    unsigned char* buf0 = buf;
+    unsigned char *buf0 = buf;
     *p = *pict;
-    p->pict_type= FF_I_TYPE;
-    p->key_frame= 1;
-    switch (avctx->pix_fmt) {
+    p->pict_type = FF_I_TYPE;
+    p->key_frame = 1;
+    switch (avctx->pix_fmt)
+    {
     case PIX_FMT_RGB565:
         compression = BMP_BITFIELDS;
         pal = rgb565_masks; // abuse pal to hold color masks
@@ -87,7 +91,7 @@ static int bmp_encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_s
     case PIX_FMT_RGB4_BYTE:
     case PIX_FMT_BGR4_BYTE:
     case PIX_FMT_GRAY8:
-        ff_set_systematic_pal2((uint32_t*)p->data[1], avctx->pix_fmt);
+        ff_set_systematic_pal2((uint32_t *)p->data[1], avctx->pix_fmt);
     case PIX_FMT_PAL8:
         pal = (uint32_t *)p->data[1];
         break;
@@ -106,7 +110,8 @@ static int bmp_encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_s
 #define SIZE_BITMAPINFOHEADER 40
     hsize = SIZE_BITMAPFILEHEADER + SIZE_BITMAPINFOHEADER + (pal_entries << 2);
     n_bytes = n_bytes_image + hsize;
-    if(n_bytes>buf_size) {
+    if(n_bytes > buf_size)
+    {
         av_log(avctx, AV_LOG_ERROR, "buf size too small (need %d, got %d)\n", n_bytes, buf_size);
         return -1;
     }
@@ -132,13 +137,17 @@ static int bmp_encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_s
     // BMP files are bottom-to-top so we start from the end...
     ptr = p->data[0] + (avctx->height - 1) * p->linesize[0];
     buf = buf0 + hsize;
-    for(i = 0; i < avctx->height; i++) {
-        if (bit_count == 16) {
+    for(i = 0; i < avctx->height; i++)
+    {
+        if (bit_count == 16)
+        {
             const uint16_t *src = (const uint16_t *) ptr;
             uint16_t *dst = (uint16_t *) buf;
             for(n = 0; n < avctx->width; n++)
                 AV_WL16(dst + n, src[n]);
-        } else {
+        }
+        else
+        {
             memcpy(buf, ptr, n_bytes_per_row);
         }
         buf += n_bytes_per_row;
@@ -149,7 +158,8 @@ static int bmp_encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_s
     return n_bytes;
 }
 
-AVCodec ff_bmp_encoder = {
+AVCodec ff_bmp_encoder =
+{
     "bmp",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_BMP,
@@ -157,11 +167,13 @@ AVCodec ff_bmp_encoder = {
     bmp_encode_init,
     bmp_encode_frame,
     NULL, //encode_end,
-    .pix_fmts = (const enum PixelFormat[]){
+    .pix_fmts = (const enum PixelFormat[])
+    {
         PIX_FMT_BGR24,
         PIX_FMT_RGB555, PIX_FMT_RGB565,
         PIX_FMT_RGB8, PIX_FMT_BGR8, PIX_FMT_RGB4_BYTE, PIX_FMT_BGR4_BYTE, PIX_FMT_GRAY8, PIX_FMT_PAL8,
         PIX_FMT_MONOBLACK,
-        PIX_FMT_NONE},
+        PIX_FMT_NONE
+    },
     .long_name = NULL_IF_CONFIG_SMALL("BMP image"),
 };

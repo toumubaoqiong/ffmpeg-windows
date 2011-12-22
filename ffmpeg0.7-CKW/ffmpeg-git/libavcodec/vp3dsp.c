@@ -49,9 +49,11 @@ static av_always_inline void idct(uint8_t *dst, int stride, int16_t *input, int 
     int i;
 
     /* Inverse DCT on the rows now */
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < 8; i++)
+    {
         /* Check for non-zero values */
-        if ( ip[0] | ip[1] | ip[2] | ip[3] | ip[4] | ip[5] | ip[6] | ip[7] ) {
+        if ( ip[0] | ip[1] | ip[2] | ip[3] | ip[4] | ip[5] | ip[6] | ip[7] )
+        {
             A = M(xC1S7, ip[1]) + M(xC7S1, ip[7]);
             B = M(xC7S1, ip[1]) - M(xC1S7, ip[7]);
             C = M(xC3S5, ip[3]) + M(xC5S3, ip[5]);
@@ -97,10 +99,12 @@ static av_always_inline void idct(uint8_t *dst, int stride, int16_t *input, int 
 
     ip = input;
 
-    for ( i = 0; i < 8; i++) {
+    for ( i = 0; i < 8; i++)
+    {
         /* Check for non-zero values (bitwise or faster than ||) */
         if ( ip[1 * 8] | ip[2 * 8] | ip[3 * 8] |
-             ip[4 * 8] | ip[5 * 8] | ip[6 * 8] | ip[7 * 8] ) {
+                ip[4 * 8] | ip[5 * 8] | ip[6 * 8] | ip[7 * 8] )
+        {
 
             A = M(xC1S7, ip[1*8]) + M(xC7S1, ip[7*8]);
             B = M(xC7S1, ip[1*8]) - M(xC1S7, ip[7*8]);
@@ -116,9 +120,10 @@ static av_always_inline void idct(uint8_t *dst, int stride, int16_t *input, int 
             E = M(xC4S4, (ip[0*8] + ip[4*8])) + 8;
             F = M(xC4S4, (ip[0*8] - ip[4*8])) + 8;
 
-            if(type==1){  //HACK
-                E += 16*128;
-                F += 16*128;
+            if(type == 1) //HACK
+            {
+                E += 16 * 128;
+                F += 16 * 128;
             }
 
             G = M(xC2S6, ip[2*8]) + M(xC6S2, ip[6*8]);
@@ -134,7 +139,8 @@ static av_always_inline void idct(uint8_t *dst, int stride, int16_t *input, int 
             Hd = Bd + H;
 
             /* Final sequence of operations over-write original inputs. */
-            if(type==0){
+            if(type == 0)
+            {
                 ip[0*8] = (Gd + Cd )  >> 4;
                 ip[7*8] = (Gd - Cd )  >> 4;
 
@@ -146,7 +152,9 @@ static av_always_inline void idct(uint8_t *dst, int stride, int16_t *input, int 
 
                 ip[5*8] = (Fd + Bdd ) >> 4;
                 ip[6*8] = (Fd - Bdd ) >> 4;
-            }else if(type==1){
+            }
+            else if(type == 1)
+            {
                 dst[0*stride] = cm[(Gd + Cd )  >> 4];
                 dst[7*stride] = cm[(Gd - Cd )  >> 4];
 
@@ -158,7 +166,9 @@ static av_always_inline void idct(uint8_t *dst, int stride, int16_t *input, int 
 
                 dst[5*stride] = cm[(Fd + Bdd ) >> 4];
                 dst[6*stride] = cm[(Fd - Bdd ) >> 4];
-            }else{
+            }
+            else
+            {
                 dst[0*stride] = cm[dst[0*stride] + ((Gd + Cd )  >> 4)];
                 dst[7*stride] = cm[dst[7*stride] + ((Gd - Cd )  >> 4)];
 
@@ -172,28 +182,36 @@ static av_always_inline void idct(uint8_t *dst, int stride, int16_t *input, int 
                 dst[6*stride] = cm[dst[6*stride] + ((Fd - Bdd ) >> 4)];
             }
 
-        } else {
-            if(type==0){
+        }
+        else
+        {
+            if(type == 0)
+            {
                 ip[0*8] =
-                ip[1*8] =
-                ip[2*8] =
-                ip[3*8] =
-                ip[4*8] =
-                ip[5*8] =
-                ip[6*8] =
-                ip[7*8] = ((xC4S4 * ip[0*8] + (IdctAdjustBeforeShift<<16))>>20);
-            }else if(type==1){
-                dst[0*stride]=
-                dst[1*stride]=
-                dst[2*stride]=
-                dst[3*stride]=
-                dst[4*stride]=
-                dst[5*stride]=
-                dst[6*stride]=
-                dst[7*stride]= cm[128 + ((xC4S4 * ip[0*8] + (IdctAdjustBeforeShift<<16))>>20)];
-            }else{
-                if(ip[0*8]){
-                    int v= ((xC4S4 * ip[0*8] + (IdctAdjustBeforeShift<<16))>>20);
+                    ip[1*8] =
+                        ip[2*8] =
+                            ip[3*8] =
+                                ip[4*8] =
+                                    ip[5*8] =
+                                        ip[6*8] =
+                                            ip[7*8] = ((xC4S4 * ip[0*8] + (IdctAdjustBeforeShift << 16))>>20);
+            }
+            else if(type == 1)
+            {
+                dst[0*stride] =
+                    dst[1*stride] =
+                        dst[2*stride] =
+                            dst[3*stride] =
+                                dst[4*stride] =
+                                    dst[5*stride] =
+                                        dst[6*stride] =
+                                            dst[7*stride] = cm[128 + ((xC4S4 * ip[0*8] + (IdctAdjustBeforeShift << 16))>>20)];
+            }
+            else
+            {
+                if(ip[0*8])
+                {
+                    int v = ((xC4S4 * ip[0*8] + (IdctAdjustBeforeShift << 16))>>20);
                     dst[0*stride] = cm[dst[0*stride] + v];
                     dst[1*stride] = cm[dst[1*stride] + v];
                     dst[2*stride] = cm[dst[2*stride] + v];
@@ -211,23 +229,28 @@ static av_always_inline void idct(uint8_t *dst, int stride, int16_t *input, int 
     }
 }
 
-void ff_vp3_idct_c(DCTELEM *block/* align 16*/){
+void ff_vp3_idct_c(DCTELEM *block/* align 16*/)
+{
     idct(NULL, 0, block, 0);
 }
 
-void ff_vp3_idct_put_c(uint8_t *dest/*align 8*/, int line_size, DCTELEM *block/*align 16*/){
+void ff_vp3_idct_put_c(uint8_t *dest/*align 8*/, int line_size, DCTELEM *block/*align 16*/)
+{
     idct(dest, line_size, block, 1);
 }
 
-void ff_vp3_idct_add_c(uint8_t *dest/*align 8*/, int line_size, DCTELEM *block/*align 16*/){
+void ff_vp3_idct_add_c(uint8_t *dest/*align 8*/, int line_size, DCTELEM *block/*align 16*/)
+{
     idct(dest, line_size, block, 2);
 }
 
-void ff_vp3_idct_dc_add_c(uint8_t *dest/*align 8*/, int line_size, const DCTELEM *block/*align 16*/){
+void ff_vp3_idct_dc_add_c(uint8_t *dest/*align 8*/, int line_size, const DCTELEM *block/*align 16*/)
+{
     int i, dc = (block[0] + 15) >> 5;
     const uint8_t *cm = ff_cropTbl + MAX_NEG_CROP + dc;
 
-    for(i = 0; i < 8; i++){
+    for(i = 0; i < 8; i++)
+    {
         dest[0] = cm[dest[0]];
         dest[1] = cm[dest[1]];
         dest[2] = cm[dest[2]];
@@ -244,12 +267,13 @@ void ff_vp3_v_loop_filter_c(uint8_t *first_pixel, int stride, int *bounding_valu
 {
     unsigned char *end;
     int filter_value;
-    const int nstride= -stride;
+    const int nstride = -stride;
 
-    for (end= first_pixel + 8; first_pixel < end; first_pixel++) {
+    for (end = first_pixel + 8; first_pixel < end; first_pixel++)
+    {
         filter_value =
             (first_pixel[2 * nstride] - first_pixel[ stride])
-         +3*(first_pixel[0          ] - first_pixel[nstride]);
+            + 3 * (first_pixel[0          ] - first_pixel[nstride]);
         filter_value = bounding_values[(filter_value + 4) >> 3];
         first_pixel[nstride] = av_clip_uint8(first_pixel[nstride] + filter_value);
         first_pixel[0] = av_clip_uint8(first_pixel[0] - filter_value);
@@ -261,10 +285,11 @@ void ff_vp3_h_loop_filter_c(uint8_t *first_pixel, int stride, int *bounding_valu
     unsigned char *end;
     int filter_value;
 
-    for (end= first_pixel + 8*stride; first_pixel != end; first_pixel += stride) {
+    for (end = first_pixel + 8 * stride; first_pixel != end; first_pixel += stride)
+    {
         filter_value =
             (first_pixel[-2] - first_pixel[ 1])
-         +3*(first_pixel[ 0] - first_pixel[-1]);
+            + 3 * (first_pixel[ 0] - first_pixel[-1]);
         filter_value = bounding_values[(filter_value + 4) >> 3];
         first_pixel[-1] = av_clip_uint8(first_pixel[-1] + filter_value);
         first_pixel[ 0] = av_clip_uint8(first_pixel[ 0] - filter_value);

@@ -30,19 +30,22 @@
 #include "avformat.h"
 #include "oggdec.h"
 
-struct speex_params {
+struct speex_params
+{
     int final_packet_duration;
     int seq;
 };
 
-static int speex_header(AVFormatContext *s, int idx) {
+static int speex_header(AVFormatContext *s, int idx)
+{
     struct ogg *ogg = s->priv_data;
     struct ogg_stream *os = ogg->streams + idx;
     struct speex_params *spxp = os->private;
     AVStream *st = s->streams[idx];
     uint8_t *p = os->buf + os->pstart;
 
-    if (!spxp) {
+    if (!spxp)
+    {
         spxp = av_mallocz(sizeof(*spxp));
         os->private = spxp;
     }
@@ -50,7 +53,8 @@ static int speex_header(AVFormatContext *s, int idx) {
     if (spxp->seq > 1)
         return 0;
 
-    if (spxp->seq == 0) {
+    if (spxp->seq == 0)
+    {
         int frames_per_packet;
         st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
         st->codec->codec_id = CODEC_ID_SPEEX;
@@ -73,7 +77,8 @@ static int speex_header(AVFormatContext *s, int idx) {
         memcpy(st->codec->extradata, p, st->codec->extradata_size);
 
         av_set_pts_info(st, 64, 1, st->codec->sample_rate);
-    } else
+    }
+    else
         ff_vorbis_comment(s, &st->metadata, p, os->psize);
 
     spxp->seq++;
@@ -97,8 +102,9 @@ static int speex_packet(AVFormatContext *s, int idx)
     struct speex_params *spxp = os->private;
     int packet_size = s->streams[idx]->codec->frame_size;
 
-    if (os->flags & OGG_FLAG_EOS && os->lastpts != AV_NOPTS_VALUE &&
-        os->granule > 0) {
+    if (os->flags &OGG_FLAG_EOS && os->lastpts != AV_NOPTS_VALUE &&
+            os->granule > 0)
+    {
         /* first packet of final page. we have to calculate the final packet
            duration here because it is the only place we know the next-to-last
            granule position. */
@@ -109,7 +115,7 @@ static int speex_packet(AVFormatContext *s, int idx)
     if (!os->lastpts && os->granule > 0)
         /* first packet */
         os->pduration = os->granule - packet_size * (ogg_page_packets(os) - 1);
-    else if (os->flags & OGG_FLAG_EOS && os->segp == os->nsegs &&
+    else if (os->flags &OGG_FLAG_EOS && os->segp == os->nsegs &&
              spxp->final_packet_duration)
         /* final packet */
         os->pduration = spxp->final_packet_duration;
@@ -119,7 +125,8 @@ static int speex_packet(AVFormatContext *s, int idx)
     return 0;
 }
 
-const struct ogg_codec ff_speex_codec = {
+const struct ogg_codec ff_speex_codec =
+{
     .magic = "Speex   ",
     .magicsize = 8,
     .header = speex_header,

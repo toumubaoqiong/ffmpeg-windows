@@ -42,18 +42,21 @@ int ff_mov_lang_to_iso639(unsigned code, char to[4]);
  * Here we just use what is needed to read the chunks
  */
 
-typedef struct {
+typedef struct
+{
     int count;
     int duration;
 } MOVStts;
 
-typedef struct {
+typedef struct
+{
     int first;
     int count;
     int id;
 } MOVStsc;
 
-typedef struct {
+typedef struct
+{
     uint32_t type;
     char *path;
     char *dir;
@@ -62,14 +65,16 @@ typedef struct {
     int16_t nlvl_to, nlvl_from;
 } MOVDref;
 
-typedef struct {
+typedef struct
+{
     uint32_t type;
     int64_t size; /* total size (excluding the size and type fields) */
 } MOVAtom;
 
 struct MOVParseTableEntry;
 
-typedef struct {
+typedef struct
+{
     unsigned track_id;
     uint64_t base_data_offset;
     uint64_t moof_offset;
@@ -79,7 +84,8 @@ typedef struct {
     unsigned flags;
 } MOVFragment;
 
-typedef struct {
+typedef struct
+{
     unsigned track_id;
     unsigned stsd_id;
     unsigned duration;
@@ -87,7 +93,8 @@ typedef struct {
     unsigned flags;
 } MOVTrackExt;
 
-typedef struct MOVStreamContext {
+typedef struct MOVStreamContext
+{
     AVIOContext *pb;
     int ffindex;          ///< AVStream index
     int next_chunk;
@@ -127,7 +134,8 @@ typedef struct MOVStreamContext {
     int has_palette;
 } MOVStreamContext;
 
-typedef struct MOVContext {
+typedef struct MOVContext
+{
     AVFormatContext *fc;
     int time_scale;
     int64_t duration;     ///< duration of the longest track

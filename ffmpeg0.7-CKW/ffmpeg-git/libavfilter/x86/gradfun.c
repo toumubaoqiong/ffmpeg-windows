@@ -20,14 +20,15 @@
 #include "libavutil/x86_cpu.h"
 #include "libavfilter/gradfun.h"
 
-DECLARE_ALIGNED(16, static const uint16_t, pw_7f)[8] = {0x7F,0x7F,0x7F,0x7F,0x7F,0x7F,0x7F,0x7F};
-DECLARE_ALIGNED(16, static const uint16_t, pw_ff)[8] = {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};
+DECLARE_ALIGNED(16, static const uint16_t, pw_7f)[8] = {0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F};
+DECLARE_ALIGNED(16, static const uint16_t, pw_ff)[8] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
 void ff_gradfun_filter_line_mmx2(uint8_t *dst, uint8_t *src, uint16_t *dc, int width, int thresh, const uint16_t *dithers)
 {
 #if HAVE_MMX
     intptr_t x;
-    if (width & 3) {
+    if (width & 3)
+    {
         x = width & ~3;
         ff_gradfun_filter_line_c(dst + x, src + x, dc + x / 2, width - x, thresh, dithers);
         width = x;
@@ -65,7 +66,7 @@ void ff_gradfun_filter_line_mmx2(uint8_t *dst, uint8_t *src, uint16_t *dc, int w
         "emms \n"
         :"+r"(x)
         :"r"(dst+width), "r"(src+width), "r"(dc+width/2),
-         "rm"(thresh), "m"(*dithers), "m"(*pw_7f)
+        "rm"(thresh), "m"(*dithers), "m"(*pw_7f)
         :"memory"
     );
 #endif
@@ -75,7 +76,8 @@ void ff_gradfun_filter_line_ssse3(uint8_t *dst, uint8_t *src, uint16_t *dc, int 
 {
 #if HAVE_SSSE3
     intptr_t x;
-    if (width & 7) {
+    if (width & 7)
+    {
         // could be 10% faster if I somehow eliminated this
         x = width & ~7;
         ff_gradfun_filter_line_c(dst + x, src + x, dc + x / 2, width - x, thresh, dithers);
@@ -112,7 +114,7 @@ void ff_gradfun_filter_line_ssse3(uint8_t *dst, uint8_t *src, uint16_t *dc, int 
         "jl 1b \n"
         :"+&r"(x)
         :"r"(dst+width), "r"(src+width), "r"(dc+width/2),
-         "rm"(thresh), "m"(*dithers), "m"(*pw_7f)
+        "rm"(thresh), "m"(*dithers), "m"(*pw_7f)
         :"memory"
     );
 #endif // HAVE_SSSE3
@@ -153,9 +155,12 @@ void ff_gradfun_blur_line_sse2(uint16_t *dc, uint16_t *buf, uint16_t *buf1, uint
          "m"(*pw_ff)\
         :"memory"\
     );
-    if (((intptr_t) src | src_linesize) & 15) {
+    if (((intptr_t) src | src_linesize) & 15)
+    {
         BLURV("movdqu");
-    } else {
+    }
+    else
+    {
         BLURV("movdqa");
     }
 #endif // HAVE_SSE

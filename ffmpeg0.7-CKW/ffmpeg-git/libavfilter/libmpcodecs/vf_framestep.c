@@ -79,7 +79,8 @@
 // #define DUMP_FORMAT_DATA
 
 /* Private data */
-struct vf_priv_s {
+struct vf_priv_s
+{
     /* Current frame */
     int  frame_cur;
     /* Frame output step, 0 = all */
@@ -100,32 +101,38 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
     /* Print the 'I' if is a intra frame. The \n advance the current line so you got the
      * current file time (in second) and the frame number on the console ;-)
      */
-    if (priv->dump_iframe) {
-        if (mpi->pict_type == 1) {
+    if (priv->dump_iframe)
+    {
+        if (mpi->pict_type == 1)
+        {
             mp_msg(MSGT_VFILTER, MSGL_INFO, "I!\n");
         }
     }
 
     /* decide if frame must be shown */
-    if (priv->dump_iframe == 2) {
+    if (priv->dump_iframe == 2)
+    {
         /* Only key frame */
         skip = mpi->pict_type == 1 ? 0 : 1;
     }
-    else {
+    else
+    {
         /* Only 1 every frame_step */
         skip = 0;
-        if ((priv->frame_step != 0) && ((priv->frame_cur % priv->frame_step) != 0)) {
+        if ((priv->frame_step != 0) && ((priv->frame_cur % priv->frame_step) != 0))
+        {
             skip = 1;
         }
     }
     /* Increment current frame */
     ++priv->frame_cur;
 
-    if (skip == 0) {
+    if (skip == 0)
+    {
         /* Get image, export type (we don't modify tghe image) */
-        dmpi=vf_get_image(vf->next, mpi->imgfmt,
-                      MP_IMGTYPE_EXPORT, 0,
-                      mpi->w, mpi->h);
+        dmpi = vf_get_image(vf->next, mpi->imgfmt,
+                            MP_IMGTYPE_EXPORT, 0,
+                            mpi->w, mpi->h);
         /* Copy only the pointer ( MP_IMGTYPE_EXPORT ! ) */
         dmpi->planes[0] = mpi->planes[0];
         dmpi->planes[1] = mpi->planes[1];
@@ -155,47 +162,56 @@ static void uninit(struct vf_instance *vf)
 /* Main entry funct for the filter */
 static int vf_open(vf_instance_t *vf, char *args)
 {
-        struct vf_priv_s *p;
+    struct vf_priv_s *p;
 
-        vf->put_image = put_image;
-        vf->uninit = uninit;
-        vf->default_reqs = VFCAP_ACCEPT_STRIDE;
-        vf->priv = p = calloc(1, sizeof(struct vf_priv_s));
-        if (p == NULL) {
-            return 0;
-        }
+    vf->put_image = put_image;
+    vf->uninit = uninit;
+    vf->default_reqs = VFCAP_ACCEPT_STRIDE;
+    vf->priv = p = calloc(1, sizeof(struct vf_priv_s));
+    if (p == NULL)
+    {
+        return 0;
+    }
 
-        if (args != NULL) {
+    if (args != NULL)
+    {
 #ifdef DUMP_FORMAT_DATA
-            if (*args == 'd') {
-                p->dump_iframe = 3;
-            }
-            else
+        if (*args == 'd')
+        {
+            p->dump_iframe = 3;
+        }
+        else
 #endif
-            if (*args == 'I') {
+            if (*args == 'I')
+            {
                 /* Dump only KEY (ie INTRA) frame */
                 p->dump_iframe = 2;
             }
-            else {
-                if (*args == 'i') {
+            else
+            {
+                if (*args == 'i')
+                {
                     /* Print a 'I!' when a i-frame is encounter */
                     p->dump_iframe = 1;
                     ++args;
                 }
 
-                if (*args != '\0') {
+                if (*args != '\0')
+                {
                     p->frame_step = atoi(args);
-                    if (p->frame_step <= 0) {
+                    if (p->frame_step <= 0)
+                    {
                         mp_msg(MSGT_VFILTER, MSGL_WARN, MSGTR_MPCODECS_ErrorParsingArgument);
                         return 0;
                     }
                 }
             }
-        }
-        return 1;
+    }
+    return 1;
 }
 
-const vf_info_t vf_info_framestep = {
+const vf_info_t vf_info_framestep =
+{
     "Dump one every n / key frames",
     "framestep",
     "Daniele Forghieri",

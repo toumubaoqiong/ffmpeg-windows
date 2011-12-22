@@ -43,12 +43,12 @@
 static void apply_window(const float *buf, const float *win1,
                          const float *win2, float *sum1, float *sum2, int len)
 {
-    x86_reg count = - 4*len;
-    const float *win1a = win1+len;
-    const float *win2a = win2+len;
-    const float *bufa  = buf+len;
-    float *sum1a = sum1+len;
-    float *sum2a = sum2+len;
+    x86_reg count = - 4 * len;
+    const float *win1a = win1 + len;
+    const float *win2a = win2 + len;
+    const float *bufa  = buf + len;
+    float *sum1a = sum1 + len;
+    float *sum2a = sum2 + len;
 
 
 #define MULT(a, b)                                 \
@@ -58,28 +58,28 @@ static void apply_window(const float *buf, const float *win1,
     "subps         %%xmm1, %%xmm0           \n\t"  \
     "mulps  " #b "(%2,%0), %%xmm2           \n\t"  \
     "subps         %%xmm2, %%xmm4           \n\t"  \
-
+ 
     __asm__ volatile(
-            "1:                                   \n\t"
-            "xorps       %%xmm0, %%xmm0           \n\t"
-            "xorps       %%xmm4, %%xmm4           \n\t"
+        "1:                                   \n\t"
+        "xorps       %%xmm0, %%xmm0           \n\t"
+        "xorps       %%xmm4, %%xmm4           \n\t"
 
-            MULT(   0,   0)
-            MULT( 256,  64)
-            MULT( 512, 128)
-            MULT( 768, 192)
-            MULT(1024, 256)
-            MULT(1280, 320)
-            MULT(1536, 384)
-            MULT(1792, 448)
+        MULT(   0,   0)
+        MULT( 256,  64)
+        MULT( 512, 128)
+        MULT( 768, 192)
+        MULT(1024, 256)
+        MULT(1280, 320)
+        MULT(1536, 384)
+        MULT(1792, 448)
 
-            "movaps      %%xmm0, (%4,%0)          \n\t"
-            "movaps      %%xmm4, (%5,%0)          \n\t"
-            "add            $16,  %0              \n\t"
-            "jl              1b                   \n\t"
-            :"+&r"(count)
-            :"r"(win1a), "r"(win2a), "r"(bufa), "r"(sum1a), "r"(sum2a)
-            );
+        "movaps      %%xmm0, (%4,%0)          \n\t"
+        "movaps      %%xmm4, (%5,%0)          \n\t"
+        "add            $16,  %0              \n\t"
+        "jl              1b                   \n\t"
+        :"+&r"(count)
+        :"r"(win1a), "r"(win2a), "r"(bufa), "r"(sum1a), "r"(sum2a)
+    );
 
 #undef MULT
 }
@@ -117,7 +117,8 @@ static void apply_window_mp3(float *in, float *win, int *unused, float *out,
             "addps  " #sumb "(%2),       %%xmm0          \n\t" \
             "movaps        %%xmm0," #out2 "(%0)          \n\t"
 
-    if (incr == 1) {
+    if (incr == 1)
+    {
         __asm__ volatile(
             SUMS( 0, 48,  4, 52,  0, 112)
             SUMS(16, 32, 20, 36, 16,  96)
@@ -127,15 +128,18 @@ static void apply_window_mp3(float *in, float *win, int *unused, float *out,
             :"+&r"(out)
             :"r"(&suma[0]), "r"(&sumb[0]), "r"(&sumc[0]), "r"(&sumd[0])
             :"memory"
-            );
-        out += 16*incr;
-    } else {
+        );
+        out += 16 * incr;
+    }
+    else
+    {
         int j;
         float *out2 = out + 32 * incr;
         out[0  ]  = -suma[   0];
         out += incr;
         out2 -= incr;
-        for(j=1;j<16;j++) {
+        for(j = 1; j < 16; j++)
+        {
             *out  = -suma[   j] + sumd[16-j];
             *out2 =  sumb[16-j] + sumc[   j];
             out  += incr;
@@ -152,7 +156,8 @@ void ff_mpegaudiodec_init_mmx(MPADecodeContext *s)
 {
     int mm_flags = av_get_cpu_flags();
 
-    if (mm_flags & AV_CPU_FLAG_SSE2) {
+    if (mm_flags & AV_CPU_FLAG_SSE2)
+    {
         s->apply_window_mp3 = apply_window_mp3;
     }
 }

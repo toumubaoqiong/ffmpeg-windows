@@ -29,14 +29,16 @@
 #include "libavutil/intreadwrite.h"
 #include "libavutil/imgutils.h"
 
-typedef struct {
+typedef struct
+{
     int max_step[4];    ///< max pixel step for each plane, expressed as a number of bytes
     int hsub, vsub;     ///< chroma subsampling
 } FlipContext;
 
 static int query_formats(AVFilterContext *ctx)
 {
-    static const enum PixelFormat pix_fmts[] = {
+    static const enum PixelFormat pix_fmts[] =
+    {
         PIX_FMT_RGB48BE,      PIX_FMT_RGB48LE,
         PIX_FMT_BGR48BE,      PIX_FMT_BGR48LE,
         PIX_FMT_ARGB,         PIX_FMT_RGBA,
@@ -86,15 +88,18 @@ static void draw_slice(AVFilterLink *inlink, int y, int h, int slice_dir)
     uint8_t *inrow, *outrow;
     int i, j, plane, step, hsub, vsub;
 
-    for (plane = 0; plane < 4 && inpic->data[plane]; plane++) {
+    for (plane = 0; plane < 4 && inpic->data[plane]; plane++)
+    {
         step = flip->max_step[plane];
         hsub = (plane == 1 || plane == 2) ? flip->hsub : 0;
         vsub = (plane == 1 || plane == 2) ? flip->vsub : 0;
 
-        outrow = outpic->data[plane] + (y>>vsub) * outpic->linesize[plane];
-        inrow  = inpic ->data[plane] + (y>>vsub) * inpic ->linesize[plane] + ((inlink->w >> hsub) - 1) * step;
-        for (i = 0; i < h>>vsub; i++) {
-            switch (step) {
+        outrow = outpic->data[plane] + (y >> vsub) * outpic->linesize[plane];
+        inrow  = inpic ->data[plane] + (y >> vsub) * inpic ->linesize[plane] + ((inlink->w >> hsub) - 1) * step;
+        for (i = 0; i < h >> vsub; i++)
+        {
+            switch (step)
+            {
             case 1:
             {
                 for (j = 0; j < (inlink->w >> hsub); j++)
@@ -105,7 +110,7 @@ static void draw_slice(AVFilterLink *inlink, int y, int h, int slice_dir)
             case 2:
             {
                 uint16_t *outrow16 = (uint16_t *)outrow;
-                uint16_t * inrow16 = (uint16_t *) inrow;
+                uint16_t *inrow16 = (uint16_t *) inrow;
                 for (j = 0; j < (inlink->w >> hsub); j++)
                     outrow16[j] = inrow16[-j];
             }
@@ -115,7 +120,8 @@ static void draw_slice(AVFilterLink *inlink, int y, int h, int slice_dir)
             {
                 uint8_t *in  =  inrow;
                 uint8_t *out = outrow;
-                for (j = 0; j < (inlink->w >> hsub); j++, out += 3, in -= 3) {
+                for (j = 0; j < (inlink->w >> hsub); j++, out += 3, in -= 3)
+                {
                     int32_t v = AV_RB24(in);
                     AV_WB24(out, v);
                 }
@@ -125,7 +131,7 @@ static void draw_slice(AVFilterLink *inlink, int y, int h, int slice_dir)
             case 4:
             {
                 uint32_t *outrow32 = (uint32_t *)outrow;
-                uint32_t * inrow32 = (uint32_t *) inrow;
+                uint32_t *inrow32 = (uint32_t *) inrow;
                 for (j = 0; j < (inlink->w >> hsub); j++)
                     outrow32[j] = inrow32[-j];
             }
@@ -133,7 +139,7 @@ static void draw_slice(AVFilterLink *inlink, int y, int h, int slice_dir)
 
             default:
                 for (j = 0; j < (inlink->w >> hsub); j++)
-                    memcpy(outrow + j*step, inrow - j*step, step);
+                    memcpy(outrow + j * step, inrow - j * step, step);
             }
 
             inrow  += inpic ->linesize[plane];
@@ -144,19 +150,30 @@ static void draw_slice(AVFilterLink *inlink, int y, int h, int slice_dir)
     avfilter_draw_slice(inlink->dst->outputs[0], y, h, slice_dir);
 }
 
-AVFilter avfilter_vf_hflip = {
+AVFilter avfilter_vf_hflip =
+{
     .name      = "hflip",
     .description = NULL_IF_CONFIG_SMALL("Horizontally flip the input video."),
     .priv_size = sizeof(FlipContext),
     .query_formats = query_formats,
 
-    .inputs    = (AVFilterPad[]) {{ .name            = "default",
-                                    .type            = AVMEDIA_TYPE_VIDEO,
-                                    .draw_slice      = draw_slice,
-                                    .config_props    = config_props,
-                                    .min_perms       = AV_PERM_READ, },
-                                  { .name = NULL}},
-    .outputs   = (AVFilterPad[]) {{ .name            = "default",
-                                    .type            = AVMEDIA_TYPE_VIDEO, },
-                                  { .name = NULL}},
+    .inputs    = (AVFilterPad[])
+    {
+        {
+            .name            = "default",
+            .type            = AVMEDIA_TYPE_VIDEO,
+            .draw_slice      = draw_slice,
+            .config_props    = config_props,
+            .min_perms       = AV_PERM_READ,
+        },
+        { .name = NULL}
+    },
+    .outputs   = (AVFilterPad[])
+    {
+        {
+            .name            = "default",
+            .type            = AVMEDIA_TYPE_VIDEO,
+        },
+        { .name = NULL}
+    },
 };

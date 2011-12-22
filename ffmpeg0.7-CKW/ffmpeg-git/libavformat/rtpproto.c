@@ -47,7 +47,8 @@
 #define RTP_TX_BUF_SIZE  (64 * 1024)
 #define RTP_RX_BUF_SIZE  (128 * 1024)
 
-typedef struct RTPContext {
+typedef struct RTPContext
+{
     URLContext *rtp_hd, *rtcp_hd;
     int rtp_fd, rtcp_fd;
 } RTPContext;
@@ -113,7 +114,7 @@ static void build_udp_url(char *buf, int buf_size,
         url_add_option(buf, buf_size, "localport=%d", local_port);
     if (ttl >= 0)
         url_add_option(buf, buf_size, "ttl=%d", ttl);
-    if (max_packet_size >=0)
+    if (max_packet_size >= 0)
         url_add_option(buf, buf_size, "pkt_size=%d", max_packet_size);
     if (connect)
         url_add_option(buf, buf_size, "connect=1");
@@ -158,33 +159,41 @@ static int rtp_open(URLContext *h, const char *uri, int flags)
                  path, sizeof(path), uri);
     /* extract parameters */
     ttl = -1;
-    rtcp_port = rtp_port+1;
+    rtcp_port = rtp_port + 1;
     local_rtp_port = -1;
     local_rtcp_port = -1;
     max_packet_size = -1;
     connect = 0;
 
     p = strchr(uri, '?');
-    if (p) {
-        if (av_find_info_tag(buf, sizeof(buf), "ttl", p)) {
+    if (p)
+    {
+        if (av_find_info_tag(buf, sizeof(buf), "ttl", p))
+        {
             ttl = strtol(buf, NULL, 10);
         }
-        if (av_find_info_tag(buf, sizeof(buf), "rtcpport", p)) {
+        if (av_find_info_tag(buf, sizeof(buf), "rtcpport", p))
+        {
             rtcp_port = strtol(buf, NULL, 10);
         }
-        if (av_find_info_tag(buf, sizeof(buf), "localport", p)) {
+        if (av_find_info_tag(buf, sizeof(buf), "localport", p))
+        {
             local_rtp_port = strtol(buf, NULL, 10);
         }
-        if (av_find_info_tag(buf, sizeof(buf), "localrtpport", p)) {
+        if (av_find_info_tag(buf, sizeof(buf), "localrtpport", p))
+        {
             local_rtp_port = strtol(buf, NULL, 10);
         }
-        if (av_find_info_tag(buf, sizeof(buf), "localrtcpport", p)) {
+        if (av_find_info_tag(buf, sizeof(buf), "localrtcpport", p))
+        {
             local_rtcp_port = strtol(buf, NULL, 10);
         }
-        if (av_find_info_tag(buf, sizeof(buf), "pkt_size", p)) {
+        if (av_find_info_tag(buf, sizeof(buf), "pkt_size", p))
+        {
             max_packet_size = strtol(buf, NULL, 10);
         }
-        if (av_find_info_tag(buf, sizeof(buf), "connect", p)) {
+        if (av_find_info_tag(buf, sizeof(buf), "connect", p))
+        {
             connect = strtol(buf, NULL, 10);
         }
     }
@@ -194,7 +203,7 @@ static int rtp_open(URLContext *h, const char *uri, int flags)
                   connect);
     if (ffurl_open(&s->rtp_hd, buf, flags) < 0)
         goto fail;
-    if (local_rtp_port>=0 && local_rtcp_port<0)
+    if (local_rtp_port >= 0 && local_rtcp_port < 0)
         local_rtcp_port = ff_udp_get_local_port(s->rtp_hd) + 1;
 
     build_udp_url(buf, sizeof(buf),
@@ -212,7 +221,7 @@ static int rtp_open(URLContext *h, const char *uri, int flags)
     h->is_streamed = 1;
     return 0;
 
- fail:
+fail:
     if (s->rtp_hd)
         ffurl_close(s->rtp_hd);
     if (s->rtcp_hd)
@@ -230,52 +239,62 @@ static int rtp_read(URLContext *h, uint8_t *buf, int size)
     struct pollfd p[2] = {{s->rtp_fd, POLLIN, 0}, {s->rtcp_fd, POLLIN, 0}};
 
 #if 0
-    for(;;) {
+    for(;;)
+    {
         from_len = sizeof(from);
         len = recvfrom (s->rtp_fd, buf, size, 0,
-                        (struct sockaddr *)&from, &from_len);
-        if (len < 0) {
+        (struct sockaddr *)&from, &from_len);
+        if (len < 0)
+        {
             if (ff_neterrno() == AVERROR(EAGAIN) ||
-                ff_neterrno() == AVERROR(EINTR))
+            ff_neterrno() == AVERROR(EINTR))
                 continue;
             return AVERROR(EIO);
         }
         break;
     }
 #else
-    for(;;) {
+    for(;;)
+    {
         if (url_interrupt_cb())
             return AVERROR_EXIT;
         /* build fdset to listen to RTP and RTCP packets */
         n = poll(p, 2, 0);
-        if (n > 0) {
+        if (n > 0)
+        {
             /* first try RTCP */
-            if (p[1].revents & POLLIN) {
+            if (p[1].revents & POLLIN)
+            {
                 from_len = sizeof(from);
                 len = recvfrom (s->rtcp_fd, buf, size, 0,
-                                (struct sockaddr *)&from, &from_len);
-                if (len < 0) {
+                (struct sockaddr *)&from, &from_len);
+                if (len < 0)
+                {
                     if (ff_neterrno() == AVERROR(EAGAIN) ||
-                        ff_neterrno() == AVERROR(EINTR))
+                    ff_neterrno() == AVERROR(EINTR))
                         continue;
                     return AVERROR(EIO);
                 }
                 break;
             }
             /* then RTP */
-            if (p[0].revents & POLLIN) {
+            if (p[0].revents & POLLIN)
+            {
                 from_len = sizeof(from);
                 len = recvfrom (s->rtp_fd, buf, size, 0,
-                                (struct sockaddr *)&from, &from_len);
-                if (len < 0) {
+                (struct sockaddr *)&from, &from_len);
+                if (len < 0)
+                {
                     if (ff_neterrno() == AVERROR(EAGAIN) ||
-                        ff_neterrno() == AVERROR(EINTR))
+                    ff_neterrno() == AVERROR(EINTR))
                         continue;
                     return AVERROR(EIO);
                 }
                 break;
             }
-        } else if (n < 0) {
+        }
+        else if (n < 0)
+        {
             if (ff_neterrno() == AVERROR(EINTR))
                 continue;
             return AVERROR(EIO);
@@ -291,10 +310,13 @@ static int rtp_write(URLContext *h, const uint8_t *buf, int size)
     int ret;
     URLContext *hd;
 
-    if (buf[1] >= RTCP_SR && buf[1] <= RTCP_APP) {
+    if (buf[1] >= RTCP_SR && buf[1] <= RTCP_APP)
+    {
         /* RTCP payload type */
         hd = s->rtcp_hd;
-    } else {
+    }
+    else
+    {
         /* RTP payload type */
         hd = s->rtp_hd;
     }
@@ -351,12 +373,14 @@ static int rtp_get_file_handle(URLContext *h)
     return s->rtp_fd;
 }
 
-int rtp_get_rtcp_file_handle(URLContext *h) {
+int rtp_get_rtcp_file_handle(URLContext *h)
+{
     RTPContext *s = h->priv_data;
     return s->rtcp_fd;
 }
 
-URLProtocol ff_rtp_protocol = {
+URLProtocol ff_rtp_protocol =
+{
     .name                = "rtp",
     .url_open            = rtp_open,
     .url_read            = rtp_read,

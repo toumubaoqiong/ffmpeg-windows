@@ -45,10 +45,12 @@ static const void *firtable[9] = { &ff_mlp_firorder_0, &ff_mlp_firorder_1,
                                    &ff_mlp_firorder_2, &ff_mlp_firorder_3,
                                    &ff_mlp_firorder_4, &ff_mlp_firorder_5,
                                    &ff_mlp_firorder_6, &ff_mlp_firorder_7,
-                                   &ff_mlp_firorder_8 };
+                                   &ff_mlp_firorder_8
+                                 };
 static const void *iirtable[5] = { &ff_mlp_iirorder_0, &ff_mlp_iirorder_1,
                                    &ff_mlp_iirorder_2, &ff_mlp_iirorder_3,
-                                   &ff_mlp_iirorder_4 };
+                                   &ff_mlp_iirorder_4
+                                 };
 
 #if ARCH_X86_64
 
@@ -96,7 +98,7 @@ static const void *iirtable[5] = { &ff_mlp_iirorder_0, &ff_mlp_iirorder_1,
     "mov           %%esi, %%eax\n\t" \
     "movzbl        %7   , %%ecx\n\t" \
     "shrd    %%cl, %%edx, %%eax\n\t" \
-
+ 
 #define ACCUM    "%%edx"
 #define RESULT   "%%eax"
 #define RESULT32 "%%eax"
@@ -129,7 +131,7 @@ static void mlp_filter_channel_x86(int32_t *state, const int32_t *coeff,
         FIRMUL   (ff_mlp_firorder_6, 0x14   )
         FIRMUL   (ff_mlp_firorder_5, 0x10   )
         FIRMUL   (ff_mlp_firorder_4, 0x0c   )
-        FIRMULREG(ff_mlp_firorder_3, 0x08,10)
+        FIRMULREG(ff_mlp_firorder_3, 0x08, 10)
         FIRMULREG(ff_mlp_firorder_2, 0x04, 9)
         FIRMULREG(ff_mlp_firorder_1, 0x00, 8)
         LABEL_MANGLE(ff_mlp_firorder_0)":\n\t"
@@ -152,20 +154,20 @@ static void mlp_filter_channel_x86(int32_t *state, const int32_t *coeff,
         "incl              %3         \n\t"
         "js 1b                        \n\t"
         : /* 0*/"+r"(state),
-          /* 1*/"+r"(coeff),
-          /* 2*/"+r"(sample_buffer),
+        /* 1*/"+r"(coeff),
+        /* 2*/"+r"(sample_buffer),
 #if ARCH_X86_64
-          /* 3*/"+r"(blocksize)
+        /* 3*/"+r"(blocksize)
         : /* 4*/"r"((x86_reg)mask), /* 5*/"r"(firjump),
-          /* 6*/"r"(iirjump)      , /* 7*/"c"(filter_shift)
+        /* 6*/"r"(iirjump)      , /* 7*/"c"(filter_shift)
         , /* 8*/"r"((int64_t)coeff[0])
         , /* 9*/"r"((int64_t)coeff[1])
         , /*10*/"r"((int64_t)coeff[2])
         : "rax", "rdx", "rsi"
 #else /* ARCH_X86_32 */
-          /* 3*/"+m"(blocksize)
+        /* 3*/"+m"(blocksize)
         : /* 4*/"m"(         mask), /* 5*/"m"(firjump),
-          /* 6*/"m"(iirjump)      , /* 7*/"m"(filter_shift)
+        /* 6*/"m"(iirjump)      , /* 7*/"m"(filter_shift)
         : "eax", "edx", "esi", "ecx"
 #endif /* !ARCH_X86_64 */
     );
@@ -173,7 +175,7 @@ static void mlp_filter_channel_x86(int32_t *state, const int32_t *coeff,
 
 #endif /* HAVE_7REGS && HAVE_TEN_OPERANDS */
 
-void ff_mlp_init_x86(DSPContext* c, AVCodecContext *avctx)
+void ff_mlp_init_x86(DSPContext *c, AVCodecContext *avctx)
 {
 #if HAVE_7REGS && HAVE_TEN_OPERANDS
     c->mlp_filter_channel = mlp_filter_channel_x86;

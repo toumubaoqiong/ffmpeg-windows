@@ -71,7 +71,7 @@ static av_always_inline av_const int64_t MUL64(int a, int b)
 #define mid_pred mid_pred
 static inline av_const int mid_pred(int a, int b, int c)
 {
-    int i=b;
+    int i = b;
     __asm__ volatile(
         "cmp    %2, %1 \n\t"
         "cmovg  %1, %0 \n\t"
@@ -101,20 +101,22 @@ __asm__ volatile(\
 
 // avoid +32 for shift optimization (gcc should do that ...)
 #define NEG_SSR32 NEG_SSR32
-static inline  int32_t NEG_SSR32( int32_t a, int8_t s){
+static inline  int32_t NEG_SSR32( int32_t a, int8_t s)
+{
     __asm__ ("sarl %1, %0\n\t"
-         : "+r" (a)
-         : "ic" ((uint8_t)(-s))
-    );
+             : "+r" (a)
+             : "ic" ((uint8_t)(-s))
+            );
     return a;
 }
 
 #define NEG_USR32 NEG_USR32
-static inline uint32_t NEG_USR32(uint32_t a, int8_t s){
+static inline uint32_t NEG_USR32(uint32_t a, int8_t s)
+{
     __asm__ ("shrl %1, %0\n\t"
-         : "+r" (a)
-         : "ic" ((uint8_t)(-s))
-    );
+             : "+r" (a)
+             : "ic" ((uint8_t)(-s))
+            );
     return a;
 }
 

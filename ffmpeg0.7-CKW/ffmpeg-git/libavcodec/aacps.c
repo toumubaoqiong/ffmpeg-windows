@@ -29,25 +29,29 @@
 #include "aacpsdata.c"
 
 #define PS_BASELINE 0  //< Operate in Baseline PS mode
-                       //< Baseline implies 10 or 20 stereo bands,
-                       //< mixing mode A, and no ipd/opd
+//< Baseline implies 10 or 20 stereo bands,
+//< mixing mode A, and no ipd/opd
 
 #define numQMFSlots 32 //numTimeSlots * RATE
 
-static const int8_t num_env_tab[2][4] = {
+static const int8_t num_env_tab[2][4] =
+{
     { 0, 1, 2, 4, },
     { 1, 2, 3, 4, },
 };
 
-static const int8_t nr_iidicc_par_tab[] = {
+static const int8_t nr_iidicc_par_tab[] =
+{
     10, 20, 34, 10, 20, 34,
 };
 
-static const int8_t nr_iidopd_par_tab[] = {
-     5, 11, 17,  5, 11, 17,
+static const int8_t nr_iidopd_par_tab[] =
+{
+    5, 11, 17,  5, 11, 17,
 };
 
-enum {
+enum
+{
     huff_iid_df1,
     huff_iid_dt1,
     huff_iid_df0,
@@ -60,7 +64,8 @@ enum {
     huff_opd_dt,
 };
 
-static const int huff_iid[] = {
+static const int huff_iid[] =
+{
     huff_iid_df0,
     huff_iid_df1,
     huff_iid_dt0,
@@ -126,8 +131,10 @@ static int ps_read_extension_data(GetBitContext *gb, PSContext *ps, int ps_exten
         return 0;
 
     ps->enable_ipdopd = get_bits1(gb);
-    if (ps->enable_ipdopd) {
-        for (e = 0; e < ps->num_env; e++) {
+    if (ps->enable_ipdopd)
+    {
+        for (e = 0; e < ps->num_env; e++)
+        {
             int dt = get_bits1(gb);
             read_ipdopd_data(NULL, gb, ps, ps->ipd_par, dt ? huff_ipd_dt : huff_ipd_df, e, dt);
             dt = get_bits1(gb);
@@ -141,7 +148,8 @@ static int ps_read_extension_data(GetBitContext *gb, PSContext *ps, int ps_exten
 static void ipdopd_reset(int8_t *opd_hist, int8_t *ipd_hist)
 {
     int i;
-    for (i = 0; i < PS_MAX_NR_IPDOPD; i++) {
+    for (i = 0; i < PS_MAX_NR_IPDOPD; i++)
+    {
         opd_hist[i] = 0;
         ipd_hist[i] = 0;
     }
@@ -156,11 +164,14 @@ int ff_ps_read_data(AVCodecContext *avctx, GetBitContext *gb_host, PSContext *ps
     GetBitContext gbc = *gb_host, *gb = &gbc;
 
     header = get_bits1(gb);
-    if (header) {     //enable_ps_header
+    if (header)       //enable_ps_header
+    {
         ps->enable_iid = get_bits1(gb);
-        if (ps->enable_iid) {
+        if (ps->enable_iid)
+        {
             int iid_mode = get_bits(gb, 3);
-            if (iid_mode > 5) {
+            if (iid_mode > 5)
+            {
                 av_log(avctx, AV_LOG_ERROR, "iid_mode %d is reserved.\n",
                        iid_mode);
                 goto err;
@@ -170,9 +181,11 @@ int ff_ps_read_data(AVCodecContext *avctx, GetBitContext *gb_host, PSContext *ps
             ps->nr_ipdopd_par = nr_iidopd_par_tab[iid_mode];
         }
         ps->enable_icc = get_bits1(gb);
-        if (ps->enable_icc) {
+        if (ps->enable_icc)
+        {
             ps->icc_mode = get_bits(gb, 3);
-            if (ps->icc_mode > 5) {
+            if (ps->icc_mode > 5)
+            {
                 av_log(avctx, AV_LOG_ERROR, "icc_mode %d is reserved.\n",
                        ps->icc_mode);
                 goto err;
@@ -187,24 +200,30 @@ int ff_ps_read_data(AVCodecContext *avctx, GetBitContext *gb_host, PSContext *ps
     ps->num_env     = num_env_tab[ps->frame_class][get_bits(gb, 2)];
 
     ps->border_position[0] = -1;
-    if (ps->frame_class) {
+    if (ps->frame_class)
+    {
         for (e = 1; e <= ps->num_env; e++)
             ps->border_position[e] = get_bits(gb, 5);
-    } else
+    }
+    else
         for (e = 1; e <= ps->num_env; e++)
             ps->border_position[e] = (e * numQMFSlots >> (av_getff_log2_tab())[ps->num_env]) - 1;
 
-    if (ps->enable_iid) {
-        for (e = 0; e < ps->num_env; e++) {
+    if (ps->enable_iid)
+    {
+        for (e = 0; e < ps->num_env; e++)
+        {
             int dt = get_bits1(gb);
             if (read_iid_data(avctx, gb, ps, ps->iid_par, huff_iid[2*dt+ps->iid_quant], e, dt))
                 goto err;
         }
-    } else
+    }
+    else
         memset(ps->iid_par, 0, sizeof(ps->iid_par));
 
     if (ps->enable_icc)
-        for (e = 0; e < ps->num_env; e++) {
+        for (e = 0; e < ps->num_env; e++)
+        {
             int dt = get_bits1(gb);
             if (read_icc_data(avctx, gb, ps, ps->icc_par, dt ? huff_icc_dt : huff_icc_df, e, dt))
                 goto err;
@@ -212,17 +231,21 @@ int ff_ps_read_data(AVCodecContext *avctx, GetBitContext *gb_host, PSContext *ps
     else
         memset(ps->icc_par, 0, sizeof(ps->icc_par));
 
-    if (ps->enable_ext) {
+    if (ps->enable_ext)
+    {
         int cnt = get_bits(gb, 4);
-        if (cnt == 15) {
+        if (cnt == 15)
+        {
             cnt += get_bits(gb, 8);
         }
         cnt *= 8;
-        while (cnt > 7) {
+        while (cnt > 7)
+        {
             int ps_extension_id = get_bits(gb, 2);
             cnt -= 2 + ps_read_extension_data(gb, ps, ps_extension_id);
         }
-        if (cnt < 0) {
+        if (cnt < 0)
+        {
             av_log(avctx, AV_LOG_ERROR, "ps extension overflow %d", cnt);
             goto err;
         }
@@ -232,19 +255,24 @@ int ff_ps_read_data(AVCodecContext *avctx, GetBitContext *gb_host, PSContext *ps
     ps->enable_ipdopd &= !PS_BASELINE;
 
     //Fix up envelopes
-    if (!ps->num_env || ps->border_position[ps->num_env] < numQMFSlots - 1) {
+    if (!ps->num_env || ps->border_position[ps->num_env] < numQMFSlots - 1)
+    {
         //Create a fake envelope
         int source = ps->num_env ? ps->num_env - 1 : ps->num_env_old - 1;
-        if (source >= 0 && source != ps->num_env) {
-            if (ps->enable_iid) {
-                memcpy(ps->iid_par+ps->num_env, ps->iid_par+source, sizeof(ps->iid_par[0]));
+        if (source >= 0 && source != ps->num_env)
+        {
+            if (ps->enable_iid)
+            {
+                memcpy(ps->iid_par + ps->num_env, ps->iid_par + source, sizeof(ps->iid_par[0]));
             }
-            if (ps->enable_icc) {
-                memcpy(ps->icc_par+ps->num_env, ps->icc_par+source, sizeof(ps->icc_par[0]));
+            if (ps->enable_icc)
+            {
+                memcpy(ps->icc_par + ps->num_env, ps->icc_par + source, sizeof(ps->icc_par[0]));
             }
-            if (ps->enable_ipdopd) {
-                memcpy(ps->ipd_par+ps->num_env, ps->ipd_par+source, sizeof(ps->ipd_par[0]));
-                memcpy(ps->opd_par+ps->num_env, ps->opd_par+source, sizeof(ps->opd_par[0]));
+            if (ps->enable_ipdopd)
+            {
+                memcpy(ps->ipd_par + ps->num_env, ps->ipd_par + source, sizeof(ps->ipd_par[0]));
+                memcpy(ps->opd_par + ps->num_env, ps->opd_par + source, sizeof(ps->opd_par[0]));
             }
         }
         ps->num_env++;
@@ -258,7 +286,8 @@ int ff_ps_read_data(AVCodecContext *avctx, GetBitContext *gb_host, PSContext *ps
                         (ps->enable_icc && ps->nr_icc_par == 34);
 
     //Baseline
-    if (!ps->enable_ipdopd) {
+    if (!ps->enable_ipdopd)
+    {
         memset(ps->ipd_par, 0, sizeof(ps->ipd_par));
         memset(ps->opd_par, 0, sizeof(ps->opd_par));
     }
@@ -267,7 +296,8 @@ int ff_ps_read_data(AVCodecContext *avctx, GetBitContext *gb_host, PSContext *ps
         ps->start = 1;
 
     bits_consumed = get_bits_count(gb) - bit_count_start;
-    if (bits_consumed <= bits_left) {
+    if (bits_consumed <= bits_left)
+    {
         skip_bits_long(gb_host, bits_consumed);
         return bits_consumed;
     }
@@ -283,12 +313,14 @@ err:
 static void hybrid2_re(float (*in)[2], float (*out)[32][2], const float filter[7], int len, int reverse)
 {
     int i, j;
-    for (i = 0; i < len; i++, in++) {
+    for (i = 0; i < len; i++, in++)
+    {
         float re_in = filter[6] * in[6][0];          //real inphase
         float re_op = 0.0f;                          //real out of phase
         float im_in = filter[6] * in[6][1];          //imag inphase
         float im_op = 0.0f;                          //imag out of phase
-        for (j = 0; j < 6; j += 2) {
+        for (j = 0; j < 6; j += 2)
+        {
             re_op += filter[j+1] * (in[j+1][0] + in[12-j-1][0]);
             im_op += filter[j+1] * (in[j+1][1] + in[12-j-1][1]);
         }
@@ -306,10 +338,13 @@ static void hybrid6_cx(float (*in)[2], float (*out)[32][2], const float (*filter
     int N = 8;
     float temp[8][2];
 
-    for (i = 0; i < len; i++, in++) {
-        for (ssb = 0; ssb < N; ssb++) {
+    for (i = 0; i < len; i++, in++)
+    {
+        for (ssb = 0; ssb < N; ssb++)
+        {
             float sum_re = filter[ssb][6][0] * in[6][0], sum_im = filter[ssb][6][0] * in[6][1];
-            for (j = 0; j < 6; j++) {
+            for (j = 0; j < 6; j++)
+            {
                 float in0_re = in[j][0];
                 float in0_im = in[j][1];
                 float in1_re = in[12-j][0];
@@ -339,10 +374,13 @@ static void hybrid4_8_12_cx(float (*in)[2], float (*out)[32][2], const float (*f
 {
     int i, j, ssb;
 
-    for (i = 0; i < len; i++, in++) {
-        for (ssb = 0; ssb < N; ssb++) {
+    for (i = 0; i < len; i++, in++)
+    {
+        for (ssb = 0; ssb < N; ssb++)
+        {
             float sum_re = filter[ssb][6][0] * in[6][0], sum_im = filter[ssb][6][0] * in[6][1];
-            for (j = 0; j < 6; j++) {
+            for (j = 0; j < 6; j++)
+            {
                 float in0_re = in[j][0];
                 float in0_im = in[j][1];
                 float in1_re = in[12-j][0];
@@ -359,57 +397,72 @@ static void hybrid4_8_12_cx(float (*in)[2], float (*out)[32][2], const float (*f
 static void hybrid_analysis(float out[91][32][2], float in[5][44][2], float L[2][38][64], int is34, int len)
 {
     int i, j;
-    for (i = 0; i < 5; i++) {
-        for (j = 0; j < 38; j++) {
+    for (i = 0; i < 5; i++)
+    {
+        for (j = 0; j < 38; j++)
+        {
             in[i][j+6][0] = L[0][j][i];
             in[i][j+6][1] = L[1][j][i];
         }
     }
-    if (is34) {
+    if (is34)
+    {
         hybrid4_8_12_cx(in[0], out,    f34_0_12, 12, len);
-        hybrid4_8_12_cx(in[1], out+12, f34_1_8,   8, len);
-        hybrid4_8_12_cx(in[2], out+20, f34_2_4,   4, len);
-        hybrid4_8_12_cx(in[3], out+24, f34_2_4,   4, len);
-        hybrid4_8_12_cx(in[4], out+28, f34_2_4,   4, len);
-        for (i = 0; i < 59; i++) {
-            for (j = 0; j < len; j++) {
+        hybrid4_8_12_cx(in[1], out + 12, f34_1_8,   8, len);
+        hybrid4_8_12_cx(in[2], out + 20, f34_2_4,   4, len);
+        hybrid4_8_12_cx(in[3], out + 24, f34_2_4,   4, len);
+        hybrid4_8_12_cx(in[4], out + 28, f34_2_4,   4, len);
+        for (i = 0; i < 59; i++)
+        {
+            for (j = 0; j < len; j++)
+            {
                 out[i+32][j][0] = L[0][j][i+5];
                 out[i+32][j][1] = L[1][j][i+5];
             }
         }
-    } else {
+    }
+    else
+    {
         hybrid6_cx(in[0], out, f20_0_8, len);
-        hybrid2_re(in[1], out+6, g1_Q2, len, 1);
-        hybrid2_re(in[2], out+8, g1_Q2, len, 0);
-        for (i = 0; i < 61; i++) {
-            for (j = 0; j < len; j++) {
+        hybrid2_re(in[1], out + 6, g1_Q2, len, 1);
+        hybrid2_re(in[2], out + 8, g1_Q2, len, 0);
+        for (i = 0; i < 61; i++)
+        {
+            for (j = 0; j < len; j++)
+            {
                 out[i+10][j][0] = L[0][j][i+3];
                 out[i+10][j][1] = L[1][j][i+3];
             }
         }
     }
     //update in_buf
-    for (i = 0; i < 5; i++) {
-        memcpy(in[i], in[i]+32, 6 * sizeof(in[i][0]));
+    for (i = 0; i < 5; i++)
+    {
+        memcpy(in[i], in[i] + 32, 6 * sizeof(in[i][0]));
     }
 }
 
 static void hybrid_synthesis(float out[2][38][64], float in[91][32][2], int is34, int len)
 {
     int i, n;
-    if (is34) {
-        for (n = 0; n < len; n++) {
-            memset(out[0][n], 0, 5*sizeof(out[0][n][0]));
-            memset(out[1][n], 0, 5*sizeof(out[1][n][0]));
-            for (i = 0; i < 12; i++) {
+    if (is34)
+    {
+        for (n = 0; n < len; n++)
+        {
+            memset(out[0][n], 0, 5 * sizeof(out[0][n][0]));
+            memset(out[1][n], 0, 5 * sizeof(out[1][n][0]));
+            for (i = 0; i < 12; i++)
+            {
                 out[0][n][0] += in[   i][n][0];
                 out[1][n][0] += in[   i][n][1];
             }
-            for (i = 0; i < 8; i++) {
+            for (i = 0; i < 8; i++)
+            {
                 out[0][n][1] += in[12+i][n][0];
                 out[1][n][1] += in[12+i][n][1];
             }
-            for (i = 0; i < 4; i++) {
+            for (i = 0; i < 4; i++)
+            {
                 out[0][n][2] += in[20+i][n][0];
                 out[1][n][2] += in[20+i][n][1];
                 out[0][n][3] += in[24+i][n][0];
@@ -418,14 +471,19 @@ static void hybrid_synthesis(float out[2][38][64], float in[91][32][2], int is34
                 out[1][n][4] += in[28+i][n][1];
             }
         }
-        for (i = 0; i < 59; i++) {
-            for (n = 0; n < len; n++) {
+        for (i = 0; i < 59; i++)
+        {
+            for (n = 0; n < len; n++)
+            {
                 out[0][n][i+5] = in[i+32][n][0];
                 out[1][n][i+5] = in[i+32][n][1];
             }
         }
-    } else {
-        for (n = 0; n < len; n++) {
+    }
+    else
+    {
+        for (n = 0; n < len; n++)
+        {
             out[0][n][0] = in[0][n][0] + in[1][n][0] + in[2][n][0] +
                            in[3][n][0] + in[4][n][0] + in[5][n][0];
             out[1][n][0] = in[0][n][1] + in[1][n][1] + in[2][n][1] +
@@ -435,8 +493,10 @@ static void hybrid_synthesis(float out[2][38][64], float in[91][32][2], int is34
             out[0][n][2] = in[8][n][0] + in[9][n][0];
             out[1][n][2] = in[8][n][1] + in[9][n][1];
         }
-        for (i = 0; i < 61; i++) {
-            for (n = 0; n < len; n++) {
+        for (i = 0; i < 61; i++)
+        {
+            for (n = 0; n < len; n++)
+            {
                 out[0][n][i+3] = in[i+10][n][0];
                 out[1][n][i+3] = in[i+10][n][1];
             }
@@ -463,21 +523,23 @@ static void map_idx_10_to_20(int8_t *par_mapped, const int8_t *par, int full)
     int b;
     if (full)
         b = 9;
-    else {
+    else
+    {
         b = 4;
         par_mapped[10] = 0;
     }
-    for (; b >= 0; b--) {
+    for (; b >= 0; b--)
+    {
         par_mapped[2*b+1] = par_mapped[2*b] = par[b];
     }
 }
 
 static void map_idx_34_to_20(int8_t *par_mapped, const int8_t *par, int full)
 {
-    par_mapped[ 0] = (2*par[ 0] +   par[ 1]) / 3;
-    par_mapped[ 1] = (  par[ 1] + 2*par[ 2]) / 3;
-    par_mapped[ 2] = (2*par[ 3] +   par[ 4]) / 3;
-    par_mapped[ 3] = (  par[ 4] + 2*par[ 5]) / 3;
+    par_mapped[ 0] = (2 * par[ 0] +   par[ 1]) / 3;
+    par_mapped[ 1] = (  par[ 1] + 2 * par[ 2]) / 3;
+    par_mapped[ 2] = (2 * par[ 3] +   par[ 4]) / 3;
+    par_mapped[ 3] = (  par[ 4] + 2 * par[ 5]) / 3;
     par_mapped[ 4] = (  par[ 6] +   par[ 7]) / 2;
     par_mapped[ 5] = (  par[ 8] +   par[ 9]) / 2;
     par_mapped[ 6] =    par[10];
@@ -485,7 +547,8 @@ static void map_idx_34_to_20(int8_t *par_mapped, const int8_t *par, int full)
     par_mapped[ 8] = (  par[12] +   par[13]) / 2;
     par_mapped[ 9] = (  par[14] +   par[15]) / 2;
     par_mapped[10] =    par[16];
-    if (full) {
+    if (full)
+    {
         par_mapped[11] =    par[17];
         par_mapped[12] =    par[18];
         par_mapped[13] =    par[19];
@@ -500,10 +563,10 @@ static void map_idx_34_to_20(int8_t *par_mapped, const int8_t *par, int full)
 
 static void map_val_34_to_20(float par[PS_MAX_NR_IIDICC])
 {
-    par[ 0] = (2*par[ 0] +   par[ 1]) * 0.33333333f;
-    par[ 1] = (  par[ 1] + 2*par[ 2]) * 0.33333333f;
-    par[ 2] = (2*par[ 3] +   par[ 4]) * 0.33333333f;
-    par[ 3] = (  par[ 4] + 2*par[ 5]) * 0.33333333f;
+    par[ 0] = (2 * par[ 0] +   par[ 1]) * 0.33333333f;
+    par[ 1] = (  par[ 1] + 2 * par[ 2]) * 0.33333333f;
+    par[ 2] = (2 * par[ 3] +   par[ 4]) * 0.33333333f;
+    par[ 3] = (  par[ 4] + 2 * par[ 5]) * 0.33333333f;
     par[ 4] = (  par[ 6] +   par[ 7]) * 0.5f;
     par[ 5] = (  par[ 8] +   par[ 9]) * 0.5f;
     par[ 6] =    par[10];
@@ -524,7 +587,8 @@ static void map_val_34_to_20(float par[PS_MAX_NR_IIDICC])
 
 static void map_idx_10_to_34(int8_t *par_mapped, const int8_t *par, int full)
 {
-    if (full) {
+    if (full)
+    {
         par_mapped[33] = par[9];
         par_mapped[32] = par[9];
         par_mapped[31] = par[9];
@@ -543,7 +607,9 @@ static void map_idx_10_to_34(int8_t *par_mapped, const int8_t *par, int full)
         par_mapped[18] = par[6];
         par_mapped[17] = par[5];
         par_mapped[16] = par[5];
-    } else {
+    }
+    else
+    {
         par_mapped[16] =      0;
     }
     par_mapped[15] = par[4];
@@ -566,7 +632,8 @@ static void map_idx_10_to_34(int8_t *par_mapped, const int8_t *par, int full)
 
 static void map_idx_20_to_34(int8_t *par_mapped, const int8_t *par, int full)
 {
-    if (full) {
+    if (full)
+    {
         par_mapped[33] =  par[19];
         par_mapped[32] =  par[19];
         par_mapped[31] =  par[18];
@@ -658,11 +725,14 @@ static void decorrelation(PSContext *ps, float (*out)[32][2], const float (*s)[3
     int i, k, m, n;
     int n0 = 0, nL = 32;
     static const int link_delay[] = { 3, 4, 5 };
-    static const float a[] = { 0.65143905753106f,
-                               0.56471812200776f,
-                               0.48954165955695f };
+    static const float a[] = {
+        0.65143905753106f,
+        0.56471812200776f,
+        0.48954165955695f
+    };
 
-    if (is34 != ps->is34bands_old) {
+    if (is34 != ps->is34bands_old)
+    {
         memset(ps->peak_decay_nrg,         0, sizeof(ps->peak_decay_nrg));
         memset(ps->power_smooth,           0, sizeof(ps->power_smooth));
         memset(ps->peak_decay_diff_smooth, 0, sizeof(ps->peak_decay_diff_smooth));
@@ -670,16 +740,20 @@ static void decorrelation(PSContext *ps, float (*out)[32][2], const float (*s)[3
         memset(ps->ap_delay,               0, sizeof(ps->ap_delay));
     }
 
-    for (n = n0; n < nL; n++) {
-        for (k = 0; k < NR_BANDS[is34]; k++) {
+    for (n = n0; n < nL; n++)
+    {
+        for (k = 0; k < NR_BANDS[is34]; k++)
+        {
             int i = k_to_i[k];
             power[i][n] += s[k][n][0] * s[k][n][0] + s[k][n][1] * s[k][n][1];
         }
     }
 
     //Transient detection
-    for (i = 0; i < NR_PAR_BANDS[is34]; i++) {
-        for (n = n0; n < nL; n++) {
+    for (i = 0; i < NR_PAR_BANDS[is34]; i++)
+    {
+        for (n = n0; n < nL; n++)
+        {
             float decayed_peak = peak_decay_factor * peak_decay_nrg[i];
             float denom;
             peak_decay_nrg[i] = FFMAX(decayed_peak, power[i][n]);
@@ -687,7 +761,7 @@ static void decorrelation(PSContext *ps, float (*out)[32][2], const float (*s)[3
             peak_decay_diff_smooth[i] += a_smooth * (peak_decay_nrg[i] - power[i][n] - peak_decay_diff_smooth[i]);
             denom = transient_impact * peak_decay_diff_smooth[i];
             transient_gain[i][n]   = (denom > power_smooth[i]) ?
-                                         power_smooth[i] / denom : 1.0f;
+            power_smooth[i] / denom : 1.0f;
         }
     }
 
@@ -699,23 +773,27 @@ static void decorrelation(PSContext *ps, float (*out)[32][2], const float (*s)[3
     //                                | | 1 - a[m]*g_decay_slope[k]*Q_fract_allpass[k][m]*z^-link_delay[m]
     //                               m = 0
     //d[k][z] (out) = transient_gain_mapped[k][z] * H[k][z] * s[k][z]
-    for (k = 0; k < NR_ALLPASS_BANDS[is34]; k++) {
+    for (k = 0; k < NR_ALLPASS_BANDS[is34]; k++)
+    {
         int b = k_to_i[k];
         float g_decay_slope = 1.f - DECAY_SLOPE * (k - DECAY_CUTOFF[is34]);
         float ag[PS_AP_LINKS];
         g_decay_slope = av_clipf(g_decay_slope, 0.f, 1.f);
-        memcpy(delay[k], delay[k]+nL, PS_MAX_DELAY*sizeof(delay[k][0]));
-        memcpy(delay[k]+PS_MAX_DELAY, s[k], numQMFSlots*sizeof(delay[k][0]));
-        for (m = 0; m < PS_AP_LINKS; m++) {
-            memcpy(ap_delay[k][m],   ap_delay[k][m]+numQMFSlots,           5*sizeof(ap_delay[k][m][0]));
+        memcpy(delay[k], delay[k] + nL, PS_MAX_DELAY * sizeof(delay[k][0]));
+        memcpy(delay[k] + PS_MAX_DELAY, s[k], numQMFSlots * sizeof(delay[k][0]));
+        for (m = 0; m < PS_AP_LINKS; m++)
+        {
+            memcpy(ap_delay[k][m],   ap_delay[k][m] + numQMFSlots,           5 * sizeof(ap_delay[k][m][0]));
             ag[m] = a[m] * g_decay_slope;
         }
-        for (n = n0; n < nL; n++) {
+        for (n = n0; n < nL; n++)
+        {
             float in_re = delay[k][n+PS_MAX_DELAY-2][0] * phi_fract[is34][k][0] -
-                          delay[k][n+PS_MAX_DELAY-2][1] * phi_fract[is34][k][1];
+            delay[k][n+PS_MAX_DELAY-2][1] * phi_fract[is34][k][1];
             float in_im = delay[k][n+PS_MAX_DELAY-2][0] * phi_fract[is34][k][1] +
-                          delay[k][n+PS_MAX_DELAY-2][1] * phi_fract[is34][k][0];
-            for (m = 0; m < PS_AP_LINKS; m++) {
+            delay[k][n+PS_MAX_DELAY-2][1] * phi_fract[is34][k][0];
+            for (m = 0; m < PS_AP_LINKS; m++)
+            {
                 float a_re                = ag[m] * in_re;
                 float a_im                = ag[m] * in_im;
                 float link_delay_re       = ap_delay[k][m][n+5-link_delay[m]][0];
@@ -733,19 +811,23 @@ static void decorrelation(PSContext *ps, float (*out)[32][2], const float (*s)[3
             out[k][n][1] = transient_gain[b][n] * in_im;
         }
     }
-    for (; k < SHORT_DELAY_BAND[is34]; k++) {
-        memcpy(delay[k], delay[k]+nL, PS_MAX_DELAY*sizeof(delay[k][0]));
-        memcpy(delay[k]+PS_MAX_DELAY, s[k], numQMFSlots*sizeof(delay[k][0]));
-        for (n = n0; n < nL; n++) {
+    for (; k < SHORT_DELAY_BAND[is34]; k++)
+    {
+        memcpy(delay[k], delay[k] + nL, PS_MAX_DELAY * sizeof(delay[k][0]));
+        memcpy(delay[k] + PS_MAX_DELAY, s[k], numQMFSlots * sizeof(delay[k][0]));
+        for (n = n0; n < nL; n++)
+        {
             //H = delay 14
             out[k][n][0] = transient_gain[k_to_i[k]][n] * delay[k][n+PS_MAX_DELAY-14][0];
             out[k][n][1] = transient_gain[k_to_i[k]][n] * delay[k][n+PS_MAX_DELAY-14][1];
         }
     }
-    for (; k < NR_BANDS[is34]; k++) {
-        memcpy(delay[k], delay[k]+nL, PS_MAX_DELAY*sizeof(delay[k][0]));
-        memcpy(delay[k]+PS_MAX_DELAY, s[k], numQMFSlots*sizeof(delay[k][0]));
-        for (n = n0; n < nL; n++) {
+    for (; k < NR_BANDS[is34]; k++)
+    {
+        memcpy(delay[k], delay[k] + nL, PS_MAX_DELAY * sizeof(delay[k][0]));
+        memcpy(delay[k] + PS_MAX_DELAY, s[k], numQMFSlots * sizeof(delay[k][0]));
+        for (n = n0; n < nL; n++)
+        {
             //H = delay 1
             out[k][n][0] = transient_gain[k_to_i[k]][n] * delay[k][n+PS_MAX_DELAY-1][0];
             out[k][n][1] = transient_gain[k_to_i[k]][n] * delay[k][n+PS_MAX_DELAY-1][1];
@@ -754,39 +836,53 @@ static void decorrelation(PSContext *ps, float (*out)[32][2], const float (*s)[3
 }
 
 static void remap34(int8_t (**p_par_mapped)[PS_MAX_NR_IIDICC],
-                    int8_t           (*par)[PS_MAX_NR_IIDICC],
-                    int num_par, int num_env, int full)
+int8_t           (*par)[PS_MAX_NR_IIDICC],
+int num_par, int num_env, int full)
 {
     int8_t (*par_mapped)[PS_MAX_NR_IIDICC] = *p_par_mapped;
     int e;
-    if (num_par == 20 || num_par == 11) {
-        for (e = 0; e < num_env; e++) {
+    if (num_par == 20 || num_par == 11)
+    {
+        for (e = 0; e < num_env; e++)
+        {
             map_idx_20_to_34(par_mapped[e], par[e], full);
         }
-    } else if (num_par == 10 || num_par == 5) {
-        for (e = 0; e < num_env; e++) {
+    }
+    else if (num_par == 10 || num_par == 5)
+    {
+        for (e = 0; e < num_env; e++)
+        {
             map_idx_10_to_34(par_mapped[e], par[e], full);
         }
-    } else {
+    }
+    else
+    {
         *p_par_mapped = par;
     }
 }
 
 static void remap20(int8_t (**p_par_mapped)[PS_MAX_NR_IIDICC],
-                    int8_t           (*par)[PS_MAX_NR_IIDICC],
-                    int num_par, int num_env, int full)
+int8_t           (*par)[PS_MAX_NR_IIDICC],
+int num_par, int num_env, int full)
 {
     int8_t (*par_mapped)[PS_MAX_NR_IIDICC] = *p_par_mapped;
     int e;
-    if (num_par == 34 || num_par == 17) {
-        for (e = 0; e < num_env; e++) {
+    if (num_par == 34 || num_par == 17)
+    {
+        for (e = 0; e < num_env; e++)
+        {
             map_idx_34_to_20(par_mapped[e], par[e], full);
         }
-    } else if (num_par == 10 || num_par == 5) {
-        for (e = 0; e < num_env; e++) {
+    }
+    else if (num_par == 10 || num_par == 5)
+    {
+        for (e = 0; e < num_env; e++)
+        {
             map_idx_10_to_20(par_mapped[e], par[e], full);
         }
-    } else {
+    }
+    else
+    {
         *p_par_mapped = par;
     }
 }
@@ -813,22 +909,25 @@ static void stereo_processing(PSContext *ps, float (*l)[32][2], float (*r)[32][2
     const float (*H_LUT)[8][4] = (PS_BASELINE || ps->icc_mode < 3) ? HA : HB;
 
     //Remapping
-    memcpy(H11[0][0], H11[0][ps->num_env_old], PS_MAX_NR_IIDICC*sizeof(H11[0][0][0]));
-    memcpy(H11[1][0], H11[1][ps->num_env_old], PS_MAX_NR_IIDICC*sizeof(H11[1][0][0]));
-    memcpy(H12[0][0], H12[0][ps->num_env_old], PS_MAX_NR_IIDICC*sizeof(H12[0][0][0]));
-    memcpy(H12[1][0], H12[1][ps->num_env_old], PS_MAX_NR_IIDICC*sizeof(H12[1][0][0]));
-    memcpy(H21[0][0], H21[0][ps->num_env_old], PS_MAX_NR_IIDICC*sizeof(H21[0][0][0]));
-    memcpy(H21[1][0], H21[1][ps->num_env_old], PS_MAX_NR_IIDICC*sizeof(H21[1][0][0]));
-    memcpy(H22[0][0], H22[0][ps->num_env_old], PS_MAX_NR_IIDICC*sizeof(H22[0][0][0]));
-    memcpy(H22[1][0], H22[1][ps->num_env_old], PS_MAX_NR_IIDICC*sizeof(H22[1][0][0]));
-    if (is34) {
+    memcpy(H11[0][0], H11[0][ps->num_env_old], PS_MAX_NR_IIDICC * sizeof(H11[0][0][0]));
+    memcpy(H11[1][0], H11[1][ps->num_env_old], PS_MAX_NR_IIDICC * sizeof(H11[1][0][0]));
+    memcpy(H12[0][0], H12[0][ps->num_env_old], PS_MAX_NR_IIDICC * sizeof(H12[0][0][0]));
+    memcpy(H12[1][0], H12[1][ps->num_env_old], PS_MAX_NR_IIDICC * sizeof(H12[1][0][0]));
+    memcpy(H21[0][0], H21[0][ps->num_env_old], PS_MAX_NR_IIDICC * sizeof(H21[0][0][0]));
+    memcpy(H21[1][0], H21[1][ps->num_env_old], PS_MAX_NR_IIDICC * sizeof(H21[1][0][0]));
+    memcpy(H22[0][0], H22[0][ps->num_env_old], PS_MAX_NR_IIDICC * sizeof(H22[0][0][0]));
+    memcpy(H22[1][0], H22[1][ps->num_env_old], PS_MAX_NR_IIDICC * sizeof(H22[1][0][0]));
+    if (is34)
+    {
         remap34(&iid_mapped, ps->iid_par, ps->nr_iid_par, ps->num_env, 1);
         remap34(&icc_mapped, ps->icc_par, ps->nr_icc_par, ps->num_env, 1);
-        if (ps->enable_ipdopd) {
+        if (ps->enable_ipdopd)
+        {
             remap34(&ipd_mapped, ps->ipd_par, ps->nr_ipdopd_par, ps->num_env, 0);
             remap34(&opd_mapped, ps->opd_par, ps->nr_ipdopd_par, ps->num_env, 0);
         }
-        if (!ps->is34bands_old) {
+        if (!ps->is34bands_old)
+        {
             map_val_20_to_34(H11[0][0]);
             map_val_20_to_34(H11[1][0]);
             map_val_20_to_34(H12[0][0]);
@@ -839,14 +938,18 @@ static void stereo_processing(PSContext *ps, float (*l)[32][2], float (*r)[32][2
             map_val_20_to_34(H22[1][0]);
             ipdopd_reset(ipd_hist, opd_hist);
         }
-    } else {
+    }
+    else
+    {
         remap20(&iid_mapped, ps->iid_par, ps->nr_iid_par, ps->num_env, 1);
         remap20(&icc_mapped, ps->icc_par, ps->nr_icc_par, ps->num_env, 1);
-        if (ps->enable_ipdopd) {
+        if (ps->enable_ipdopd)
+        {
             remap20(&ipd_mapped, ps->ipd_par, ps->nr_ipdopd_par, ps->num_env, 0);
             remap20(&opd_mapped, ps->opd_par, ps->nr_ipdopd_par, ps->num_env, 0);
         }
-        if (ps->is34bands_old) {
+        if (ps->is34bands_old)
+        {
             map_val_34_to_20(H11[0][0]);
             map_val_34_to_20(H11[1][0]);
             map_val_34_to_20(H12[0][0]);
@@ -860,14 +963,17 @@ static void stereo_processing(PSContext *ps, float (*l)[32][2], float (*r)[32][2
     }
 
     //Mixing
-    for (e = 0; e < ps->num_env; e++) {
-        for (b = 0; b < NR_PAR_BANDS[is34]; b++) {
+    for (e = 0; e < ps->num_env; e++)
+    {
+        for (b = 0; b < NR_PAR_BANDS[is34]; b++)
+        {
             float h11, h12, h21, h22;
             h11 = H_LUT[iid_mapped[e][b] + 7 + 23 * ps->iid_quant][icc_mapped[e][b]][0];
             h12 = H_LUT[iid_mapped[e][b] + 7 + 23 * ps->iid_quant][icc_mapped[e][b]][1];
             h21 = H_LUT[iid_mapped[e][b] + 7 + 23 * ps->iid_quant][icc_mapped[e][b]][2];
             h22 = H_LUT[iid_mapped[e][b] + 7 + 23 * ps->iid_quant][icc_mapped[e][b]][3];
-            if (!PS_BASELINE && ps->enable_ipdopd && b < ps->nr_ipdopd_par) {
+            if (!PS_BASELINE && ps->enable_ipdopd && b < ps->nr_ipdopd_par)
+            {
                 //The spec say says to only run this smoother when enable_ipdopd
                 //is set but the reference decoder appears to run it constantly
                 float h11i, h12i, h21i, h22i;
@@ -881,8 +987,8 @@ static void stereo_processing(PSContext *ps, float (*l)[32][2], float (*r)[32][2
                 opd_hist[b] = opd_idx & 0x3F;
                 ipd_hist[b] = ipd_idx & 0x3F;
 
-                ipd_adj_re = opd_re*ipd_re + opd_im*ipd_im;
-                ipd_adj_im = opd_im*ipd_re - opd_re*ipd_im;
+                ipd_adj_re = opd_re * ipd_re + opd_im * ipd_im;
+                ipd_adj_im = opd_im * ipd_re - opd_re * ipd_im;
                 h11i = h11 * opd_im;
                 h11  = h11 * opd_re;
                 h12i = h12 * ipd_adj_im;
@@ -901,7 +1007,8 @@ static void stereo_processing(PSContext *ps, float (*l)[32][2], float (*r)[32][2
             H21[0][e+1][b] = h21;
             H22[0][e+1][b] = h22;
         }
-        for (k = 0; k < NR_BANDS[is34]; k++) {
+        for (k = 0; k < NR_BANDS[is34]; k++)
+        {
             float h11r, h12r, h21r, h22r;
             float h11i, h12i, h21i, h22i;
             float h11r_step, h12r_step, h21r_step, h22r_step;
@@ -914,32 +1021,38 @@ static void stereo_processing(PSContext *ps, float (*l)[32][2], float (*r)[32][2
             h12r = H12[0][e][b];
             h21r = H21[0][e][b];
             h22r = H22[0][e][b];
-            if (!PS_BASELINE && ps->enable_ipdopd) {
-            //Is this necessary? ps_04_new seems unchanged
-            if ((is34 && k <= 13 && k >= 9) || (!is34 && k <= 1)) {
-                h11i = -H11[1][e][b];
-                h12i = -H12[1][e][b];
-                h21i = -H21[1][e][b];
-                h22i = -H22[1][e][b];
-            } else {
-                h11i = H11[1][e][b];
-                h12i = H12[1][e][b];
-                h21i = H21[1][e][b];
-                h22i = H22[1][e][b];
-            }
+            if (!PS_BASELINE && ps->enable_ipdopd)
+            {
+                //Is this necessary? ps_04_new seems unchanged
+                if ((is34 && k <= 13 && k >= 9) || (!is34 && k <= 1))
+                {
+                    h11i = -H11[1][e][b];
+                    h12i = -H12[1][e][b];
+                    h21i = -H21[1][e][b];
+                    h22i = -H22[1][e][b];
+                }
+                else
+                {
+                    h11i = H11[1][e][b];
+                    h12i = H12[1][e][b];
+                    h21i = H21[1][e][b];
+                    h22i = H22[1][e][b];
+                }
             }
             //Interpolation
             h11r_step = (H11[0][e+1][b] - h11r) * width;
             h12r_step = (H12[0][e+1][b] - h12r) * width;
             h21r_step = (H21[0][e+1][b] - h21r) * width;
             h22r_step = (H22[0][e+1][b] - h22r) * width;
-            if (!PS_BASELINE && ps->enable_ipdopd) {
+            if (!PS_BASELINE && ps->enable_ipdopd)
+            {
                 h11i_step = (H11[1][e+1][b] - h11i) * width;
                 h12i_step = (H12[1][e+1][b] - h12i) * width;
                 h21i_step = (H21[1][e+1][b] - h21i) * width;
                 h22i_step = (H22[1][e+1][b] - h22i) * width;
             }
-            for (n = start + 1; n <= stop; n++) {
+            for (n = start + 1; n <= stop; n++)
+            {
                 //l is s, r is d
                 float l_re = l[k][n][0];
                 float l_im = l[k][n][1];
@@ -949,21 +1062,24 @@ static void stereo_processing(PSContext *ps, float (*l)[32][2], float (*r)[32][2
                 h12r += h12r_step;
                 h21r += h21r_step;
                 h22r += h22r_step;
-                if (!PS_BASELINE && ps->enable_ipdopd) {
+                if (!PS_BASELINE && ps->enable_ipdopd)
+                {
                     h11i += h11i_step;
                     h12i += h12i_step;
                     h21i += h21i_step;
                     h22i += h22i_step;
 
-                    l[k][n][0] = h11r*l_re + h21r*r_re - h11i*l_im - h21i*r_im;
-                    l[k][n][1] = h11r*l_im + h21r*r_im + h11i*l_re + h21i*r_re;
-                    r[k][n][0] = h12r*l_re + h22r*r_re - h12i*l_im - h22i*r_im;
-                    r[k][n][1] = h12r*l_im + h22r*r_im + h12i*l_re + h22i*r_re;
-                } else {
-                    l[k][n][0] = h11r*l_re + h21r*r_re;
-                    l[k][n][1] = h11r*l_im + h21r*r_im;
-                    r[k][n][0] = h12r*l_re + h22r*r_re;
-                    r[k][n][1] = h12r*l_im + h22r*r_im;
+                    l[k][n][0] = h11r * l_re + h21r * r_re - h11i * l_im - h21i * r_im;
+                    l[k][n][1] = h11r * l_im + h21r * r_im + h11i * l_re + h21i * r_re;
+                    r[k][n][0] = h12r * l_re + h22r * r_re - h12i * l_im - h22i * r_im;
+                    r[k][n][1] = h12r * l_im + h22r * r_im + h12i * l_re + h22i * r_re;
+                }
+                else
+                {
+                    l[k][n][0] = h11r * l_re + h21r * r_re;
+                    l[k][n][1] = h11r * l_im + h21r * r_im;
+                    r[k][n][0] = h12r * l_re + h22r * r_re;
+                    r[k][n][1] = h12r * l_im + h22r * r_im;
                 }
             }
         }
@@ -978,7 +1094,7 @@ int ff_ps_apply(AVCodecContext *avctx, PSContext *ps, float L[2][38][64], float 
     int is34 = ps->is34bands;
 
     top += NR_BANDS[is34] - 64;
-    memset(ps->delay+top, 0, (NR_BANDS[is34] - top)*sizeof(ps->delay[0]));
+    memset(ps->delay + top, 0, (NR_BANDS[is34] - top)*sizeof(ps->delay[0]));
     if (top < NR_ALLPASS_BANDS[is34])
         memset(ps->ap_delay + top, 0, (NR_ALLPASS_BANDS[is34] - top)*sizeof(ps->ap_delay[0]));
 
@@ -1000,12 +1116,15 @@ int ff_ps_apply(AVCodecContext *avctx, PSContext *ps, float L[2][38][64], float 
 #define PS_VLC_ROW(name) \
     { name ## _codes, name ## _bits, sizeof(name ## _codes), sizeof(name ## _codes[0]) }
 
-av_cold void ff_ps_init(void) {
+av_cold void ff_ps_init(void)
+{
     // Syntax initialization
-    static const struct {
+    static const struct
+    {
         const void *ps_codes, *ps_bits;
         const unsigned int table_size, elem_size;
-    } ps_tmp[] = {
+    } ps_tmp[] =
+    {
         PS_VLC_ROW(huff_iid_df1),
         PS_VLC_ROW(huff_iid_dt1),
         PS_VLC_ROW(huff_iid_df0),

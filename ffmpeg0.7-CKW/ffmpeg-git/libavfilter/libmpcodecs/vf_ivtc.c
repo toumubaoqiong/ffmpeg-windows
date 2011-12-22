@@ -31,19 +31,22 @@
 #include "libvo/fastmemcpy.h"
 
 
-struct metrics {
+struct metrics
+{
     /* difference: total, even lines, odd lines */
     int d, e, o;
     /* noise: temporal, spacial (current), spacial (past) */
     int t, s, p;
 };
 
-struct frameinfo {
+struct frameinfo
+{
     /* peak, relative, mean */
     struct metrics p, r, m;
 };
 
-struct vf_priv_s {
+struct vf_priv_s
+{
     struct frameinfo fi[2];
     mp_image_t *dmpi;
     int first;
@@ -51,7 +54,8 @@ struct vf_priv_s {
     int inframes, outframes;
 };
 
-enum {
+enum
+{
     F_DROP,
     F_MERGE,
     F_NEXT,
@@ -118,9 +122,9 @@ static void block_diffs_MMX(struct metrics *m, unsigned char *old, unsigned char
         :
         : "S" (old), "D" (new), "a" (os), "b" (ns), "d" (out)
         : "memory"
-        );
-    m->e = out[0]+out[1]+out[2]+out[3];
-    m->o = out[4]+out[5]+out[6]+out[7];
+    );
+    m->e = out[0] + out[1] + out[2] + out[3];
+    m->o = out[4] + out[5] + out[6] + out[7];
     m->d = m->e + m->o;
 
     __asm__ (
@@ -229,9 +233,10 @@ static void block_diffs_MMX(struct metrics *m, unsigned char *old, unsigned char
         :
         : "S" (old), "D" (new), "a" ((long)os), "b" ((long)ns), "d" (out)
         : "memory"
-        );
+    );
     m->p = m->t = m->s = 0;
-    for (i=0; i<8; i++) {
+    for (i = 0; i < 8; i++)
+    {
         m->p += out[i];
         m->t += out[8+i];
         m->s += out[16+i];
@@ -251,21 +256,23 @@ static void block_diffs_MMX(struct metrics *m, unsigned char *old, unsigned char
 
 static void block_diffs_C(struct metrics *m, unsigned char *old, unsigned char *new, int os, int ns)
 {
-    int x, y, e=0, o=0, s=0, p=0, t=0;
+    int x, y, e = 0, o = 0, s = 0, p = 0, t = 0;
     unsigned char *oldp, *newp;
     m->s = m->p = m->t = 0;
-    for (x = 8; x; x--) {
+    for (x = 8; x; x--)
+    {
         oldp = old++;
         newp = new++;
         s = p = t = 0;
-        for (y = 4; y; y--) {
-            e += MAG(newp[0]-oldp[0]);
-            o += MAG(newp[ns]-oldp[os]);
-            s += newp[ns]-newp[0];
-            p += oldp[os]-oldp[0];
-            t += oldp[os]-newp[0];
-            oldp += os<<1;
-            newp += ns<<1;
+        for (y = 4; y; y--)
+        {
+            e += MAG(newp[0] - oldp[0]);
+            o += MAG(newp[ns] - oldp[os]);
+            s += newp[ns] - newp[0];
+            p += oldp[os] - oldp[0];
+            t += oldp[os] - newp[0];
+            oldp += os << 1;
+            newp += ns << 1;
         }
         m->s += MAG(s);
         m->p += MAG(p);
@@ -273,7 +280,7 @@ static void block_diffs_C(struct metrics *m, unsigned char *old, unsigned char *
     }
     m->e = e;
     m->o = o;
-    m->d = e+o;
+    m->d = e + o;
 }
 
 static void (*block_diffs)(struct metrics *, unsigned char *, unsigned char *, int, int);
@@ -281,17 +288,19 @@ static void (*block_diffs)(struct metrics *, unsigned char *, unsigned char *, i
 #define MAXUP(a,b) ((a) = ((a)>(b)) ? (a) : (b))
 
 static void diff_planes(struct frameinfo *fi,
-    unsigned char *old, unsigned char *new, int w, int h, int os, int ns)
+                        unsigned char *old, unsigned char *new, int w, int h, int os, int ns)
 {
     int x, y;
     struct metrics l;
-    struct metrics *peak=&fi->p, *rel=&fi->r, *mean=&fi->m;
+    struct metrics *peak = &fi->p, *rel = &fi->r, *mean = &fi->m;
     memset(peak, 0, sizeof(struct metrics));
     memset(rel, 0, sizeof(struct metrics));
     memset(mean, 0, sizeof(struct metrics));
-    for (y = 0; y < h-7; y += 8) {
-        for (x = 8; x < w-8-7; x += 8) {
-            block_diffs(&l, old+x+y*os, new+x+y*ns, os, ns);
+    for (y = 0; y < h - 7; y += 8)
+    {
+        for (x = 8; x < w - 8 - 7; x += 8)
+        {
+            block_diffs(&l, old + x + y * os, new + x + y * ns, os, ns);
             mean->d += l.d;
             mean->e += l.e;
             mean->o += l.o;
@@ -305,14 +314,14 @@ static void diff_planes(struct frameinfo *fi,
             MAXUP(peak->p, l.p);
             MAXUP(peak->t, l.t);
             MAXUP(rel->e, l.e-l.o);
-            MAXUP(rel->o, l.o-l.e);
-            MAXUP(rel->s, l.s-l.t);
-            MAXUP(rel->p, l.p-l.t);
-            MAXUP(rel->t, l.t-l.p);
-            MAXUP(rel->d, l.t-l.s); /* hack */
+            MAXUP(rel->o, l.o - l.e);
+            MAXUP(rel->s, l.s - l.t);
+            MAXUP(rel->p, l.p - l.t);
+            MAXUP(rel->t, l.t - l.p);
+            MAXUP(rel->d, l.t - l.s); /* hack */
         }
     }
-    x = (w/8-2)*(h/8);
+    x = (w / 8 - 2) * (h / 8);
     mean->d /= x;
     mean->e /= x;
     mean->o /= x;
@@ -324,13 +333,13 @@ static void diff_planes(struct frameinfo *fi,
 static void diff_fields(struct frameinfo *fi, mp_image_t *old, mp_image_t *new)
 {
     diff_planes(fi, old->planes[0], new->planes[0],
-        new->w, new->h, old->stride[0], new->stride[0]);
+                new->w, new->h, old->stride[0], new->stride[0]);
 }
 
 static void stats(struct frameinfo *f)
 {
     mp_msg(MSGT_VFILTER, MSGL_V, "       pd=%d re=%d ro=%d rp=%d rt=%d rs=%d rd=%d pp=%d pt=%d ps=%d\r",
-        f->p.d, f->r.e, f->r.o, f->r.p, f->r.t, f->r.s, f->r.d, f->p.p, f->p.t, f->p.s);
+           f->p.d, f->r.e, f->r.o, f->r.p, f->r.t, f->r.s, f->r.d, f->p.p, f->p.t, f->p.s);
 }
 
 static int foo(struct vf_priv_s *p, mp_image_t *new, mp_image_t *cur)
@@ -342,7 +351,8 @@ static int foo(struct vf_priv_s *p, mp_image_t *new, mp_image_t *cur)
     stats(&f[1]);
 
     // Immediately drop this frame if it's already been used.
-    if (p->dropnext) {
+    if (p->dropnext)
+    {
         p->dropnext = 0;
         return F_DROP;
     }
@@ -352,26 +362,29 @@ static int foo(struct vf_priv_s *p, mp_image_t *new, mp_image_t *cur)
     // two frames. We can just drop such a frame, but we
     // immediately show the next frame instead to keep the frame
     // drops evenly spaced during normal 3:2 pulldown sequences.
-    if ((3*f[1].r.o < f[1].r.e) && (f[1].r.s < f[1].r.d)) {
+    if ((3 * f[1].r.o < f[1].r.e) && (f[1].r.s < f[1].r.d))
+    {
         p->dropnext = 1;
         return F_NEXT;
     }
 
     // If none of these conditions hold, we will consider the frame
     // progressive and just show it as-is.
-    if (!(  (3*f[0].r.e < f[0].r.o) ||
-        ((2*f[0].r.d < f[0].r.s) && (f[0].r.s > 1200)) ||
-        ((2*f[1].r.t < f[1].r.p) && (f[1].r.p > 1200))  ))
+    if (!(  (3 * f[0].r.e < f[0].r.o) ||
+            ((2 * f[0].r.d < f[0].r.s) && (f[0].r.s > 1200)) ||
+            ((2 * f[1].r.t < f[1].r.p) && (f[1].r.p > 1200))  ))
         return F_SHOW;
 
     // Otherwise, we have to decide whether to merge or drop.
     // If the noise metric only increases minimally, we're off
     // to a good start...
-    if (((2*f[1].r.t < 3*f[1].r.p) && (f[1].r.t < 3600)) ||
-        (f[1].r.t < 900) || (f[1].r.d < 900)) {
+    if (((2 * f[1].r.t < 3 * f[1].r.p) && (f[1].r.t < 3600)) ||
+            (f[1].r.t < 900) || (f[1].r.d < 900))
+    {
         // ...and if noise decreases or the duplicate even field
         // is detected, we go ahead with the merge.
-        if ((3*f[0].r.e < f[0].r.o) || (2*f[1].r.t < f[1].r.p)) {
+        if ((3 * f[0].r.e < f[0].r.o) || (2 * f[1].r.t < f[1].r.p))
+        {
             p->dropnext = 1;
             return F_MERGE;
         }
@@ -383,44 +396,48 @@ static int foo(struct vf_priv_s *p, mp_image_t *new, mp_image_t *cur)
 
 static void copy_image(mp_image_t *dmpi, mp_image_t *mpi, int field)
 {
-    switch (field) {
+    switch (field)
+    {
     case 0:
-        my_memcpy_pic(dmpi->planes[0], mpi->planes[0], mpi->w, mpi->h/2,
-            dmpi->stride[0]*2, mpi->stride[0]*2);
-        if (mpi->flags & MP_IMGFLAG_PLANAR) {
+        my_memcpy_pic(dmpi->planes[0], mpi->planes[0], mpi->w, mpi->h / 2,
+                      dmpi->stride[0] * 2, mpi->stride[0] * 2);
+        if (mpi->flags & MP_IMGFLAG_PLANAR)
+        {
             my_memcpy_pic(dmpi->planes[1], mpi->planes[1],
-                mpi->chroma_width, mpi->chroma_height/2,
-                dmpi->stride[1]*2, mpi->stride[1]*2);
+                          mpi->chroma_width, mpi->chroma_height / 2,
+                          dmpi->stride[1] * 2, mpi->stride[1] * 2);
             my_memcpy_pic(dmpi->planes[2], mpi->planes[2],
-                mpi->chroma_width, mpi->chroma_height/2,
-                dmpi->stride[2]*2, mpi->stride[2]*2);
+                          mpi->chroma_width, mpi->chroma_height / 2,
+                          dmpi->stride[2] * 2, mpi->stride[2] * 2);
         }
         break;
     case 1:
-        my_memcpy_pic(dmpi->planes[0]+dmpi->stride[0],
-            mpi->planes[0]+mpi->stride[0], mpi->w, mpi->h/2,
-            dmpi->stride[0]*2, mpi->stride[0]*2);
-        if (mpi->flags & MP_IMGFLAG_PLANAR) {
-            my_memcpy_pic(dmpi->planes[1]+dmpi->stride[1],
-                mpi->planes[1]+mpi->stride[1],
-                mpi->chroma_width, mpi->chroma_height/2,
-                dmpi->stride[1]*2, mpi->stride[1]*2);
-            my_memcpy_pic(dmpi->planes[2]+dmpi->stride[2],
-                mpi->planes[2]+mpi->stride[2],
-                mpi->chroma_width, mpi->chroma_height/2,
-                dmpi->stride[2]*2, mpi->stride[2]*2);
+        my_memcpy_pic(dmpi->planes[0] + dmpi->stride[0],
+                      mpi->planes[0] + mpi->stride[0], mpi->w, mpi->h / 2,
+                      dmpi->stride[0] * 2, mpi->stride[0] * 2);
+        if (mpi->flags & MP_IMGFLAG_PLANAR)
+        {
+            my_memcpy_pic(dmpi->planes[1] + dmpi->stride[1],
+                          mpi->planes[1] + mpi->stride[1],
+                          mpi->chroma_width, mpi->chroma_height / 2,
+                          dmpi->stride[1] * 2, mpi->stride[1] * 2);
+            my_memcpy_pic(dmpi->planes[2] + dmpi->stride[2],
+                          mpi->planes[2] + mpi->stride[2],
+                          mpi->chroma_width, mpi->chroma_height / 2,
+                          dmpi->stride[2] * 2, mpi->stride[2] * 2);
         }
         break;
     case 2:
         memcpy_pic(dmpi->planes[0], mpi->planes[0], mpi->w, mpi->h,
-            dmpi->stride[0], mpi->stride[0]);
-        if (mpi->flags & MP_IMGFLAG_PLANAR) {
+                   dmpi->stride[0], mpi->stride[0]);
+        if (mpi->flags & MP_IMGFLAG_PLANAR)
+        {
             memcpy_pic(dmpi->planes[1], mpi->planes[1],
-                mpi->chroma_width, mpi->chroma_height,
-                dmpi->stride[1], mpi->stride[1]);
+                       mpi->chroma_width, mpi->chroma_height,
+                       dmpi->stride[1], mpi->stride[1]);
             memcpy_pic(dmpi->planes[2], mpi->planes[2],
-                mpi->chroma_width, mpi->chroma_height,
-                dmpi->stride[2], mpi->stride[2]);
+                       mpi->chroma_width, mpi->chroma_height,
+                       dmpi->stride[2], mpi->stride[2]);
         }
         break;
     }
@@ -429,21 +446,23 @@ static void copy_image(mp_image_t *dmpi, mp_image_t *mpi, int field)
 static int do_put_image(struct vf_instance *vf, mp_image_t *dmpi)
 {
     struct vf_priv_s *p = vf->priv;
-    int dropflag=0;
+    int dropflag = 0;
 
-    if (!p->dropnext) switch (p->drop) {
-    case 0:
-        dropflag = 0;
-        break;
-    case 1:
-        dropflag = (++p->lastdrop >= 5);
-        break;
-    case 2:
-        dropflag = (++p->lastdrop >= 5) && (4*p->inframes <= 5*p->outframes);
-        break;
-    }
+    if (!p->dropnext) switch (p->drop)
+        {
+        case 0:
+            dropflag = 0;
+            break;
+        case 1:
+            dropflag = (++p->lastdrop >= 5);
+            break;
+        case 2:
+            dropflag = (++p->lastdrop >= 5) && (4 * p->inframes <= 5 * p->outframes);
+            break;
+        }
 
-    if (dropflag) {
+    if (dropflag)
+    {
         //mp_msg(MSGT_VFILTER, MSGL_V, "drop! [%d/%d=%g]\n",
         //    p->outframes, p->inframes, (float)p->outframes/p->inframes);
         mp_msg(MSGT_VFILTER, MSGL_V, "!");
@@ -457,26 +476,28 @@ static int do_put_image(struct vf_instance *vf, mp_image_t *dmpi)
 
 static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
 {
-    int ret=0;
+    int ret = 0;
     struct vf_priv_s *p = vf->priv;
 
     p->inframes++;
 
-    if (p->first) { /* hack */
+    if (p->first)   /* hack */
+    {
         p->first = 0;
         return 1;
     }
 
     if (!p->dmpi) p->dmpi = vf_get_image(vf->next, mpi->imgfmt,
-        MP_IMGTYPE_STATIC, MP_IMGFLAG_ACCEPT_STRIDE |
-        MP_IMGFLAG_PRESERVE | MP_IMGFLAG_READABLE,
-        mpi->width, mpi->height);
+                                             MP_IMGTYPE_STATIC, MP_IMGFLAG_ACCEPT_STRIDE |
+                                             MP_IMGFLAG_PRESERVE | MP_IMGFLAG_READABLE,
+                                             mpi->width, mpi->height);
     /* FIXME -- not correct, off by one frame! */
     p->dmpi->qscale = mpi->qscale;
     p->dmpi->qstride = mpi->qstride;
     p->dmpi->qscale_type = mpi->qscale_type;
 
-    switch (foo(p, mpi, p->dmpi)) {
+    switch (foo(p, mpi, p->dmpi))
+    {
     case F_DROP:
         copy_image(p->dmpi, mpi, 2);
         ret = 0;
@@ -508,7 +529,8 @@ static int put_image(struct vf_instance *vf, mp_image_t *mpi, double pts)
 
 static int query_format(struct vf_instance *vf, unsigned int fmt)
 {
-    switch (fmt) {
+    switch (fmt)
+    {
     case IMGFMT_YV12:
     case IMGFMT_IYUV:
     case IMGFMT_I420:
@@ -540,7 +562,8 @@ static int vf_open(vf_instance_t *vf, char *args)
     return 1;
 }
 
-const vf_info_t vf_info_ivtc = {
+const vf_info_t vf_info_ivtc =
+{
     "inverse telecine, take 2",
     "ivtc",
     "Rich Felker",

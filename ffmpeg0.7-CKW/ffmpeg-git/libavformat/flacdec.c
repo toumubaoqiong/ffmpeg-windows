@@ -26,11 +26,11 @@
 #include "vorbiscomment.h"
 
 static int flac_read_header(AVFormatContext *s,
-                             AVFormatParameters *ap)
+                            AVFormatParameters *ap)
 {
-    int ret, metadata_last=0, metadata_type, metadata_size, found_streaminfo=0;
+    int ret, metadata_last = 0, metadata_type, metadata_size, found_streaminfo = 0;
     uint8_t header[4];
-    uint8_t *buffer=NULL;
+    uint8_t *buffer = NULL;
     AVStream *st = av_new_stream(s, 0);
     if (!st)
         return AVERROR(ENOMEM);
@@ -40,44 +40,52 @@ static int flac_read_header(AVFormatContext *s,
     /* the parameters will be extracted from the compressed bitstream */
 
     /* if fLaC marker is not found, assume there is no header */
-    if (avio_rl32(s->pb) != MKTAG('f','L','a','C')) {
+    if (avio_rl32(s->pb) != MKTAG('f', 'L', 'a', 'C'))
+    {
         avio_seek(s->pb, -4, SEEK_CUR);
         return 0;
     }
 
     /* process metadata blocks */
-    while (!url_feof(s->pb) && !metadata_last) {
+    while (!url_feof(s->pb) && !metadata_last)
+    {
         avio_read(s->pb, header, 4);
         ff_flac_parse_block_header(header, &metadata_last, &metadata_type,
                                    &metadata_size);
-        switch (metadata_type) {
-        /* allocate and read metadata block for supported types */
+        switch (metadata_type)
+        {
+            /* allocate and read metadata block for supported types */
         case FLAC_METADATA_TYPE_STREAMINFO:
         case FLAC_METADATA_TYPE_VORBIS_COMMENT:
             buffer = av_mallocz(metadata_size + FF_INPUT_BUFFER_PADDING_SIZE);
-            if (!buffer) {
+            if (!buffer)
+            {
                 return AVERROR(ENOMEM);
             }
-            if (avio_read(s->pb, buffer, metadata_size) != metadata_size) {
+            if (avio_read(s->pb, buffer, metadata_size) != metadata_size)
+            {
                 av_freep(&buffer);
                 return AVERROR(EIO);
             }
             break;
-        /* skip metadata block for unsupported types */
+            /* skip metadata block for unsupported types */
         default:
             ret = avio_skip(s->pb, metadata_size);
             if (ret < 0)
                 return ret;
         }
 
-        if (metadata_type == FLAC_METADATA_TYPE_STREAMINFO) {
+        if (metadata_type == FLAC_METADATA_TYPE_STREAMINFO)
+        {
             FLACStreaminfo si;
             /* STREAMINFO can only occur once */
-            if (found_streaminfo) {
+            if (found_streaminfo)
+            {
                 av_freep(&buffer);
                 return AVERROR_INVALIDDATA;
             }
-            if (metadata_size != FLAC_STREAMINFO_SIZE) {
+            if (metadata_size != FLAC_STREAMINFO_SIZE)
+            {
                 av_freep(&buffer);
                 return AVERROR_INVALIDDATA;
             }
@@ -90,20 +98,26 @@ static int flac_read_header(AVFormatContext *s,
             ff_flac_parse_streaminfo(st->codec, &si, st->codec->extradata);
 
             /* set time base and duration */
-            if (si.samplerate > 0) {
+            if (si.samplerate > 0)
+            {
                 av_set_pts_info(st, 64, 1, si.samplerate);
                 if (si.samples > 0)
                     st->duration = si.samples;
             }
-        } else {
+        }
+        else
+        {
             /* STREAMINFO must be the first block */
-            if (!found_streaminfo) {
+            if (!found_streaminfo)
+            {
                 av_freep(&buffer);
                 return AVERROR_INVALIDDATA;
             }
             /* process supported blocks other than STREAMINFO */
-            if (metadata_type == FLAC_METADATA_TYPE_VORBIS_COMMENT) {
-                if (ff_vorbis_comment(s, &s->metadata, buffer, metadata_size)) {
+            if (metadata_type == FLAC_METADATA_TYPE_VORBIS_COMMENT)
+            {
+                if (ff_vorbis_comment(s, &s->metadata, buffer, metadata_size))
+                {
                     av_log(s, AV_LOG_WARNING, "error parsing VorbisComment metadata\n");
                 }
             }
@@ -119,18 +133,19 @@ static int flac_probe(AVProbeData *p)
     uint8_t *bufptr = p->buf;
     uint8_t *end    = p->buf + p->buf_size;
 
-    if(bufptr > end-4 || memcmp(bufptr, "fLaC", 4)) return 0;
-    else                                            return AVPROBE_SCORE_MAX/2;
+    if(bufptr > end - 4 || memcmp(bufptr, "fLaC", 4)) return 0;
+    else                                            return AVPROBE_SCORE_MAX / 2;
 }
 
-AVInputFormat ff_flac_demuxer = {
+AVInputFormat ff_flac_demuxer =
+{
     "flac",
     NULL_IF_CONFIG_SMALL("raw FLAC"),
     0,
     flac_probe,
     flac_read_header,
     ff_raw_read_partial_packet,
-    .flags= AVFMT_GENERIC_INDEX,
+    .flags = AVFMT_GENERIC_INDEX,
     .extensions = "flac",
     .value = CODEC_ID_FLAC,
 };

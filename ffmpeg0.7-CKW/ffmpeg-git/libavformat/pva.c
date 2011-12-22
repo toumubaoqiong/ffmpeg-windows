@@ -27,11 +27,13 @@
 #define PVA_AUDIO_PAYLOAD       0x02
 #define PVA_MAGIC               (('A' << 8) + 'V')
 
-typedef struct {
+typedef struct
+{
     int continue_pes;
 } PVAContext;
 
-static int pva_probe(AVProbeData * pd) {
+static int pva_probe(AVProbeData *pd)
+{
     unsigned char *buf = pd->buf;
 
     if (AV_RB16(buf) == PVA_MAGIC && buf[2] && buf[2] < 3 && buf[4] == 0x55)
@@ -40,7 +42,8 @@ static int pva_probe(AVProbeData * pd) {
     return 0;
 }
 
-static int pva_read_header(AVFormatContext *s, AVFormatParameters *ap) {
+static int pva_read_header(AVFormatContext *s, AVFormatParameters *ap)
+{
     AVStream *st;
 
     if (!(st = av_new_stream(s, 0)))
@@ -66,7 +69,8 @@ static int pva_read_header(AVFormatContext *s, AVFormatParameters *ap) {
 #define pva_log if (read_packet) av_log
 
 static int read_part_of_packet(AVFormatContext *s, int64_t *pts,
-                               int *len, int *strid, int read_packet) {
+                               int *len, int *strid, int read_packet)
+{
     AVIOContext *pb = s->pb;
     PVAContext *pvactx = s->priv_data;
     int syncword, streamid, reserved, flags, length, pts_flag;
@@ -84,31 +88,39 @@ recover:
 
     pts_flag = flags & 0x10;
 
-    if (syncword != PVA_MAGIC) {
+    if (syncword != PVA_MAGIC)
+    {
         pva_log(s, AV_LOG_ERROR, "invalid syncword\n");
         return AVERROR(EIO);
     }
-    if (streamid != PVA_VIDEO_PAYLOAD && streamid != PVA_AUDIO_PAYLOAD) {
+    if (streamid != PVA_VIDEO_PAYLOAD && streamid != PVA_AUDIO_PAYLOAD)
+    {
         pva_log(s, AV_LOG_ERROR, "invalid streamid\n");
         return AVERROR(EIO);
     }
-    if (reserved != 0x55) {
+    if (reserved != 0x55)
+    {
         pva_log(s, AV_LOG_WARNING, "expected reserved byte to be 0x55\n");
     }
-    if (length > PVA_MAX_PAYLOAD_LENGTH) {
+    if (length > PVA_MAX_PAYLOAD_LENGTH)
+    {
         pva_log(s, AV_LOG_ERROR, "invalid payload length %u\n", length);
         return AVERROR(EIO);
     }
 
-    if (streamid == PVA_VIDEO_PAYLOAD && pts_flag) {
+    if (streamid == PVA_VIDEO_PAYLOAD && pts_flag)
+    {
         pva_pts = avio_rb32(pb);
         length -= 4;
-    } else if (streamid == PVA_AUDIO_PAYLOAD) {
+    }
+    else if (streamid == PVA_AUDIO_PAYLOAD)
+    {
         /* PVA Audio Packets either start with a signaled PES packet or
          * are a continuation of the previous PES packet. New PES packets
          * always start at the beginning of a PVA Packet, never somewhere in
          * the middle. */
-        if (!pvactx->continue_pes) {
+        if (!pvactx->continue_pes)
+        {
             int pes_signal, pes_header_data_length, pes_packet_length,
                 pes_flags;
             unsigned char pes_header_data[256];
@@ -119,9 +131,10 @@ recover:
             pes_flags              = avio_rb16(pb);
             pes_header_data_length = avio_r8(pb);
 
-            if (pes_signal != 1) {
+            if (pes_signal != 1)
+            {
                 pva_log(s, AV_LOG_WARNING, "expected signaled PES packet, "
-                                          "trying to recover\n");
+                        "trying to recover\n");
                 avio_skip(pb, length - 9);
                 if (!read_packet)
                     return AVERROR(EIO);
@@ -141,7 +154,8 @@ recover:
 
         pvactx->continue_pes -= length;
 
-        if (pvactx->continue_pes < 0) {
+        if (pvactx->continue_pes < 0)
+        {
             pva_log(s, AV_LOG_WARNING, "audio data corruption\n");
             pvactx->continue_pes = 0;
         }
@@ -156,13 +170,14 @@ recover:
     return 0;
 }
 
-static int pva_read_packet(AVFormatContext *s, AVPacket *pkt) {
+static int pva_read_packet(AVFormatContext *s, AVPacket *pkt)
+{
     AVIOContext *pb = s->pb;
     int64_t pva_pts;
     int ret, length, streamid;
 
     if (read_part_of_packet(s, &pva_pts, &length, &streamid, 1) < 0 ||
-       (ret = av_get_packet(pb, pkt, length)) <= 0)
+            (ret = av_get_packet(pb, pkt, length)) <= 0)
         return AVERROR(EIO);
 
     pkt->stream_index = streamid - 1;
@@ -172,24 +187,28 @@ static int pva_read_packet(AVFormatContext *s, AVPacket *pkt) {
 }
 
 static int64_t pva_read_timestamp(struct AVFormatContext *s, int stream_index,
-                                          int64_t *pos, int64_t pos_limit) {
+                                  int64_t *pos, int64_t pos_limit)
+{
     AVIOContext *pb = s->pb;
     PVAContext *pvactx = s->priv_data;
     int length, streamid;
     int64_t res = AV_NOPTS_VALUE;
 
-    pos_limit = FFMIN(*pos+PVA_MAX_PAYLOAD_LENGTH*8, (uint64_t)*pos+pos_limit);
+    pos_limit = FFMIN(*pos + PVA_MAX_PAYLOAD_LENGTH * 8, (uint64_t) * pos + pos_limit);
 
-    while (*pos < pos_limit) {
+    while (*pos < pos_limit)
+    {
         res = AV_NOPTS_VALUE;
         avio_seek(pb, *pos, SEEK_SET);
 
         pvactx->continue_pes = 0;
-        if (read_part_of_packet(s, &res, &length, &streamid, 0)) {
+        if (read_part_of_packet(s, &res, &length, &streamid, 0))
+        {
             (*pos)++;
             continue;
         }
-        if (streamid - 1 != stream_index || res == AV_NOPTS_VALUE) {
+        if (streamid - 1 != stream_index || res == AV_NOPTS_VALUE)
+        {
             *pos = avio_tell(pb) + length;
             continue;
         }
@@ -200,7 +219,8 @@ static int64_t pva_read_timestamp(struct AVFormatContext *s, int stream_index,
     return res;
 }
 
-AVInputFormat ff_pva_demuxer = {
+AVInputFormat ff_pva_demuxer =
+{
     "pva",
     NULL_IF_CONFIG_SMALL("TechnoTrend PVA file and stream format"),
     sizeof(PVAContext),

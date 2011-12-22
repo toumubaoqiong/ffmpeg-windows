@@ -28,12 +28,14 @@
 
 #define AV_CAT_SEPARATOR "|"
 
-struct concat_nodes {
+struct concat_nodes
+{
     URLContext *uc;                ///< node's URLContext
     int64_t     size;              ///< url filesize
 };
 
-struct concat_data {
+struct concat_data
+{
     struct concat_nodes *nodes;    ///< list of nodes to concat
     size_t               length;   ///< number of cat'ed nodes
     size_t               current;  ///< index of currently read node
@@ -75,37 +77,44 @@ static av_cold int concat_open(URLContext *h, const char *uri, int flags)
     for (i = 0, len = 1; uri[i]; i++)
         if (uri[i] == *AV_CAT_SEPARATOR)
             /* integer overflow */
-            if (++len == UINT_MAX / sizeof(*nodes)) {
+            if (++len == UINT_MAX / sizeof(*nodes))
+            {
                 av_freep(&h->priv_data);
                 return AVERROR(ENAMETOOLONG);
             }
 
-    if (!(nodes = av_malloc(sizeof(*nodes) * len))) {
+    if (!(nodes = av_malloc(sizeof(*nodes) * len)))
+    {
         av_freep(&h->priv_data);
         return AVERROR(ENOMEM);
-    } else
+    }
+    else
         data->nodes = nodes;
 
     /* handle input */
     if (!*uri)
         err = AVERROR(ENOENT);
-    for (i = 0; *uri; i++) {
+    for (i = 0; *uri; i++)
+    {
         /* parsing uri */
         len = strcspn(uri, AV_CAT_SEPARATOR);
-        if (!(tmp_uri = av_realloc(node_uri, len+1))) {
+        if (!(tmp_uri = av_realloc(node_uri, len + 1)))
+        {
             err = AVERROR(ENOMEM);
             break;
-        } else
+        }
+        else
             node_uri = tmp_uri;
-        av_strlcpy(node_uri, uri, len+1);
-        uri += len + strspn(uri+len, AV_CAT_SEPARATOR);
+        av_strlcpy(node_uri, uri, len + 1);
+        uri += len + strspn(uri + len, AV_CAT_SEPARATOR);
 
         /* creating URLContext */
         if ((err = ffurl_open(&uc, node_uri, flags)) < 0)
             break;
 
         /* creating size */
-        if ((size = ffurl_size(uc)) < 0) {
+        if ((size = ffurl_size(uc)) < 0)
+        {
             ffurl_close(uc);
             err = AVERROR(ENOSYS);
             break;
@@ -120,10 +129,12 @@ static av_cold int concat_open(URLContext *h, const char *uri, int flags)
 
     if (err < 0)
         concat_close(h);
-    else if (!(nodes = av_realloc(nodes, data->length * sizeof(*nodes)))) {
+    else if (!(nodes = av_realloc(nodes, data->length * sizeof(*nodes))))
+    {
         concat_close(h);
         err = AVERROR(ENOMEM);
-    } else
+    }
+    else
         data->nodes = nodes;
     return err;
 }
@@ -135,13 +146,14 @@ static int concat_read(URLContext *h, unsigned char *buf, int size)
     struct concat_nodes *nodes = data->nodes;
     size_t i = data->current;
 
-    while (size > 0) {
+    while (size > 0)
+    {
         result = ffurl_read(nodes[i].uc, buf, size);
         if (result < 0)
             return total ? total : result;
         if (!result)
             if (i + 1 == data->length ||
-                ffurl_seek(nodes[++i].uc, 0, SEEK_SET) < 0)
+                    ffurl_seek(nodes[++i].uc, 0, SEEK_SET) < 0)
                 break;
         total += result;
         buf   += result;
@@ -158,11 +170,12 @@ static int64_t concat_seek(URLContext *h, int64_t pos, int whence)
     struct concat_nodes *nodes = data->nodes;
     size_t i;
 
-    switch (whence) {
+    switch (whence)
+    {
     case SEEK_END:
         for (i = data->length - 1;
-             i && pos < -nodes[i].size;
-             i--)
+                i && pos < -nodes[i].size;
+                i--)
             pos += nodes[i].size;
         break;
     case SEEK_CUR:
@@ -181,7 +194,8 @@ static int64_t concat_seek(URLContext *h, int64_t pos, int whence)
     }
 
     result = ffurl_seek(nodes[i].uc, pos, whence);
-    if (result >= 0) {
+    if (result >= 0)
+    {
         data->current = i;
         while (i)
             result += nodes[--i].size;
@@ -189,7 +203,8 @@ static int64_t concat_seek(URLContext *h, int64_t pos, int whence)
     return result;
 }
 
-URLProtocol ff_concat_protocol = {
+URLProtocol ff_concat_protocol =
+{
     .name      = "concat",
     .url_open  = concat_open,
     .url_read  = concat_read,

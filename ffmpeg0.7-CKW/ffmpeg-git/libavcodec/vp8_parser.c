@@ -21,18 +21,19 @@
 #include "parser.h"
 
 static int parse(AVCodecParserContext *s,
-                           AVCodecContext *avctx,
-                           const uint8_t **poutbuf, int *poutbuf_size,
-                           const uint8_t *buf, int buf_size)
+                 AVCodecContext *avctx,
+                 const uint8_t **poutbuf, int *poutbuf_size,
+                 const uint8_t *buf, int buf_size)
 {
-    s->pict_type= (buf[0]&0x01) ? FF_P_TYPE : FF_I_TYPE;
+    s->pict_type = (buf[0] & 0x01) ? FF_P_TYPE : FF_I_TYPE;
 
     *poutbuf = buf;
     *poutbuf_size = buf_size;
     return buf_size;
 }
 
-AVCodecParser ff_vp8_parser = {
+AVCodecParser ff_vp8_parser =
+{
     { CODEC_ID_VP8 },
     0,
     NULL,

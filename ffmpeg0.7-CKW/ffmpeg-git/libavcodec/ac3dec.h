@@ -70,12 +70,13 @@
 /** Large enough for maximum possible frame size when the specification limit is ignored */
 #define AC3_FRAME_BUFFER_SIZE 32768
 
-typedef struct {
+typedef struct
+{
     AVCodecContext *avctx;                  ///< parent context
     GetBitContext gbc;                      ///< bitstream reader
 
-///@defgroup bsi bit stream information
-///@{
+    ///@defgroup bsi bit stream information
+    ///@{
     int frame_type;                         ///< frame type                             (strmtyp)
     int substreamid;                        ///< substream identification
     int frame_size;                         ///< current frame size, in bytes
@@ -90,9 +91,9 @@ typedef struct {
     int center_mix_level;                   ///< Center mix level index
     int surround_mix_level;                 ///< Surround mix level index
     int eac3;                               ///< indicates if current frame is E-AC-3
-///@}
+    ///@}
 
-///@defgroup audfrm frame syntax parameters
+    ///@defgroup audfrm frame syntax parameters
     int snr_offset_strategy;                ///< SNR offset strategy                    (snroffststr)
     int block_switch_syntax;                ///< block switch syntax enabled            (blkswe)
     int dither_flag_syntax;                 ///< dither flag syntax enabled             (dithflage)
@@ -100,9 +101,9 @@ typedef struct {
     int fast_gain_syntax;                   ///< fast gain codes enabled                (frmfgaincode)
     int dba_syntax;                         ///< delta bit allocation syntax enabled    (dbaflde)
     int skip_syntax;                        ///< skip field syntax enabled              (skipflde)
- ///@}
+    ///@}
 
-///@defgroup cpl standard coupling
+    ///@defgroup cpl standard coupling
     int cpl_in_use[AC3_MAX_BLOCKS];         ///< coupling in use                        (cplinu)
     int cpl_strategy_exists[AC3_MAX_BLOCKS];///< coupling strategy exists               (cplstre)
     int channel_in_cpl[AC3_MAX_CHANNELS];   ///< channel in coupling                    (chincpl)
@@ -113,30 +114,30 @@ typedef struct {
     int firstchincpl;                       ///< first channel in coupling
     int first_cpl_coords[AC3_MAX_CHANNELS]; ///< first coupling coordinates states      (firstcplcos)
     int cpl_coords[AC3_MAX_CHANNELS][AC3_MAX_CPL_BANDS]; ///< coupling coordinates      (cplco)
-///@}
+    ///@}
 
-///@defgroup spx spectral extension
-///@{
+    ///@defgroup spx spectral extension
+    ///@{
     int spx_in_use;                             ///< spectral extension in use              (spxinu)
     uint8_t channel_uses_spx[AC3_MAX_CHANNELS]; ///< channel uses spectral extension        (chinspx)
     int8_t spx_atten_code[AC3_MAX_CHANNELS];    ///< spx attenuation code                   (spxattencod)
     int spx_src_start_freq;                     ///< spx start frequency bin
     int spx_dst_end_freq;                       ///< spx end frequency bin
     int spx_dst_start_freq;                     ///< spx starting frequency bin for copying (copystartmant)
-                                                ///< the copy region ends at the start of the spx region.
+    ///< the copy region ends at the start of the spx region.
     int num_spx_bands;                          ///< number of spx bands                    (nspxbnds)
     uint8_t spx_band_sizes[SPX_MAX_BANDS];      ///< number of bins in each spx band
     uint8_t first_spx_coords[AC3_MAX_CHANNELS]; ///< first spx coordinates states           (firstspxcos)
     float spx_noise_blend[AC3_MAX_CHANNELS][SPX_MAX_BANDS]; ///< spx noise blending factor  (nblendfact)
     float spx_signal_blend[AC3_MAX_CHANNELS][SPX_MAX_BANDS];///< spx signal blending factor (sblendfact)
-///@}
+    ///@}
 
-///@defgroup aht adaptive hybrid transform
+    ///@defgroup aht adaptive hybrid transform
     int channel_uses_aht[AC3_MAX_CHANNELS];                         ///< channel AHT in use (chahtinu)
     int pre_mantissa[AC3_MAX_CHANNELS][AC3_MAX_COEFS][AC3_MAX_BLOCKS];  ///< pre-IDCT mantissas
-///@}
+    ///@}
 
-///@defgroup channel channel
+    ///@defgroup channel channel
     int fbw_channels;                           ///< number of full-bandwidth channels
     int channels;                               ///< number of total channels
     int lfe_ch;                                 ///< index of LFE channel
@@ -144,29 +145,29 @@ typedef struct {
     int downmixed;                              ///< indicates if coeffs are currently downmixed
     int output_mode;                            ///< output channel configuration
     int out_channels;                           ///< number of output channels
-///@}
+    ///@}
 
-///@defgroup dynrng dynamic range
+    ///@defgroup dynrng dynamic range
     float dynamic_range[2];                 ///< dynamic range
-///@}
+    ///@}
 
-///@defgroup bandwidth bandwidth
+    ///@defgroup bandwidth bandwidth
     int start_freq[AC3_MAX_CHANNELS];       ///< start frequency bin                    (strtmant)
     int end_freq[AC3_MAX_CHANNELS];         ///< end frequency bin                      (endmant)
-///@}
+    ///@}
 
-///@defgroup rematrixing rematrixing
+    ///@defgroup rematrixing rematrixing
     int num_rematrixing_bands;              ///< number of rematrixing bands            (nrematbnd)
     int rematrixing_flags[4];               ///< rematrixing flags                      (rematflg)
-///@}
+    ///@}
 
-///@defgroup exponents exponents
+    ///@defgroup exponents exponents
     int num_exp_groups[AC3_MAX_CHANNELS];           ///< Number of exponent groups      (nexpgrp)
     int8_t dexps[AC3_MAX_CHANNELS][AC3_MAX_COEFS];  ///< decoded exponents
     int exp_strategy[AC3_MAX_BLOCKS][AC3_MAX_CHANNELS]; ///< exponent strategies        (expstr)
-///@}
+    ///@}
 
-///@defgroup bitalloc bit allocation
+    ///@defgroup bitalloc bit allocation
     AC3BitAllocParameters bit_alloc_params;         ///< bit allocation parameters
     int first_cpl_leak;                             ///< first coupling leak state      (firstcplleak)
     int snr_offset[AC3_MAX_CHANNELS];               ///< signal-to-noise ratio offsets  (snroffst)
@@ -180,27 +181,27 @@ typedef struct {
     uint8_t dba_offsets[AC3_MAX_CHANNELS][8];       ///< delta segment offsets
     uint8_t dba_lengths[AC3_MAX_CHANNELS][8];       ///< delta segment lengths
     uint8_t dba_values[AC3_MAX_CHANNELS][8];        ///< delta values for each segment
-///@}
+    ///@}
 
-///@defgroup dithering zero-mantissa dithering
+    ///@defgroup dithering zero-mantissa dithering
     int dither_flag[AC3_MAX_CHANNELS];      ///< dither flags                           (dithflg)
     AVLFG dith_state;                       ///< for dither generation
-///@}
+    ///@}
 
-///@defgroup imdct IMDCT
+    ///@defgroup imdct IMDCT
     int block_switch[AC3_MAX_CHANNELS];     ///< block switch flags                     (blksw)
     FFTContext imdct_512;                   ///< for 512 sample IMDCT
     FFTContext imdct_256;                   ///< for 256 sample IMDCT
-///@}
+    ///@}
 
-///@defgroup opt optimization
+    ///@defgroup opt optimization
     DSPContext dsp;                         ///< for optimization
     AC3DSPContext ac3dsp;
     FmtConvertContext fmt_conv;             ///< optimized conversion functions
     float mul_bias;                         ///< scaling for float_to_int16 conversion
-///@}
+    ///@}
 
-///@defgroup arrays aligned arrays
+    ///@defgroup arrays aligned arrays
     DECLARE_ALIGNED(16, int,   fixed_coeffs)[AC3_MAX_CHANNELS][AC3_MAX_COEFS];       ///< fixed-point transform coefficients
     DECLARE_ALIGNED(16, float, transform_coeffs)[AC3_MAX_CHANNELS][AC3_MAX_COEFS];   ///< transform coefficients
     DECLARE_ALIGNED(16, float, delay)[AC3_MAX_CHANNELS][AC3_BLOCK_SIZE];             ///< delay - added to the next block
@@ -208,7 +209,7 @@ typedef struct {
     DECLARE_ALIGNED(16, float, tmp_output)[AC3_BLOCK_SIZE];                          ///< temporary storage for output before windowing
     DECLARE_ALIGNED(16, float, output)[AC3_MAX_CHANNELS][AC3_BLOCK_SIZE];            ///< output after imdct transform and windowing
     DECLARE_ALIGNED(16, uint8_t, input_buffer)[AC3_FRAME_BUFFER_SIZE + FF_INPUT_BUFFER_PADDING_SIZE]; ///< temp buffer to prevent overread
-///@}
+    ///@}
 } AC3DecodeContext;
 
 /**

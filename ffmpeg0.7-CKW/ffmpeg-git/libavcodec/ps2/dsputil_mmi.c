@@ -29,9 +29,9 @@ void ff_mmi_idct_put(uint8_t *dest, int line_size, DCTELEM *block);
 void ff_mmi_idct_add(uint8_t *dest, int line_size, DCTELEM *block);
 void ff_mmi_idct(DCTELEM *block);
 
-static void clear_blocks_mmi(DCTELEM * blocks)
+static void clear_blocks_mmi(DCTELEM *blocks)
 {
-        __asm__ volatile(
+    __asm__ volatile(
         ".set noreorder    \n"
         "addiu $9, %0, 768 \n"
         "nop               \n"
@@ -51,7 +51,7 @@ static void clear_blocks_mmi(DCTELEM * blocks)
 
 static void get_pixels_mmi(DCTELEM *block, const uint8_t *pixels, int line_size)
 {
-        __asm__ volatile(
+    __asm__ volatile(
         ".set   push            \n\t"
         ".set   mips3           \n\t"
         "ld     $8, 0(%0)       \n\t"
@@ -92,7 +92,7 @@ static void get_pixels_mmi(DCTELEM *block, const uint8_t *pixels, int line_size)
 
 static void put_pixels8_mmi(uint8_t *block, const uint8_t *pixels, int line_size, int h)
 {
-        __asm__ volatile(
+    __asm__ volatile(
         ".set   push            \n\t"
         ".set   mips3           \n\t"
         "1:                     \n\t"
@@ -111,7 +111,7 @@ static void put_pixels8_mmi(uint8_t *block, const uint8_t *pixels, int line_size
 
 static void put_pixels16_mmi(uint8_t *block, const uint8_t *pixels, int line_size, int h)
 {
-        __asm__ volatile (
+    __asm__ volatile (
         ".set   push            \n\t"
         ".set   mips3           \n\t"
         "1:                     \n\t"
@@ -139,28 +139,30 @@ static void put_pixels16_mmi(uint8_t *block, const uint8_t *pixels, int line_siz
 }
 
 
-void dsputil_init_mmi(DSPContext* c, AVCodecContext *avctx)
+void dsputil_init_mmi(DSPContext *c, AVCodecContext *avctx)
 {
-    const int idct_algo= avctx->idct_algo;
+    const int idct_algo = avctx->idct_algo;
     const int h264_high_depth = avctx->codec_id == CODEC_ID_H264 && avctx->bits_per_raw_sample > 8;
 
-    if (!h264_high_depth) {
-    c->clear_blocks = clear_blocks_mmi;
+    if (!h264_high_depth)
+    {
+        c->clear_blocks = clear_blocks_mmi;
 
-    c->put_pixels_tab[1][0] = put_pixels8_mmi;
-    c->put_no_rnd_pixels_tab[1][0] = put_pixels8_mmi;
+        c->put_pixels_tab[1][0] = put_pixels8_mmi;
+        c->put_no_rnd_pixels_tab[1][0] = put_pixels8_mmi;
 
-    c->put_pixels_tab[0][0] = put_pixels16_mmi;
-    c->put_no_rnd_pixels_tab[0][0] = put_pixels16_mmi;
+        c->put_pixels_tab[0][0] = put_pixels16_mmi;
+        c->put_no_rnd_pixels_tab[0][0] = put_pixels16_mmi;
     }
 
     c->get_pixels = get_pixels_mmi;
 
-    if(idct_algo==FF_IDCT_AUTO || idct_algo==FF_IDCT_PS2){
-        c->idct_put= ff_mmi_idct_put;
-        c->idct_add= ff_mmi_idct_add;
+    if(idct_algo == FF_IDCT_AUTO || idct_algo == FF_IDCT_PS2)
+    {
+        c->idct_put = ff_mmi_idct_put;
+        c->idct_add = ff_mmi_idct_add;
         c->idct    = ff_mmi_idct;
-        c->idct_permutation_type= FF_LIBMPEG2_IDCT_PERM;
+        c->idct_permutation_type = FF_LIBMPEG2_IDCT_PERM;
     }
 }
 

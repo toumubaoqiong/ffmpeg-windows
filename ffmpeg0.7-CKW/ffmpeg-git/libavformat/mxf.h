@@ -26,7 +26,8 @@
 
 typedef uint8_t UID[16];
 
-enum MXFMetadataSetType {
+enum MXFMetadataSetType
+{
     AnyType,
     MaterialPackage,
     SourcePackage,
@@ -46,13 +47,15 @@ enum MXFMetadataSetType {
     TypeBottom,// add metadata type before this
 };
 
-typedef struct {
+typedef struct
+{
     UID key;
     int64_t offset;
     uint64_t length;
 } KLVPacket;
 
-typedef struct {
+typedef struct
+{
     UID uid;
     unsigned matching_len;
     int id;

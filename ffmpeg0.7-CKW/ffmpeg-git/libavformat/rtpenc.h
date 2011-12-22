@@ -24,7 +24,8 @@
 #include "avformat.h"
 #include "rtp.h"
 
-struct RTPMuxContext {
+struct RTPMuxContext
+{
     AVFormatContext *ic;
     AVStream *st;
     int payload_type;

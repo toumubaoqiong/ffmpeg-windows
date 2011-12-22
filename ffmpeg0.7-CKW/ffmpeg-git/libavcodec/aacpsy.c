@@ -59,16 +59,18 @@
 /**
  * information for single band used by 3GPP TS26.403-inspired psychoacoustic model
  */
-typedef struct AacPsyBand{
+typedef struct AacPsyBand
+{
     float energy;    ///< band energy
     float thr;       ///< energy threshold
     float thr_quiet; ///< threshold in quiet
-}AacPsyBand;
+} AacPsyBand;
 
 /**
  * single/pair channel context for psychoacoustic model
  */
-typedef struct AacPsyChannel{
+typedef struct AacPsyChannel
+{
     AacPsyBand band[128];               ///< bands information
     AacPsyBand prev_band[128];          ///< bands information from the previous frame
 
@@ -78,46 +80,50 @@ typedef struct AacPsyChannel{
     enum WindowSequence next_window_seq; ///< window sequence to be used in the next frame
     /* LAME psy model specific members */
     float attack_threshold;              ///< attack threshold for this channel
-    float prev_energy_subshort[AAC_NUM_BLOCKS_SHORT * PSY_LAME_NUM_SUBBLOCKS];
+    float prev_energy_subshort[AAC_NUM_BLOCKS_SHORT *PSY_LAME_NUM_SUBBLOCKS];
     int   prev_attack;                   ///< attack value for the last short block in the previous sequence
-}AacPsyChannel;
+} AacPsyChannel;
 
 /**
  * psychoacoustic model frame type-dependent coefficients
  */
-typedef struct AacPsyCoeffs{
+typedef struct AacPsyCoeffs
+{
     float ath;           ///< absolute threshold of hearing per bands
     float barks;         ///< Bark value for each spectral band in long frame
     float spread_low[2]; ///< spreading factor for low-to-high threshold spreading in long frame
     float spread_hi [2]; ///< spreading factor for high-to-low threshold spreading in long frame
     float min_snr;       ///< minimal SNR
-}AacPsyCoeffs;
+} AacPsyCoeffs;
 
 /**
  * 3GPP TS26.403-inspired psychoacoustic model specific data
  */
-typedef struct AacPsyContext{
+typedef struct AacPsyContext
+{
     AacPsyCoeffs psy_coef[2][64];
     AacPsyChannel *ch;
-}AacPsyContext;
+} AacPsyContext;
 
 /**
  * LAME psy model preset struct
  */
-typedef struct {
+typedef struct
+{
     int   quality;  ///< Quality to map the rest of the vaules to.
-     /* This is overloaded to be both kbps per channel in ABR mode, and
-      * requested quality in constant quality mode.
-      */
+    /* This is overloaded to be both kbps per channel in ABR mode, and
+     * requested quality in constant quality mode.
+     */
     float st_lrm;   ///< short threshold for L, R, and M channels
 } PsyLamePreset;
 
 /**
  * LAME psy model preset table for ABR
  */
-static const PsyLamePreset psy_abr_map[] = {
-/* TODO: Tuning. These were taken from LAME. */
-/* kbps/ch st_lrm   */
+static const PsyLamePreset psy_abr_map[] =
+{
+    /* TODO: Tuning. These were taken from LAME. */
+    /* kbps/ch st_lrm   */
     {  8,  6.60},
     { 16,  6.60},
     { 24,  6.60},
@@ -136,8 +142,9 @@ static const PsyLamePreset psy_abr_map[] = {
 /**
 * LAME psy model preset table for constant quality
 */
-static const PsyLamePreset psy_vbr_map[] = {
-/* vbr_q  st_lrm    */
+static const PsyLamePreset psy_vbr_map[] =
+{
+    /* vbr_q  st_lrm    */
     { 0,  4.20},
     { 1,  4.20},
     { 2,  4.20},
@@ -154,7 +161,8 @@ static const PsyLamePreset psy_vbr_map[] = {
 /**
  * LAME psy model FIR coefficient table
  */
-static const float psy_fir_coeffs[] = {
+static const float psy_fir_coeffs[] =
+{
     -8.65163e-18 * 2, -0.00851586 * 2, -6.74764e-18 * 2, 0.0209036 * 2,
     -3.36639e-17 * 2, -0.0438162 * 2,  -1.54175e-17 * 2, 0.0931738 * 2,
     -5.52212e-17 * 2, -0.313819 * 2
@@ -174,8 +182,10 @@ static float lame_calc_attack_threshold(int bitrate)
     /* Determine which bitrates the value specified falls between.
      * If the loop ends without breaking our above assumption of 320kbps was correct.
      */
-    for (i = 1; i < 13; i++) {
-        if (FFMAX(bitrate, psy_abr_map[i].quality) != bitrate) {
+    for (i = 1; i < 13; i++)
+    {
+        if (FFMAX(bitrate, psy_abr_map[i].quality) != bitrate)
+        {
             upper_range = i;
             upper_range_kbps = psy_abr_map[i    ].quality;
             lower_range = i - 1;
@@ -193,10 +203,12 @@ static float lame_calc_attack_threshold(int bitrate)
 /**
  * LAME psy model specific initialization
  */
-static void lame_window_init(AacPsyContext *ctx, AVCodecContext *avctx) {
+static void lame_window_init(AacPsyContext *ctx, AVCodecContext *avctx)
+{
     int i, j;
 
-    for (i = 0; i < avctx->channels; i++) {
+    for (i = 0; i < avctx->channels; i++)
+    {
         AacPsyChannel *pch = &ctx->ch[i];
 
         if (avctx->flags & CODEC_FLAG_QSCALE)
@@ -226,41 +238,46 @@ static av_cold float ath(float f, float add)
 {
     f /= 1000.0f;
     return    3.64 * pow(f, -0.8)
-            - 6.8  * exp(-0.6  * (f - 3.4) * (f - 3.4))
-            + 6.0  * exp(-0.15 * (f - 8.7) * (f - 8.7))
-            + (0.6 + 0.04 * add) * 0.001 * f * f * f * f;
+              - 6.8  * exp(-0.6  * (f - 3.4) * (f - 3.4))
+              + 6.0  * exp(-0.15 * (f - 8.7) * (f - 8.7))
+              + (0.6 + 0.04 * add) * 0.001 * f * f * f * f;
 }
 
-static av_cold int psy_3gpp_init(FFPsyContext *ctx) {
+static av_cold int psy_3gpp_init(FFPsyContext *ctx)
+{
     AacPsyContext *pctx;
     float bark;
     int i, j, g, start;
     float prev, minscale, minath;
 
     ctx->model_priv_data = av_mallocz(sizeof(AacPsyContext));
-    pctx = (AacPsyContext*) ctx->model_priv_data;
+    pctx = (AacPsyContext *) ctx->model_priv_data;
 
     minath = ath(3410, ATH_ADD);
-    for (j = 0; j < 2; j++) {
+    for (j = 0; j < 2; j++)
+    {
         AacPsyCoeffs *coeffs = pctx->psy_coef[j];
         const uint8_t *band_sizes = ctx->bands[j];
         float line_to_frequency = ctx->avctx->sample_rate / (j ? 256.f : 2048.0f);
         i = 0;
         prev = 0.0;
-        for (g = 0; g < ctx->num_bands[j]; g++) {
+        for (g = 0; g < ctx->num_bands[j]; g++)
+        {
             i += band_sizes[g];
-            bark = calc_bark((i-1) * line_to_frequency);
+            bark = calc_bark((i - 1) * line_to_frequency);
             coeffs[g].barks = (bark + prev) / 2.0;
             prev = bark;
         }
-        for (g = 0; g < ctx->num_bands[j] - 1; g++) {
+        for (g = 0; g < ctx->num_bands[j] - 1; g++)
+        {
             AacPsyCoeffs *coeff = &coeffs[g];
             float bark_width = coeffs[g+1].barks - coeffs->barks;
             coeff->spread_low[0] = pow(10.0, -bark_width * PSY_3GPP_THR_SPREAD_LOW);
             coeff->spread_hi [0] = pow(10.0, -bark_width * PSY_3GPP_THR_SPREAD_HI);
         }
         start = 0;
-        for (g = 0; g < ctx->num_bands[j]; g++) {
+        for (g = 0; g < ctx->num_bands[j]; g++)
+        {
             minscale = ath(start * line_to_frequency, ATH_ADD);
             for (i = 1; i < band_sizes[g]; i++)
                 minscale = FFMIN(minscale, ath((start + i) * line_to_frequency, ATH_ADD));
@@ -292,7 +309,8 @@ static float iir_filter(int in, float state[2])
 /**
  * window grouping information stored as bits (0 - new group, 1 - group continues)
  */
-static const uint8_t window_grouping[9] = {
+static const uint8_t window_grouping[9] =
+{
     0xB6, 0x6C, 0xD8, 0xB2, 0x66, 0xC6, 0x96, 0x36, 0x36
 };
 
@@ -307,38 +325,44 @@ static FFPsyWindowInfo psy_3gpp_window(FFPsyContext *ctx,
     int i, j;
     int br               = ctx->avctx->bit_rate / ctx->avctx->channels;
     int attack_ratio     = br <= 16000 ? 18 : 10;
-    AacPsyContext *pctx = (AacPsyContext*) ctx->model_priv_data;
+    AacPsyContext *pctx = (AacPsyContext *) ctx->model_priv_data;
     AacPsyChannel *pch  = &pctx->ch[channel];
     uint8_t grouping     = 0;
     int next_type        = pch->next_window_seq;
     FFPsyWindowInfo wi;
 
     memset(&wi, 0, sizeof(wi));
-    if (la) {
+    if (la)
+    {
         float s[8], v;
         int switch_to_eight = 0;
         float sum = 0.0, sum2 = 0.0;
         int attack_n = 0;
         int stay_short = 0;
-        for (i = 0; i < 8; i++) {
-            for (j = 0; j < 128; j++) {
+        for (i = 0; i < 8; i++)
+        {
+            for (j = 0; j < 128; j++)
+            {
                 v = iir_filter(la[(i*128+j)*ctx->avctx->channels], pch->iir_state);
-                sum += v*v;
+                sum += v * v;
             }
             s[i]  = sum;
             sum2 += sum;
         }
-        for (i = 0; i < 8; i++) {
-            if (s[i] > pch->win_energy * attack_ratio) {
+        for (i = 0; i < 8; i++)
+        {
+            if (s[i] > pch->win_energy * attack_ratio)
+            {
                 attack_n        = i + 1;
                 switch_to_eight = 1;
                 break;
             }
         }
-        pch->win_energy = pch->win_energy*7/8 + sum2/64;
+        pch->win_energy = pch->win_energy * 7 / 8 + sum2 / 64;
 
         wi.window_type[1] = prev_type;
-        switch (prev_type) {
+        switch (prev_type)
+        {
         case ONLY_LONG_SEQUENCE:
             wi.window_type[0] = switch_to_eight ? LONG_START_SEQUENCE : ONLY_LONG_SEQUENCE;
             next_type = switch_to_eight ? EIGHT_SHORT_SEQUENCE : ONLY_LONG_SEQUENCE;
@@ -362,20 +386,26 @@ static FFPsyWindowInfo psy_3gpp_window(FFPsyContext *ctx,
 
         pch->next_grouping = window_grouping[attack_n];
         pch->next_window_seq = next_type;
-    } else {
+    }
+    else
+    {
         for (i = 0; i < 3; i++)
             wi.window_type[i] = prev_type;
         grouping = (prev_type == EIGHT_SHORT_SEQUENCE) ? window_grouping[0] : 0;
     }
 
     wi.window_shape   = 1;
-    if (wi.window_type[0] != EIGHT_SHORT_SEQUENCE) {
+    if (wi.window_type[0] != EIGHT_SHORT_SEQUENCE)
+    {
         wi.num_windows = 1;
         wi.grouping[0] = 1;
-    } else {
+    }
+    else
+    {
         int lastgrp = 0;
         wi.num_windows = 8;
-        for (i = 0; i < 8; i++) {
+        for (i = 0; i < 8; i++)
+        {
             if (!((grouping >> i) & 1))
                 lastgrp = i;
             wi.grouping[lastgrp]++;
@@ -391,7 +421,7 @@ static FFPsyWindowInfo psy_3gpp_window(FFPsyContext *ctx,
 static void psy_3gpp_analyze(FFPsyContext *ctx, int channel,
                              const float *coefs, const FFPsyWindowInfo *wi)
 {
-    AacPsyContext *pctx = (AacPsyContext*) ctx->model_priv_data;
+    AacPsyContext *pctx = (AacPsyContext *) ctx->model_priv_data;
     AacPsyChannel *pch  = &pctx->ch[channel];
     int start = 0;
     int i, w, g;
@@ -400,8 +430,10 @@ static void psy_3gpp_analyze(FFPsyContext *ctx, int channel,
     AacPsyCoeffs  *coeffs     = pctx->psy_coef[wi->num_windows == 8];
 
     //calculate energies, initial thresholds and related values - 5.4.2 "Threshold Calculation"
-    for (w = 0; w < wi->num_windows*16; w += 16) {
-        for (g = 0; g < num_bands; g++) {
+    for (w = 0; w < wi->num_windows * 16; w += 16)
+    {
+        for (g = 0; g < num_bands; g++)
+        {
             AacPsyBand *band = &pch->band[w+g];
             band->energy = 0.0f;
             for (i = 0; i < band_sizes[g]; i++)
@@ -411,7 +443,8 @@ static void psy_3gpp_analyze(FFPsyContext *ctx, int channel,
         }
     }
     //modify thresholds and energies - spread, threshold in quiet, pre-echo control
-    for (w = 0; w < wi->num_windows*16; w += 16) {
+    for (w = 0; w < wi->num_windows * 16; w += 16)
+    {
         AacPsyBand *bands = &pch->band[w];
         //5.4.2.3 "Spreading" & 5.4.3 "Spreaded Energy Calculation"
         for (g = 1; g < num_bands; g++)
@@ -419,18 +452,21 @@ static void psy_3gpp_analyze(FFPsyContext *ctx, int channel,
         for (g = num_bands - 2; g >= 0; g--)
             bands[g].thr = FFMAX(bands[g].thr, bands[g+1].thr * coeffs[g].spread_low[0]);
         //5.4.2.4 "Threshold in quiet"
-        for (g = 0; g < num_bands; g++) {
+        for (g = 0; g < num_bands; g++)
+        {
             AacPsyBand *band = &bands[g];
             band->thr_quiet = band->thr = FFMAX(band->thr, coeffs[g].ath);
             //5.4.2.5 "Pre-echo control"
             if (!(wi->window_type[0] == LONG_STOP_SEQUENCE || (wi->window_type[1] == LONG_START_SEQUENCE && !w)))
-                band->thr = FFMAX(PSY_3GPP_RPEMIN*band->thr, FFMIN(band->thr,
-                                  PSY_3GPP_RPELEV*pch->prev_band[w+g].thr_quiet));
+                band->thr = FFMAX(PSY_3GPP_RPEMIN * band->thr, FFMIN(band->thr,
+                                  PSY_3GPP_RPELEV * pch->prev_band[w+g].thr_quiet));
         }
     }
 
-    for (w = 0; w < wi->num_windows*16; w += 16) {
-        for (g = 0; g < num_bands; g++) {
+    for (w = 0; w < wi->num_windows * 16; w += 16)
+    {
+        for (g = 0; g < num_bands; g++)
+        {
             AacPsyBand *band     = &pch->band[w+g];
             FFPsyBand  *psy_band = &ctx->psy_bands[channel*PSY_MAX_BANDS+w+g];
 
@@ -444,7 +480,7 @@ static void psy_3gpp_analyze(FFPsyContext *ctx, int channel,
 
 static av_cold void psy_3gpp_end(FFPsyContext *apc)
 {
-    AacPsyContext *pctx = (AacPsyContext*) apc->model_priv_data;
+    AacPsyContext *pctx = (AacPsyContext *) apc->model_priv_data;
     av_freep(&pctx->ch);
     av_freep(&apc->model_priv_data);
 }
@@ -452,10 +488,13 @@ static av_cold void psy_3gpp_end(FFPsyContext *apc)
 static void lame_apply_block_type(AacPsyChannel *ctx, FFPsyWindowInfo *wi, int uselongblock)
 {
     int blocktype = ONLY_LONG_SEQUENCE;
-    if (uselongblock) {
+    if (uselongblock)
+    {
         if (ctx->next_window_seq == EIGHT_SHORT_SEQUENCE)
             blocktype = LONG_STOP_SEQUENCE;
-    } else {
+    }
+    else
+    {
         blocktype = EIGHT_SHORT_SEQUENCE;
         if (ctx->next_window_seq == ONLY_LONG_SEQUENCE)
             ctx->next_window_seq = LONG_START_SEQUENCE;
@@ -471,7 +510,7 @@ static FFPsyWindowInfo psy_lame_window(FFPsyContext *ctx,
                                        const int16_t *audio, const int16_t *la,
                                        int channel, int prev_type)
 {
-    AacPsyContext *pctx = (AacPsyContext*) ctx->model_priv_data;
+    AacPsyContext *pctx = (AacPsyContext *) ctx->model_priv_data;
     AacPsyChannel *pch  = &pctx->ch[channel];
     int grouping     = 0;
     int uselongblock = 1;
@@ -480,22 +519,25 @@ static FFPsyWindowInfo psy_lame_window(FFPsyContext *ctx,
     FFPsyWindowInfo wi;
 
     memset(&wi, 0, sizeof(wi));
-    if (la) {
+    if (la)
+    {
         float hpfsmpl[AAC_BLOCK_SIZE_LONG];
         float const *pf = hpfsmpl;
         float attack_intensity[(AAC_NUM_BLOCKS_SHORT + 1) * PSY_LAME_NUM_SUBBLOCKS];
         float energy_subshort[(AAC_NUM_BLOCKS_SHORT + 1) * PSY_LAME_NUM_SUBBLOCKS];
         float energy_short[AAC_NUM_BLOCKS_SHORT + 1] = { 0 };
         int chans = ctx->avctx->channels;
-        const int16_t *firbuf = la + (AAC_BLOCK_SIZE_SHORT/4 - PSY_LAME_FIR_LEN) * chans;
+        const int16_t *firbuf = la + (AAC_BLOCK_SIZE_SHORT / 4 - PSY_LAME_FIR_LEN) * chans;
         int j, att_sum = 0;
 
         /* LAME comment: apply high pass filter of fs/4 */
-        for (i = 0; i < AAC_BLOCK_SIZE_LONG; i++) {
+        for (i = 0; i < AAC_BLOCK_SIZE_LONG; i++)
+        {
             float sum1, sum2;
             sum1 = firbuf[(i + ((PSY_LAME_FIR_LEN - 1) / 2)) * chans];
             sum2 = 0.0;
-            for (j = 0; j < ((PSY_LAME_FIR_LEN - 1) / 2) - 1; j += 2) {
+            for (j = 0; j < ((PSY_LAME_FIR_LEN - 1) / 2) - 1; j += 2)
+            {
                 sum1 += psy_fir_coeffs[j] * (firbuf[(i + j) * chans] + firbuf[(i + PSY_LAME_FIR_LEN - j) * chans]);
                 sum2 += psy_fir_coeffs[j + 1] * (firbuf[(i + j + 1) * chans] + firbuf[(i + PSY_LAME_FIR_LEN - j - 1) * chans]);
             }
@@ -503,14 +545,16 @@ static FFPsyWindowInfo psy_lame_window(FFPsyContext *ctx,
         }
 
         /* Calculate the energies of each sub-shortblock */
-        for (i = 0; i < PSY_LAME_NUM_SUBBLOCKS; i++) {
+        for (i = 0; i < PSY_LAME_NUM_SUBBLOCKS; i++)
+        {
             energy_subshort[i] = pch->prev_energy_subshort[i + ((AAC_NUM_BLOCKS_SHORT - 1) * PSY_LAME_NUM_SUBBLOCKS)];
             assert(pch->prev_energy_subshort[i + ((AAC_NUM_BLOCKS_SHORT - 2) * PSY_LAME_NUM_SUBBLOCKS + 1)] > 0);
             attack_intensity[i] = energy_subshort[i] / pch->prev_energy_subshort[i + ((AAC_NUM_BLOCKS_SHORT - 2) * PSY_LAME_NUM_SUBBLOCKS + 1)];
             energy_short[0] += energy_subshort[i];
         }
 
-        for (i = 0; i < AAC_NUM_BLOCKS_SHORT * PSY_LAME_NUM_SUBBLOCKS; i++) {
+        for (i = 0; i < AAC_NUM_BLOCKS_SHORT * PSY_LAME_NUM_SUBBLOCKS; i++)
+        {
             float const *const pfe = pf + AAC_BLOCK_SIZE_LONG / (AAC_NUM_BLOCKS_SHORT * PSY_LAME_NUM_SUBBLOCKS);
             float p = 1.0f;
             for (; pf < pfe; pf++)
@@ -544,12 +588,15 @@ static FFPsyWindowInfo psy_lame_window(FFPsyContext *ctx,
         /* Good samples to show the effect are Trumpet test songs */
         /* GB: tuned (1) to avoid too many short blocks for test sample TRUMPET */
         /* RH: tuned (2) to let enough short blocks through for test sample FSOL and SNAPS */
-        for (i = 1; i < AAC_NUM_BLOCKS_SHORT + 1; i++) {
+        for (i = 1; i < AAC_NUM_BLOCKS_SHORT + 1; i++)
+        {
             float const u = energy_short[i - 1];
             float const v = energy_short[i];
             float const m = FFMAX(u, v);
-            if (m < 40000) {                          /* (2) */
-                if (u < 1.7f * v && v < 1.7f * u) {   /* (1) */
+            if (m < 40000)                            /* (2) */
+            {
+                if (u < 1.7f * v && v < 1.7f * u)     /* (1) */
+                {
                     if (i == 1 && attacks[0] < attacks[i])
                         attacks[0] = 0;
                     attacks[i] = 0;
@@ -563,14 +610,17 @@ static FFPsyWindowInfo psy_lame_window(FFPsyContext *ctx,
 
         att_sum += attacks[0];
         /* 3 below indicates the previous attack happened in the last sub-block of the previous sequence */
-        if (pch->prev_attack == 3 || att_sum) {
+        if (pch->prev_attack == 3 || att_sum)
+        {
             uselongblock = 0;
 
             for (i = 1; i < AAC_NUM_BLOCKS_SHORT + 1; i++)
                 if (attacks[i] && attacks[i-1])
                     attacks[i] = 0;
         }
-    } else {
+    }
+    else
+    {
         /* We have no lookahead info, so just use same type as the previous sequence. */
         uselongblock = !(prev_type == EIGHT_SHORT_SEQUENCE);
     }
@@ -578,19 +628,23 @@ static FFPsyWindowInfo psy_lame_window(FFPsyContext *ctx,
     lame_apply_block_type(pch, &wi, uselongblock);
 
     wi.window_type[1] = prev_type;
-    if (wi.window_type[0] != EIGHT_SHORT_SEQUENCE) {
+    if (wi.window_type[0] != EIGHT_SHORT_SEQUENCE)
+    {
         wi.num_windows  = 1;
         wi.grouping[0]  = 1;
         if (wi.window_type[0] == LONG_START_SEQUENCE)
             wi.window_shape = 0;
         else
             wi.window_shape = 1;
-    } else {
+    }
+    else
+    {
         int lastgrp = 0;
 
         wi.num_windows = 8;
         wi.window_shape = 0;
-        for (i = 0; i < 8; i++) {
+        for (i = 0; i < 8; i++)
+        {
             if (!((pch->next_grouping >> i) & 1))
                 lastgrp = i;
             wi.grouping[lastgrp]++;
@@ -603,8 +657,10 @@ static FFPsyWindowInfo psy_lame_window(FFPsyContext *ctx,
      * TODO: Tune groupings depending on attack location
      * TODO: Handle more than one attack in a group
      */
-    for (i = 0; i < 9; i++) {
-        if (attacks[i]) {
+    for (i = 0; i < 9; i++)
+    {
+        if (attacks[i])
+        {
             grouping = i;
             break;
         }

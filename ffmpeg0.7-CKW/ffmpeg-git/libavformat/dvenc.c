@@ -36,8 +36,9 @@
 #include "dv.h"
 #include "libavutil/fifo.h"
 
-struct DVMuxContext {
-    const DVprofile*  sys;           /* current DV profile, e.g.: 525/60, 625/50 */
+struct DVMuxContext
+{
+    const DVprofile  *sys;           /* current DV profile, e.g.: 525/60, 625/50 */
     int               n_ast;         /* number of stereo audio streams (up to 2) */
     AVStream         *ast[2];        /* stereo audio streams */
     AVFifoBuffer     *audio_data[2]; /* FIFO for storing excessive amounts of PCM */
@@ -48,7 +49,8 @@ struct DVMuxContext {
     uint8_t           frame_buf[DV_MAX_FRAME_SIZE]; /* frame under contruction */
 };
 
-static const int dv_aaux_packs_dist[12][9] = {
+static const int dv_aaux_packs_dist[12][9] =
+{
     { 0xff, 0xff, 0xff, 0x50, 0x51, 0x52, 0x53, 0xff, 0xff },
     { 0x50, 0x51, 0x52, 0x53, 0xff, 0xff, 0xff, 0xff, 0xff },
     { 0xff, 0xff, 0xff, 0x50, 0x51, 0x52, 0x53, 0xff, 0xff },
@@ -63,13 +65,13 @@ static const int dv_aaux_packs_dist[12][9] = {
     { 0x50, 0x51, 0x52, 0x53, 0xff, 0xff, 0xff, 0xff, 0xff },
 };
 
-static int dv_audio_frame_size(const DVprofile* sys, int frame)
+static int dv_audio_frame_size(const DVprofile *sys, int frame)
 {
     return sys->audio_samples_dist[frame % (sizeof(sys->audio_samples_dist) /
                                             sizeof(sys->audio_samples_dist[0]))];
 }
 
-static int dv_write_pack(enum dv_pack_type pack_id, DVMuxContext *c, uint8_t* buf, ...)
+static int dv_write_pack(enum dv_pack_type pack_id, DVMuxContext *c, uint8_t *buf, ...)
 {
     struct tm tc;
     time_t ct;
@@ -77,7 +79,8 @@ static int dv_write_pack(enum dv_pack_type pack_id, DVMuxContext *c, uint8_t* bu
     va_list ap;
 
     buf[0] = (uint8_t)pack_id;
-    switch (pack_id) {
+    switch (pack_id)
+    {
     case dv_timecode:
         ct = (time_t)av_rescale_rnd(c->frames, c->sys->time_base.num,
                                     c->sys->time_base.den, AV_ROUND_DOWN);
@@ -108,7 +111,7 @@ static int dv_write_pack(enum dv_pack_type pack_id, DVMuxContext *c, uint8_t* bu
                  (1 << 6) | /* reserved -- always 1 */
                  (dv_audio_frame_size(c->sys, c->frames) -
                   c->sys->audio_min_samples[0]);
-                            /* # of samples      */
+        /* # of samples      */
         buf[2] = (0 << 7) | /* multi-stereo      */
                  (0 << 5) | /* #of audio channels per block: 0 -- 1 channel */
                  (0 << 4) | /* pair bit: 0 -- one pair of channels */
@@ -120,23 +123,23 @@ static int dv_write_pack(enum dv_pack_type pack_id, DVMuxContext *c, uint8_t* bu
         buf[4] = (1 << 7) | /* emphasis: 1 -- off */
                  (0 << 6) | /* emphasis time constant: 0 -- reserved */
                  (0 << 3) | /* frequency: 0 -- 48kHz, 1 -- 44,1kHz, 2 -- 32kHz */
-                  0;        /* quantization: 0 -- 16bit linear, 1 -- 12bit nonlinear */
+                 0;        /* quantization: 0 -- 16bit linear, 1 -- 12bit nonlinear */
         va_end(ap);
         break;
     case dv_audio_control:
         buf[1] = (0 << 6) | /* copy protection: 0 -- unrestricted */
                  (1 << 4) | /* input source: 1 -- digital input */
                  (3 << 2) | /* compression: 3 -- no information */
-                  0;        /* misc. info/SMPTE emphasis off */
+                 0;        /* misc. info/SMPTE emphasis off */
         buf[2] = (1 << 7) | /* recording start point: 1 -- no */
                  (1 << 6) | /* recording end point: 1 -- no */
                  (1 << 3) | /* recording mode: 1 -- original */
-                  7;
+                 7;
         buf[3] = (1 << 7) | /* direction: 1 -- forward */
                  (c->sys->pix_fmt == PIX_FMT_YUV420P ? 0x20 : /* speed */
-                                                       c->sys->ltc_divisor * 4);
+                  c->sys->ltc_divisor * 4);
         buf[4] = (1 << 7) | /* reserved -- always 1 */
-                  0x7f;     /* genre category */
+                 0x7f;     /* genre category */
         break;
     case dv_audio_recdate:
     case dv_video_recdate:  /* VAUX recording date */
@@ -144,20 +147,20 @@ static int dv_write_pack(enum dv_pack_type pack_id, DVMuxContext *c, uint8_t* bu
                                             c->sys->time_base.den, AV_ROUND_DOWN);
         brktimegm(ct, &tc);
         buf[1] = 0xff; /* ds, tm, tens of time zone, units of time zone */
-                       /* 0xff is very likely to be "unknown" */
+        /* 0xff is very likely to be "unknown" */
         buf[2] = (3 << 6) | /* reserved -- always 1 */
                  ((tc.tm_mday / 10) << 4) | /* Tens of day */
                  (tc.tm_mday % 10);         /* Units of day */
         buf[3] = /* we set high 4 bits to 0, shouldn't we set them to week? */
-                 ((tc.tm_mon / 10) << 4) |    /* Tens of month */
-                 (tc.tm_mon  % 10);           /* Units of month */
+            ((tc.tm_mon / 10) << 4) |    /* Tens of month */
+            (tc.tm_mon  % 10);           /* Units of month */
         buf[4] = (((tc.tm_year % 100) / 10) << 4) | /* Tens of year */
                  (tc.tm_year % 10);                 /* Units of year */
         break;
     case dv_audio_rectime:  /* AAUX recording time */
     case dv_video_rectime:  /* VAUX recording time */
         ct = c->start_time + av_rescale_rnd(c->frames, c->sys->time_base.num,
-                                                       c->sys->time_base.den, AV_ROUND_DOWN);
+                                            c->sys->time_base.den, AV_ROUND_DOWN);
         brktimegm(ct, &tc);
         buf[1] = (3 << 6) | /* reserved -- always 1 */
                  0x3f; /* tens of frame, units of frame: 0x3f - "unknown" ? */
@@ -177,40 +180,46 @@ static int dv_write_pack(enum dv_pack_type pack_id, DVMuxContext *c, uint8_t* bu
     return 5;
 }
 
-static void dv_inject_audio(DVMuxContext *c, int channel, uint8_t* frame_ptr)
+static void dv_inject_audio(DVMuxContext *c, int channel, uint8_t *frame_ptr)
 {
     int i, j, d, of, size;
     size = 4 * dv_audio_frame_size(c->sys, c->frames);
     frame_ptr += channel * c->sys->difseg_size * 150 * 80;
-    for (i = 0; i < c->sys->difseg_size; i++) {
+    for (i = 0; i < c->sys->difseg_size; i++)
+    {
         frame_ptr += 6 * 80; /* skip DIF segment header */
-        for (j = 0; j < 9; j++) {
-            dv_write_pack(dv_aaux_packs_dist[i][j], c, &frame_ptr[3], i >= c->sys->difseg_size/2);
-            for (d = 8; d < 80; d+=2) {
-                of = c->sys->audio_shuffle[i][j] + (d - 8)/2 * c->sys->audio_stride;
-                if (of*2 >= size)
+        for (j = 0; j < 9; j++)
+        {
+            dv_write_pack(dv_aaux_packs_dist[i][j], c, &frame_ptr[3], i >= c->sys->difseg_size / 2);
+            for (d = 8; d < 80; d += 2)
+            {
+                of = c->sys->audio_shuffle[i][j] + (d - 8) / 2 * c->sys->audio_stride;
+                if (of * 2 >= size)
                     continue;
 
-                frame_ptr[d]   = av_fifo_peek(c->audio_data[channel], of*2+1); // FIXME: maybe we have to admit
-                frame_ptr[d+1] = av_fifo_peek(c->audio_data[channel], of*2);   //        that DV is a big-endian PCM
+                frame_ptr[d]   = av_fifo_peek(c->audio_data[channel], of * 2 + 1); // FIXME: maybe we have to admit
+                frame_ptr[d+1] = av_fifo_peek(c->audio_data[channel], of * 2); //        that DV is a big-endian PCM
             }
             frame_ptr += 16 * 80; /* 15 Video DIFs + 1 Audio DIF */
         }
     }
 }
 
-static void dv_inject_metadata(DVMuxContext *c, uint8_t* frame)
+static void dv_inject_metadata(DVMuxContext *c, uint8_t *frame)
 {
     int j, k;
-    uint8_t* buf;
+    uint8_t *buf;
 
-    for (buf = frame; buf < frame + c->sys->frame_size; buf += 150 * 80) {
+    for (buf = frame; buf < frame + c->sys->frame_size; buf += 150 * 80)
+    {
         /* DV subcode: 2nd and 3d DIFs */
-        for (j = 80; j < 80 * 3; j += 80) {
+        for (j = 80; j < 80 * 3; j += 80)
+        {
             for (k = 6; k < 6 * 8; k += 8)
                 dv_write_pack(dv_timecode, c, &buf[j+k]);
 
-            if (((long)(buf-frame)/(c->sys->frame_size/(c->sys->difseg_size*c->sys->n_difchan))%c->sys->difseg_size) > 5) { /* FIXME: is this really needed ? */
+            if (((long)(buf - frame) / (c->sys->frame_size / (c->sys->difseg_size * c->sys->n_difchan)) % c->sys->difseg_size) > 5) /* FIXME: is this really needed ? */
+            {
                 dv_write_pack(dv_video_recdate, c, &buf[j+14]);
                 dv_write_pack(dv_video_rectime, c, &buf[j+22]);
                 dv_write_pack(dv_video_recdate, c, &buf[j+38]);
@@ -219,7 +228,8 @@ static void dv_inject_metadata(DVMuxContext *c, uint8_t* frame)
         }
 
         /* DV VAUX: 4th, 5th and 6th 3DIFs */
-        for (j = 80*3 + 3; j < 80*6; j += 80) {
+        for (j = 80 * 3 + 3; j < 80 * 6; j += 80)
+        {
             dv_write_pack(dv_video_recdate, c, &buf[j+5*2]);
             dv_write_pack(dv_video_rectime, c, &buf[j+5*3]);
             dv_write_pack(dv_video_recdate, c, &buf[j+5*11]);
@@ -232,15 +242,16 @@ static void dv_inject_metadata(DVMuxContext *c, uint8_t* frame)
  * The following 3 functions constitute our interface to the world
  */
 
-static int dv_assemble_frame(DVMuxContext *c, AVStream* st,
-                             uint8_t* data, int data_size, uint8_t** frame)
+static int dv_assemble_frame(DVMuxContext *c, AVStream *st,
+                             uint8_t *data, int data_size, uint8_t **frame)
 {
     int i, reqasize;
 
     *frame = &c->frame_buf[0];
     reqasize = 4 * dv_audio_frame_size(c->sys, c->frames);
 
-    switch (st->codec->codec_type) {
+    switch (st->codec->codec_type)
+    {
     case AVMEDIA_TYPE_VIDEO:
         /* FIXME: we have to have more sensible approach than this one */
         if (c->has_video)
@@ -252,8 +263,8 @@ static int dv_assemble_frame(DVMuxContext *c, AVStream* st,
     case AVMEDIA_TYPE_AUDIO:
         for (i = 0; i < c->n_ast && st != c->ast[i]; i++);
 
-          /* FIXME: we have to have more sensible approach than this one */
-        if (av_fifo_size(c->audio_data[i]) + data_size >= 100*AVCODEC_MAX_AUDIO_FRAME_SIZE)
+        /* FIXME: we have to have more sensible approach than this one */
+        if (av_fifo_size(c->audio_data[i]) + data_size >= 100 * AVCODEC_MAX_AUDIO_FRAME_SIZE)
             av_log(st->codec, AV_LOG_ERROR, "Can't process DV frame #%d. Insufficient video data or severe sync problem.\n", c->frames);
         av_fifo_generic_write(c->audio_data[i], data, data_size, NULL);
 
@@ -266,10 +277,12 @@ static int dv_assemble_frame(DVMuxContext *c, AVStream* st,
     }
 
     /* Let us see if we have enough data to construct one DV frame. */
-    if (c->has_video == 1 && c->has_audio + 1 == 1 << c->n_ast) {
+    if (c->has_video == 1 && c->has_audio + 1 == 1 << c->n_ast)
+    {
         dv_inject_metadata(c, *frame);
         c->has_audio = 0;
-        for (i=0; i < c->n_ast; i++) {
+        for (i = 0; i < c->n_ast; i++)
+        {
             dv_inject_audio(c, i, *frame);
             av_fifo_drain(c->audio_data[i], reqasize);
             c->has_audio |= ((reqasize <= av_fifo_size(c->audio_data[i])) << i);
@@ -285,7 +298,7 @@ static int dv_assemble_frame(DVMuxContext *c, AVStream* st,
     return 0;
 }
 
-static DVMuxContext* dv_init_mux(AVFormatContext* s)
+static DVMuxContext *dv_init_mux(AVFormatContext *s)
 {
     DVMuxContext *c = s->priv_data;
     AVStream *vst = NULL;
@@ -299,8 +312,10 @@ static DVMuxContext* dv_init_mux(AVFormatContext* s)
     c->ast[0] = c->ast[1] = NULL;
 
     /* We have to sort out where audio and where video stream is */
-    for (i=0; i<s->nb_streams; i++) {
-        switch (s->streams[i]->codec->codec_type) {
+    for (i = 0; i < s->nb_streams; i++)
+    {
+        switch (s->streams[i]->codec->codec_type)
+        {
         case AVMEDIA_TYPE_VIDEO:
             if (vst) return NULL;
             vst = s->streams[i];
@@ -317,7 +332,8 @@ static DVMuxContext* dv_init_mux(AVFormatContext* s)
     /* Some checks -- DV format is very picky about its incoming streams */
     if (!vst || vst->codec->codec_id != CODEC_ID_DVVIDEO)
         goto bail_out;
-    for (i=0; i<c->n_ast; i++) {
+    for (i = 0; i < c->n_ast; i++)
+    {
         if (c->ast[i] && (c->ast[i]->codec->codec_id    != CODEC_ID_PCM_S16LE ||
                           c->ast[i]->codec->sample_rate != 48000 ||
                           c->ast[i]->codec->channels    != 2))
@@ -327,7 +343,8 @@ static DVMuxContext* dv_init_mux(AVFormatContext* s)
     if (!c->sys)
         goto bail_out;
 
-    if ((c->n_ast > 1) && (c->sys->n_difchan < 2)) {
+    if ((c->n_ast > 1) && (c->sys->n_difchan < 2))
+    {
         /* only 1 stereo pair is allowed in 25Mbps mode */
         goto bail_out;
     }
@@ -338,9 +355,12 @@ static DVMuxContext* dv_init_mux(AVFormatContext* s)
     c->has_video  = 0;
     c->start_time = (time_t)s->timestamp;
 
-    for (i=0; i < c->n_ast; i++) {
-        if (c->ast[i] && !(c->audio_data[i]=av_fifo_alloc(100*AVCODEC_MAX_AUDIO_FRAME_SIZE))) {
-            while (i > 0) {
+    for (i = 0; i < c->n_ast; i++)
+    {
+        if (c->ast[i] && !(c->audio_data[i] = av_fifo_alloc(100 * AVCODEC_MAX_AUDIO_FRAME_SIZE)))
+        {
+            while (i > 0)
+            {
                 i--;
                 av_fifo_free(c->audio_data[i]);
             }
@@ -357,17 +377,18 @@ bail_out:
 static void dv_delete_mux(DVMuxContext *c)
 {
     int i;
-    for (i=0; i < c->n_ast; i++)
+    for (i = 0; i < c->n_ast; i++)
         av_fifo_free(c->audio_data[i]);
 }
 
 static int dv_write_header(AVFormatContext *s)
 {
-    if (!dv_init_mux(s)) {
+    if (!dv_init_mux(s))
+    {
         av_log(s, AV_LOG_ERROR, "Can't initialize DV format!\n"
-                    "Make sure that you supply exactly two streams:\n"
-                    "     video: 25fps or 29.97fps, audio: 2ch/48kHz/PCM\n"
-                    "     (50Mbps allows an optional second audio stream)\n");
+               "Make sure that you supply exactly two streams:\n"
+               "     video: 25fps or 29.97fps, audio: 2ch/48kHz/PCM\n"
+               "     (50Mbps allows an optional second audio stream)\n");
         return -1;
     }
     return 0;
@@ -375,12 +396,13 @@ static int dv_write_header(AVFormatContext *s)
 
 static int dv_write_packet(struct AVFormatContext *s, AVPacket *pkt)
 {
-    uint8_t* frame;
+    uint8_t *frame;
     int fsize;
 
     fsize = dv_assemble_frame(s->priv_data, s->streams[pkt->stream_index],
                               pkt->data, pkt->size, &frame);
-    if (fsize > 0) {
+    if (fsize > 0)
+    {
         avio_write(s->pb, frame, fsize);
         avio_flush(s->pb);
     }
@@ -399,7 +421,8 @@ static int dv_write_trailer(struct AVFormatContext *s)
     return 0;
 }
 
-AVOutputFormat ff_dv_muxer = {
+AVOutputFormat ff_dv_muxer =
+{
     "dv",
     NULL_IF_CONFIG_SMALL("DV video format"),
     NULL,

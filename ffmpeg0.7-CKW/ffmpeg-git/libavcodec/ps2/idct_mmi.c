@@ -53,38 +53,39 @@
 
 #define CLIPMAX         (32+256+64+0)
 
-static short consttable[] align16 = {
-/* rounder 0*/  // assume SHIFT_INV_ROW == 11
- 0x3ff, 1, 0x3ff, 1, 0x3ff, 1, 0x3ff, 1,
-/* rounder 1*/
- 0x3ff, 0, 0x3ff, 0, 0x3ff, 0, 0x3ff, 0,
-/* row 0/4*/
- 16384,  21407, -16384, -21407,  22725,  19266, -22725, -12873,
-  8867,  16384,   8867,  16384,   4520,  12873,  -4520,  19266,
- 16384,  -8867,  16384,  -8867,  12873, -22725,  19266, -22725,
- 21407, -16384, -21407,  16384,  19266,   4520, -12873,   4520,
-/* row 1/7*/
- 22725,  29692, -22725, -29692,  31521,  26722, -31521, -17855,
- 12299,  22725,  12299,  22725,   6270,  17855,  -6270,  26722,
- 22725, -12299,  22725, -12299,  17855, -31521,  26722, -31521,
- 29692, -22725, -29692,  22725,  26722,   6270, -17855,   6270,
-/* row 2/6*/
- 21407,  27969, -21407, -27969,  29692,  25172, -29692, -16819,
- 11585,  21407,  11585,  21407,   5906,  16819,  -5906,  25172,
- 21407, -11585,  21407, -11585,  16819, -29692,  25172, -29692,
- 27969, -21407, -27969,  21407,  25172,   5906, -16819,   5906,
-/*row 3/5*/
- 19266,  25172, -19266, -25172,  26722,  22654, -26722, -15137,
- 10426,  19266,  10426,  19266,   5315,  15137,  -5315,  22654,
- 19266, -10426,  19266, -10426,  15137, -26722,  22654, -26722,
- 25172, -19266, -25172,  19266,  22654,   5315, -15137,   5315,
-/*column constants*/
- TG1, TG1, TG1, TG1, TG1, TG1, TG1, TG1,
- TG2, TG2, TG2, TG2, TG2, TG2, TG2, TG2,
- TG3, TG3, TG3, TG3, TG3, TG3, TG3, TG3,
- CS4, CS4, CS4, CS4, CS4, CS4, CS4, CS4,
-/* clamp */
- 255, 255, 255, 255, 255, 255, 255, 255
+static short consttable[] align16 =
+{
+    /* rounder 0*/  // assume SHIFT_INV_ROW == 11
+    0x3ff, 1, 0x3ff, 1, 0x3ff, 1, 0x3ff, 1,
+    /* rounder 1*/
+    0x3ff, 0, 0x3ff, 0, 0x3ff, 0, 0x3ff, 0,
+    /* row 0/4*/
+    16384,  21407, -16384, -21407,  22725,  19266, -22725, -12873,
+    8867,  16384,   8867,  16384,   4520,  12873,  -4520,  19266,
+    16384,  -8867,  16384,  -8867,  12873, -22725,  19266, -22725,
+    21407, -16384, -21407,  16384,  19266,   4520, -12873,   4520,
+    /* row 1/7*/
+    22725,  29692, -22725, -29692,  31521,  26722, -31521, -17855,
+    12299,  22725,  12299,  22725,   6270,  17855,  -6270,  26722,
+    22725, -12299,  22725, -12299,  17855, -31521,  26722, -31521,
+    29692, -22725, -29692,  22725,  26722,   6270, -17855,   6270,
+    /* row 2/6*/
+    21407,  27969, -21407, -27969,  29692,  25172, -29692, -16819,
+    11585,  21407,  11585,  21407,   5906,  16819,  -5906,  25172,
+    21407, -11585,  21407, -11585,  16819, -29692,  25172, -29692,
+    27969, -21407, -27969,  21407,  25172,   5906, -16819,   5906,
+    /*row 3/5*/
+    19266,  25172, -19266, -25172,  26722,  22654, -26722, -15137,
+    10426,  19266,  10426,  19266,   5315,  15137,  -5315,  22654,
+    19266, -10426,  19266, -10426,  15137, -26722,  22654, -26722,
+    25172, -19266, -25172,  19266,  22654,   5315, -15137,   5315,
+    /*column constants*/
+    TG1, TG1, TG1, TG1, TG1, TG1, TG1, TG1,
+    TG2, TG2, TG2, TG2, TG2, TG2, TG2, TG2,
+    TG3, TG3, TG3, TG3, TG3, TG3, TG3, TG3,
+    CS4, CS4, CS4, CS4, CS4, CS4, CS4, CS4,
+    /* clamp */
+    255, 255, 255, 255, 255, 255, 255, 255
 };
 
 
@@ -291,72 +292,72 @@ static short consttable[] align16 = {
         ADD($20);
 
 
-void ff_mmi_idct(int16_t * block)
+void ff_mmi_idct(int16_t *block)
 {
-        /* $4 = block */
-        __asm__ volatile("la $24, %0"::"m"(consttable[0]));
-        lq($24, ROUNDER_0, $8);
-        lq($24, ROUNDER_1, $7);
-        DCT_8_INV_ROW1($4, 0, TAB_i_04, $8, $8);
-        DCT_8_INV_ROW1($4, 16, TAB_i_17, $7, $9);
-        DCT_8_INV_ROW1($4, 32, TAB_i_26, $7, $10);
-        DCT_8_INV_ROW1($4, 48, TAB_i_35, $7, $11);
-        DCT_8_INV_ROW1($4, 64, TAB_i_04, $7, $12);
-        DCT_8_INV_ROW1($4, 80, TAB_i_35, $7, $13);
-        DCT_8_INV_ROW1($4, 96, TAB_i_26, $7, $14);
-        DCT_8_INV_ROW1($4, 112, TAB_i_17, $7, $15);
-        DCT_8_INV_COL8();
-        DCT_8_INV_COL8_STORE($4);
+    /* $4 = block */
+    __asm__ volatile("la $24, %0"::"m"(consttable[0]));
+    lq($24, ROUNDER_0, $8);
+    lq($24, ROUNDER_1, $7);
+    DCT_8_INV_ROW1($4, 0, TAB_i_04, $8, $8);
+    DCT_8_INV_ROW1($4, 16, TAB_i_17, $7, $9);
+    DCT_8_INV_ROW1($4, 32, TAB_i_26, $7, $10);
+    DCT_8_INV_ROW1($4, 48, TAB_i_35, $7, $11);
+    DCT_8_INV_ROW1($4, 64, TAB_i_04, $7, $12);
+    DCT_8_INV_ROW1($4, 80, TAB_i_35, $7, $13);
+    DCT_8_INV_ROW1($4, 96, TAB_i_26, $7, $14);
+    DCT_8_INV_ROW1($4, 112, TAB_i_17, $7, $15);
+    DCT_8_INV_COL8();
+    DCT_8_INV_COL8_STORE($4);
 
-        //let savedtemp regs be saved
-        __asm__ volatile(" ":::"$16", "$17", "$18", "$19", "$20", "$21", "$22", "$23");
+    //let savedtemp regs be saved
+    __asm__ volatile(" ":::"$16", "$17", "$18", "$19", "$20", "$21", "$22", "$23");
 }
 
 
 void ff_mmi_idct_put(uint8_t *dest, int line_size, DCTELEM *block)
 {
-        /* $4 = dest, $5 = line_size, $6 = block */
-        __asm__ volatile("la $24, %0"::"m"(consttable[0]));
-        lq($24, ROUNDER_0, $8);
-        lq($24, ROUNDER_1, $7);
-        DCT_8_INV_ROW1($6, 0, TAB_i_04, $8, $8);
-        DCT_8_INV_ROW1($6, 16, TAB_i_17, $7, $9);
-        DCT_8_INV_ROW1($6, 32, TAB_i_26, $7, $10);
-        DCT_8_INV_ROW1($6, 48, TAB_i_35, $7, $11);
-        DCT_8_INV_ROW1($6, 64, TAB_i_04, $7, $12);
-        DCT_8_INV_ROW1($6, 80, TAB_i_35, $7, $13);
-        DCT_8_INV_ROW1($6, 96, TAB_i_26, $7, $14);
-        DCT_8_INV_ROW1($6, 112, TAB_i_17, $7, $15);
-        DCT_8_INV_COL8();
-        lq($24, CLIPMAX, $11);
-        DCT_8_INV_COL8_PMS();
-        DCT_8_INV_COL8_PUT();
+    /* $4 = dest, $5 = line_size, $6 = block */
+    __asm__ volatile("la $24, %0"::"m"(consttable[0]));
+    lq($24, ROUNDER_0, $8);
+    lq($24, ROUNDER_1, $7);
+    DCT_8_INV_ROW1($6, 0, TAB_i_04, $8, $8);
+    DCT_8_INV_ROW1($6, 16, TAB_i_17, $7, $9);
+    DCT_8_INV_ROW1($6, 32, TAB_i_26, $7, $10);
+    DCT_8_INV_ROW1($6, 48, TAB_i_35, $7, $11);
+    DCT_8_INV_ROW1($6, 64, TAB_i_04, $7, $12);
+    DCT_8_INV_ROW1($6, 80, TAB_i_35, $7, $13);
+    DCT_8_INV_ROW1($6, 96, TAB_i_26, $7, $14);
+    DCT_8_INV_ROW1($6, 112, TAB_i_17, $7, $15);
+    DCT_8_INV_COL8();
+    lq($24, CLIPMAX, $11);
+    DCT_8_INV_COL8_PMS();
+    DCT_8_INV_COL8_PUT();
 
-        //let savedtemp regs be saved
-        __asm__ volatile(" ":::"$16", "$17", "$18", "$19", "$20", "$21", "$22", "$23");
+    //let savedtemp regs be saved
+    __asm__ volatile(" ":::"$16", "$17", "$18", "$19", "$20", "$21", "$22", "$23");
 }
 
 
 void ff_mmi_idct_add(uint8_t *dest, int line_size, DCTELEM *block)
 {
-        /* $4 = dest, $5 = line_size, $6 = block */
-        __asm__ volatile("la $24, %0"::"m"(consttable[0]));
-        lq($24, ROUNDER_0, $8);
-        lq($24, ROUNDER_1, $7);
-        DCT_8_INV_ROW1($6, 0, TAB_i_04, $8, $8);
-        DCT_8_INV_ROW1($6, 16, TAB_i_17, $7, $9);
-        DCT_8_INV_ROW1($6, 32, TAB_i_26, $7, $10);
-        DCT_8_INV_ROW1($6, 48, TAB_i_35, $7, $11);
-        DCT_8_INV_ROW1($6, 64, TAB_i_04, $7, $12);
-        DCT_8_INV_ROW1($6, 80, TAB_i_35, $7, $13);
-        DCT_8_INV_ROW1($6, 96, TAB_i_26, $7, $14);
-        DCT_8_INV_ROW1($6, 112, TAB_i_17, $7, $15);
-        DCT_8_INV_COL8();
-        lq($24, CLIPMAX, $11);
-        DCT_8_INV_COL8_PMS();
-        DCT_8_INV_COL8_ADD();
+    /* $4 = dest, $5 = line_size, $6 = block */
+    __asm__ volatile("la $24, %0"::"m"(consttable[0]));
+    lq($24, ROUNDER_0, $8);
+    lq($24, ROUNDER_1, $7);
+    DCT_8_INV_ROW1($6, 0, TAB_i_04, $8, $8);
+    DCT_8_INV_ROW1($6, 16, TAB_i_17, $7, $9);
+    DCT_8_INV_ROW1($6, 32, TAB_i_26, $7, $10);
+    DCT_8_INV_ROW1($6, 48, TAB_i_35, $7, $11);
+    DCT_8_INV_ROW1($6, 64, TAB_i_04, $7, $12);
+    DCT_8_INV_ROW1($6, 80, TAB_i_35, $7, $13);
+    DCT_8_INV_ROW1($6, 96, TAB_i_26, $7, $14);
+    DCT_8_INV_ROW1($6, 112, TAB_i_17, $7, $15);
+    DCT_8_INV_COL8();
+    lq($24, CLIPMAX, $11);
+    DCT_8_INV_COL8_PMS();
+    DCT_8_INV_COL8_ADD();
 
-        //let savedtemp regs be saved
-        __asm__ volatile(" ":::"$16", "$17", "$18", "$19", "$20", "$21", "$22", "$23");
+    //let savedtemp regs be saved
+    __asm__ volatile(" ":::"$16", "$17", "$18", "$19", "$20", "$21", "$22", "$23");
 }
 

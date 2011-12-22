@@ -47,7 +47,8 @@
 /*
  * Decoder context
  */
-typedef struct TsccContext {
+typedef struct TsccContext
+{
 
     AVCodecContext *avctx;
     AVFrame pic;
@@ -57,7 +58,7 @@ typedef struct TsccContext {
     // Decompressed data size
     unsigned int decomp_size;
     // Decompression buffer
-    unsigned char* decomp_buf;
+    unsigned char *decomp_buf;
     int height;
     z_stream zstream;
 
@@ -73,18 +74,19 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPac
 {
     const uint8_t *buf = avpkt->data;
     int buf_size = avpkt->size;
-    CamtasiaContext * const c = avctx->priv_data;
+    CamtasiaContext *const c = avctx->priv_data;
     const unsigned char *encoded = buf;
     unsigned char *outptr;
     int zret; // Zlib return code
     int len = buf_size;
 
     if(c->pic.data[0])
-            avctx->release_buffer(avctx, &c->pic);
+        avctx->release_buffer(avctx, &c->pic);
 
     c->pic.reference = 1;
     c->pic.buffer_hints = FF_BUFFER_HINTS_VALID;
-    if(avctx->get_buffer(avctx, &c->pic) < 0){
+    if(avctx->get_buffer(avctx, &c->pic) < 0)
+    {
         av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
         return -1;
     }
@@ -92,7 +94,8 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPac
     outptr = c->pic.data[0]; // Output image pointer
 
     zret = inflateReset(&(c->zstream));
-    if (zret != Z_OK) {
+    if (zret != Z_OK)
+    {
         av_log(avctx, AV_LOG_ERROR, "Inflate reset error: %d\n", zret);
         return -1;
     }
@@ -102,20 +105,23 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPac
     c->zstream.avail_out = c->decomp_size;
     zret = inflate(&(c->zstream), Z_FINISH);
     // Z_DATA_ERROR means empty picture
-    if ((zret != Z_OK) && (zret != Z_STREAM_END) && (zret != Z_DATA_ERROR)) {
+    if ((zret != Z_OK) && (zret != Z_STREAM_END) && (zret != Z_DATA_ERROR))
+    {
         av_log(avctx, AV_LOG_ERROR, "Inflate error: %d\n", zret);
         return -1;
     }
 
 
     if(zret != Z_DATA_ERROR)
-        ff_msrle_decode(avctx, (AVPicture*)&c->pic, c->bpp, c->decomp_buf, c->decomp_size - c->zstream.avail_out);
+        ff_msrle_decode(avctx, (AVPicture *)&c->pic, c->bpp, c->decomp_buf, c->decomp_size - c->zstream.avail_out);
 
     /* make the palette available on the way out */
-    if (c->avctx->pix_fmt == PIX_FMT_PAL8) {
+    if (c->avctx->pix_fmt == PIX_FMT_PAL8)
+    {
         const uint8_t *pal = av_packet_get_side_data(avpkt, AV_PKT_DATA_PALETTE, NULL);
 
-        if (pal) {
+        if (pal)
+        {
             c->pic.palette_has_changed = 1;
             memcpy(c->pal, pal, AVPALETTE_SIZE);
         }
@@ -123,7 +129,7 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPac
     }
 
     *data_size = sizeof(AVFrame);
-    *(AVFrame*)data = c->pic;
+    *(AVFrame *)data = c->pic;
 
     /* always report that the buffer was completely consumed */
     return buf_size;
@@ -138,7 +144,7 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPac
  */
 static av_cold int decode_init(AVCodecContext *avctx)
 {
-    CamtasiaContext * const c = avctx->priv_data;
+    CamtasiaContext *const c = avctx->priv_data;
     int zret; // Zlib return code
 
     c->avctx = avctx;
@@ -147,23 +153,33 @@ static av_cold int decode_init(AVCodecContext *avctx)
 
     // Needed if zlib unused or init aborted before inflateInit
     memset(&(c->zstream), 0, sizeof(z_stream));
-    switch(avctx->bits_per_coded_sample){
-    case  8: avctx->pix_fmt = PIX_FMT_PAL8; break;
-    case 16: avctx->pix_fmt = PIX_FMT_RGB555; break;
+    switch(avctx->bits_per_coded_sample)
+    {
+    case  8:
+        avctx->pix_fmt = PIX_FMT_PAL8;
+        break;
+    case 16:
+        avctx->pix_fmt = PIX_FMT_RGB555;
+        break;
     case 24:
-             avctx->pix_fmt = PIX_FMT_BGR24;
-             break;
-    case 32: avctx->pix_fmt = PIX_FMT_RGB32; break;
-    default: av_log(avctx, AV_LOG_ERROR, "Camtasia error: unknown depth %i bpp\n", avctx->bits_per_coded_sample);
-             return -1;
+        avctx->pix_fmt = PIX_FMT_BGR24;
+        break;
+    case 32:
+        avctx->pix_fmt = PIX_FMT_RGB32;
+        break;
+    default:
+        av_log(avctx, AV_LOG_ERROR, "Camtasia error: unknown depth %i bpp\n", avctx->bits_per_coded_sample);
+        return -1;
     }
     c->bpp = avctx->bits_per_coded_sample;
     // buffer size for RLE 'best' case when 2-byte code preceeds each pixel and there may be padding after it too
     c->decomp_size = (((avctx->width * c->bpp + 7) >> 3) + 3 * avctx->width + 2) * avctx->height + 2;
 
     /* Allocate decompression buffer */
-    if (c->decomp_size) {
-        if ((c->decomp_buf = av_malloc(c->decomp_size)) == NULL) {
+    if (c->decomp_size)
+    {
+        if ((c->decomp_buf = av_malloc(c->decomp_size)) == NULL)
+        {
             av_log(avctx, AV_LOG_ERROR, "Can't allocate decompression buffer.\n");
             return 1;
         }
@@ -173,7 +189,8 @@ static av_cold int decode_init(AVCodecContext *avctx)
     c->zstream.zfree = Z_NULL;
     c->zstream.opaque = Z_NULL;
     zret = inflateInit(&(c->zstream));
-    if (zret != Z_OK) {
+    if (zret != Z_OK)
+    {
         av_log(avctx, AV_LOG_ERROR, "Inflate init error: %d\n", zret);
         return 1;
     }
@@ -190,7 +207,7 @@ static av_cold int decode_init(AVCodecContext *avctx)
  */
 static av_cold int decode_end(AVCodecContext *avctx)
 {
-    CamtasiaContext * const c = avctx->priv_data;
+    CamtasiaContext *const c = avctx->priv_data;
 
     av_freep(&c->decomp_buf);
 
@@ -201,16 +218,17 @@ static av_cold int decode_end(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec ff_tscc_decoder = {
-        "camtasia",
-        AVMEDIA_TYPE_VIDEO,
-        CODEC_ID_TSCC,
-        sizeof(CamtasiaContext),
-        decode_init,
-        NULL,
-        decode_end,
-        decode_frame,
-        CODEC_CAP_DR1,
-        .long_name = NULL_IF_CONFIG_SMALL("TechSmith Screen Capture Codec"),
+AVCodec ff_tscc_decoder =
+{
+    "camtasia",
+    AVMEDIA_TYPE_VIDEO,
+    CODEC_ID_TSCC,
+    sizeof(CamtasiaContext),
+    decode_init,
+    NULL,
+    decode_end,
+    decode_frame,
+    CODEC_CAP_DR1,
+    .long_name = NULL_IF_CONFIG_SMALL("TechSmith Screen Capture Codec"),
 };
 

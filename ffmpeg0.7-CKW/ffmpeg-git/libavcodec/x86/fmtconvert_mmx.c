@@ -28,7 +28,7 @@
 
 static void int32_to_float_fmul_scalar_sse(float *dst, const int *src, float mul, int len)
 {
-    x86_reg i = -4*len;
+    x86_reg i = -4 * len;
     __asm__ volatile(
         "movss  %3, %%xmm4 \n"
         "shufps $0, %%xmm4, %%xmm4 \n"
@@ -52,7 +52,7 @@ static void int32_to_float_fmul_scalar_sse(float *dst, const int *src, float mul
 
 static void int32_to_float_fmul_scalar_sse2(float *dst, const int *src, float mul, int len)
 {
-    x86_reg i = -4*len;
+    x86_reg i = -4 * len;
     __asm__ volatile(
         "movss  %3, %%xmm4 \n"
         "shufps $0, %%xmm4, %%xmm4 \n"
@@ -70,7 +70,8 @@ static void int32_to_float_fmul_scalar_sse2(float *dst, const int *src, float mu
     );
 }
 
-static void float_to_int16_3dnow(int16_t *dst, const float *src, long len){
+static void float_to_int16_3dnow(int16_t *dst, const float *src, long len)
+{
     x86_reg reglen = len;
     // not bit-exact: pf2id uses different rounding than C and SSE
     __asm__ volatile(
@@ -94,7 +95,8 @@ static void float_to_int16_3dnow(int16_t *dst, const float *src, long len){
     );
 }
 
-static void float_to_int16_sse(int16_t *dst, const float *src, long len){
+static void float_to_int16_sse(int16_t *dst, const float *src, long len)
+{
     x86_reg reglen = len;
     __asm__ volatile(
         "add        %0          , %0        \n\t"
@@ -117,7 +119,8 @@ static void float_to_int16_sse(int16_t *dst, const float *src, long len){
     );
 }
 
-static void float_to_int16_sse2(int16_t *dst, const float *src, long len){
+static void float_to_int16_sse2(int16_t *dst, const float *src, long len)
+{
     x86_reg reglen = len;
     __asm__ volatile(
         "add        %0          , %0        \n\t"
@@ -181,55 +184,56 @@ static void float_to_int16_interleave_##cpu(int16_t *dst, const float **src, lon
 }
 
 FLOAT_TO_INT16_INTERLEAVE(3dnow,
-    "1:                         \n"
-    "pf2id     (%2,%0), %%mm0   \n"
-    "pf2id    8(%2,%0), %%mm1   \n"
-    "pf2id     (%3,%0), %%mm2   \n"
-    "pf2id    8(%3,%0), %%mm3   \n"
-    "packssdw    %%mm1, %%mm0   \n"
-    "packssdw    %%mm3, %%mm2   \n"
-    "movq        %%mm0, %%mm1   \n"
-    "punpcklwd   %%mm2, %%mm0   \n"
-    "punpckhwd   %%mm2, %%mm1   \n"
-    "movq        %%mm0,  (%1,%0)\n"
-    "movq        %%mm1, 8(%1,%0)\n"
-    "add $16, %0                \n"
-    "js 1b                      \n"
-    "femms                      \n"
-)
+                          "1:                         \n"
+                          "pf2id     (%2,%0), %%mm0   \n"
+                          "pf2id    8(%2,%0), %%mm1   \n"
+                          "pf2id     (%3,%0), %%mm2   \n"
+                          "pf2id    8(%3,%0), %%mm3   \n"
+                          "packssdw    %%mm1, %%mm0   \n"
+                          "packssdw    %%mm3, %%mm2   \n"
+                          "movq        %%mm0, %%mm1   \n"
+                          "punpcklwd   %%mm2, %%mm0   \n"
+                          "punpckhwd   %%mm2, %%mm1   \n"
+                          "movq        %%mm0,  (%1,%0)\n"
+                          "movq        %%mm1, 8(%1,%0)\n"
+                          "add $16, %0                \n"
+                          "js 1b                      \n"
+                          "femms                      \n"
+                         )
 
 FLOAT_TO_INT16_INTERLEAVE(sse,
-    "1:                         \n"
-    "cvtps2pi  (%2,%0), %%mm0   \n"
-    "cvtps2pi 8(%2,%0), %%mm1   \n"
-    "cvtps2pi  (%3,%0), %%mm2   \n"
-    "cvtps2pi 8(%3,%0), %%mm3   \n"
-    "packssdw    %%mm1, %%mm0   \n"
-    "packssdw    %%mm3, %%mm2   \n"
-    "movq        %%mm0, %%mm1   \n"
-    "punpcklwd   %%mm2, %%mm0   \n"
-    "punpckhwd   %%mm2, %%mm1   \n"
-    "movq        %%mm0,  (%1,%0)\n"
-    "movq        %%mm1, 8(%1,%0)\n"
-    "add $16, %0                \n"
-    "js 1b                      \n"
-    "emms                       \n"
-)
+                          "1:                         \n"
+                          "cvtps2pi  (%2,%0), %%mm0   \n"
+                          "cvtps2pi 8(%2,%0), %%mm1   \n"
+                          "cvtps2pi  (%3,%0), %%mm2   \n"
+                          "cvtps2pi 8(%3,%0), %%mm3   \n"
+                          "packssdw    %%mm1, %%mm0   \n"
+                          "packssdw    %%mm3, %%mm2   \n"
+                          "movq        %%mm0, %%mm1   \n"
+                          "punpcklwd   %%mm2, %%mm0   \n"
+                          "punpckhwd   %%mm2, %%mm1   \n"
+                          "movq        %%mm0,  (%1,%0)\n"
+                          "movq        %%mm1, 8(%1,%0)\n"
+                          "add $16, %0                \n"
+                          "js 1b                      \n"
+                          "emms                       \n"
+                         )
 
 FLOAT_TO_INT16_INTERLEAVE(sse2,
-    "1:                         \n"
-    "cvtps2dq  (%2,%0), %%xmm0  \n"
-    "cvtps2dq  (%3,%0), %%xmm1  \n"
-    "packssdw   %%xmm1, %%xmm0  \n"
-    "movhlps    %%xmm0, %%xmm1  \n"
-    "punpcklwd  %%xmm1, %%xmm0  \n"
-    "movdqa     %%xmm0, (%1,%0) \n"
-    "add $16, %0                \n"
-    "js 1b                      \n"
-)
+                          "1:                         \n"
+                          "cvtps2dq  (%2,%0), %%xmm0  \n"
+                          "cvtps2dq  (%3,%0), %%xmm1  \n"
+                          "packssdw   %%xmm1, %%xmm0  \n"
+                          "movhlps    %%xmm0, %%xmm1  \n"
+                          "punpcklwd  %%xmm1, %%xmm0  \n"
+                          "movdqa     %%xmm0, (%1,%0) \n"
+                          "add $16, %0                \n"
+                          "js 1b                      \n"
+                         )
 
-static void float_to_int16_interleave_3dn2(int16_t *dst, const float **src, long len, int channels){
-    if(channels==6)
+static void float_to_int16_interleave_3dn2(int16_t *dst, const float **src, long len, int channels)
+{
+    if(channels == 6)
         ff_float_to_int16_interleave6_3dn2(dst, src, len);
     else
         float_to_int16_interleave_3dnow(dst, src, len, channels);
@@ -239,25 +243,32 @@ void ff_fmt_convert_init_x86(FmtConvertContext *c, AVCodecContext *avctx)
 {
     int mm_flags = av_get_cpu_flags();
 
-    if (mm_flags & AV_CPU_FLAG_MMX) {
+    if (mm_flags & AV_CPU_FLAG_MMX)
+    {
 
-        if(mm_flags & AV_CPU_FLAG_3DNOW){
-            if(!(avctx->flags & CODEC_FLAG_BITEXACT)){
+        if(mm_flags & AV_CPU_FLAG_3DNOW)
+        {
+            if(!(avctx->flags & CODEC_FLAG_BITEXACT))
+            {
                 c->float_to_int16 = float_to_int16_3dnow;
                 c->float_to_int16_interleave = float_to_int16_interleave_3dnow;
             }
         }
-        if(mm_flags & AV_CPU_FLAG_3DNOWEXT){
-            if(!(avctx->flags & CODEC_FLAG_BITEXACT)){
+        if(mm_flags & AV_CPU_FLAG_3DNOWEXT)
+        {
+            if(!(avctx->flags & CODEC_FLAG_BITEXACT))
+            {
                 c->float_to_int16_interleave = float_to_int16_interleave_3dn2;
             }
         }
-        if(mm_flags & AV_CPU_FLAG_SSE){
+        if(mm_flags & AV_CPU_FLAG_SSE)
+        {
             c->int32_to_float_fmul_scalar = int32_to_float_fmul_scalar_sse;
             c->float_to_int16 = float_to_int16_sse;
             c->float_to_int16_interleave = float_to_int16_interleave_sse;
         }
-        if(mm_flags & AV_CPU_FLAG_SSE2){
+        if(mm_flags & AV_CPU_FLAG_SSE2)
+        {
             c->int32_to_float_fmul_scalar = int32_to_float_fmul_scalar_sse2;
             c->float_to_int16 = float_to_int16_sse2;
             c->float_to_int16_interleave = float_to_int16_interleave_sse2;

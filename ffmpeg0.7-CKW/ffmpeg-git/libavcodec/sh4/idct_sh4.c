@@ -32,18 +32,20 @@
 #define c6      0.54119610014619712324  /* sqrt(2)*cos(6*pi/16) */
 #define c7      0.27589937928294311353  /* sqrt(2)*cos(7*pi/16) */
 
-static const float even_table[] __attribute__ ((aligned(8))) = {
-        c4, c4, c4, c4,
-        c2, c6,-c6,-c2,
-        c4,-c4,-c4, c4,
-        c6,-c2, c2,-c6
+static const float even_table[] __attribute__ ((aligned(8))) =
+{
+    c4, c4, c4, c4,
+    c2, c6, -c6, -c2,
+    c4, -c4, -c4, c4,
+    c6, -c2, c2, -c6
 };
 
-static const float odd_table[] __attribute__ ((aligned(8))) = {
-        c1, c3, c5, c7,
-        c3,-c7,-c1,-c5,
-        c5,-c1, c7, c3,
-        c7,-c5, c3,-c1
+static const float odd_table[] __attribute__ ((aligned(8))) =
+{
+    c1, c3, c5, c7,
+    c3, -c7, -c1, -c5,
+    c5, -c1, c7, c3,
+    c7, -c5, c3, -c1
 };
 
 #undef  c1
@@ -88,23 +90,23 @@ static const float odd_table[] __attribute__ ((aligned(8))) = {
 
 /* generic C code for check */
 
-static void ftrv_(const float xf[],float fv[])
+static void ftrv_(const float xf[], float fv[])
 {
-        float f0,f1,f2,f3;
-        f0 = fv[0];
-        f1 = fv[1];
-        f2 = fv[2];
-        f3 = fv[3];
-        fv[0] = xf[0]*f0 + xf[4]*f1 + xf[ 8]*f2 + xf[12]*f3;
-        fv[1] = xf[1]*f0 + xf[5]*f1 + xf[ 9]*f2 + xf[13]*f3;
-        fv[2] = xf[2]*f0 + xf[6]*f1 + xf[10]*f2 + xf[14]*f3;
-        fv[3] = xf[3]*f0 + xf[7]*f1 + xf[11]*f2 + xf[15]*f3;
+    float f0, f1, f2, f3;
+    f0 = fv[0];
+    f1 = fv[1];
+    f2 = fv[2];
+    f3 = fv[3];
+    fv[0] = xf[0] * f0 + xf[4] * f1 + xf[ 8] * f2 + xf[12] * f3;
+    fv[1] = xf[1] * f0 + xf[5] * f1 + xf[ 9] * f2 + xf[13] * f3;
+    fv[2] = xf[2] * f0 + xf[6] * f1 + xf[10] * f2 + xf[14] * f3;
+    fv[3] = xf[3] * f0 + xf[7] * f1 + xf[11] * f2 + xf[15] * f3;
 }
 
-static void load_matrix_(float xf[],const float table[])
+static void load_matrix_(float xf[], const float table[])
 {
-        int i;
-        for(i=0;i<16;i++) xf[i]=table[i];
+    int i;
+    for(i = 0; i < 16; i++) xf[i] = table[i];
 }
 
 #define         ftrv()                  ftrv_(xf,fv)
@@ -134,229 +136,245 @@ static void load_matrix_(float xf[],const float table[])
 
 void idct_sh4(DCTELEM *block)
 {
-        DEFREG;
+    DEFREG;
 
-        int i;
-        float        tblock[8*8],*fblock;
-        int ofs1,ofs2,ofs3;
-        int fpscr;
+    int i;
+    float        tblock[8*8], *fblock;
+    int ofs1, ofs2, ofs3;
+    int fpscr;
 
-        fp_single_enter(fpscr);
+    fp_single_enter(fpscr);
 
-        /* row */
+    /* row */
 
-        /* even part */
-        load_matrix(even_table);
+    /* even part */
+    load_matrix(even_table);
 
-        fblock = tblock+4;
-        i = 8;
-        do {
-                fr0 = block[0];
-                fr1 = block[2];
-                fr2 = block[4];
-                fr3 = block[6];
-                block+=8;
-                ftrv();
-                *--fblock = fr3;
-                *--fblock = fr2;
-                *--fblock = fr1;
-                *--fblock = fr0;
-                fblock+=8+4;
-        } while(--i);
-        block-=8*8;
-        fblock-=8*8+4;
+    fblock = tblock + 4;
+    i = 8;
+    do
+    {
+        fr0 = block[0];
+        fr1 = block[2];
+        fr2 = block[4];
+        fr3 = block[6];
+        block += 8;
+        ftrv();
+        *--fblock = fr3;
+        *--fblock = fr2;
+        *--fblock = fr1;
+        *--fblock = fr0;
+        fblock += 8 + 4;
+    }
+    while(--i);
+    block -= 8 * 8;
+    fblock -= 8 * 8 + 4;
 
-        load_matrix(odd_table);
+    load_matrix(odd_table);
 
-        i = 8;
+    i = 8;
 
-        do {
-                float t0,t1,t2,t3;
-                fr0 = block[1];
-                fr1 = block[3];
-                fr2 = block[5];
-                fr3 = block[7];
-                block+=8;
-                ftrv();
-                t0 = *fblock++;
-                t1 = *fblock++;
-                t2 = *fblock++;
-                t3 = *fblock++;
-                fblock+=4;
-                *--fblock = t0 - fr0;
-                *--fblock = t1 - fr1;
-                *--fblock = t2 - fr2;
-                *--fblock = t3 - fr3;
-                *--fblock = t3 + fr3;
-                *--fblock = t2 + fr2;
-                *--fblock = t1 + fr1;
-                *--fblock = t0 + fr0;
-                fblock+=8;
-        } while(--i);
-        block-=8*8;
-        fblock-=8*8;
+    do
+    {
+        float t0, t1, t2, t3;
+        fr0 = block[1];
+        fr1 = block[3];
+        fr2 = block[5];
+        fr3 = block[7];
+        block += 8;
+        ftrv();
+        t0 = *fblock++;
+        t1 = *fblock++;
+        t2 = *fblock++;
+        t3 = *fblock++;
+        fblock += 4;
+        *--fblock = t0 - fr0;
+        *--fblock = t1 - fr1;
+        *--fblock = t2 - fr2;
+        *--fblock = t3 - fr3;
+        *--fblock = t3 + fr3;
+        *--fblock = t2 + fr2;
+        *--fblock = t1 + fr1;
+        *--fblock = t0 + fr0;
+        fblock += 8;
+    }
+    while(--i);
+    block -= 8 * 8;
+    fblock -= 8 * 8;
 
-        /* col */
+    /* col */
 
-        /* even part */
-        load_matrix(even_table);
+    /* even part */
+    load_matrix(even_table);
 
-        ofs1 = sizeof(float)*2*8;
-        ofs2 = sizeof(float)*4*8;
-        ofs3 = sizeof(float)*6*8;
+    ofs1 = sizeof(float) * 2 * 8;
+    ofs2 = sizeof(float) * 4 * 8;
+    ofs3 = sizeof(float) * 6 * 8;
 
-        i = 8;
+    i = 8;
 
 #define        OA(fblock,ofs)   *(float*)((char*)fblock + ofs)
 
-        do {
-                fr0 = OA(fblock,   0);
-                fr1 = OA(fblock,ofs1);
-                fr2 = OA(fblock,ofs2);
-                fr3 = OA(fblock,ofs3);
-                ftrv();
-                OA(fblock,0   ) = fr0;
-                OA(fblock,ofs1) = fr1;
-                OA(fblock,ofs2) = fr2;
-                OA(fblock,ofs3) = fr3;
-                fblock++;
-        } while(--i);
-        fblock-=8;
+    do
+    {
+        fr0 = OA(fblock,   0);
+        fr1 = OA(fblock, ofs1);
+        fr2 = OA(fblock, ofs2);
+        fr3 = OA(fblock, ofs3);
+        ftrv();
+        OA(fblock, 0   ) = fr0;
+        OA(fblock, ofs1) = fr1;
+        OA(fblock, ofs2) = fr2;
+        OA(fblock, ofs3) = fr3;
+        fblock++;
+    }
+    while(--i);
+    fblock -= 8;
 
-        load_matrix(odd_table);
+    load_matrix(odd_table);
 
-        i=8;
-        do {
-                float t0,t1,t2,t3;
-                t0 = OA(fblock,   0); /* [8*0] */
-                t1 = OA(fblock,ofs1); /* [8*2] */
-                t2 = OA(fblock,ofs2); /* [8*4] */
-                t3 = OA(fblock,ofs3); /* [8*6] */
-                fblock+=8;
-                fr0 = OA(fblock,   0); /* [8*1] */
-                fr1 = OA(fblock,ofs1); /* [8*3] */
-                fr2 = OA(fblock,ofs2); /* [8*5] */
-                fr3 = OA(fblock,ofs3); /* [8*7] */
-                fblock+=-8+1;
-                ftrv();
-                block[8*0] = DESCALE(t0 + fr0,3);
-                block[8*7] = DESCALE(t0 - fr0,3);
-                block[8*1] = DESCALE(t1 + fr1,3);
-                block[8*6] = DESCALE(t1 - fr1,3);
-                block[8*2] = DESCALE(t2 + fr2,3);
-                block[8*5] = DESCALE(t2 - fr2,3);
-                block[8*3] = DESCALE(t3 + fr3,3);
-                block[8*4] = DESCALE(t3 - fr3,3);
-                block++;
-        } while(--i);
+    i = 8;
+    do
+    {
+        float t0, t1, t2, t3;
+        t0 = OA(fblock,   0); /* [8*0] */
+        t1 = OA(fblock, ofs1); /* [8*2] */
+        t2 = OA(fblock, ofs2); /* [8*4] */
+        t3 = OA(fblock, ofs3); /* [8*6] */
+        fblock += 8;
+        fr0 = OA(fblock,   0); /* [8*1] */
+        fr1 = OA(fblock, ofs1); /* [8*3] */
+        fr2 = OA(fblock, ofs2); /* [8*5] */
+        fr3 = OA(fblock, ofs3); /* [8*7] */
+        fblock += -8 + 1;
+        ftrv();
+        block[8*0] = DESCALE(t0 + fr0, 3);
+        block[8*7] = DESCALE(t0 - fr0, 3);
+        block[8*1] = DESCALE(t1 + fr1, 3);
+        block[8*6] = DESCALE(t1 - fr1, 3);
+        block[8*2] = DESCALE(t2 + fr2, 3);
+        block[8*5] = DESCALE(t2 - fr2, 3);
+        block[8*3] = DESCALE(t3 + fr3, 3);
+        block[8*4] = DESCALE(t3 - fr3, 3);
+        block++;
+    }
+    while(--i);
 
-        fp_single_leave(fpscr);
+    fp_single_leave(fpscr);
 }
 #else
 void idct_sh4(DCTELEM *block)
 {
-        DEFREG;
+    DEFREG;
 
-        int i;
-        float   tblock[8*8],*fblock;
+    int i;
+    float   tblock[8*8], *fblock;
 
-        /* row */
+    /* row */
 
-        /* even part */
-        load_matrix(even_table);
+    /* even part */
+    load_matrix(even_table);
 
-        fblock = tblock;
-        i = 8;
-        do {
-                fr0 = block[0];
-                fr1 = block[2];
-                fr2 = block[4];
-                fr3 = block[6];
-                block+=8;
-                ftrv();
-                fblock[0] = fr0;
-                fblock[2] = fr1;
-                fblock[4] = fr2;
-                fblock[6] = fr3;
-                fblock+=8;
-        } while(--i);
-        block-=8*8;
-        fblock-=8*8;
+    fblock = tblock;
+    i = 8;
+    do
+    {
+        fr0 = block[0];
+        fr1 = block[2];
+        fr2 = block[4];
+        fr3 = block[6];
+        block += 8;
+        ftrv();
+        fblock[0] = fr0;
+        fblock[2] = fr1;
+        fblock[4] = fr2;
+        fblock[6] = fr3;
+        fblock += 8;
+    }
+    while(--i);
+    block -= 8 * 8;
+    fblock -= 8 * 8;
 
-        load_matrix(odd_table);
+    load_matrix(odd_table);
 
-        i = 8;
+    i = 8;
 
-        do {
-                float t0,t1,t2,t3;
-                fr0 = block[1];
-                fr1 = block[3];
-                fr2 = block[5];
-                fr3 = block[7];
-                block+=8;
-                ftrv();
-                t0 = fblock[0];
-                t1 = fblock[2];
-                t2 = fblock[4];
-                t3 = fblock[6];
-                fblock[0] = t0 + fr0;
-                fblock[7] = t0 - fr0;
-                fblock[1] = t1 + fr1;
-                fblock[6] = t1 - fr1;
-                fblock[2] = t2 + fr2;
-                fblock[5] = t2 - fr2;
-                fblock[3] = t3 + fr3;
-                fblock[4] = t3 - fr3;
-                fblock+=8;
-        } while(--i);
-        block-=8*8;
-        fblock-=8*8;
+    do
+    {
+        float t0, t1, t2, t3;
+        fr0 = block[1];
+        fr1 = block[3];
+        fr2 = block[5];
+        fr3 = block[7];
+        block += 8;
+        ftrv();
+        t0 = fblock[0];
+        t1 = fblock[2];
+        t2 = fblock[4];
+        t3 = fblock[6];
+        fblock[0] = t0 + fr0;
+        fblock[7] = t0 - fr0;
+        fblock[1] = t1 + fr1;
+        fblock[6] = t1 - fr1;
+        fblock[2] = t2 + fr2;
+        fblock[5] = t2 - fr2;
+        fblock[3] = t3 + fr3;
+        fblock[4] = t3 - fr3;
+        fblock += 8;
+    }
+    while(--i);
+    block -= 8 * 8;
+    fblock -= 8 * 8;
 
-        /* col */
+    /* col */
 
-        /* even part */
-        load_matrix(even_table);
+    /* even part */
+    load_matrix(even_table);
 
-        i = 8;
+    i = 8;
 
-        do {
-                fr0 = fblock[8*0];
-                fr1 = fblock[8*2];
-                fr2 = fblock[8*4];
-                fr3 = fblock[8*6];
-                ftrv();
-                fblock[8*0] = fr0;
-                fblock[8*2] = fr1;
-                fblock[8*4] = fr2;
-                fblock[8*6] = fr3;
-                fblock++;
-        } while(--i);
-        fblock-=8;
+    do
+    {
+        fr0 = fblock[8*0];
+        fr1 = fblock[8*2];
+        fr2 = fblock[8*4];
+        fr3 = fblock[8*6];
+        ftrv();
+        fblock[8*0] = fr0;
+        fblock[8*2] = fr1;
+        fblock[8*4] = fr2;
+        fblock[8*6] = fr3;
+        fblock++;
+    }
+    while(--i);
+    fblock -= 8;
 
-        load_matrix(odd_table);
+    load_matrix(odd_table);
 
-        i=8;
-        do {
-                float t0,t1,t2,t3;
-                fr0 = fblock[8*1];
-                fr1 = fblock[8*3];
-                fr2 = fblock[8*5];
-                fr3 = fblock[8*7];
-                ftrv();
-                t0 = fblock[8*0];
-                t1 = fblock[8*2];
-                t2 = fblock[8*4];
-                t3 = fblock[8*6];
-                fblock++;
-                block[8*0] = DESCALE(t0 + fr0,3);
-                block[8*7] = DESCALE(t0 - fr0,3);
-                block[8*1] = DESCALE(t1 + fr1,3);
-                block[8*6] = DESCALE(t1 - fr1,3);
-                block[8*2] = DESCALE(t2 + fr2,3);
-                block[8*5] = DESCALE(t2 - fr2,3);
-                block[8*3] = DESCALE(t3 + fr3,3);
-                block[8*4] = DESCALE(t3 - fr3,3);
-                block++;
-        } while(--i);
+    i = 8;
+    do
+    {
+        float t0, t1, t2, t3;
+        fr0 = fblock[8*1];
+        fr1 = fblock[8*3];
+        fr2 = fblock[8*5];
+        fr3 = fblock[8*7];
+        ftrv();
+        t0 = fblock[8*0];
+        t1 = fblock[8*2];
+        t2 = fblock[8*4];
+        t3 = fblock[8*6];
+        fblock++;
+        block[8*0] = DESCALE(t0 + fr0, 3);
+        block[8*7] = DESCALE(t0 - fr0, 3);
+        block[8*1] = DESCALE(t1 + fr1, 3);
+        block[8*6] = DESCALE(t1 - fr1, 3);
+        block[8*2] = DESCALE(t2 + fr2, 3);
+        block[8*5] = DESCALE(t2 - fr2, 3);
+        block[8*3] = DESCALE(t3 + fr3, 3);
+        block[8*4] = DESCALE(t3 - fr3, 3);
+        block++;
+    }
+    while(--i);
 }
 #endif

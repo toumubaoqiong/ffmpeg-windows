@@ -29,7 +29,8 @@
 #define GSM_MS_BLOCK_SIZE 65
 #define GSM_FRAME_SIZE   160
 
-typedef struct {
+typedef struct
+{
     // Contains first 120 elements from the previous frame
     // (used by long_term_synth according to the "lag"),
     // then in the following 160 elements the current

@@ -23,20 +23,31 @@
 
 #include "avfilter.h"
 
-AVFilter avfilter_vf_null = {
+AVFilter avfilter_vf_null =
+{
     .name      = "null",
     .description = NULL_IF_CONFIG_SMALL("Pass the source unchanged to the output."),
 
     .priv_size = 0,
 
-    .inputs    = (AVFilterPad[]) {{ .name             = "default",
-                                    .type             = AVMEDIA_TYPE_VIDEO,
-                                    .get_video_buffer = avfilter_null_get_video_buffer,
-                                    .start_frame      = avfilter_null_start_frame,
-                                    .end_frame        = avfilter_null_end_frame },
-                                  { .name = NULL}},
+    .inputs    = (AVFilterPad[])
+    {
+        {
+            .name             = "default",
+            .type             = AVMEDIA_TYPE_VIDEO,
+            .get_video_buffer = avfilter_null_get_video_buffer,
+            .start_frame      = avfilter_null_start_frame,
+            .end_frame        = avfilter_null_end_frame
+        },
+        { .name = NULL}
+    },
 
-    .outputs   = (AVFilterPad[]) {{ .name             = "default",
-                                    .type             = AVMEDIA_TYPE_VIDEO, },
-                                  { .name = NULL}},
+    .outputs   = (AVFilterPad[])
+    {
+        {
+            .name             = "default",
+            .type             = AVMEDIA_TYPE_VIDEO,
+        },
+        { .name = NULL}
+    },
 };

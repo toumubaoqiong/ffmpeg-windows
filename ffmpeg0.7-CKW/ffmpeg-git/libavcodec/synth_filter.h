@@ -23,7 +23,8 @@
 
 #include "fft.h"
 
-typedef struct SynthFilterContext {
+typedef struct SynthFilterContext
+{
     void (*synth_filter_float)(FFTContext *imdct,
                                float *synth_buf_ptr, int *synth_buf_offset,
                                float synth_buf2[32], const float window[512],

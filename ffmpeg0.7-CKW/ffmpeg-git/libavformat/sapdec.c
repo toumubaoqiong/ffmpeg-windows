@@ -34,7 +34,8 @@
 #include <sys/time.h>
 #endif
 
-struct SAPState {
+struct SAPState
+{
     URLContext *ann_fd;
     AVFormatContext *sdp_ctx;
     AVIOContext sdp_pb;
@@ -70,7 +71,7 @@ static int sap_read_header(AVFormatContext *s,
     uint8_t recvbuf[1500];
     int port;
     int ret, i;
-    AVInputFormat* infmt;
+    AVInputFormat *infmt;
 
     if (!ff_network_init())
         return AVERROR(EIO);
@@ -80,7 +81,8 @@ static int sap_read_header(AVFormatContext *s,
     if (port < 0)
         port = 9875;
 
-    if (!host[0]) {
+    if (!host[0])
+    {
         /* Listen for announcements on sap.mcast.net if no host was specified */
         av_strlcpy(host, "224.2.127.254", sizeof(host));
     }
@@ -91,7 +93,8 @@ static int sap_read_header(AVFormatContext *s,
     if (ret)
         goto fail;
 
-    while (1) {
+    while (1)
+    {
         int addr_type, auth_len;
         int pos;
 
@@ -101,20 +104,23 @@ static int sap_read_header(AVFormatContext *s,
         if (ret < 0)
             goto fail;
         recvbuf[ret] = '\0'; /* Null terminate for easier parsing */
-        if (ret < 8) {
+        if (ret < 8)
+        {
             av_log(s, AV_LOG_WARNING, "Received too short packet\n");
             continue;
         }
 
-        if ((recvbuf[0] & 0xe0) != 0x20) {
+        if ((recvbuf[0] & 0xe0) != 0x20)
+        {
             av_log(s, AV_LOG_WARNING, "Unsupported SAP version packet "
-                                      "received\n");
+                   "received\n");
             continue;
         }
 
-        if (recvbuf[0] & 0x04) {
+        if (recvbuf[0] & 0x04)
+        {
             av_log(s, AV_LOG_WARNING, "Received stream deletion "
-                                      "announcement\n");
+                   "announcement\n");
             continue;
         }
         addr_type = recvbuf[0] & 0x10;
@@ -126,18 +132,24 @@ static int sap_read_header(AVFormatContext *s,
         else
             pos += 4; /* IPv4 */
         pos += auth_len * 4;
-        if (pos + 4 >= ret) {
+        if (pos + 4 >= ret)
+        {
             av_log(s, AV_LOG_WARNING, "Received too short packet\n");
             continue;
         }
 #define MIME "application/sdp"
-        if (strcmp(&recvbuf[pos], MIME) == 0) {
+        if (strcmp(&recvbuf[pos], MIME) == 0)
+        {
             pos += strlen(MIME) + 1;
-        } else if (strncmp(&recvbuf[pos], "v=0\r\n", 5) == 0) {
+        }
+        else if (strncmp(&recvbuf[pos], "v=0\r\n", 5) == 0)
+        {
             // Direct SDP without a mime type
-        } else {
+        }
+        else
+        {
             av_log(s, AV_LOG_WARNING, "Unsupported mime type %s\n",
-                                      &recvbuf[pos]);
+                   &recvbuf[pos]);
             continue;
         }
 
@@ -147,13 +159,14 @@ static int sap_read_header(AVFormatContext *s,
 
     av_log(s, AV_LOG_VERBOSE, "SDP:\n%s\n", sap->sdp);
     ffio_init_context(&sap->sdp_pb, sap->sdp, strlen(sap->sdp), 0, NULL, NULL,
-                  NULL, NULL);
+                      NULL, NULL);
 
     infmt = av_find_input_format("sdp");
     if (!infmt)
         goto fail;
     sap->sdp_ctx = avformat_alloc_context();
-    if (!sap->sdp_ctx) {
+    if (!sap->sdp_ctx)
+    {
         ret = AVERROR(ENOMEM);
         goto fail;
     }
@@ -165,9 +178,11 @@ static int sap_read_header(AVFormatContext *s,
         goto fail;
     if (sap->sdp_ctx->ctx_flags & AVFMTCTX_NOHEADER)
         s->ctx_flags |= AVFMTCTX_NOHEADER;
-    for (i = 0; i < sap->sdp_ctx->nb_streams; i++) {
+    for (i = 0; i < sap->sdp_ctx->nb_streams; i++)
+    {
         AVStream *st = av_new_stream(s, i);
-        if (!st) {
+        if (!st)
+        {
             ret = AVERROR(ENOMEM);
             goto fail;
         }
@@ -193,15 +208,18 @@ static int sap_fetch_packet(AVFormatContext *s, AVPacket *pkt)
     if (sap->eof)
         return AVERROR_EOF;
 
-    while (1) {
+    while (1)
+    {
         n = poll(&p, 1, 0);
         if (n <= 0 || !(p.revents & POLLIN))
             break;
         ret = ffurl_read(sap->ann_fd, recvbuf, sizeof(recvbuf));
-        if (ret >= 8) {
+        if (ret >= 8)
+        {
             uint16_t hash = AV_RB16(&recvbuf[2]);
             /* Should ideally check the source IP address, too */
-            if (recvbuf[0] & 0x04 && hash == sap->hash) {
+            if (recvbuf[0] & 0x04 && hash == sap->hash)
+            {
                 /* Stream deletion */
                 sap->eof = 1;
                 return AVERROR_EOF;
@@ -211,11 +229,14 @@ static int sap_fetch_packet(AVFormatContext *s, AVPacket *pkt)
     ret = av_read_frame(sap->sdp_ctx, pkt);
     if (ret < 0)
         return ret;
-    if (s->ctx_flags & AVFMTCTX_NOHEADER) {
-        while (sap->sdp_ctx->nb_streams > s->nb_streams) {
+    if (s->ctx_flags & AVFMTCTX_NOHEADER)
+    {
+        while (sap->sdp_ctx->nb_streams > s->nb_streams)
+        {
             int i = s->nb_streams;
             AVStream *st = av_new_stream(s, i);
-            if (!st) {
+            if (!st)
+            {
                 av_free_packet(pkt);
                 return AVERROR(ENOMEM);
             }
@@ -226,7 +247,8 @@ static int sap_fetch_packet(AVFormatContext *s, AVPacket *pkt)
     return ret;
 }
 
-AVInputFormat ff_sap_demuxer = {
+AVInputFormat ff_sap_demuxer =
+{
     "sap",
     NULL_IF_CONFIG_SMALL("SAP input format"),
     sizeof(struct SAPState),

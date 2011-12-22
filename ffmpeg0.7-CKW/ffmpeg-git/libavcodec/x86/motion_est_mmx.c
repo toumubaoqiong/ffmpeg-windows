@@ -26,17 +26,18 @@
 #include "libavcodec/dsputil.h"
 #include "dsputil_mmx.h"
 
-DECLARE_ASM_CONST(8, uint64_t, round_tab)[3]={
-0x0000000000000000ULL,
-0x0001000100010001ULL,
-0x0002000200020002ULL,
+DECLARE_ASM_CONST(8, uint64_t, round_tab)[3] =
+{
+    0x0000000000000000ULL,
+    0x0001000100010001ULL,
+    0x0002000200020002ULL,
 };
 
-DECLARE_ASM_CONST(8, uint64_t, bone)= 0x0101010101010101LL;
+DECLARE_ASM_CONST(8, uint64_t, bone) = 0x0101010101010101LL;
 
 static inline void sad8_1_mmx(uint8_t *blk1, uint8_t *blk2, int stride, int h)
 {
-    x86_reg len= -(stride*h);
+    x86_reg len = -(stride * h);
     __asm__ volatile(
         ".p2align 4                     \n\t"
         "1:                             \n\t"
@@ -195,7 +196,7 @@ static inline void sad8_4_mmx2(uint8_t *blk1, uint8_t *blk2, int stride, int h)
 
 static inline void sad8_2_mmx(uint8_t *blk1a, uint8_t *blk1b, uint8_t *blk2, int stride, int h)
 {
-    x86_reg len= -(stride*h);
+    x86_reg len = -(stride * h);
     __asm__ volatile(
         ".p2align 4                     \n\t"
         "1:                             \n\t"
@@ -233,7 +234,7 @@ static inline void sad8_2_mmx(uint8_t *blk1a, uint8_t *blk1b, uint8_t *blk2, int
 
 static inline void sad8_4_mmx(uint8_t *blk1, uint8_t *blk2, int stride, int h)
 {
-    x86_reg len= -(stride*h);
+    x86_reg len = -(stride * h);
     __asm__ volatile(
         "movq (%1, %%"REG_a"), %%mm0    \n\t"
         "movq 1(%1, %%"REG_a"), %%mm2   \n\t"
@@ -297,7 +298,7 @@ static inline int sum_mmx(void)
         "movd %%mm6, %0                 \n\t"
         : "=r" (ret)
     );
-    return ret&0xFFFF;
+    return ret & 0xFFFF;
 }
 
 static inline int sum_mmx2(void)
@@ -312,11 +313,11 @@ static inline int sum_mmx2(void)
 
 static inline void sad8_x2a_mmx(uint8_t *blk1, uint8_t *blk2, int stride, int h)
 {
-    sad8_2_mmx(blk1, blk1+1, blk2, stride, h);
+    sad8_2_mmx(blk1, blk1 + 1, blk2, stride, h);
 }
 static inline void sad8_y2a_mmx(uint8_t *blk1, uint8_t *blk2, int stride, int h)
 {
-    sad8_2_mmx(blk1, blk1+stride, blk2, stride, h);
+    sad8_2_mmx(blk1, blk1 + stride, blk2, stride, h);
 }
 
 
@@ -418,15 +419,16 @@ static int sad16_xy2_ ## suf(void *v, uint8_t *blk2, uint8_t *blk1, int stride, 
 \
     return sum_ ## suf();\
 }\
-
+ 
 PIX_SAD(mmx)
 PIX_SAD(mmx2)
 
-void dsputil_init_pix_mmx(DSPContext* c, AVCodecContext *avctx)
+void dsputil_init_pix_mmx(DSPContext *c, AVCodecContext *avctx)
 {
     int mm_flags = av_get_cpu_flags();
 
-    if (mm_flags & AV_CPU_FLAG_MMX) {
+    if (mm_flags & AV_CPU_FLAG_MMX)
+    {
         c->pix_abs[0][0] = sad16_mmx;
         c->pix_abs[0][1] = sad16_x2_mmx;
         c->pix_abs[0][2] = sad16_y2_mmx;
@@ -436,17 +438,19 @@ void dsputil_init_pix_mmx(DSPContext* c, AVCodecContext *avctx)
         c->pix_abs[1][2] = sad8_y2_mmx;
         c->pix_abs[1][3] = sad8_xy2_mmx;
 
-        c->sad[0]= sad16_mmx;
-        c->sad[1]= sad8_mmx;
+        c->sad[0] = sad16_mmx;
+        c->sad[1] = sad8_mmx;
     }
-    if (mm_flags & AV_CPU_FLAG_MMX2) {
+    if (mm_flags & AV_CPU_FLAG_MMX2)
+    {
         c->pix_abs[0][0] = sad16_mmx2;
         c->pix_abs[1][0] = sad8_mmx2;
 
-        c->sad[0]= sad16_mmx2;
-        c->sad[1]= sad8_mmx2;
+        c->sad[0] = sad16_mmx2;
+        c->sad[1] = sad8_mmx2;
 
-        if(!(avctx->flags & CODEC_FLAG_BITEXACT)){
+        if(!(avctx->flags & CODEC_FLAG_BITEXACT))
+        {
             c->pix_abs[0][1] = sad16_x2_mmx2;
             c->pix_abs[0][2] = sad16_y2_mmx2;
             c->pix_abs[0][3] = sad16_xy2_mmx2;
@@ -455,7 +459,8 @@ void dsputil_init_pix_mmx(DSPContext* c, AVCodecContext *avctx)
             c->pix_abs[1][3] = sad8_xy2_mmx2;
         }
     }
-    if ((mm_flags & AV_CPU_FLAG_SSE2) && !(mm_flags & AV_CPU_FLAG_3DNOW) && avctx->codec_id != CODEC_ID_SNOW) {
-        c->sad[0]= sad16_sse2;
+    if ((mm_flags & AV_CPU_FLAG_SSE2) && !(mm_flags & AV_CPU_FLAG_3DNOW) && avctx->codec_id != CODEC_ID_SNOW)
+    {
+        c->sad[0] = sad16_sse2;
     }
 }

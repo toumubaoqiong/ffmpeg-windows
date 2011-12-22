@@ -47,7 +47,8 @@
  *       when implementing custom I/O. Normally these are set to the
  *       function pointers specified in avio_alloc_context()
  */
-typedef struct {
+typedef struct
+{
     unsigned char *buffer;  /**< Start of the buffer. */
     int buffer_size;        /**< Maximum buffer size */
     unsigned char *buf_ptr; /**< Current position in the buffer */
@@ -100,7 +101,8 @@ typedef struct {
  * sizeof(URLContext) must not be used outside libav*.
  * @deprecated This struct will be made private
  */
-typedef struct URLContext {
+typedef struct URLContext
+{
 #if FF_API_URL_CLASS
     const AVClass *av_class; ///< information for av_log(). Set by url_open().
 #endif
@@ -119,7 +121,8 @@ typedef struct URLContext {
  * @deprecated This struct is to be made private. Use the higher-level
  *             AVIOContext-based API instead.
  */
-typedef struct URLProtocol {
+typedef struct URLProtocol
+{
     const char *name;
     int (*url_open)(URLContext *h, const char *url, int flags);
     int (*url_read)(URLContext *h, unsigned char *buf, int size);
@@ -137,7 +140,8 @@ typedef struct URLProtocol {
     int (*url_check)(URLContext *h, int mask);
 } URLProtocol;
 
-typedef struct URLPollEntry {
+typedef struct URLPollEntry
+{
     URLContext *handle;
     int events;
     int revents;
@@ -182,7 +186,7 @@ FFMPEGLIB_API extern URLInterruptCB *url_interrupt_cb;
  * @{
  */
 FFMPEGLIB_API attribute_deprecated int url_open_protocol (URLContext **puc, struct URLProtocol *up,
-                                            const char *url, int flags);
+        const char *url, int flags);
 FFMPEGLIB_API attribute_deprecated int url_alloc(URLContext **h, const char *url, int flags);
 FFMPEGLIB_API attribute_deprecated int url_connect(URLContext *h);
 FFMPEGLIB_API attribute_deprecated int url_open(URLContext **h, const char *url, int flags);
@@ -197,7 +201,7 @@ FFMPEGLIB_API attribute_deprecated int url_get_max_packet_size(URLContext *h);
 FFMPEGLIB_API attribute_deprecated void url_get_filename(URLContext *h, char *buf, int buf_size);
 FFMPEGLIB_API attribute_deprecated int av_url_read_pause(URLContext *h, int pause);
 FFMPEGLIB_API attribute_deprecated int64_t av_url_read_seek(URLContext *h, int stream_index,
-                                              int64_t timestamp, int flags);
+        int64_t timestamp, int flags);
 FFMPEGLIB_API attribute_deprecated void url_set_interrupt_cb(int (*interrupt_cb)(void));
 
 /**
@@ -220,21 +224,21 @@ FFMPEGLIB_API attribute_deprecated int av_register_protocol2(URLProtocol *protoc
 typedef FFMPEGLIB_API attribute_deprecated AVIOContext ByteIOContext;
 
 FFMPEGLIB_API attribute_deprecated int init_put_byte(AVIOContext *s,
-                  unsigned char *buffer,
-                  int buffer_size,
-                  int write_flag,
-                  void *opaque,
-                  int (*read_packet)(void *opaque, uint8_t *buf, int buf_size),
-                  int (*write_packet)(void *opaque, uint8_t *buf, int buf_size),
-                  int64_t (*seek)(void *opaque, int64_t offset, int whence));
+        unsigned char *buffer,
+        int buffer_size,
+        int write_flag,
+        void *opaque,
+        int (*read_packet)(void *opaque, uint8_t *buf, int buf_size),
+        int (*write_packet)(void *opaque, uint8_t *buf, int buf_size),
+        int64_t (*seek)(void *opaque, int64_t offset, int whence));
 FFMPEGLIB_API attribute_deprecated AVIOContext *av_alloc_put_byte(
-                  unsigned char *buffer,
-                  int buffer_size,
-                  int write_flag,
-                  void *opaque,
-                  int (*read_packet)(void *opaque, uint8_t *buf, int buf_size),
-                  int (*write_packet)(void *opaque, uint8_t *buf, int buf_size),
-                  int64_t (*seek)(void *opaque, int64_t offset, int whence));
+    unsigned char *buffer,
+    int buffer_size,
+    int write_flag,
+    void *opaque,
+    int (*read_packet)(void *opaque, uint8_t *buf, int buf_size),
+    int (*write_packet)(void *opaque, uint8_t *buf, int buf_size),
+    int64_t (*seek)(void *opaque, int64_t offset, int whence));
 
 /**
  * @defgroup old_avio_funcs Old put_/get_*() functions
@@ -271,7 +275,7 @@ FFMPEGLIB_API attribute_deprecated void         put_tag(AVIOContext *s, const ch
 
 FFMPEGLIB_API attribute_deprecated int     av_url_read_fpause(AVIOContext *h,    int pause);
 FFMPEGLIB_API attribute_deprecated int64_t av_url_read_fseek (AVIOContext *h,    int stream_index,
-                                                int64_t timestamp, int flags);
+        int64_t timestamp, int flags);
 
 /**
  * @defgroup old_url_f_funcs Old url_f* functions
@@ -307,8 +311,8 @@ FFMPEGLIB_API attribute_deprecated int udp_set_remote_url(URLContext *h, const c
 FFMPEGLIB_API attribute_deprecated int udp_get_local_port(URLContext *h);
 
 FFMPEGLIB_API attribute_deprecated void init_checksum(AVIOContext *s,
-                   unsigned long (*update_checksum)(unsigned long c, const uint8_t *p, unsigned int len),
-                   unsigned long checksum);
+        unsigned long (*update_checksum)(unsigned long c, const uint8_t *p, unsigned int len),
+        unsigned long checksum);
 FFMPEGLIB_API attribute_deprecated unsigned long get_checksum(AVIOContext *s);
 FFMPEGLIB_API attribute_deprecated void put_strz(AVIOContext *s, const char *buf);
 /** @note unlike fgets, the EOL character is not returned and a whole
@@ -403,13 +407,13 @@ FFMPEGLIB_API attribute_deprecated int av_register_protocol(URLProtocol *protoco
  * @return Allocated AVIOContext or NULL on failure.
  */
 FFMPEGLIB_API AVIOContext *avio_alloc_context(
-                  unsigned char *buffer,
-                  int buffer_size,
-                  int write_flag,
-                  void *opaque,
-                  int (*read_packet)(void *opaque, uint8_t *buf, int buf_size),
-                  int (*write_packet)(void *opaque, uint8_t *buf, int buf_size),
-                  int64_t (*seek)(void *opaque, int64_t offset, int whence));
+    unsigned char *buffer,
+    int buffer_size,
+    int write_flag,
+    void *opaque,
+    int (*read_packet)(void *opaque, uint8_t *buf, int buf_size),
+    int (*write_packet)(void *opaque, uint8_t *buf, int buf_size),
+    int64_t (*seek)(void *opaque, int64_t offset, int whence));
 
 FFMPEGLIB_API void avio_w8(AVIOContext *s, int b);
 FFMPEGLIB_API void avio_write(AVIOContext *s, const unsigned char *buf, int size);
@@ -672,6 +676,6 @@ FFMPEGLIB_API int     avio_pause(AVIOContext *h, int pause);
  * @see AVInputFormat::read_seek
  */
 FFMPEGLIB_API int64_t avio_seek_time(AVIOContext *h, int stream_index,
-                       int64_t timestamp, int flags);
+                                     int64_t timestamp, int flags);
 
 #endif /* AVFORMAT_AVIO_H */

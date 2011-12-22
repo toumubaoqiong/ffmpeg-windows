@@ -127,20 +127,20 @@ void add_pixels_clamped_iwmmxt(const DCTELEM *block, uint8_t *pixels, int line_s
 static void clear_blocks_iwmmxt(DCTELEM *blocks)
 {
     __asm__ volatile(
-                "wzero wr0                      \n\t"
-                "mov r1, #(128 * 6 / 32)        \n\t"
-                "1:                             \n\t"
-                "wstrd wr0, [%0]                \n\t"
-                "wstrd wr0, [%0, #8]            \n\t"
-                "wstrd wr0, [%0, #16]           \n\t"
-                "wstrd wr0, [%0, #24]           \n\t"
-                "subs r1, r1, #1                \n\t"
-                "add %0, %0, #32                \n\t"
-                "bne 1b                         \n\t"
-                : "+r"(blocks)
-                :
-                : "r1"
-        );
+        "wzero wr0                      \n\t"
+        "mov r1, #(128 * 6 / 32)        \n\t"
+        "1:                             \n\t"
+        "wstrd wr0, [%0]                \n\t"
+        "wstrd wr0, [%0, #8]            \n\t"
+        "wstrd wr0, [%0, #16]           \n\t"
+        "wstrd wr0, [%0, #24]           \n\t"
+        "subs r1, r1, #1                \n\t"
+        "add %0, %0, #32                \n\t"
+        "bne 1b                         \n\t"
+        : "+r"(blocks)
+        :
+        : "r1"
+    );
 }
 
 static void nop(uint8_t *block, const uint8_t *pixels, int line_size, int h)
@@ -152,12 +152,13 @@ static void nop(uint8_t *block, const uint8_t *pixels, int line_size, int h)
  * then we should install the functions
  */
 
-void ff_dsputil_init_iwmmxt(DSPContext* c, AVCodecContext *avctx)
+void ff_dsputil_init_iwmmxt(DSPContext *c, AVCodecContext *avctx)
 {
     int mm_flags = AV_CPU_FLAG_IWMMXT; /* multimedia extension flags */
     const int h264_high_depth = avctx->codec_id == CODEC_ID_H264 && avctx->bits_per_raw_sample > 8;
 
-    if (avctx->dsp_mask) {
+    if (avctx->dsp_mask)
+    {
         if (avctx->dsp_mask & AV_CPU_FLAG_FORCE)
             mm_flags |= (avctx->dsp_mask & 0xffff);
         else
@@ -168,43 +169,44 @@ void ff_dsputil_init_iwmmxt(DSPContext* c, AVCodecContext *avctx)
 
     c->add_pixels_clamped = add_pixels_clamped_iwmmxt;
 
-    if (!h264_high_depth) {
-    c->clear_blocks = clear_blocks_iwmmxt;
+    if (!h264_high_depth)
+    {
+        c->clear_blocks = clear_blocks_iwmmxt;
 
-    c->put_pixels_tab[0][0] = put_pixels16_iwmmxt;
-    c->put_pixels_tab[0][1] = put_pixels16_x2_iwmmxt;
-    c->put_pixels_tab[0][2] = put_pixels16_y2_iwmmxt;
-    c->put_pixels_tab[0][3] = put_pixels16_xy2_iwmmxt;
-    c->put_no_rnd_pixels_tab[0][0] = put_pixels16_iwmmxt;
-    c->put_no_rnd_pixels_tab[0][1] = put_no_rnd_pixels16_x2_iwmmxt;
-    c->put_no_rnd_pixels_tab[0][2] = put_no_rnd_pixels16_y2_iwmmxt;
-    c->put_no_rnd_pixels_tab[0][3] = put_no_rnd_pixels16_xy2_iwmmxt;
+        c->put_pixels_tab[0][0] = put_pixels16_iwmmxt;
+        c->put_pixels_tab[0][1] = put_pixels16_x2_iwmmxt;
+        c->put_pixels_tab[0][2] = put_pixels16_y2_iwmmxt;
+        c->put_pixels_tab[0][3] = put_pixels16_xy2_iwmmxt;
+        c->put_no_rnd_pixels_tab[0][0] = put_pixels16_iwmmxt;
+        c->put_no_rnd_pixels_tab[0][1] = put_no_rnd_pixels16_x2_iwmmxt;
+        c->put_no_rnd_pixels_tab[0][2] = put_no_rnd_pixels16_y2_iwmmxt;
+        c->put_no_rnd_pixels_tab[0][3] = put_no_rnd_pixels16_xy2_iwmmxt;
 
-    c->put_pixels_tab[1][0] = put_pixels8_iwmmxt;
-    c->put_pixels_tab[1][1] = put_pixels8_x2_iwmmxt;
-    c->put_pixels_tab[1][2] = put_pixels8_y2_iwmmxt;
-    c->put_pixels_tab[1][3] = put_pixels8_xy2_iwmmxt;
-    c->put_no_rnd_pixels_tab[1][0] = put_pixels8_iwmmxt;
-    c->put_no_rnd_pixels_tab[1][1] = put_no_rnd_pixels8_x2_iwmmxt;
-    c->put_no_rnd_pixels_tab[1][2] = put_no_rnd_pixels8_y2_iwmmxt;
-    c->put_no_rnd_pixels_tab[1][3] = put_no_rnd_pixels8_xy2_iwmmxt;
+        c->put_pixels_tab[1][0] = put_pixels8_iwmmxt;
+        c->put_pixels_tab[1][1] = put_pixels8_x2_iwmmxt;
+        c->put_pixels_tab[1][2] = put_pixels8_y2_iwmmxt;
+        c->put_pixels_tab[1][3] = put_pixels8_xy2_iwmmxt;
+        c->put_no_rnd_pixels_tab[1][0] = put_pixels8_iwmmxt;
+        c->put_no_rnd_pixels_tab[1][1] = put_no_rnd_pixels8_x2_iwmmxt;
+        c->put_no_rnd_pixels_tab[1][2] = put_no_rnd_pixels8_y2_iwmmxt;
+        c->put_no_rnd_pixels_tab[1][3] = put_no_rnd_pixels8_xy2_iwmmxt;
 
-    c->avg_pixels_tab[0][0] = avg_pixels16_iwmmxt;
-    c->avg_pixels_tab[0][1] = avg_pixels16_x2_iwmmxt;
-    c->avg_pixels_tab[0][2] = avg_pixels16_y2_iwmmxt;
-    c->avg_pixels_tab[0][3] = avg_pixels16_xy2_iwmmxt;
-    c->avg_no_rnd_pixels_tab[0][0] = avg_pixels16_iwmmxt;
-    c->avg_no_rnd_pixels_tab[0][1] = avg_no_rnd_pixels16_x2_iwmmxt;
-    c->avg_no_rnd_pixels_tab[0][2] = avg_no_rnd_pixels16_y2_iwmmxt;
-    c->avg_no_rnd_pixels_tab[0][3] = avg_no_rnd_pixels16_xy2_iwmmxt;
+        c->avg_pixels_tab[0][0] = avg_pixels16_iwmmxt;
+        c->avg_pixels_tab[0][1] = avg_pixels16_x2_iwmmxt;
+        c->avg_pixels_tab[0][2] = avg_pixels16_y2_iwmmxt;
+        c->avg_pixels_tab[0][3] = avg_pixels16_xy2_iwmmxt;
+        c->avg_no_rnd_pixels_tab[0][0] = avg_pixels16_iwmmxt;
+        c->avg_no_rnd_pixels_tab[0][1] = avg_no_rnd_pixels16_x2_iwmmxt;
+        c->avg_no_rnd_pixels_tab[0][2] = avg_no_rnd_pixels16_y2_iwmmxt;
+        c->avg_no_rnd_pixels_tab[0][3] = avg_no_rnd_pixels16_xy2_iwmmxt;
 
-    c->avg_pixels_tab[1][0] = avg_pixels8_iwmmxt;
-    c->avg_pixels_tab[1][1] = avg_pixels8_x2_iwmmxt;
-    c->avg_pixels_tab[1][2] = avg_pixels8_y2_iwmmxt;
-    c->avg_pixels_tab[1][3] = avg_pixels8_xy2_iwmmxt;
-    c->avg_no_rnd_pixels_tab[1][0] = avg_no_rnd_pixels8_iwmmxt;
-    c->avg_no_rnd_pixels_tab[1][1] = avg_no_rnd_pixels8_x2_iwmmxt;
-    c->avg_no_rnd_pixels_tab[1][2] = avg_no_rnd_pixels8_y2_iwmmxt;
-    c->avg_no_rnd_pixels_tab[1][3] = avg_no_rnd_pixels8_xy2_iwmmxt;
+        c->avg_pixels_tab[1][0] = avg_pixels8_iwmmxt;
+        c->avg_pixels_tab[1][1] = avg_pixels8_x2_iwmmxt;
+        c->avg_pixels_tab[1][2] = avg_pixels8_y2_iwmmxt;
+        c->avg_pixels_tab[1][3] = avg_pixels8_xy2_iwmmxt;
+        c->avg_no_rnd_pixels_tab[1][0] = avg_no_rnd_pixels8_iwmmxt;
+        c->avg_no_rnd_pixels_tab[1][1] = avg_no_rnd_pixels8_x2_iwmmxt;
+        c->avg_no_rnd_pixels_tab[1][2] = avg_no_rnd_pixels8_y2_iwmmxt;
+        c->avg_no_rnd_pixels_tab[1][3] = avg_no_rnd_pixels8_xy2_iwmmxt;
     }
 }

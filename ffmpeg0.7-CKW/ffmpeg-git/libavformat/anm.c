@@ -27,13 +27,15 @@
 #include "libavutil/intreadwrite.h"
 #include "avformat.h"
 
-typedef struct {
+typedef struct
+{
     int base_record;
     unsigned int nb_records;
     int size;
 } Page;
 
-typedef struct {
+typedef struct
+{
     unsigned int nb_pages;    /**< total pages in file */
     unsigned int nb_records;  /**< total records in file */
     int page_table_offset;
@@ -50,8 +52,8 @@ static int probe(AVProbeData *p)
 {
     /* verify tags and video dimensions */
     if (AV_RL32(&p->buf[0])  == LPF_TAG &&
-        AV_RL32(&p->buf[16]) == ANIM_TAG &&
-        AV_RL16(&p->buf[20]) && AV_RL16(&p->buf[22]))
+            AV_RL32(&p->buf[16]) == ANIM_TAG &&
+            AV_RL16(&p->buf[20]) && AV_RL16(&p->buf[22]))
         return AVPROBE_SCORE_MAX;
     return 0;
 }
@@ -66,7 +68,8 @@ static int find_record(const AnmDemuxContext *anm, int record)
     if (record >= anm->nb_records)
         return AVERROR_EOF;
 
-    for (i = 0; i < MAX_PAGES; i++) {
+    for (i = 0; i < MAX_PAGES; i++)
+    {
         const Page *p = &anm->pt[i];
         if (p->nb_records > 0 && record >= p->base_record && record < p->base_record + p->nb_records)
             return i;
@@ -84,7 +87,8 @@ static int read_header(AVFormatContext *s,
     int i, ret;
 
     avio_skip(pb, 4); /* magic number */
-    if (avio_rl16(pb) != MAX_PAGES) {
+    if (avio_rl16(pb) != MAX_PAGES)
+    {
         av_log_ask_for_sample(s, "max_pages != " AV_STRINGIFY(MAX_PAGES) "\n");
         return AVERROR_INVALIDDATA;
     }
@@ -132,9 +136,10 @@ static int read_header(AVFormatContext *s,
     avio_skip(pb, 58);
 
     /* color cycling and palette data */
-    st->codec->extradata_size = 16*8 + 4*256;
+    st->codec->extradata_size = 16 * 8 + 4 * 256;
     st->codec->extradata      = av_mallocz(st->codec->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE);
-    if (!st->codec->extradata) {
+    if (!st->codec->extradata)
+    {
         ret = AVERROR(ENOMEM);
         goto close_and_return;
     }
@@ -147,7 +152,8 @@ static int read_header(AVFormatContext *s,
     if (ret < 0)
         goto close_and_return;
 
-    for (i = 0; i < MAX_PAGES; i++) {
+    for (i = 0; i < MAX_PAGES; i++)
+    {
         Page *p = &anm->pt[i];
         p->base_record = avio_rl16(pb);
         p->nb_records  = avio_rl16(pb);
@@ -156,7 +162,8 @@ static int read_header(AVFormatContext *s,
 
     /* find page of first frame */
     anm->page = find_record(anm, 0);
-    if (anm->page < 0) {
+    if (anm->page < 0)
+    {
         ret = anm->page;
         goto close_and_return;
     }
@@ -191,15 +198,17 @@ repeat:
     p = &anm->pt[anm->page];
 
     /* parse page header */
-    if (anm->record < 0) {
-        avio_seek(pb, anm->page_table_offset + MAX_PAGES*6 + (anm->page<<16), SEEK_SET);
-        avio_skip(pb, 8 + 2*p->nb_records);
+    if (anm->record < 0)
+    {
+        avio_seek(pb, anm->page_table_offset + MAX_PAGES * 6 + (anm->page << 16), SEEK_SET);
+        avio_skip(pb, 8 + 2 * p->nb_records);
         anm->record = 0;
     }
 
     /* if we have fetched all records in this page, then find the
        next page and repeat */
-    if (anm->record >= p->nb_records) {
+    if (anm->record >= p->nb_records)
+    {
         anm->page = find_record(anm, p->base_record + p->nb_records);
         if (anm->page < 0)
             return anm->page;
@@ -209,7 +218,7 @@ repeat:
 
     /* fetch record size */
     tmp = avio_tell(pb);
-    avio_seek(pb, anm->page_table_offset + MAX_PAGES*6 + (anm->page<<16) +
+    avio_seek(pb, anm->page_table_offset + MAX_PAGES * 6 + (anm->page << 16) +
               8 + anm->record * 2, SEEK_SET);
     record_size = avio_rl16(pb);
     avio_seek(pb, tmp, SEEK_SET);
@@ -225,7 +234,8 @@ repeat:
     return 0;
 }
 
-AVInputFormat ff_anm_demuxer = {
+AVInputFormat ff_anm_demuxer =
+{
     "anm",
     NULL_IF_CONFIG_SMALL("Deluxe Paint Animation"),
     sizeof(AnmDemuxContext),

@@ -28,7 +28,8 @@
 #include "avformat.h"
 
 
-typedef struct CinFileHeader {
+typedef struct CinFileHeader
+{
     int video_frame_size;
     int video_frame_width;
     int video_frame_height;
@@ -38,7 +39,8 @@ typedef struct CinFileHeader {
     int audio_frame_size;
 } CinFileHeader;
 
-typedef struct CinFrameHeader {
+typedef struct CinFrameHeader
+{
     int audio_frame_type;
     int video_frame_type;
     int pal_colors_count;
@@ -46,7 +48,8 @@ typedef struct CinFrameHeader {
     int video_frame_size;
 } CinFrameHeader;
 
-typedef struct CinDemuxContext {
+typedef struct CinDemuxContext
+{
     int audio_stream_index;
     int video_stream_index;
     CinFileHeader file_header;
@@ -70,7 +73,8 @@ static int cin_probe(AVProbeData *p)
     return AVPROBE_SCORE_MAX;
 }
 
-static int cin_read_file_header(CinDemuxContext *cin, AVIOContext *pb) {
+static int cin_read_file_header(CinDemuxContext *cin, AVIOContext *pb)
+{
     CinFileHeader *hdr = &cin->file_header;
 
     if (avio_rl32(pb) != 0x55AA0000)
@@ -138,7 +142,8 @@ static int cin_read_header(AVFormatContext *s, AVFormatParameters *ap)
     return 0;
 }
 
-static int cin_read_frame_header(CinDemuxContext *cin, AVIOContext *pb) {
+static int cin_read_frame_header(CinDemuxContext *cin, AVIOContext *pb)
+{
     CinFrameHeader *hdr = &cin->frame_header;
 
     hdr->video_frame_type = avio_r8(pb);
@@ -164,15 +169,19 @@ static int cin_read_packet(AVFormatContext *s, AVPacket *pkt)
     int rc, palette_type, pkt_size;
     int ret;
 
-    if (cin->audio_buffer_size == 0) {
+    if (cin->audio_buffer_size == 0)
+    {
         rc = cin_read_frame_header(cin, pb);
         if (rc)
             return rc;
 
-        if ((int16_t)hdr->pal_colors_count < 0) {
+        if ((int16_t)hdr->pal_colors_count < 0)
+        {
             hdr->pal_colors_count = -(int16_t)hdr->pal_colors_count;
             palette_type = 1;
-        } else {
+        }
+        else
+        {
             palette_type = 0;
         }
 
@@ -192,7 +201,8 @@ static int cin_read_packet(AVFormatContext *s, AVPacket *pkt)
         pkt->data[3] = hdr->video_frame_type;
 
         ret = avio_read(pb, &pkt->data[4], pkt_size);
-        if (ret < 0) {
+        if (ret < 0)
+        {
             av_free_packet(pkt);
             return ret;
         }
@@ -216,7 +226,8 @@ static int cin_read_packet(AVFormatContext *s, AVPacket *pkt)
     return 0;
 }
 
-AVInputFormat ff_dsicin_demuxer = {
+AVInputFormat ff_dsicin_demuxer =
+{
     "dsicin",
     NULL_IF_CONFIG_SMALL("Delphine Software International CIN format"),
     sizeof(CinDemuxContext),

@@ -44,7 +44,7 @@ int ff_dxva2_common_end_frame(AVCodecContext *, MpegEncContext *,
                               const void *pp, unsigned pp_size,
                               const void *qm, unsigned qm_size,
                               int (*commit_bs_si)(AVCodecContext *,
-                                                  DXVA2_DecodeBufferDesc *bs,
-                                                  DXVA2_DecodeBufferDesc *slice));
+                                      DXVA2_DecodeBufferDesc *bs,
+                                      DXVA2_DecodeBufferDesc *slice));
 
 #endif /* AVCODEC_DXVA_INTERNAL_H */

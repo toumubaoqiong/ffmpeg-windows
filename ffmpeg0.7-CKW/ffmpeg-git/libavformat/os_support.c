@@ -48,21 +48,21 @@
 #include <stdlib.h>
 #include <strings.h>
 
-int ff_inet_aton (const char * str, struct in_addr * add)
+int ff_inet_aton (const char *str, struct in_addr *add)
 {
     unsigned int add1 = 0, add2 = 0, add3 = 0, add4 = 0;
 
     if (sscanf(str, "%d.%d.%d.%d", &add1, &add2, &add3, &add4) != 4)
         return 0;
 
-    if (!add1 || (add1|add2|add3|add4) > 255) return 0;
+    if (!add1 || (add1 | add2 | add3 | add4) > 255) return 0;
 
     add->s_addr = htonl((add1 << 24) + (add2 << 16) + (add3 << 8) + add4);
 
     return 1;
 }
 #else
-int ff_inet_aton (const char * str, struct in_addr * add)
+int ff_inet_aton (const char *str, struct in_addr *add)
 {
     return inet_aton(str, add);
 }
@@ -70,16 +70,16 @@ int ff_inet_aton (const char * str, struct in_addr * add)
 
 #if !HAVE_GETADDRINFO
 int ff_getaddrinfo(const char *node, const char *service,
-                const struct addrinfo *hints, struct addrinfo **res)
+                   const struct addrinfo *hints, struct addrinfo **res)
 {
     struct hostent *h = NULL;
     struct addrinfo *ai;
     struct sockaddr_in *sin;
 
 #if HAVE_WINSOCK2_H
-    int (WSAAPI *win_getaddrinfo)(const char *node, const char *service,
-                                  const struct addrinfo *hints,
-                                  struct addrinfo **res);
+    int (WSAAPI * win_getaddrinfo)(const char * node, const char * service,
+                                   const struct addrinfo * hints,
+                                   struct addrinfo **res);
     HMODULE ws2mod = GetModuleHandle("ws2_32.dll");
     win_getaddrinfo = GetProcAddress(ws2mod, "getaddrinfo");
     if (win_getaddrinfo)
@@ -92,23 +92,31 @@ int ff_getaddrinfo(const char *node, const char *service,
         return EAI_FAIL;
     sin->sin_family = AF_INET;
 
-    if (node) {
-        if (!ff_inet_aton(node, &sin->sin_addr)) {
-            if (hints && (hints->ai_flags & AI_NUMERICHOST)) {
+    if (node)
+    {
+        if (!ff_inet_aton(node, &sin->sin_addr))
+        {
+            if (hints && (hints->ai_flags & AI_NUMERICHOST))
+            {
                 av_free(sin);
                 return EAI_FAIL;
             }
             h = gethostbyname(node);
-            if (!h) {
+            if (!h)
+            {
                 av_free(sin);
                 return EAI_FAIL;
             }
             memcpy(&sin->sin_addr, h->h_addr_list[0], sizeof(struct in_addr));
         }
-    } else {
-        if (hints && (hints->ai_flags & AI_PASSIVE)) {
+    }
+    else
+    {
+        if (hints && (hints->ai_flags & AI_PASSIVE))
+        {
             sin->sin_addr.s_addr = INADDR_ANY;
-        } else
+        }
+        else
             sin->sin_addr.s_addr = INADDR_LOOPBACK;
     }
 
@@ -118,7 +126,8 @@ int ff_getaddrinfo(const char *node, const char *service,
         sin->sin_port = htons(atoi(service));
 
     ai = av_mallocz(sizeof(struct addrinfo));
-    if (!ai) {
+    if (!ai)
+    {
         av_free(sin);
         return EAI_FAIL;
     }
@@ -126,10 +135,17 @@ int ff_getaddrinfo(const char *node, const char *service,
     *res = ai;
     ai->ai_family = AF_INET;
     ai->ai_socktype = hints ? hints->ai_socktype : 0;
-    switch (ai->ai_socktype) {
-    case SOCK_STREAM: ai->ai_protocol = IPPROTO_TCP; break;
-    case SOCK_DGRAM:  ai->ai_protocol = IPPROTO_UDP; break;
-    default:          ai->ai_protocol = 0;           break;
+    switch (ai->ai_socktype)
+    {
+    case SOCK_STREAM:
+        ai->ai_protocol = IPPROTO_TCP;
+        break;
+    case SOCK_DGRAM:
+        ai->ai_protocol = IPPROTO_UDP;
+        break;
+    default:
+        ai->ai_protocol = 0;
+        break;
     }
 
     ai->ai_addr = (struct sockaddr *)sin;
@@ -144,11 +160,12 @@ int ff_getaddrinfo(const char *node, const char *service,
 void ff_freeaddrinfo(struct addrinfo *res)
 {
 #if HAVE_WINSOCK2_H
-    void (WSAAPI *win_freeaddrinfo)(struct addrinfo *res);
+    void (WSAAPI * win_freeaddrinfo)(struct addrinfo * res);
     HMODULE ws2mod = GetModuleHandle("ws2_32.dll");
-    win_freeaddrinfo = (void (WSAAPI *)(struct addrinfo *res))
+    win_freeaddrinfo = (void (WSAAPI *)(struct addrinfo * res))
                        GetProcAddress(ws2mod, "freeaddrinfo");
-    if (win_freeaddrinfo) {
+    if (win_freeaddrinfo)
+    {
         win_freeaddrinfo(res);
         return;
     }
@@ -166,9 +183,9 @@ int ff_getnameinfo(const struct sockaddr *sa, int salen,
     const struct sockaddr_in *sin = (const struct sockaddr_in *)sa;
 
 #if HAVE_WINSOCK2_H
-    int (WSAAPI *win_getnameinfo)(const struct sockaddr *sa, socklen_t salen,
-                                  char *host, DWORD hostlen,
-                                  char *serv, DWORD servlen, int flags);
+    int (WSAAPI * win_getnameinfo)(const struct sockaddr * sa, socklen_t salen,
+                                   char * host, DWORD hostlen,
+                                   char * serv, DWORD servlen, int flags);
     HMODULE ws2mod = GetModuleHandle("ws2_32.dll");
     win_getnameinfo = GetProcAddress(ws2mod, "getnameinfo");
     if (win_getnameinfo)
@@ -180,18 +197,24 @@ int ff_getnameinfo(const struct sockaddr *sa, int salen,
     if (!host && !serv)
         return EAI_NONAME;
 
-    if (host && hostlen > 0) {
+    if (host && hostlen > 0)
+    {
         struct hostent *ent = NULL;
         uint32_t a;
         if (!(flags & NI_NUMERICHOST))
             ent = gethostbyaddr((const char *)&sin->sin_addr,
                                 sizeof(sin->sin_addr), AF_INET);
 
-        if (ent) {
+        if (ent)
+        {
             snprintf(host, hostlen, "%s", ent->h_name);
-        } else if (flags & NI_NAMERQD) {
+        }
+        else if (flags & NI_NAMERQD)
+        {
             return EAI_NONAME;
-        } else {
+        }
+        else
+        {
             a = ntohl(sin->sin_addr.s_addr);
             snprintf(host, hostlen, "%d.%d.%d.%d",
                      ((a >> 24) & 0xff), ((a >> 16) & 0xff),
@@ -199,14 +222,17 @@ int ff_getnameinfo(const struct sockaddr *sa, int salen,
         }
     }
 
-    if (serv && servlen > 0) {
+    if (serv && servlen > 0)
+    {
         struct servent *ent = NULL;
         if (!(flags & NI_NUMERICSERV))
             ent = getservbyport(sin->sin_port, flags & NI_DGRAM ? "udp" : "tcp");
 
-        if (ent) {
+        if (ent)
+        {
             snprintf(serv, servlen, "%s", ent->s_name);
-        } else
+        }
+        else
             snprintf(serv, servlen, "%d", ntohs(sin->sin_port));
     }
 
@@ -215,10 +241,14 @@ int ff_getnameinfo(const struct sockaddr *sa, int salen,
 
 const char *ff_gai_strerror(int ecode)
 {
-    switch(ecode) {
-    case EAI_FAIL   : return "A non-recoverable error occurred";
-    case EAI_FAMILY : return "The address family was not recognized or the address length was invalid for the specified family";
-    case EAI_NONAME : return "The name does not resolve for the supplied parameters";
+    switch(ecode)
+    {
+    case EAI_FAIL   :
+        return "A non-recoverable error occurred";
+    case EAI_FAMILY :
+        return "The address family was not recognized or the address length was invalid for the specified family";
+    case EAI_NONAME :
+        return "The name does not resolve for the supplied parameters";
     }
 
     return "Unknown error";
@@ -228,12 +258,12 @@ const char *ff_gai_strerror(int ecode)
 int ff_socket_nonblock(int socket, int enable)
 {
 #if HAVE_WINSOCK2_H
-   return ioctlsocket(socket, FIONBIO, &enable);
+    return ioctlsocket(socket, FIONBIO, &enable);
 #else
-   if (enable)
-      return fcntl(socket, F_SETFL, fcntl(socket, F_GETFL) | O_NONBLOCK);
-   else
-      return fcntl(socket, F_SETFL, fcntl(socket, F_GETFL) & ~O_NONBLOCK);
+    if (enable)
+        return fcntl(socket, F_SETFL, fcntl(socket, F_GETFL) | O_NONBLOCK);
+    else
+        return fcntl(socket, F_SETFL, fcntl(socket, F_GETFL) & ~O_NONBLOCK);
 #endif
 }
 
@@ -248,7 +278,8 @@ int poll(struct pollfd *fds, nfds_t numfds, int timeout)
     int rc;
 
 #if HAVE_WINSOCK2_H
-    if (numfds >= FD_SETSIZE) {
+    if (numfds >= FD_SETSIZE)
+    {
         errno = EINVAL;
         return -1;
     }
@@ -259,11 +290,13 @@ int poll(struct pollfd *fds, nfds_t numfds, int timeout)
     FD_ZERO(&exception_set);
 
     n = -1;
-    for(i = 0; i < numfds; i++) {
+    for(i = 0; i < numfds; i++)
+    {
         if (fds[i].fd < 0)
             continue;
 #if !HAVE_WINSOCK2_H
-        if (fds[i].fd >= FD_SETSIZE) {
+        if (fds[i].fd >= FD_SETSIZE)
+        {
             errno = EINVAL;
             return -1;
         }
@@ -272,33 +305,35 @@ int poll(struct pollfd *fds, nfds_t numfds, int timeout)
         if (fds[i].events & POLLIN)  FD_SET(fds[i].fd, &read_set);
         if (fds[i].events & POLLOUT) FD_SET(fds[i].fd, &write_set);
         if (fds[i].events & POLLERR) FD_SET(fds[i].fd, &exception_set);
-		int tmpSocket = fds[i].fd;
+        int tmpSocket = fds[i].fd;
         if (tmpSocket > n)
-		{
+        {
             n = fds[i].fd;
-			break;
-		}
+            break;
+        }
     };
 
     if (n == -1)
-	{
+    {
         /* Hey!? Nothing to poll, in fact!!! */
         return 0;
-	}
+    }
     if (timeout < 0)
-        rc = select(n+1, &read_set, &write_set, &exception_set, NULL);
-    else {
+        rc = select(n + 1, &read_set, &write_set, &exception_set, NULL);
+    else
+    {
         struct timeval    tv;
 
         tv.tv_sec = timeout / 1000;
         tv.tv_usec = 1000 * (timeout % 1000);
-        rc = select(n+1, &read_set, &write_set, &exception_set, &tv);
+        rc = select(n + 1, &read_set, &write_set, &exception_set, &tv);
     };
 
     if (rc < 0)
         return rc;
 
-    for(i = 0; i < numfds; i++) {
+    for(i = 0; i < numfds; i++)
+    {
         fds[i].revents = 0;
 
         if (FD_ISSET(fds[i].fd, &read_set))      fds[i].revents |= POLLIN;

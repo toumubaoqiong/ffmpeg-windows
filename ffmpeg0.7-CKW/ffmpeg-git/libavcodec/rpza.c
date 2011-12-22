@@ -41,7 +41,8 @@
 #include "libavutil/intreadwrite.h"
 #include "avcodec.h"
 
-typedef struct RpzaContext {
+typedef struct RpzaContext
+{
 
     AVCodecContext *avctx;
     AVFrame frame;
@@ -91,7 +92,7 @@ static void rpza_decode_stream(RpzaContext *s)
     /* First byte is always 0xe1. Warn if it's different */
     if (s->buf[stream_ptr] != 0xe1)
         av_log(s->avctx, AV_LOG_ERROR, "First chunk byte is 0x%02x instead of 0xe1\n",
-            s->buf[stream_ptr]);
+               s->buf[stream_ptr]);
 
     /* Get chunk size, ingnoring first byte */
     chunk_size = AV_RB32(&s->buf[stream_ptr]) & 0x00FFFFFF;
@@ -107,16 +108,19 @@ static void rpza_decode_stream(RpzaContext *s)
     total_blocks = ((s->avctx->width + 3) / 4) * ((s->avctx->height + 3) / 4);
 
     /* Process chunk data */
-    while (stream_ptr < chunk_size) {
+    while (stream_ptr < chunk_size)
+    {
         opcode = s->buf[stream_ptr++]; /* Get opcode */
 
         n_blocks = (opcode & 0x1f) + 1; /* Extract block counter from opcode */
 
         /* If opcode MSbit is 0, we need more data to decide what to do */
-        if ((opcode & 0x80) == 0) {
+        if ((opcode & 0x80) == 0)
+        {
             colorA = (opcode << 8) | (s->buf[stream_ptr++]);
             opcode = 0;
-            if ((s->buf[stream_ptr] & 0x80) != 0) {
+            if ((s->buf[stream_ptr] & 0x80) != 0)
+            {
                 /* Must behave as opcode 110xxxxx, using colorA computed
                  * above. Use fake opcode 0x20 to enter switch block at
                  * the right place */
@@ -125,23 +129,28 @@ static void rpza_decode_stream(RpzaContext *s)
             }
         }
 
-        switch (opcode & 0xe0) {
+        switch (opcode & 0xe0)
+        {
 
-        /* Skip blocks */
+            /* Skip blocks */
         case 0x80:
-            while (n_blocks--) {
-              ADVANCE_BLOCK();
+            while (n_blocks--)
+            {
+                ADVANCE_BLOCK();
             }
             break;
 
-        /* Fill blocks with one color */
+            /* Fill blocks with one color */
         case 0xa0:
             colorA = AV_RB16 (&s->buf[stream_ptr]);
             stream_ptr += 2;
-            while (n_blocks--) {
+            while (n_blocks--)
+            {
                 block_ptr = row_ptr + pixel_ptr;
-                for (pixel_y = 0; pixel_y < 4; pixel_y++) {
-                    for (pixel_x = 0; pixel_x < 4; pixel_x++){
+                for (pixel_y = 0; pixel_y < 4; pixel_y++)
+                {
+                    for (pixel_x = 0; pixel_x < 4; pixel_x++)
+                    {
                         pixels[block_ptr] = colorA;
                         block_ptr++;
                     }
@@ -151,7 +160,7 @@ static void rpza_decode_stream(RpzaContext *s)
             }
             break;
 
-        /* Fill blocks with 4 colors */
+            /* Fill blocks with 4 colors */
         case 0xc0:
             colorA = AV_RB16 (&s->buf[stream_ptr]);
             stream_ptr += 2;
@@ -183,11 +192,14 @@ static void rpza_decode_stream(RpzaContext *s)
             color4[1] |= ((11 * ta + 21 * tb) >> 5);
             color4[2] |= ((21 * ta + 11 * tb) >> 5);
 
-            while (n_blocks--) {
+            while (n_blocks--)
+            {
                 block_ptr = row_ptr + pixel_ptr;
-                for (pixel_y = 0; pixel_y < 4; pixel_y++) {
+                for (pixel_y = 0; pixel_y < 4; pixel_y++)
+                {
                     index = s->buf[stream_ptr++];
-                    for (pixel_x = 0; pixel_x < 4; pixel_x++){
+                    for (pixel_x = 0; pixel_x < 4; pixel_x++)
+                    {
                         idx = (index >> (2 * (3 - pixel_x))) & 0x03;
                         pixels[block_ptr] = color4[idx];
                         block_ptr++;
@@ -198,13 +210,16 @@ static void rpza_decode_stream(RpzaContext *s)
             }
             break;
 
-        /* Fill block with 16 colors */
+            /* Fill block with 16 colors */
         case 0x00:
             block_ptr = row_ptr + pixel_ptr;
-            for (pixel_y = 0; pixel_y < 4; pixel_y++) {
-                for (pixel_x = 0; pixel_x < 4; pixel_x++){
+            for (pixel_y = 0; pixel_y < 4; pixel_y++)
+            {
+                for (pixel_x = 0; pixel_x < 4; pixel_x++)
+                {
                     /* We already have color of upper left pixel */
-                    if ((pixel_y != 0) || (pixel_x !=0)) {
+                    if ((pixel_y != 0) || (pixel_x != 0))
+                    {
                         colorA = AV_RB16 (&s->buf[stream_ptr]);
                         stream_ptr += 2;
                     }
@@ -216,11 +231,11 @@ static void rpza_decode_stream(RpzaContext *s)
             ADVANCE_BLOCK();
             break;
 
-        /* Unknown opcode */
+            /* Unknown opcode */
         default:
             av_log(s->avctx, AV_LOG_ERROR, "Unknown opcode %d in rpza chunk."
-                 " Skip remaining %d bytes of chunk data.\n", opcode,
-                 chunk_size - stream_ptr);
+                   " Skip remaining %d bytes of chunk data.\n", opcode,
+                   chunk_size - stream_ptr);
             return;
         } /* Opcode switch */
     }
@@ -251,7 +266,8 @@ static int rpza_decode_frame(AVCodecContext *avctx,
 
     s->frame.reference = 1;
     s->frame.buffer_hints = FF_BUFFER_HINTS_VALID | FF_BUFFER_HINTS_PRESERVE | FF_BUFFER_HINTS_REUSABLE;
-    if (avctx->reget_buffer(avctx, &s->frame)) {
+    if (avctx->reget_buffer(avctx, &s->frame))
+    {
         av_log(avctx, AV_LOG_ERROR, "reget_buffer() failed\n");
         return -1;
     }
@@ -259,7 +275,7 @@ static int rpza_decode_frame(AVCodecContext *avctx,
     rpza_decode_stream(s);
 
     *data_size = sizeof(AVFrame);
-    *(AVFrame*)data = s->frame;
+    *(AVFrame *)data = s->frame;
 
     /* always report that the buffer was completely consumed */
     return buf_size;
@@ -275,7 +291,8 @@ static av_cold int rpza_decode_end(AVCodecContext *avctx)
     return 0;
 }
 
-AVCodec ff_rpza_decoder = {
+AVCodec ff_rpza_decoder =
+{
     "rpza",
     AVMEDIA_TYPE_VIDEO,
     CODEC_ID_RPZA,

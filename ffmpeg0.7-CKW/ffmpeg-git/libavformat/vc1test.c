@@ -38,11 +38,11 @@ static int vc1t_probe(AVProbeData *p)
     if (p->buf[3] != 0xC5 || AV_RL32(&p->buf[4]) != 4 || AV_RL32(&p->buf[20]) != 0xC)
         return 0;
 
-    return AVPROBE_SCORE_MAX/2;
+    return AVPROBE_SCORE_MAX / 2;
 }
 
 static int vc1t_read_header(AVFormatContext *s,
-                           AVFormatParameters *ap)
+                            AVFormatParameters *ap)
 {
     AVIOContext *pb = s->pb;
     AVStream *st;
@@ -72,8 +72,10 @@ static int vc1t_read_header(AVFormatContext *s,
     fps = avio_rl32(pb);
     if(fps == 0xFFFFFFFF)
         av_set_pts_info(st, 32, 1, 1000);
-    else{
-        if (!fps) {
+    else
+    {
+        if (!fps)
+        {
             av_log(s, AV_LOG_ERROR, "Zero FPS specified, defaulting to 1 FPS\n");
             fps = 1;
         }
@@ -85,7 +87,7 @@ static int vc1t_read_header(AVFormatContext *s,
 }
 
 static int vc1t_read_packet(AVFormatContext *s,
-                           AVPacket *pkt)
+                            AVPacket *pkt)
 {
     AVIOContext *pb = s->pb;
     int frame_size;
@@ -109,7 +111,8 @@ static int vc1t_read_packet(AVFormatContext *s,
     return pkt->size;
 }
 
-AVInputFormat ff_vc1t_demuxer = {
+AVInputFormat ff_vc1t_demuxer =
+{
     "vc1test",
     NULL_IF_CONFIG_SMALL("VC-1 test bitstream format"),
     0,
