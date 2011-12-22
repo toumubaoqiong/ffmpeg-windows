@@ -1,0 +1,70 @@
+流行视频格式讲解
+*. MPEG/.MPG/.DAT 
+
+MPEG也是Motion Picture Experts Group 的缩写。这类格式包括了 MPEG-1, MPEG-2 和 MPEG-4在内的多种视频格式。MPEG-1相信是大家接触得最多的了，因为目前其正在被广泛地应用在 VCD 的制作和一些视频片段下载的网络应用上面，大部分的 VCD 都是用 MPEG1 格式压缩的 ( 刻录软件自动将MPEG1转为 .DAT格式 ) ，使用 MPEG-1 的压缩算法，可以把一部 120 分钟长的电影压缩到 1.2 GB 左右大小。MPEG-2 则是应用在 DVD 的制作，同时在一些 HDTV（高清晰电视广播）和一些高要求视频编辑、处理上面也有相当多的应用。使用 MPEG-2 的压缩算法压缩一部 120 分钟长的电影可以压缩到 5-8 GB 的大小（MPEG2的图像质量MPEG-1 与其无法比拟的）。 
+
+*.AVI 
+
+　AVI，音频视频交错(Audio Video Interleaved)的英文缩写。AVI这个由微软公司发表的视频格式在视频领域已经存在好几个年头了。AVI格式调用方便、图像质量好，但缺点就是文件体积过于庞大 
+
+*.RA/RM/RAM 
+
+　*.RM， Real Networks公司所制定的音频/视频压缩规范Real Media中的一种，Real Player能做的就是利用Internet资源对这些符合Real Media技术规范的音频/视频进行实况转播。在Real Media规范中主要包括三类文件：RealAudio、Real Video和Real Flash （Real Networks公司与Macromedia公司合作推出的新一代高压缩比动画格式）。REAL VIDEO （RA、RAM）格式由一开始就是定位就是在视频流应用方面的，也可以说是视频流技术的始创者。它可以在用 56K MODEM 拨号上网的条件实现不间断的视频播放，可是其图像质量比VCD差些，如果您看过那些RM压缩的影碟就可以明显对比出来了。 
+
+*.MOV 
+
+　使用过Mac机的朋友应该多少接触过QuickTime。QuickTime原本是Apple公司用于Mac计算机上的一种图像视频处理软件。Quick-Time提供了两种标准图像和数字视频格式 , 即可以支持静态的*.PIC和*.JPG图像格式，动态的基于Indeo压缩法的*.MOV和基于MPEG压缩法的*.MPG视频格式。 
+
+*.ASF 
+
+　ASF (Advanced Streaming format高级流格式)。ASF 是 MICROSOFT 为了和现在的 Real player 竞争而发展出来的一种可以直接在网上观看视频节目的文件压缩格式。ASF使用了 MPEG4 的压缩算法，压缩率和图像的质量都很不错。因为 ASF 是以一个可以在网上即时观赏的视频“流”格式存在的，所以它的图像质量比 VCD 差一点点并不出奇，但比同是视频“流”格式的 RAM 格式要好。 
+
+*.WMV 
+
+　一种独立于编码方式的在Internet上实时传播多媒体的技术标准，Microsoft公司希望用其取代QuickTime之类的技术标准以及WAV、AVI之类的文件扩展名。WMV的主要优点在于：可扩充的媒体类型、本地或网络回放、可伸缩的媒体类型、流的优先级化、多语言支持、扩展性等。 
+
+*. AVI(n AVI) 
+
+　如果你发现原来的播放软件突然打不开此类格式的AVI文件，那你就要考虑是不是碰到了n AVI。n AVI是 New AVI 的缩写，是一个名为 Shadow Realm 的地下组织发展起来的一种新视频格式。它是由Microsoft ASF 压缩算法的修改而来的（并不是想象中的 AVI），视频格式追求的无非是压缩率和图像质量，所以 NAVI 为了追求这个目标，改善了原始的 ASF 格式的一些不足，让 NAVI 可以拥有更高的帧率。可以这样说，NAVI 是一种去掉视频流特性的改良型 ASF 格式。 
+
+
+
+
+
+
+了解视频编码 
+
+在使用豪杰视频通的“转为MPEG4”功能时，有一项“视频设置”栏目，您可能对上面罗列出的各种视频编码不是太明白，以下是其中部分编码的简略说明，相信对您选择合适的编码进行转换有所帮助。 
+
+常见的视频编码： 
+1、Microsoft RLE 
+一种8位的编码方式，只能支持到256色。压缩动画或者是计算机合成的图像等具有大面积色块的素材可以使用它来编码，是一种无损压缩方案。 
+
+2、Microsoft Video 1 
+用于对模拟视频进行压缩，是一种有损压缩方案，最高仅达到256色，它的品质就可想而知，一般还是不要使用它来编码AVI。 
+
+3、Microsoft H.261和H.263 Video Codec 
+用于视频会议的Codec，其中H.261适用于ISDN、DDN线路，H.263适用于局域网，不过一般机器上这种Codec是用来播放的，不能用于编码。 
+
+4、Intel Indeo Video R3.2 
+所有的Windows版本都能用Indeo video 3.2播放AVI编码。它压缩率比Cinepak大，但需要回放的计算机要比Cinepak的快。 
+
+5、Intel Indeo Video 4和5 
+
+常见的有4.5和5.10两种，质量比Cinepak和R3.2要好，可以适应不同带宽的网络，但必须有相应的解码插件才能顺利地将下载作品进行播放。适合于装了Intel公司MMX以上CPU的机器，回放效果优秀。如果一定要用AVI的话，推荐使用5.10，在效果几乎一样的情况下，它有更快的编码速度和更高的压缩比。 
+
+6、Intel IYUV Codec 
+
+使用该方法所得图像质量极好，因为此方式是将普通的RGB色彩模式变为更加紧凑的YUV色彩模式。如果你想将AVI压缩成MPEG-1的话，用它得到的效果比较理想，只是它的生成的文件太大了 
+
+7、Microsoft MPEG-4 Video codec 
+
+常见的有1.0、2.0、3.0三种版本，当然是基于MPEG-4技术的，其中3.0并不能用于AVI的编码，只能用于生成支持“视频流”技术的ASF文件。 
+
+8、DivX-　MPEG-4 Low-Motion/Fast-Motion 
+
+实际与Microsoft MPEG-4 Video code是相当的东西，只是Low-Motion采用的固定码率，Fast-Motion采用的是动态码率，后者压缩成的AVI几乎只是前者的一半大，但质量要差一些。Low-Motion适用于转换DVD以保证较好的画质，Fast-Motion用于转换VCD以体现MPEG-4短小精悍的优势。 
+
+9 、DivX 3.11/4.12/5.0 
+
+实际上就是DivX，原来DivX是为了打破Microsoft的ASF规格而开发的，现在开发组摇身一变成了Divxnetworks公司，所以不断推出新的版本，最大的特点就是在编码程序中加入了1-pass和2-pass的设置，2-pass相当于两次编码，以最大限度地在网络带宽与视觉效果中取得平衡。
