@@ -254,36 +254,55 @@ struct AVCodecTag;
 /**
  * This structure contains the data a format has to probe a file.
  */
+//此结构体就是为了辨认各种不同的媒体封装格式而创造的
 typedef struct AVProbeData
 {
+	//文件名
     const char *filename;
+	//读取的头部信息
     unsigned char *buf; /**< Buffer must have AVPROBE_PADDING_SIZE of extra allocated bytes filled with zero. */
-    int buf_size;       /**< Size of buf except extra allocated bytes */
+    //读取的头部信息大小
+	int buf_size;       /**< Size of buf except extra allocated bytes */
 } AVProbeData;
 
 #define AVPROBE_SCORE_MAX 100               ///< maximum score, half of that is used for file-extension-based detection
 #define AVPROBE_PADDING_SIZE 32             ///< extra allocated bytes at the end of the probe buffer
 
+//搞不懂，为什么一定需要这个数据结构呢，能不能不需要？
 typedef struct AVFormatParameters
 {
+	//基本时间单位
     AVRational time_base;
+	//采样率
     int sample_rate;
-    int channels;
+	//通道数
+	int channels;
+	//宽度
     int width;
+	//高度
     int height;
+	//像素格式
     enum PixelFormat pix_fmt;
+	//视频通道
     int channel; /**< Used to select DV channel. */
-    const char *standard; /**< TV standard, NTSC, PAL, SECAM */
-    unsigned int mpeg2ts_raw: 1; /**< Force raw MPEG-2 transport stream output, if possible. */
-    unsigned int mpeg2ts_compute_pcr: 1; /**< Compute exact PCR for each transport
+    //TV标准格式
+	const char *standard; /**< TV standard, NTSC, PAL, SECAM */
+    //?
+	unsigned int mpeg2ts_raw: 1; /**< Force raw MPEG-2 transport stream output, if possible. */
+    //?
+	unsigned int mpeg2ts_compute_pcr: 1; /**< Compute exact PCR for each transport
                                             stream packet (only meaningful if
                                             mpeg2ts_raw is TRUE). */
-    unsigned int initial_pause: 1;       /**< Do not begin to play the stream
+    //?
+	unsigned int initial_pause: 1;       /**< Do not begin to play the stream
                                             immediately (RTSP only). */
-    unsigned int prealloced_context: 1;
+    //?
+	unsigned int prealloced_context: 1;
 #if FF_API_PARAMETERS_CODEC_ID
+	//视频编解码器ID
     attribute_deprecated enum CodecID video_codec_id;
-    attribute_deprecated enum CodecID audio_codec_id;
+    //音频编解码器ID
+	attribute_deprecated enum CodecID audio_codec_id;
 #endif
 } AVFormatParameters;
 

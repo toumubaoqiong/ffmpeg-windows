@@ -397,6 +397,8 @@ AVInputFormat *av_probe_input_format3(AVProbeData *pd, int is_opened, int *score
 
     if (lpd.buf_size > 10 && ff_id3v2_match(lpd.buf, ID3v2_DEFAULT_MAGIC))
     {
+		//如果AVProbeData的数据中包含mp3的标签信息id3v2，
+		//则要去掉id3v2的信息,再来验证格式信息
         int id3len = ff_id3v2_tag_len(lpd.buf);
         if (lpd.buf_size > id3len + 16)
         {
@@ -410,12 +412,19 @@ AVInputFormat *av_probe_input_format3(AVProbeData *pd, int is_opened, int *score
     {
         if (!is_opened == !(fmt1->flags & AVFMT_NOFILE))
             continue;
+		TraceOutMsg("fmt->name %s, lastname %s\n", 
+			fmt1->name,
+			fmt1->long_name);
         score = 0;
         if (fmt1->read_probe)
         {
             score = fmt1->read_probe(&lpd);
-            if(!score && fmt1->extensions && av_match_ext(lpd.filename, fmt1->extensions))
+            if(!score 
+				&& fmt1->extensions 
+				&& av_match_ext(lpd.filename, fmt1->extensions))
+			{
                 score = 1;
+			}
         }
         else if (fmt1->extensions)
         {
@@ -685,14 +694,18 @@ int av_open_input_file(AVFormatContext **ic_ptr, const char *filename,
     AVIOContext *pb = NULL;
     void *logctx = ap && ap->prealloced_context ? *ic_ptr : NULL;
 
-    pd->filename = "";
+    //获取IO文件信息
+	pd->filename = "";
     if (filename)
+	{
         pd->filename = filename;
+	}
     pd->buf = NULL;
     pd->buf_size = 0;
-
     if (!fmt)
     {
+		//这里有一个很重要的参数， int is_opened = 0
+		//代表这个文件没有打开，所以只能通过文件名来判断获取格式
         /* guess format if no file can be opened */
         fmt = av_probe_input_format(pd, 0);
     }

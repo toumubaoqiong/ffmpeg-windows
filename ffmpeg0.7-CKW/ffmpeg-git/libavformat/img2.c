@@ -115,7 +115,10 @@ static int infer_size(int *width_ptr, int *height_ptr, int size)
 static enum CodecID av_str2id(const IdStrMap *tags, const char *str)
 {
     str = strrchr(str, '.');
-    if(!str) return CODEC_ID_NONE;
+    if(!str) 
+	{
+		return CODEC_ID_NONE;
+	}
     str++;
 
     while (tags->id)

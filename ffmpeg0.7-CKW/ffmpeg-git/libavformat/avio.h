@@ -20,6 +20,18 @@
 #ifndef AVFORMAT_AVIO_H
 #define AVFORMAT_AVIO_H
 
+
+//****************************************************************************//
+//libavformat\avio.h, libavformat\avio.c
+//	IO操作的核心头文件
+//学习的地方：
+//1.这种IO操作的核心是如何设计的？怎么读写各种IO？
+//
+//附录：
+//1.
+//****************************************************************************//
+
+
 /**
  * @file
  * Buffered I/O operations
@@ -47,46 +59,68 @@
  *       when implementing custom I/O. Normally these are set to the
  *       function pointers specified in avio_alloc_context()
  */
+//非常重要的一个结构，这个结构涉及到读取文件的重要信息
 typedef struct
 {
+	//缓存
     unsigned char *buffer;  /**< Start of the buffer. */
-    int buffer_size;        /**< Maximum buffer size */
-    unsigned char *buf_ptr; /**< Current position in the buffer */
-    unsigned char *buf_end; /**< End of the data, may be less than
+    //缓存大小
+	int buffer_size;        /**< Maximum buffer size */
+    //缓存的当前数据位置
+	unsigned char *buf_ptr; /**< Current position in the buffer */
+    //缓存的结束位置
+	unsigned char *buf_end; /**< End of the data, may be less than
                                  buffer+buffer_size if the read function returned
                                  less data than requested, e.g. for streams where
                                  no more data has been received yet. */
+	//IO的具体数据对象
     void *opaque;           /**< A private pointer, passed to the read/write/seek/...
                                  functions. */
-    int (*read_packet)(void *opaque, uint8_t *buf, int buf_size);
-    int (*write_packet)(void *opaque, uint8_t *buf, int buf_size);
-    int64_t (*seek)(void *opaque, int64_t offset, int whence);
-    int64_t pos;            /**< position in the file of the current buffer */
-    int must_flush;         /**< true if the next seek should flush */
-    int eof_reached;        /**< true if eof reached */
-    int write_flag;         /**< true if open for writing */
+    //读操作
+	int (*read_packet)(void *opaque, uint8_t *buf, int buf_size);
+    //写操作
+	int (*write_packet)(void *opaque, uint8_t *buf, int buf_size);
+    //seek操作
+	int64_t (*seek)(void *opaque, int64_t offset, int whence);
+    //IO的位置
+	int64_t pos;            /**< position in the file of the current buffer */
+    //强制刷新
+	int must_flush;         /**< true if the next seek should flush */
+    //IO结束
+	int eof_reached;        /**< true if eof reached */
+    //是否可写标志
+	int write_flag;         /**< true if open for writing */
 #if FF_API_OLD_AVIO
+	//是否是流
     attribute_deprecated int is_streamed;
 #endif
+	//最大的packet大小
     int max_packet_size;
+	//校验和
     unsigned long checksum;
+	//校验和数据
     unsigned char *checksum_ptr;
+	//校验和生成函数
     unsigned long (*update_checksum)(unsigned long checksum, const uint8_t *buf, unsigned int size);
-    int error;              /**< contains the error code or 0 if no error happened */
+    //错误码
+	int error;              /**< contains the error code or 0 if no error happened */
     /**
      * Pause or resume playback for network streaming protocols - e.g. MMS.
      */
+	//读取暂停操作函数
     int (*read_pause)(void *opaque, int pause);
     /**
      * Seek to a given timestamp in stream with the specified stream_index.
      * Needed for some network streaming protocols which don't support seeking
      * to byte position.
      */
+	//读取SEEK函数
     int64_t (*read_seek)(void *opaque, int stream_index,
                          int64_t timestamp, int flags);
     /**
      * A combination of AVIO_SEEKABLE_ flags or 0 when the stream is not seekable.
      */
+	//seektable??????
     int seekable;
 } AVIOContext;
 
@@ -104,10 +138,14 @@ typedef struct
 typedef struct URLContext
 {
 #if FF_API_URL_CLASS
+	//数据类信息
     const AVClass *av_class; ///< information for av_log(). Set by url_open().
 #endif
+	//协议类型
     struct URLProtocol *prot;
+	//标志位
     int flags;
+	//是否是流
     int is_streamed;  /**< true if streamed (no seek possible), default = false */
     int max_packet_size;  /**< if non zero, the stream is packetized with this max packet size */
     void *priv_data;

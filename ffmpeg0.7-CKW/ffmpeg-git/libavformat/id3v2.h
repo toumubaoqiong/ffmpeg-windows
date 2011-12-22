@@ -19,6 +19,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+//****************************************************************************//
+//libavformat\id3v2.h, libavformat\id3v2.c
+//	mp3的标签信息id3v2
+//学习的地方：
+//1.
+//附录：
+//1.扩展知识----ID3v2的若干常识问题 .txt
+//2.扩展知识----id3v-v1&v2&v3简介.txt
+//****************************************************************************//
+
 #ifndef AVFORMAT_ID3V2_H
 #define AVFORMAT_ID3V2_H
 

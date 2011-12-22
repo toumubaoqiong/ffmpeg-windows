@@ -22,39 +22,69 @@
 #include "avformat.h"
 #include "metadata.h"
 
+//真他妈的装逼啊， 这么简单的一个函数，怎么搞得怎么复杂呢？
+//就是获取一个Key的AVMetadata
 AVMetadataTag *
 av_metadata_get(AVMetadata *m, const char *key, const AVMetadataTag *prev, int flags)
 {
     unsigned int i, j;
 
     if(!m)
+	{
         return NULL;
-
-    if(prev) i = prev - m->elems + 1;
-    else     i = 0;
-
+	}
+    if(prev) 
+	{
+		i = prev - m->elems + 1;
+	}
+    else
+	{
+		i = 0;
+	}
     for(; i < m->count; i++)
     {
         const char *s = m->elems[i].key;
-        if(flags & AV_METADATA_MATCH_CASE) for(j = 0;         s[j]  ==         key[j]  && key[j]; j++);
-        else                               for(j = 0; toupper(s[j]) == toupper(key[j]) && key[j]; j++);
+        if(flags & AV_METADATA_MATCH_CASE) 
+		{
+			for(j = 0;         
+				s[j]==key[j] && key[j]; 
+				j++)
+			{
+				;
+			}
+		}
+        else
+		{
+			for(j = 0; 
+				toupper(s[j]) == toupper(key[j]) && key[j]; 
+				j++)
+			{
+				;
+			}
+		}
         if(key[j])
+		{
             continue;
+		}
         if(s[j] && !(flags & AV_METADATA_IGNORE_SUFFIX))
+		{
             continue;
+		}
         return &m->elems[i];
     }
     return NULL;
 }
 
+//设置AVMetadata的值，有可能需要分配内存
 int av_metadata_set2(AVMetadata **pm, const char *key, const char *value, int flags)
 {
     AVMetadata *m = *pm;
     AVMetadataTag *tag = av_metadata_get(m, key, NULL, flags);
 
     if(!m)
+	{
         m = *pm = av_mallocz(sizeof(*m));
-
+	}
     if(tag)
     {
         if (flags & AV_METADATA_DONT_OVERWRITE)
@@ -71,7 +101,9 @@ int av_metadata_set2(AVMetadata **pm, const char *key, const char *value, int fl
             m->elems = tmp;
         }
         else
+		{
             return AVERROR(ENOMEM);
+		}
     }
     if(value)
     {
@@ -80,13 +112,17 @@ int av_metadata_set2(AVMetadata **pm, const char *key, const char *value, int fl
             m->elems[m->count].key  = key;
         }
         else
+		{
             m->elems[m->count].key  = av_strdup(key  );
+		}
         if(flags & AV_METADATA_DONT_STRDUP_VAL)
         {
             m->elems[m->count].value = value;
         }
         else
+		{
             m->elems[m->count].value = av_strdup(value);
+		}
         m->count++;
     }
     if(!m->count)
@@ -94,7 +130,6 @@ int av_metadata_set2(AVMetadata **pm, const char *key, const char *value, int fl
         av_free(m->elems);
         av_freep(pm);
     }
-
     return 0;
 }
 

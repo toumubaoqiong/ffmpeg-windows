@@ -22,6 +22,9 @@
 #include "id3v1.h"
 #include "libavcodec/avcodec.h"
 
+//解析mp3标签信息的id3v1总共就128个字节，并且存储在媒体文件的尾部，
+//真的好简单的！
+
 const char *const ff_id3v1_genre_str[ID3v1_GENRE_MAX + 1] =
 {
     [0] = "Blues",
@@ -193,7 +196,9 @@ static void get_string(AVFormatContext *s, const char *key,
     *q = '\0';
 
     if (*str)
+	{
         av_metadata_set2(&s->metadata, key, str, 0);
+	}
 }
 
 /**
@@ -209,7 +214,9 @@ static int parse_tag(AVFormatContext *s, const uint8_t *buf)
     if (!(buf[0] == 'T' &&
             buf[1] == 'A' &&
             buf[2] == 'G'))
+	{
         return -1;
+	}
     get_string(s, "title",   buf +  3, 30);
     get_string(s, "artist",  buf + 33, 30);
     get_string(s, "album",   buf + 63, 30);
@@ -222,7 +229,10 @@ static int parse_tag(AVFormatContext *s, const uint8_t *buf)
     }
     genre = buf[127];
     if (genre <= ID3v1_GENRE_MAX)
-        av_metadata_set2(&s->metadata, "genre", ff_id3v1_genre_str[genre], 0);
+	{
+        av_metadata_set2(&s->metadata, 
+			"genre", ff_id3v1_genre_str[genre], 0);
+	}
     return 0;
 }
 
@@ -238,6 +248,7 @@ void ff_id3v1_read(AVFormatContext *s)
         filesize = avio_size(s->pb);
         if (filesize > 128)
         {
+			//从文件末尾的倒数128字节开始
             avio_seek(s->pb, filesize - 128, SEEK_SET);
             ret = avio_read(s->pb, buf, ID3v1_TAG_SIZE);
             if (ret == ID3v1_TAG_SIZE)

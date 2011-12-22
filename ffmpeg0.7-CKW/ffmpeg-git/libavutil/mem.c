@@ -92,7 +92,15 @@ void *av_malloc(FF_INTERNAL_MEM_TYPE size)
     ptr = malloc(size + 16);
 
     if(!ptr)
+	{
         return ptr;
+	}
+	//此处用了一个非常猥琐的用法来进行分配的内存对齐
+	//使用两步方法来实现：
+	//1.计算大小为（size+16）的内存对齐的起始位置在哪里
+	//（因为有一个+1的动作，所以不可能在首位）
+	//2.在内存对齐的起始位的前一位存储内存对齐的起始位的偏移量
+	//在内存释放的时候就减去偏移位来释放内存
     diff = ((-(long)ptr - 1) & 15) + 1;
     ptr = (char *)ptr + diff;
     ((char *)ptr)[-1] = diff;
