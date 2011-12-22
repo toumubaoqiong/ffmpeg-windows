@@ -1,0 +1,29 @@
+ID3v2的若干常识问题 
+
+【编者按】foobar2000的最新几个版本对标签进行改善，涉及ID3v2的知识，最近试图搜索一些内容进行了解，同时也供同好者参考。 
+
+声明：以下文献源自Hydrogenaudio 知识库，翻译不一定准确，仅供参考。 
+
+ID3v2 is a tagging format for MP3 files, designed to provide a much greater deal of functionality and flexibility over its predecessor, ID3v1. ID3v2 allows for a much greater amount of metadata to be embedded within MP3 files over ID3v1, allowing each frame (metadata field) to contain practically any conceivable type of information, including title, album, performer, lyrics, equalizer presets, album art and other images, and much, much more. 
+
+ID3v2 是MP3文件的标签格式，设计用于比前版ID3v1提供更大量的功能和适应性。ID3v2 允许比 ID3v1 更多的元数据嵌入到MP3文件中，允许每个框架（元数据字段）容纳几乎任何可想到的信息类型，包括标题，演奏者，歌词，均衡器设定，封面以及其他图像等等。 
+
+One of the design goals of ID3v2 was flexibility and extensibility. To acheive this, the ID3v2 format was modelled as a container format, allowing the creation of new frames within ID3v2 tags without worrying whether they will break other programs, as all ID3v2 parsers will simply ignore any frames they don't recognize. Each frame can be as large as 16MB, and the entire tag can be as large as 256MB, so there are practically no space constraints when writing ID3v2 tags. 
+
+ID3v2的设计目标之一是适应性和扩展性。为此，ID3v2格式被设计为一个容器格式模型，允许在ID3v2标签中创建新框架而不必担心他们是否会破坏其他的程序，因为所有的ID3v2分析程序将简单地忽视任何他们不识别的框架。每个框架最大为16MB, 整个标签最大可达256MB，因此在编写ID3v2标签时几乎没有空间限制。 
+
+Also, ID3v2 supports Unicode as standard, allowing metadata to be created in any language. 
+
+同时，ID3v2支持Unicode标准，允许元数据用任何语言创建。 
+
+ID3v2 tags are generally added to the beginning of MP3 files, allowing audio players to display tag metadata before the end of the file is read (useful for streaming MP3 files). However, as of ID3v2.4, they can be appended to the end as well, meaning that a change in length in any ID3 frame will not necessarily provoke a rewrite of the entire file. 
+
+ID3v2标签一般添加在MP3文件的起点，允许音频播放器在文件末端被读入以前显示标签元数据（对流媒体MP3文件有效）。不过，对于ID3v2.4而言，它们也可以添加在文件的末尾，这意味着任何ID3框架长度的改变将不必引起整个文件的重写。 
+
+ID3v2-tagged files are also generally safe to be played on players that weren't designed to support them. They are sync-safe, allowing MPEG audio decoders to determine the tags contain no audio data and can be safely skipped. 
+
+带ID3v2标签的文件在那些没有支持它们的播放器上播放通常也是安全的。它们是同步安全的，允许MPEG音频解码器决定标签是否包括音频数据并且可以安全地跳过。 
+
+Even though ID3v2 is designed to support a lot of space-heavy features, such as inline pictures and file inclusion, ironically, ID3v2 still tries to use bytes as efficiently as possible, and allows for compression of each frame. If you convert an ID3v1 tag to an ID3v2 tag, it is likely that the ID3v2 tag will be smaller. If you convert an ID3v1 tag with full fields (that is, all 30 bytes are used in every field) to an ID3v2 tag, it will be 56 bytes larger. Note that this is the worst case scenario with regards to tag size for ID3v1 to ID3v2 conversion. 
+
+即使ID3v2设计来支持许多的大空间的特点，比如内联图像和文件包含，但是，ID3v2仍然试图去尽可能高效地使用字节，允许每个框架的压缩。如果你转换一个ID3v1的全部字段（即每个字段的30个字节都被使用）到一个ID3v2标签，它将会是56个字节。注意这是ID3v1转换到ID3v2关于标签大小的更糟糕的情况。 
