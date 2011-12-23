@@ -1,0 +1,261 @@
+errno.h中机头文件介绍  
+
+
+查看错误代码的errno是调试程序的一个重要方法。当Linux的C API函数发生异常时，一般会将errno的变量（需包括：
+
+以下来自Linux的2.4.20-18的内核程式码中的的/ usr /包括/ ASM / errno.h中
+
+＃IFNDEF _I386_ERRNO_H
+
+＃定义_I386_ERRNO_H
+
+＃定义EPERM 1 / *不允许操作* /
+
+＃定义ENOENT 2 / *没有这样的文件或目录* /
+
+＃定义ESRCH没有这样的过程3 / * * /
+
+＃定义的EINTR 4 / *中断的系统调用* /
+
+＃定义的EIO 5 / * I / O错误* /
+
+＃定义ENXIO 6 / *没有这样的设备或地址* /
+
+＃定义E2BIG 7 / *参数列表太长* /
+
+＃定义ENOEXEC 8 / * Exec格式错误的* /
+
+＃定义EBADF 9 / *错误的文件数量* /
+
+＃定义ECHILD 10 / * * /没有子进程
+
+＃定义EAGAIN 11 / *再次尝试* /
+
+＃定义ENOMEM 12 / *内存* /
+
+＃定义EACCES 13 / *权限被拒绝* /
+
+＃定义EFAULT 14 / *错误的地址* /
+
+＃定义ENOTBLK 15 / *块设备* /
+
+＃定义EBUSY 16 / *设备或资源忙* /
+
+＃定义EEXIST文件17 / * * /
+
+＃定义EXDEV 18 / *跨设备的链接* /
+
+＃定义ENODEV 19 / *没有这样的设备* /
+
+＃定义ENOTDIR 20 / *目录* /
+
+＃定义EISDIR 21 / *目录* /
+
+＃定义EINVAL 22 / *无效的参数* /
+
+＃定义ENFILE 23 / *文件表溢出* /
+
+＃定义EMFILE 24 / *打开了太多文件* /
+
+＃定义ENOTTY 25 / *不是打字机* /
+
+＃定义ETXTBSY忙于26 / *文本文件* /
+
+＃定义EFBIG 27 / *文件太大* /
+
+＃定义的ENOSPC 28 / *设备上没有剩余空间* /
+
+＃定义ESPIPE 29 / *非法寻求* /
+
+＃定义EROFS 30 / *只读文件系统* /
+
+＃31 / *太多链接* /定义EMLINK
+
+＃定义EPIPE 32 / *破损的管道* /
+
+＃定义益登33 / *数学参数功能域* /
+
+＃定义为ERANGE 34 / *数学结果不表示* /
+
+＃定义EDEADLK 35 / *资源死锁会发生* /
+
+＃定义ENAMETOOLONG 36 / *文件名太长* /
+
+＃定义ENOLCK 37 / *没有记录锁* /
+
+＃定义ENOSYS 38 / *函数没有执行* /
+
+＃定义ENOTEMPTY 39 / *目录不为空* /
+
+＃定义ELOOP 40 / *遇到太多的符号链接* /
+
+＃定义EWOULDBLOCK EAGAIN /块*操作* /
+
+＃定义ENOMSG任何所需类型的消息42 / * * /
+
+＃定义EIDRM 43 / *标识符删除* /
+
+＃定义范围ECHRNG 44 / *通道号* /
+
+＃定义EL2NSYNC 45 / * 2级不同步* /
+
+＃定义EL3HLT 46 / 3级停止* /
+
+＃定义EL3RST 47 / * 3级复位* /
+
+＃定义范围ELNRNG 48 / *连接数* /
+
+＃定义EUNATCH 49 / *协议驱动程序没有连接* /
+
+＃定义ENOCSI 50 / *沪深结构* /
+
+＃定义EL2HLT 51 / 2级停止* /
+
+＃定义EBADE 52 / *无效的交换* /
+
+＃定义EBADR 53 / *无效的请求描述符* /
+
+＃定义EXFULL 54 / *汇率* /
+
+＃定义ENOANO 55 / *无阳极* /
+
+＃定义EBADRQC 56 / *无效的请求代码* /
+
+＃定义EBADSLT 57 / *无效的插槽* /
+
+＃定义EDEADLOCK EDEADLK
+
+＃定义EBFONT 59 / *错误的字体文件格式* /
+
+＃定义ENOSTR 60 / *设备不流* /
+
+＃定义ENODATA 61 / *无可用数据* /
+
+＃定义ETIME 62 / * * /计时器过期
+
+＃63 / *定义ENOSR流资源* /
+
+＃定义ENONET 64 / *机是不是在网络上* /
+
+＃定义ENOPKG 65 / *包没有安装* /
+
+＃定义EREMOTE 66 / *对象是远程* /
+
+＃定义ENOLINK 67 / *链接已被切断* /
+
+＃定义EADV 68 / *广告错误* /
+
+＃定义ESRMNT 69 / * Srmount错误* /
+
+＃定义ECO??MM 70 / *发送通讯错误* /
+
+＃定义EPROTO 71 / *协议错误* /
+
+＃定义EMULTIHOP 72 / *尝试* /多跳
+
+＃定义EDOT??DOT 73 / * RFS的特定错误* /
+
+＃定义EBADMSG 74 / *不是数据信息* /
+
+＃定义EOVERFLOW 75 / *定义的数据类型的值太大* /
+
+＃定义ENOTUNIQ 76 / *名称没有网络上的唯一* /
+
+＃定义在状态不好EBADFD 77 / *文件描述符* /
+
+＃定义EREMCHG 78 / * * /远程地址变更
+
+＃定义ELIBACC 79 / *无法访问需要的共享库* /
+
+＃定义ELIBBAD 80 / *访问损坏的共享库* /
+
+＃81 / *定义ELIBSCN在a.out库部分损坏* /
+
+＃定义ELIBMAX 82 / *试图链接太多的共享库中* /
+
+＃定义ELIBEXEC 83 / *不能共享库直接* / EXEC
+
+＃定义EILSEQ 84 / *非法字节序列* /
+
+＃定义ERESTART 85 / *中断的系统调用，应重新启动* /
+
+＃定义ESTRPIPE 86 / *流管道错误* /
+
+＃定义EUSERS 87 / *用户过多* /
+
+＃定义非套接字ENOTSOCK 88 / *套接字操作* /
+
+＃定义EDESTADDRREQ 89 / *需要目标地址* /
+
+＃定义EMSGSIZE 90 / *留言太长* /
+
+＃定义EPROTOTYPE 91 / *协议的套接字类型错误* /
+
+＃定义ENOPROTOOPT 92 / *协议不可用* /
+
+＃定义EPROTONOSUPPORT 93 / *协议不支持* /
+
+＃定义ESOCKTNOSUPPORT 94 / *套接字类型不支持* /
+
+＃定义EOPNOTSUPP 95 / *传输端点上不支持操作* /
+
+＃定义EPFNOSUPPORT 96 / *协议族不支持* /
+
+＃定义EAFNOSUPPORT 97 / *地址族不支持协议* /
+
+＃定义EADDRINUSE 98 / *地址已在使用中* /
+
+＃定义EADDRNOTAVAIL 99 / *无法分配请求的地址* /
+
+＃定义ENETDOWN 100 / *网络* /
+
+＃定义ENETUNREACH 101 / *网络不可达* /
+
+＃定义ENETRESET 102 / *网络丢弃，因为重置连接* /
+
+＃定义ECO??NNABORTED 103 / *软件导致连接中止* /
+
+＃定义ECO??NNRESET 104 / *对方将连接复位* /
+
+＃定义ENOBUFS 105 / *没有可用的缓冲区空间* /
+
+＃定义EISCONN 106 / *传输端点已经连接* /
+
+＃定义ENOTCONN 107 / *传输端点未连接* /
+
+＃定义ESHUTDOWN传输端点关闭后无法发送108 / * * /
+
+＃定义ETOOMANYREF??S 109 / *引用过多：无法接合* /
+
+＃定义ETIMEDOUT 110出* / / *连接超时
+
+＃定义ECO??NNREFUSED 111 / *连接拒绝* /
+
+＃定义EHOSTDOWN 112 / *主机已关闭* /
+
+＃定义EHOSTUNREACH 113 / *没有路由到主机* /
+
+＃定义EALREADY 114 / *已经取得进展的操作* /
+
+现在进展* /＃定义EINPROGRESS 115 / *操作
+
+＃定义ESTALE 116 / *陈旧的NFS文件句柄* /
+
+＃定义EUCLEAN 117 / *结构需要清洁* /
+
+＃定义ENOTNAM 118 / *不是XENIX的命名类型的文件* /
+
+＃定义ENAVAIL 119 / *没有XENIX信号灯* /
+
+＃定义EISNAM 120 / *是一个命名的类型的文件* /
+
+＃定义EREMOTEIO 121 / *远程I / O错误* /
+
+＃定义EDQUOT 122 / *超出配额* /
+
+＃定义ENOMEDIUM 123 / *无介质* /
+
+＃定义EMEDIUMTYPE 124 / *错误的介质类型* /
+
+＃ENDIF
+
