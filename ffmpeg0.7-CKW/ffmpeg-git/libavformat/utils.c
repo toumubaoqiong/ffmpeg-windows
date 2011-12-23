@@ -629,12 +629,16 @@ int av_probe_input_buffer(AVIOContext *pb, AVInputFormat **fmt,
         return AVERROR(EINVAL);
     }
 
-    for(probe_size = PROBE_BUF_MIN; probe_size <= max_probe_size && !*fmt && ret >= 0;
-            probe_size = FFMIN(probe_size << 1, FFMAX(max_probe_size, probe_size + 1)))
+    for(probe_size = PROBE_BUF_MIN; 
+		probe_size <= max_probe_size && !*fmt && ret >= 0;
+        probe_size = FFMIN(probe_size << 1, 
+			FFMAX(max_probe_size, probe_size + 1)))
     {
-        int ret, score = probe_size < max_probe_size ? AVPROBE_SCORE_MAX / 4 : 0;
-        int buf_offset = (probe_size == PROBE_BUF_MIN) ? 0 : probe_size >> 1;
-
+        int ret, 
+			score = 
+				probe_size < max_probe_size ? AVPROBE_SCORE_MAX / 4 : 0;
+        int buf_offset = 
+			(probe_size == PROBE_BUF_MIN) ? 0 : probe_size >> 1;
         if (probe_size < offset)
         {
             continue;
@@ -667,7 +671,9 @@ int av_probe_input_buffer(AVIOContext *pb, AVInputFormat **fmt,
                 av_log(logctx, AV_LOG_WARNING, "Format detected only with low score of %d, misdetection possible!\n", score);
             }
             else
+			{
                 av_log(logctx, AV_LOG_DEBUG, "Probed with size=%d and score=%d\n", probe_size, score);
+			}
         }
     }
 
@@ -679,8 +685,9 @@ int av_probe_input_buffer(AVIOContext *pb, AVInputFormat **fmt,
 
     /* rewind. reuse probe buffer to avoid seeking */
     if ((ret = ffio_rewind_with_probe_data(pb, buf, pd.buf_size)) < 0)
+	{
         av_free(buf);
-
+	}
     return ret;
 }
 

@@ -26,7 +26,10 @@
 //	IO操作的核心头文件
 //学习的地方：
 //1.这种IO操作的核心是如何设计的？怎么读写各种IO？
-//
+//2.重要的设计思路：AVIO的主要操作是用下面的函数来进行的：ffurl_read, ffurl_write, ffurl_seek,
+//这三个函数是最外层的封装函数进行的（这三个函数处于所有协议的顶端），
+//read_pause, reed_seek使用协议操作里面的函数进行，也就是AVIO的主要操作每次进行的时候
+//需要通过协议名进入协议的具体操作中
 //附录：
 //1.
 //****************************************************************************//
@@ -147,10 +150,14 @@ typedef struct URLContext
     int flags;
 	//是否是流
     int is_streamed;  /**< true if streamed (no seek possible), default = false */
-    int max_packet_size;  /**< if non zero, the stream is packetized with this max packet size */
-    void *priv_data;
+    //最大packet大小，此项与AVIO的结构体的max_packet_size是否一致
+	int max_packet_size;  /**< if non zero, the stream is packetized with this max packet size */
+    //具体对象成员
+	void *priv_data;
+	//文件名
     char *filename; /**< specified URL */
-    int is_connected;
+    //是否连接
+	int is_connected;
 } URLContext;
 
 #define URL_PROTOCOL_FLAG_NESTED_SCHEME 1 /*< The protocol name can be the first part of a nested protocol scheme */
@@ -161,6 +168,7 @@ typedef struct URLContext
  */
 typedef struct URLProtocol
 {
+	//协议名字
     const char *name;
     int (*url_open)(URLContext *h, const char *url, int flags);
     int (*url_read)(URLContext *h, unsigned char *buf, int size);
@@ -172,8 +180,11 @@ typedef struct URLProtocol
     int64_t (*url_read_seek)(URLContext *h, int stream_index,
                              int64_t timestamp, int flags);
     int (*url_get_file_handle)(URLContext *h);
+	//具体对象数据大小
     int priv_data_size;
+	//数据对象的类信息
     const AVClass *priv_data_class;
+	//标志位
     int flags;
     int (*url_check)(URLContext *h, int mask);
 } URLProtocol;

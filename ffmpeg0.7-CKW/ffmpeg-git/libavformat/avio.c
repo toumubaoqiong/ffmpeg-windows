@@ -108,7 +108,7 @@ int register_protocol(URLProtocol *protocol)
 #endif
 
 static int url_alloc_for_protocol (URLContext **puc, struct URLProtocol *up,
-const char *filename, int flags)
+									const char *filename, int flags)
 {
     URLContext *uc;
     int err;
@@ -117,6 +117,7 @@ const char *filename, int flags)
     if (!ff_network_init())
         return AVERROR(EIO);
 #endif
+	//从这里开始分配AVFormat的AVIO中的URLContext
     uc = av_mallocz(sizeof(URLContext) + strlen(filename) + 1);
     if (!uc)
     {
@@ -128,12 +129,16 @@ const char *filename, int flags)
 #endif
     uc->filename = (char *) &uc[1];
     strcpy(uc->filename, filename);
+	//up就是一个常量，不可改变的
     uc->prot = up;
     uc->flags = flags;
+	//知道了没？ 默认是非流值的
     uc->is_streamed = 0; /* default = not streamed */
+	//这个也很重要
     uc->max_packet_size = 0; /* default: stream file */
     if (up->priv_data_size)
     {
+		//这里告诉我们priv_data就是协议数据对象
         uc->priv_data = av_mallocz(up->priv_data_size);
         if (up->priv_data_class)
         {
@@ -159,10 +164,14 @@ int ffurl_connect(URLContext *uc)
         return err;
     uc->is_connected = 1;
     //We must be careful here as ffurl_seek() could be slow, for example for http
-    if(   (uc->flags & (AVIO_WRONLY | AVIO_RDWR))
-    || !strcmp(uc->prot->name, "file"))
+    if((uc->flags & (AVIO_WRONLY | AVIO_RDWR))
+		|| !strcmp(uc->prot->name, "file"))
+	{
         if(!uc->is_streamed && ffurl_seek(uc, 0, SEEK_SET) < 0)
+		{
             uc->is_streamed = 1;
+		}
+	}
     return 0;
 }
 
@@ -250,25 +259,38 @@ int ffurl_alloc(URLContext **puc, const char *filename, int flags)
 {
     URLProtocol *up;
     char proto_str[128], proto_nested[128], *ptr;
+	//strspn（返回字符串中第一个不在指定字符串中出现的字符下标）
     size_t proto_len = strspn(filename, URL_SCHEME_CHARS);
 
     if (filename[proto_len] != ':' || is_dos_path(filename))
+	{
+		//原来"file"协议类型就是从这里出来的
         strcpy(proto_str, "file");
+	}
     else
-        av_strlcpy(proto_str, filename, FFMIN(proto_len + 1, sizeof(proto_str)));
-
+	{
+        av_strlcpy(proto_str, 
+			filename, FFMIN(proto_len + 1, sizeof(proto_str)));
+	}
     av_strlcpy(proto_nested, proto_str, sizeof(proto_nested));
+	//strchr查找字符串s中首次出现字符c的位置
     if ((ptr = strchr(proto_nested, '+')))
+	{
         * ptr = '\0';
-
+	}
     up = first_protocol;
     while (up != NULL)
     {
         if (!strcmp(proto_str, up->name))
+		{
+			//下面这个函数非常重要
             return url_alloc_for_protocol (puc, up, filename, flags);
-        if (up->flags & URL_PROTOCOL_FLAG_NESTED_SCHEME &&
-        !strcmp(proto_nested, up->name))
+		}
+        if (up->flags & URL_PROTOCOL_FLAG_NESTED_SCHEME 
+			&& !strcmp(proto_nested, up->name))
+		{
             return url_alloc_for_protocol (puc, up, filename, flags);
+		}
         up = up->next;
     }
     *puc = NULL;

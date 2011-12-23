@@ -67,6 +67,7 @@ char *av_stristr(const char *s1, const char *s2)
 
 size_t av_strlcpy(char *dst, const char *src, size_t size)
 {
+	//复制大小为size的字符
     size_t len = 0;
     while (++len < size && *src)
         *dst++ = *src++;

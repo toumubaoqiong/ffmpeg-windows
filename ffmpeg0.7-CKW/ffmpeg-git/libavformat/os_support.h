@@ -38,6 +38,7 @@
 
 static inline int is_dos_path(const char *path)
 {
+	//判断是否是DOS的路径
 #if HAVE_DOS_PATHS
     if (path[0] && path[1] == ':')
         return 1;

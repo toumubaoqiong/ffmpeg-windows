@@ -51,6 +51,7 @@ int ffio_init_context(AVIOContext *s,
                       int (*write_packet)(void *opaque, uint8_t *buf, int buf_size),
                       int64_t (*seek)(void *opaque, int64_t offset, int whence))
 {
+	//设置AVIO的缓存
     s->buffer = buffer;
     s->buffer_size = buffer_size;
     s->buf_ptr = buffer;
@@ -59,18 +60,20 @@ int ffio_init_context(AVIOContext *s,
     s->write_packet = write_packet;
     s->read_packet = read_packet;
     s->seek = seek;
-    s->pos = 0;
+	//下面是默认值，这默认值是非常重要的
+	s->pos = 0;
     s->must_flush = 0;
     s->eof_reached = 0;
     s->error = 0;
 #if FF_API_OLD_AVIO
-    s->is_streamed = 0;
+    s->is_streamed = 0;//这点比较特别
 #endif
     s->seekable = AVIO_SEEKABLE_NORMAL;
     s->max_packet_size = 0;
     s->update_checksum = NULL;
     if(!read_packet && !write_flag)
     {
+		//这里有点不太明白
         s->pos = buffer_size;
         s->buf_end = s->buffer + buffer_size;
     }
@@ -561,44 +564,60 @@ void put_tag(AVIOContext *s, const char *tag)
 #endif
 
 /* Input stream */
-
+//从心里上说这是一个非常朴实的函数
 static void fill_buffer(AVIOContext *s)
 {
-    uint8_t *dst = !s->max_packet_size && s->buf_end - s->buffer < s->buffer_size ? s->buf_end : s->buffer;
+    uint8_t *dst = 
+		!s->max_packet_size 
+			&& s->buf_end - s->buffer < s->buffer_size 
+			? s->buf_end : s->buffer;
     int len = s->buffer_size - (dst - s->buffer);
-    int max_buffer_size = s->max_packet_size ? s->max_packet_size : IO_BUFFER_SIZE;
+    int max_buffer_size = s->max_packet_size ? 
+		s->max_packet_size : IO_BUFFER_SIZE;
 
     /* no need to do anything if EOF already reached */
     if (s->eof_reached)
+	{
         return;
-
+	}
     if(s->update_checksum && dst == s->buffer)
     {
         if(s->buf_end > s->checksum_ptr)
-            s->checksum = s->update_checksum(s->checksum, s->checksum_ptr, s->buf_end - s->checksum_ptr);
+		{
+            s->checksum = 
+				s->update_checksum(s->checksum, 
+					s->checksum_ptr, 
+					s->buf_end - s->checksum_ptr);
+		}
         s->checksum_ptr = s->buffer;
     }
 
     /* make buffer smaller in case it ended up large after probing */
     if (s->read_packet && s->buffer_size > max_buffer_size)
     {
+		//缩小内存
         ffio_set_buf_size(s, max_buffer_size);
-
         s->checksum_ptr = dst = s->buffer;
         len = s->buffer_size;
     }
 
     if(s->read_packet)
+	{
         len = s->read_packet(s->opaque, dst, len);
+	}
     else
+	{
         len = 0;
+	}
     if (len <= 0)
     {
         /* do not modify buffer if EOF reached so that a seek back can
            be done without rereading data */
         s->eof_reached = 1;
         if(len < 0)
+		{
             s->error = len;
+		}
     }
     else
     {
@@ -654,6 +673,7 @@ int url_fgetc(AVIOContext *s)
 }
 #endif
 
+//典型的内外两片内存来运作的，里面的内存是用作缓存
 int avio_read(AVIOContext *s, unsigned char *buf, int size)
 {
     int len, size1;
@@ -663,20 +683,26 @@ int avio_read(AVIOContext *s, unsigned char *buf, int size)
     {
         len = s->buf_end - s->buf_ptr;
         if (len > size)
+		{
             len = size;
+		}
         if (len == 0)
         {
             if(size > s->buffer_size && !s->update_checksum)
             {
                 if(s->read_packet)
+				{
                     len = s->read_packet(s->opaque, buf, size);
+				}
                 if (len <= 0)
                 {
                     /* do not modify buffer if EOF reached so that a seek back can
                     be done without rereading data */
                     s->eof_reached = 1;
                     if(len < 0)
+					{
                         s->error = len;
+					}
                     break;
                 }
                 else
@@ -693,7 +719,9 @@ int avio_read(AVIOContext *s, unsigned char *buf, int size)
                 fill_buffer(s);
                 len = s->buf_end - s->buf_ptr;
                 if (len == 0)
+				{
                     break;
+				}
             }
         }
         else
@@ -706,8 +734,14 @@ int avio_read(AVIOContext *s, unsigned char *buf, int size)
     }
     if (size1 == size)
     {
-        if (s->error)      return s->error;
-        if (url_feof(s))   return AVERROR_EOF;
+        if (s->error)     
+		{
+			return s->error;
+		}
+        if (url_feof(s))
+		{
+			return AVERROR_EOF;
+		}
     }
     return size1 - size;
 }
@@ -882,7 +916,7 @@ int ffio_fdopen(AVIOContext **s, URLContext *h)
 {
     uint8_t *buffer;
     int buffer_size, max_packet_size;
-
+	//URLContext的max_packet_size默认设置为零
     max_packet_size = h->max_packet_size;
     if (max_packet_size)
     {
@@ -894,8 +928,10 @@ int ffio_fdopen(AVIOContext **s, URLContext *h)
     }
     buffer = av_malloc(buffer_size);
     if (!buffer)
+	{
         return AVERROR(ENOMEM);
-
+	}
+	//很多都使用了**s的结构用于取值
     *s = av_mallocz(sizeof(AVIOContext));
     if(!*s)
     {
@@ -903,9 +939,16 @@ int ffio_fdopen(AVIOContext **s, URLContext *h)
         return AVERROR(ENOMEM);
     }
 
-    if (ffio_init_context(*s, buffer, buffer_size,
-                          (h->flags & AVIO_WRONLY || h->flags & AVIO_RDWR), h,
-                          ffurl_read, ffurl_write, ffurl_seek) < 0)
+    if (ffio_init_context(*s, 
+			buffer, //设置缓存
+			buffer_size,//设置缓存大小
+			//此项很重要， URLContext里面的flag是有AVIO_Open里面的flag
+			//来设置的
+            (h->flags & AVIO_WRONLY || h->flags & AVIO_RDWR), 
+			h,
+            ffurl_read, 
+			ffurl_write, 
+			ffurl_seek) < 0)
     {
         av_free(buffer);
         av_freep(s);
@@ -914,6 +957,7 @@ int ffio_fdopen(AVIOContext **s, URLContext *h)
 #if FF_API_OLD_AVIO
     (*s)->is_streamed = h->is_streamed;
 #endif
+	//这两个设置说明了AVIO与URLContext的紧密关系
     (*s)->seekable = h->is_streamed ? 0 : AVIO_SEEKABLE_NORMAL;
     (*s)->max_packet_size = max_packet_size;
     if(h->prot)
@@ -926,6 +970,8 @@ int ffio_fdopen(AVIOContext **s, URLContext *h)
 
 int ffio_set_buf_size(AVIOContext *s, int buf_size)
 {
+	//此函数就是设置AVIOContext的缓存大小
+	//设置缓存的所有相关变量
     uint8_t *buffer;
     buffer = av_malloc(buf_size);
     if (!buffer)
@@ -954,11 +1000,13 @@ static int url_resetbuf(AVIOContext *s, int flags)
 
     if (flags & AVIO_WRONLY)
     {
+		//两者的区别是什么？
         s->buf_end = s->buffer + s->buffer_size;
         s->write_flag = 1;
     }
     else
     {
+		//两者的区别是什么？
         s->buf_end = s->buffer;
         s->write_flag = 0;
     }

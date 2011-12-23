@@ -40,6 +40,8 @@
 #define	S_IWOTH	0002
 #endif
 
+//应该能理解到URLContext在"file"协议中如何被设置其成员值的，其中并没有看到file协议的代码中
+//应用缓存
 /* standard file protocol */
 
 static int file_read(URLContext *h, unsigned char *buf, int size)
@@ -86,6 +88,7 @@ static int file_open(URLContext *h, const char *filename, int flags)
     fd = open(filename, access, 0666);
     if (fd == -1)
         return AVERROR(errno);
+	//URLContext的priv_data是这样被设置的
     h->priv_data = (void *) (intptr_t) fd;
     return 0;
 }
