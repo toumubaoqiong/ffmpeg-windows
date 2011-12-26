@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="gb2312"?>
+<VisualStudioProject
+	ProjectType="Intel C++ Project"
+	Version="11.1"
+	Name="ffplay"
+	ProjectGUID="{CDAAA07C-E7B7-4B71-B355-EEB09B4C14B1}"
+	VCNestedProjectGUID="{A0FEDC73-A14E-4A17-9A83-99E35E54F72A}"
+	VCNestedProjectFileName="ffplay.vcproj">
+	<Configurations>
+		<Configuration
+			Name="Debug|Win32">
+			<Tool
+				Name="CppCmplrTool"
+				C99Support="true"/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32">
+			<Tool
+				Name="CppCmplrTool"
+				C99Support="true"/>
+		</Configuration>
+	</Configurations>
+	<Files/>
+</VisualStudioProject>

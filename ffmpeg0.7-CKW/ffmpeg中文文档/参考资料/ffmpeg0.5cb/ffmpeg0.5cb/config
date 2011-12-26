@@ -1,0 +1,22 @@
+#!/bin/sh
+
+tolower(){
+    echo "$@" | tr ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz
+}
+
+# OS
+target_os=$(tolower $(uname -s)|cut -c1-7)
+
+CONFIG_OPTION="--disable-debug --enable-gpl --enable-nonfree --enable-hiding --disable-ffserver --enable-libx264 --enable-libamr-nb --enable-libfaad --disable-decoder=aac --enable-swscale --disable-ipv6 --disable-devices"
+
+if test $target_os = "mingw32" ; then
+    CONFIG_OPTION="--enable-memalign-hack $CONFIG_OPTION"
+fi
+
+EXTRA_CFLAGS="-I../x264 -I.. -I../faad2/include"
+
+EXTRA_LDFLAGS="-L../x264 -L../amrnb/.libs -L../faad2/libfaad/.libs"
+
+echo "./configure $CONFIG_OPTION --extra-cflags=\"$EXTRA_CFLAGS\" --extra-ldflags=\"$EXTRA_LDFLAGS\""
+
+./configure $CONFIG_OPTION --extra-cflags="$EXTRA_CFLAGS" --extra-ldflags="$EXTRA_LDFLAGS"

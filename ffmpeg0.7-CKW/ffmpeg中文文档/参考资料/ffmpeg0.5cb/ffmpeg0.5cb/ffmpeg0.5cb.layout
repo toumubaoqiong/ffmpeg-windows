@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="config.h" open="1" top="0" tabpos="22">
+		<Cursor position="754" topLine="9" />
+	</File>
+	<File name="ffmpeg.c" open="1" top="0" tabpos="1">
+		<Cursor position="52392" topLine="1493" />
+	</File>
+	<File name="libavcodec\4xm.c" open="1" top="1" tabpos="14">
+		<Cursor position="5571" topLine="106" />
+	</File>
+	<File name="libavcodec\avcodec.h" open="1" top="0" tabpos="7">
+		<Cursor position="939" topLine="17" />
+	</File>
+	<File name="libavcodec\bitstream.h" open="1" top="0" tabpos="17">
+		<Cursor position="1089" topLine="21" />
+	</File>
+	<File name="libavcodec\bytestream.h" open="1" top="0" tabpos="20">
+		<Cursor position="986" topLine="13" />
+	</File>
+	<File name="libavcodec\dsputil.h" open="1" top="0" tabpos="16">
+		<Cursor position="28223" topLine="632" />
+	</File>
+	<File name="libavcodec\mpegaudio.h" open="1" top="0" tabpos="21">
+		<Cursor position="2821" topLine="98" />
+	</File>
+	<File name="libavcodec\opt.h" open="1" top="0" tabpos="8">
+		<Cursor position="947" topLine="17" />
+	</File>
+	<File name="libavcodec\zmbv.c" open="1" top="0" tabpos="2">
+		<Cursor position="1088" topLine="12" />
+	</File>
+	<File name="libavformat\avformat.h" open="1" top="0" tabpos="3">
+		<Cursor position="1605" topLine="32" />
+	</File>
+	<File name="libavformat\avio.h" open="1" top="0" tabpos="5">
+		<Cursor position="1092" topLine="20" />
+	</File>
+	<File name="libavformat\framehook.h" open="1" top="0" tabpos="9">
+		<Cursor position="1136" topLine="18" />
+	</File>
+	<File name="libavformat\network.h" open="1" top="0" tabpos="12">
+		<Cursor position="876" topLine="11" />
+	</File>
+	<File name="libavformat\os_support.h" open="1" top="0" tabpos="10">
+		<Cursor position="1023" topLine="17" />
+	</File>
+	<File name="libavformat\rtp.h" open="1" top="0" tabpos="13">
+		<Cursor position="883" topLine="11" />
+	</File>
+	<File name="libavformat\rtpdec.h" open="1" top="0" tabpos="11">
+		<Cursor position="959" topLine="12" />
+	</File>
+	<File name="libavutil\adler32.d" open="1" top="0" tabpos="4">
+		<Cursor position="147" topLine="0" />
+	</File>
+	<File name="libavutil\bswap.h" open="1" top="0" tabpos="18">
+		<Cursor position="970" topLine="17" />
+	</File>
+	<File name="libavutil\intreadwrite.h" open="1" top="0" tabpos="15">
+		<Cursor position="858" topLine="10" />
+	</File>
+	<File name="libswscale\swscale.h" open="1" top="0" tabpos="6">
+		<Cursor position="987" topLine="17" />
+	</File>
+</CodeBlocks_layout_file>

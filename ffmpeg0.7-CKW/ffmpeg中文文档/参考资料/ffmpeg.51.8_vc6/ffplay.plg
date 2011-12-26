@@ -1,0 +1,856 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: ffplay - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP109.tmp" with contents
+[
+/nologo /MLd /W3 /Gm /GX /ZI /Od /I "..\..\..\..\..\..\work\include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fp"Debug/ffplay.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\4xm_codec.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\8bps.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\aasc.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\ac3enc.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adx.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\alac.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\allcodecs.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\asv1.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\avs_codec.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\bitstream.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\bmp.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\cabac.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\cinepak.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\cljr.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\cook.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\cscd.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\cyuv.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\dpcm.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\dsputil.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\dv_codec.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\dvbsub.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\dvbsubdec.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\dvdsub.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\dvdsubenc.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\error_resilience.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\eval.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\faandct.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\fft.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\ffv1.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\flac.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\flicvideo.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\fraps.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\g726.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\golomb.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\h261.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\h263.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\h263dec.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\h264.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\h264idct.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\huffyuv.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\idcinvideo.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\imgconvert.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\imgresample.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\indeo2.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\indeo3.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\interplayvideo.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\jfdctfst.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\jfdctint.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\jrevdct.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\lcl.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\loco.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\lzo.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\mace.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\mdct.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\mem.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\mjpeg.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\mmvideo.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\motion_est.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\mpeg12.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\mpegaudio.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\mpegaudiodec.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\mpegvideo.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\msmpeg4.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\msrle.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\msvideo1.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\nuv_codec.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\opt.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\parser.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\pcm.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\png_codec.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\pnm_codec.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\qdm2.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\qdrw.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\qpeg.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\qtrle.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\ra144.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\ra288.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\rangecoder.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\ratecontrol.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\raw_codec.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\resample.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\resample2.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\roqvideo.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\rpza.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\rtjpeg.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\rv10.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\shorten.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\simple_idct.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\smacker_codec.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\smc.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\snow.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\sonic.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\svq1.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\truemotion1.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\truemotion2.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\truespeech.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\tscc.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\tta_codec.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\ulti.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\utils_codec.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\vc9.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\vcr1.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\vmdav.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\vorbis.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\vp3.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\vp3dsp.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\vqavideo.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\wmadec.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\wnv1.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\ws-snd1.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\xan.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\xl.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\zmbv.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\4xm_format.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\adtsenc.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\aiff.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\allformats.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\asf-enc.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\asf.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\au.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\avidec.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\avienc.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\avio.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\aviobuf.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\avs_format.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\crc.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\cutils.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\daud.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\dv_format.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\electronicarts.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\ffm.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\file.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\flic.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\flvdec.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\flvenc.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\framehook.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\gif.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\gifdec.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\http.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\idcin.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\idroq.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\img.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\img2.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\ipmovie.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\jpeg.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\matroska.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\mm.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\mmf.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\mov.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\movenc.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\mp3.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\mpeg.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\mpegts.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\mpegtsenc.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\mpjpeg.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\nsvdec.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\nut.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\nuv_format.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\ogg2.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\oggparseflac.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\oggparsetheora.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\oggparsevorbis.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\os_support.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\png_format.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\pnm_format.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\psxstr.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\raw_format.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\rm.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\rtp.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\rtpproto.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\rtsp.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\segafilm.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\sgi.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\sierravmd.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\smacker_format.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\sol.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\swf.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\tcp.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\tta_format.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\udp.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\utils_format.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\voc.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\wav.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\wc3movie.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\westwood.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\yuv.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\yuv4mpeg.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavutil\crc_util.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavutil\integer.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavutil\intfloat_readwrite.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavutil\mathematics.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\libavutil\rational.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\cmdutils.c"
+"D:\workdata\medialib\ffmpeg.51.8_vc6\ffplay.c"
+]
+Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP109.tmp" 
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP10A.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"Debug/ffplay.pdb" /debug /machine:I386 /out:"Debug/ffplay.exe" /pdbtype:sept /libpath:"..\..\..\..\..\..\work\lib\debug" 
+.\Debug\4xm_codec.obj
+.\Debug\8bps.obj
+.\Debug\aasc.obj
+.\Debug\ac3enc.obj
+.\Debug\adpcm.obj
+.\Debug\adx.obj
+.\Debug\alac.obj
+.\Debug\allcodecs.obj
+.\Debug\asv1.obj
+.\Debug\avs_codec.obj
+.\Debug\bitstream.obj
+.\Debug\bmp.obj
+.\Debug\cabac.obj
+.\Debug\cinepak.obj
+.\Debug\cljr.obj
+.\Debug\cook.obj
+.\Debug\cscd.obj
+.\Debug\cyuv.obj
+.\Debug\dpcm.obj
+.\Debug\dsputil.obj
+.\Debug\dv_codec.obj
+.\Debug\dvbsub.obj
+.\Debug\dvbsubdec.obj
+.\Debug\dvdsub.obj
+.\Debug\dvdsubenc.obj
+.\Debug\error_resilience.obj
+.\Debug\eval.obj
+.\Debug\faandct.obj
+.\Debug\fft.obj
+.\Debug\ffv1.obj
+.\Debug\flac.obj
+.\Debug\flicvideo.obj
+.\Debug\fraps.obj
+.\Debug\g726.obj
+.\Debug\golomb.obj
+.\Debug\h261.obj
+.\Debug\h263.obj
+.\Debug\h263dec.obj
+.\Debug\h264.obj
+.\Debug\h264idct.obj
+.\Debug\huffyuv.obj
+.\Debug\idcinvideo.obj
+.\Debug\imgconvert.obj
+.\Debug\imgresample.obj
+.\Debug\indeo2.obj
+.\Debug\indeo3.obj
+.\Debug\interplayvideo.obj
+.\Debug\jfdctfst.obj
+.\Debug\jfdctint.obj
+.\Debug\jrevdct.obj
+.\Debug\lcl.obj
+.\Debug\loco.obj
+.\Debug\lzo.obj
+.\Debug\mace.obj
+.\Debug\mdct.obj
+.\Debug\mem.obj
+.\Debug\mjpeg.obj
+.\Debug\mmvideo.obj
+.\Debug\motion_est.obj
+.\Debug\mpeg12.obj
+.\Debug\mpegaudio.obj
+.\Debug\mpegaudiodec.obj
+.\Debug\mpegvideo.obj
+.\Debug\msmpeg4.obj
+.\Debug\msrle.obj
+.\Debug\msvideo1.obj
+.\Debug\nuv_codec.obj
+.\Debug\opt.obj
+.\Debug\parser.obj
+.\Debug\pcm.obj
+.\Debug\png_codec.obj
+.\Debug\pnm_codec.obj
+.\Debug\qdm2.obj
+.\Debug\qdrw.obj
+.\Debug\qpeg.obj
+.\Debug\qtrle.obj
+.\Debug\ra144.obj
+.\Debug\ra288.obj
+.\Debug\rangecoder.obj
+.\Debug\ratecontrol.obj
+.\Debug\raw_codec.obj
+.\Debug\resample.obj
+.\Debug\resample2.obj
+.\Debug\roqvideo.obj
+.\Debug\rpza.obj
+.\Debug\rtjpeg.obj
+.\Debug\rv10.obj
+.\Debug\shorten.obj
+.\Debug\simple_idct.obj
+.\Debug\smacker_codec.obj
+.\Debug\smc.obj
+.\Debug\snow.obj
+.\Debug\sonic.obj
+.\Debug\svq1.obj
+.\Debug\truemotion1.obj
+.\Debug\truemotion2.obj
+.\Debug\truespeech.obj
+.\Debug\tscc.obj
+.\Debug\tta_codec.obj
+.\Debug\ulti.obj
+.\Debug\utils_codec.obj
+.\Debug\vc9.obj
+.\Debug\vcr1.obj
+.\Debug\vmdav.obj
+.\Debug\vorbis.obj
+.\Debug\vp3.obj
+.\Debug\vp3dsp.obj
+.\Debug\vqavideo.obj
+.\Debug\wmadec.obj
+.\Debug\wnv1.obj
+".\Debug\ws-snd1.obj"
+.\Debug\xan.obj
+.\Debug\xl.obj
+.\Debug\zmbv.obj
+.\Debug\4xm_format.obj
+.\Debug\adtsenc.obj
+.\Debug\aiff.obj
+.\Debug\allformats.obj
+".\Debug\asf-enc.obj"
+.\Debug\asf.obj
+.\Debug\au.obj
+.\Debug\avidec.obj
+.\Debug\avienc.obj
+.\Debug\avio.obj
+.\Debug\aviobuf.obj
+.\Debug\avs_format.obj
+.\Debug\crc.obj
+.\Debug\cutils.obj
+.\Debug\daud.obj
+.\Debug\dv_format.obj
+.\Debug\electronicarts.obj
+.\Debug\ffm.obj
+.\Debug\file.obj
+.\Debug\flic.obj
+.\Debug\flvdec.obj
+.\Debug\flvenc.obj
+.\Debug\framehook.obj
+.\Debug\gif.obj
+.\Debug\gifdec.obj
+.\Debug\http.obj
+.\Debug\idcin.obj
+.\Debug\idroq.obj
+.\Debug\img.obj
+.\Debug\img2.obj
+.\Debug\ipmovie.obj
+.\Debug\jpeg.obj
+.\Debug\matroska.obj
+.\Debug\mm.obj
+.\Debug\mmf.obj
+.\Debug\mov.obj
+.\Debug\movenc.obj
+.\Debug\mp3.obj
+.\Debug\mpeg.obj
+.\Debug\mpegts.obj
+.\Debug\mpegtsenc.obj
+.\Debug\mpjpeg.obj
+.\Debug\nsvdec.obj
+.\Debug\nut.obj
+.\Debug\nuv_format.obj
+.\Debug\ogg2.obj
+.\Debug\oggparseflac.obj
+.\Debug\oggparsetheora.obj
+.\Debug\oggparsevorbis.obj
+.\Debug\os_support.obj
+.\Debug\png_format.obj
+.\Debug\pnm_format.obj
+.\Debug\psxstr.obj
+.\Debug\raw_format.obj
+.\Debug\rm.obj
+.\Debug\rtp.obj
+.\Debug\rtpproto.obj
+.\Debug\rtsp.obj
+.\Debug\segafilm.obj
+.\Debug\sgi.obj
+.\Debug\sierravmd.obj
+.\Debug\smacker_format.obj
+.\Debug\sol.obj
+.\Debug\swf.obj
+.\Debug\tcp.obj
+.\Debug\tta_format.obj
+.\Debug\udp.obj
+.\Debug\utils_format.obj
+.\Debug\voc.obj
+.\Debug\wav.obj
+.\Debug\wc3movie.obj
+.\Debug\westwood.obj
+.\Debug\yuv.obj
+.\Debug\yuv4mpeg.obj
+.\Debug\crc_util.obj
+.\Debug\integer.obj
+.\Debug\intfloat_readwrite.obj
+.\Debug\mathematics.obj
+.\Debug\rational.obj
+.\Debug\cmdutils.obj
+.\Debug\ffplay.obj
+]
+Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP10A.tmp"
+<h3>Output Window</h3>
+Compiling...
+4xm_codec.c
+8bps.c
+aasc.c
+ac3enc.c
+adpcm.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\ac3enc.c(1319) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\ac3enc.c(1326) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(711) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(713) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(749) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(751) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(772) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(774) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(775) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(777) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(818) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(819) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(841) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(847) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(850) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(903) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(905) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(908) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(910) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(984) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(986) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(994) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(996) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(999) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(1001) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(1019) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(1021) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(1027) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(1029) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(1031) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(1037) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(1039) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(1041) : warnadx.c
+ing C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(1043) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(1122) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(1124) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(1127) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\adpcm.c(1129) : warning C4761: integral size mismatch in argument; conversion supplied
+alac.c
+allcodecs.c
+asv1.c
+avs_codec.c
+bitstream.c
+bmp.c
+cabac.c
+D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\bmp.c(101) : warning C4761: integral size mismatch in argument; conversion supplied
+D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\bmp.c(106) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\cabac.h(307) : warning C4101: 'lps_mask' : unreferenced local variable
+cinepak.c
+cljr.c
+cook.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\cook.c(1138) : warning C4133: 'initializing' : incompatible types - from 'unsigned char *' to 'struct COOKextradata *'
+cscd.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\cook.c(190) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\cook.c(191) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\cook.c(200) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\cook.c(201) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+cyuv.c
+dpcm.c
+dsputil.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\dsputil.c(4064) : warning C4113: 'void (__cdecl *)()' differs in parameter lists from 'void (__cdecl *)(void *,int ,int )'
+dv_codec.c
+dvbsub.c
+dvbsubdec.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\dvbsub.c(238) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\dvbsub.c(256) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\dvbsub.c(275) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\dvbsub.c(298) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\dvbsub.c(318) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\dvbsub.c(331) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\dvbsub.c(338) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\dvbsub.c(358) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\dvbsub.c(362) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\dvbsub.c(389) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\dvbsub.c(390) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\dvbsub.c(393) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\dvbsub.c(401) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\dvbsub.c(405) : warning C4761: integral size mismatch in argument; conversion supplied
+dvdsub.c
+dvdsubenc.c
+error_resilience.c
+D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\dvdsubenc.c(168) : warning C4761: integral size mismatch in argument; conversion supplied
+D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\dvdsubenc.c(171) : warning C4761: integral size mismatch in argument; conversion supplied
+D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\dvdsubenc.c(172) : warning C4761: integral size mismatch in argument; conversion supplied
+D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\dvdsubenc.c(197) : warning C4761: integral size mismatch in argument; conversion supplied
+D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\dvdsubenc.c(198) : warning C4761: integral size mismatch in argument; conversion supplied
+D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\dvdsubenc.c(204) : warning C4761: integral size mismatch in argument; conversion supplied
+D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\dvdsubenc.c(205) : warning C4761: integral size mismatch in argument; conversion supplied
+D:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\dvdsubenc.c(210) : warning C4761: integral size mismatch in argument; conversion supplied
+eval.c
+faandct.c
+fft.c
+ffv1.c
+flac.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\flac.c(782) : warning C4047: 'initializing' : 'int ' differs in levels of indirection from 'void *'
+flicvideo.c
+fraps.c
+g726.c
+golomb.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\g726.c(232) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\g726.c(235) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\g726.c(262) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\g726.c(265) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\g726.c(390) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\g726.c(394) : warning C4761: integral size mismatch in argument; conversion supplied
+h261.c
+h263.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\h263.c(4709) : warning C4146: unary minus operator applied to unsigned type, result still unsigned
+h263dec.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\h263.c(164) : warning C4761: integral size mismatch in argument; conversion supplied
+h264.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\h264.c(38) : warning C4005: 'INT_MIN' : macro redefinition
+        c:\program files\microsoft visual studio\vc98\include\limits.h(44) : see previous definition of 'INT_MIN'
+h264idct.c
+huffyuv.c
+idcinvideo.c
+imgconvert.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\imgconvert.c(1297) : warning C4146: unary minus operator applied to unsigned type, result still unsigned
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\imgconvert_template.h(462) : warning C4146: unary minus operator applied to unsigned type, result still unsigned
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\imgconvert_template.h(837) : warning C4146: unary minus operator applied to unsigned type, result still unsigned
+imgresample.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\imgconvert_template.h(809) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\imgconvert_template.h(809) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\imgconvert_template.h(809) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\imgconvert_template.h(804) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\imgconvert_template.h(804) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\imgconvert_template.h(804) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\imgresample.c(34) : warning C4005: 'UINT_MAX' : macro redefinition
+        c:\program files\microsoft visual studio\vc98\include\limits.h(46) : see previous definition of 'UINT_MAX'
+indeo2.c
+indeo3.c
+interplayvideo.c
+jfdctfst.c
+jfdctint.c
+jrevdct.c
+lcl.c
+loco.c
+lzo.c
+mace.c
+mdct.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\mace.c(286) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\mace.c(287) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\mace.c(288) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\mace.c(290) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\mace.c(291) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\mace.c(292) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\mace.c(373) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\mace.c(374) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\mace.c(375) : warning C4761: integral size mismatch in argument; conversion supplied
+mem.c
+mjpeg.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\mjpeg.c(518) : warning C4146: unary minus operator applied to unsigned type, result still unsigned
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\jpeg_ls.c.inc(844) : warning C4047: 'initializing' : 'int ' differs in levels of indirection from 'void *'
+mmvideo.c
+motion_est.c
+mpeg12.c
+mpegaudio.c
+mpegaudiodec.c
+mpegvideo.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\mpegvideo.c(5729) : error C2485: 'align' : unrecognized extended attribute
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\mpegvideo.c(5729) : error C2059: syntax error : '('
+msmpeg4.c
+msrle.c
+msvideo1.c
+nuv_codec.c
+opt.c
+parser.c
+pcm.c
+png_codec.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\pcm.c(90) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\pcm.c(91) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\pcm.c(366) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\pcm.c(370) : warning C4761: integral size mismatch in argument; conversion supplied
+pnm_codec.c
+qdm2.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\qdm2.c(871) : warning C4305: 'initializing' : truncation from 'const double ' to 'float '
+qdrw.c
+qpeg.c
+qtrle.c
+ra144.c
+ra288.c
+rangecoder.c
+ratecontrol.c
+raw_codec.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\ratecontrol.c(176) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\ratecontrol.c(177) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\ratecontrol.c(238) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\ratecontrol.c(238) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\ratecontrol.c(281) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\ratecontrol.c(287) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\ratecontrol.c(288) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\ratecontrol.c(289) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\ratecontrol.c(290) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\ratecontrol.c(291) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\ratecontrol.c(724) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\ratecontrol.c(725) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\ratecontrol.c(906) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\ratecontrol.c(918) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\ratecontrol.c(817) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\ratecontrol.c(818) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\ratecontrol.c(845) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\ratecontrol.c(847) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\ratecontrol.c(853) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\ratecontrol.c(913) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\ratecontrol.c(918) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+resample.c
+resample2.c
+roqvideo.c
+rpza.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\roqvideo.c(337) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\roqvideo.c(337) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\roqvideo.c(366) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\roqvideo.c(366) : warning C4761: integral size mismatch in argument; conversion supplied
+rtjpeg.c
+rv10.c
+shorten.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\shorten.c(521) : warning C4047: 'initializing' : 'int ' differs in levels of indirection from 'void *'
+simple_idct.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\shorten.c(171) : warning C4761: integral size mismatch in argument; conversion supplied
+smacker_codec.c
+smc.c
+snow.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\snow.c(19) : warning C4616: #pragma warning : warning number '3631' out of range, must be between '4001' and '4999'
+sonic.c
+svq1.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\svq1.c(1422) : warning C4047: 'initializing' : 'int ' differs in levels of indirection from 'void *'
+truemotion1.c
+truemotion2.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\truemotion1.c(375) : warning C4700: local variable 'header' used without having been initialized
+truespeech.c
+tscc.c
+tta_codec.c
+ulti.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\tta_codec.c(201) : warning C4761: integral size mismatch in argument; conversion supplied
+utils_codec.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\utils_codec.c(771) : warning C4305: '=' : truncation from 'const double ' to 'float '
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\utils_codec.c(1374) : warning C4013: 'open' undefined; assuming extern returning int
+vc9.c
+vcr1.c
+vmdav.c
+vorbis.c
+vp3.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\vorbis.c(508) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\vp3.c(290) : error C2485: 'align' : unrecognized extended attribute
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\vp3.c(290) : error C2059: syntax error : '('
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\vp3.c(291) : error C2485: 'align' : unrecognized extended attribute
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\vp3.c(291) : error C2059: syntax error : '('
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\vp3.c(292) : error C2485: 'align' : unrecognized extended attribute
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\vp3.c(292) : error C2059: syntax error : '('
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\vp3.c(1715) : error C2485: 'align' : unrecognized extended attribute
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\vp3.c(1715) : error C2059: syntax error : '('
+vp3dsp.c
+vqavideo.c
+wmadec.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\wmadec.c(114) : error C2485: 'align' : unrecognized extended attribute
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\wmadec.c(114) : error C2059: syntax error : '('
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\wmadec.c(117) : error C2485: 'align' : unrecognized extended attribute
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\wmadec.c(117) : error C2059: syntax error : '('
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\wmadec.c(120) : error C2485: 'align' : unrecognized extended attribute
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\wmadec.c(120) : error C2059: syntax error : '('
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\wmadec.c(122) : error C2485: 'align' : unrecognized extended attribute
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\wmadec.c(122) : error C2059: syntax error : '('
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\wmadec.c(1053) : error C2485: 'align' : unrecognized extended attribute
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavcodec\wmadec.c(1053) : error C2059: syntax error : '('
+wnv1.c
+ws-snd1.c
+xan.c
+xl.c
+zmbv.c
+4xm_format.c
+adtsenc.c
+aiff.c
+allformats.c
+asf-enc.c
+asf.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\asf-enc.c(752) : warning C4761: integral size mismatch in argument; conversion supplied
+au.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\asf.c(823) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\asf.c(823) : warning C4761: integral size mismatch in argument; conversion supplied
+avidec.c
+avienc.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\avidec.c(183) : warning C4761: integral size mismatch in argument; conversion supplied
+avio.c
+D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\avienc.c(566) : warning C4761: integral size mismatch in argument; conversion supplied
+aviobuf.c
+avs_format.c
+crc.c
+cutils.c
+daud.c
+D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\daud.c(58) : warning C4047: 'initializing' : 'int ' differs in levels of indirection from 'void *'
+dv_format.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\dv_format.c(1015) : warning C4047: 'initializing' : 'int ' differs in levels of indirection from 'void *'
+electronicarts.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\dv_format.c(367) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\dv_format.c(367) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\dv_format.c(373) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\dv_format.c(373) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\dv_format.c(373) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\dv_format.c(375) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\dv_format.c(375) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\dv_format.c(383) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\dv_format.c(383) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\dv_format.c(383) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\dv_format.c(393) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\dv_format.c(393) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\dv_format.c(393) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\dv_format.c(396) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\dv_format.c(396) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\dv_format.c(396) : warning C4761: integral size mismatch in argument; conversion supplied
+ffm.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\ffm.c(475) : warning C4307: '-' : integral constant overflow
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\ffm.c(721) : warning C4013: 'lseek' undefined; assuming extern returning int
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\ffm.c(722) : warning C4013: 'read' undefined; assuming extern returning int
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\ffm.c(737) : warning C4013: 'write' undefined; assuming extern returning int
+file.c
+flic.c
+flvdec.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\flvdec.c(224) : warning C4047: 'initializing' : 'int ' differs in levels of indirection from 'void *'
+flvenc.c
+framehook.c
+D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\flvenc.c(160) : warning C4761: integral size mismatch in argument; conversion supplied
+gif.c
+gifdec.c
+http.c
+idcin.c
+idroq.c
+img.c
+img2.c
+ipmovie.c
+jpeg.c
+matroska.c
+mm.c
+D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\matroska.c(2209) : warning C4761: integral size mismatch in argument; conversion supplied
+D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\matroska.c(2319) : warning C4761: integral size mismatch in argument; conversion supplied
+mmf.c
+mov.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\mov.c(1417) : warning C4552: '>>' : operator has no effect; expected operator with side-effect
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\mov.c(1418) : warning C4552: '>>' : operator has no effect; expected operator with side-effect
+movenc.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\mov.c(758) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\mov.c(821) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\mov.c(848) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\mov.c(867) : warning C4761: integral size mismatch in argument; conversion supplied
+mp3.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\movenc.c(1741) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\movenc.c(91) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\movenc.c(117) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\movenc.c(868) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\movenc.c(903) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\movenc.c(930) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\movenc.c(950) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\movenc.c(1031) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\movenc.c(1032) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\movenc.c(1035) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\mp3.c(235) : warning C4090: 'function' : different 'const' qualifiers
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\mp3.c(235) : warning C4024: 'strcasecmp1' : different types for formal and actual parameter 2
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\mp3.c(355) : warning C4047: 'initializing' : 'int ' differs in levels of indirection from 'void *'
+mpeg.c
+mpegts.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\mpeg.c(525) : warning C4761: integral size mismatch in argument; conversion supplied
+mpegtsenc.c
+mpjpeg.c
+nsvdec.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\nsvdec.c(122) : warning C4005: 'UINT_MAX' : macro redefinition
+        c:\program files\microsoft visual studio\vc98\include\limits.h(46) : see previous definition of 'UINT_MAX'
+nut.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\nut.c(1437) : warning C4047: 'initializing' : 'int ' differs in levels of indirection from 'void *'
+nuv_format.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\nut.c(420) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\nut.c(423) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\nut.c(448) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\nut.c(966) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\nut.c(973) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\nut.c(1203) : warning C4761: integral size mismatch in argument; conversion supplied
+ogg2.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\ogg2.c(647) : warning C4047: 'initializing' : 'int ' differs in levels of indirection from 'void *'
+oggparseflac.c
+oggparsetheora.c
+oggparsevorbis.c
+os_support.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\os_support.c(45) : warning C4133: 'function' : incompatible types - from 'struct timeb *' to 'struct _timeb *'
+png_format.c
+pnm_format.c
+psxstr.c
+raw_format.c
+D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\raw_format.c(24) : warning C4005: 'CONFIG_MUXERS' : macro redefinition
+        d:\workdata\medialib\ffmpeg.51.8_vc6\config.h(14) : see previous definition of 'CONFIG_MUXERS'
+rm.c
+rtp.c
+rtpproto.c
+rtsp.c
+segafilm.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\segafilm.c(30) : warning C4005: 'UINT_MAX' : macro redefinition
+        c:\program files\microsoft visual studio\vc98\include\limits.h(46) : see previous definition of 'UINT_MAX'
+sgi.c
+sierravmd.c
+smacker_format.c
+sol.c
+swf.c
+tcp.c
+tta_format.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\tta_format.c(133) : warning C4047: 'initializing' : 'int ' differs in levels of indirection from 'void *'
+udp.c
+utils_format.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\utils_format.c(22) : warning C4005: 'UINT_MAX' : macro redefinition
+        c:\program files\microsoft visual studio\vc98\include\limits.h(46) : see previous definition of 'UINT_MAX'
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\utils_format.c(79) : warning C4090: 'function' : different 'const' qualifiers
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\utils_format.c(79) : warning C4024: 'strcasecmp1' : different types for formal and actual parameter 2
+voc.c
+wav.c
+wc3movie.c
+c:\program files\microsoft visual studio\vc98\include\limits.h(46) : warning C4005: 'UINT_MAX' : macro redefinition
+        d:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\wc3movie.c(0) : see previous definition of 'UINT_MAX'
+westwood.c
+yuv.c
+yuv4mpeg.c
+D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\yuv4mpeg.c(407) : warning C4047: 'initializing' : 'int ' differs in levels of indirection from 'void *'
+D:\workdata\medialib\ffmpeg.51.8_vc6\libavformat\yuv4mpeg.c(410) : warning C4047: 'initializing' : 'int ' differs in levels of indirection from 'char [4]'
+crc_util.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavutil\crc_util.c(27) : warning C4146: unary minus operator applied to unsigned type, result still unsigned
+integer.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavutil\integer.c(163) : warning C4244: '=' : conversion from '__int64 ' to 'unsigned short ', possible loss of data
+intfloat_readwrite.c
+mathematics.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavutil\intfloat_readwrite.c(35) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavutil\intfloat_readwrite.c(59) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\workdata\medialib\ffmpeg.51.8_vc6\libavutil\intfloat_readwrite.c(60) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+rational.c
+cmdutils.c
+ffplay.c
+d:\workdata\medialib\ffmpeg.51.8_vc6\ffplay.c(2221) : warning C4761: integral size mismatch in argument; conversion supplied
+Error executing cl.exe.
+
+
+
+<h3>Results</h3>
+ffplay.exe - 43 error(s), 191 warning(s)
+</pre>
+</body>
+</html>

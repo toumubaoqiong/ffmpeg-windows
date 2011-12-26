@@ -1,0 +1,12 @@
+prefix=
+exec_prefix=
+libdir=${pcfiledir}
+includedir=/i/Project/DJITPFFMPEG2/ffmpeg
+
+Name: libavcodec
+Description: FFmpeg codec library
+Version: 52.20.0
+Requires: libavutil = 49.15.0
+Conflicts:
+Libs: ${libdir}/libavcodec.a   -lm -lamrnb -lm -lfaad -lx264 -lm -lws2_32 
+Cflags: -I${includedir}

@@ -1,0 +1,2587 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: ffmpeg - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP1E5.tmp" with contents
+[
+/nologo /MLd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fp"Debug/ffmpeg.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\ffmpeg.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavdevice\alldevices.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavdevice\alsa-audio-common.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavdevice\alsa-audio-dec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavdevice\alsa-audio-enc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavdevice\beosaudio.cpp"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavdevice\bktr.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavdevice\dv1394.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavdevice\libdc1394.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavdevice\oss_audio.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavdevice\v4l.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavdevice\v4l2.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavdevice\vfwcap.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavdevice\x11grab.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavfilter\allfilters.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavfilter\avfilter.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavfilter\avfiltergraph.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavfilter\defaults.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavfilter\formats.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavfilter\graphparser.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\adler32.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\aes.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\avstring.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\base64.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\crc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\des.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\fifo.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\integer.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\intfloat_readwrite.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\lfg.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\lls.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\log.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\lzo.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\mathematics.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\md5.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\mem.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\pca.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\random.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\rational.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\rc4.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\sha1.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\softfloat.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\tree.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\utils_util.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libpostproc\postprocess.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libpostproc\postprocess_altivec_template.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libpostproc\postprocess_template.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\cs_test.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale-example.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_altivec_template.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_avoption.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_bfin.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_altivec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_bfin.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_mlib.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_template.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_vis.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\4xm.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\8bps.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\8svx.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\aac.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\aac_ac3_parser.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\aac_parser.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\aacenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\aacpsy.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\aactab.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\aandcttab.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\aasc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\ac3.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\ac3_parser.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\ac3dec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\ac3dec_data.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\ac3enc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\ac3tab.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\acelp_filters.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\acelp_pitch_delay.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\acelp_vectors.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\adpcm.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\adxdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\adxenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\alac.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\alacenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\allcodecs.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\apedec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\apiexample.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\asv1.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\atrac3.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\audioconvert.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avs.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\beosthread.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\bethsoftvideo.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\bfi.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\bitstream.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\bitstream_filter.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\bmp.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\bmpenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\c93.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\cabac.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\cavs.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\cavs_parser.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\cavsdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\cavsdsp.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\celp_filters.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\celp_math.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\cinepak.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\cljr.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\cook.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\cscd.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\cyuv.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dca.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dca_parser.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dct-test.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dirac_parser.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dnxhd_parser.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dnxhddata.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dnxhddec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dnxhdenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dpcm.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dsicinav.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dsputil.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dump_extradata_bsf.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dv.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dvbsub.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dvbsub_parser.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dvbsubdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dvdsub_parser.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dvdsubdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dvdsubenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dxa.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\eac3dec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\eacmv.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\eaidct.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\eatgq.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\eatgv.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\eatqi.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\elbg.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\error_resilience.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\escape124.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\eval.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\faandct.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\faanidct.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\faxcompr.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\fdctref.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\fft-test.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\fft.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\ffv1.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\flacdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\flacenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\flashsv.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\flashsvenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\flicvideo.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\fraps.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\g726.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\g729dec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\gif.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\gifdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\golomb.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\h261.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\h261_parser.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\h261dec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\h261enc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\h263.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\h263_parser.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\h263dec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\h264.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\h264_mp4toannexb_bsf.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\h264_parser.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\h264dspenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\h264enc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\h264idct.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\h264pred.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\huffman.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\huffyuv.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\idcinvideo.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\iirfilter.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgresample.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imx_dump_header_bsf.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\indeo2.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\indeo3.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\interplayvideo.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\intrax8.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\intrax8dsp.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\jfdctfst.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\jfdctint.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\jpegls.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\jpeglsdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\jpeglsenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\jrevdct.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\kmvc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\lcldec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\lclenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\libamr.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\libdirac_libschro.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\libdiracdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\libdiracenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\libfaac.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\libfaad.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\libgsm.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\libmp3lame.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\libopenjpeg.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\libschroedinger.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\libschroedingerdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\libschroedingerenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\libspeexdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\libtheoraenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\libvorbis.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\libx264.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\libxvid_rc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\libxvidff.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\ljpegenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\loco.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\lpc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\lsp.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\lzw.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\lzwenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mace.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mdct.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mimic.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mjpeg.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mjpeg_parser.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mjpega_dump_header_bsf.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mjpegbdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mjpegdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mjpegenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mlp.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mlp_parser.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mlpdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mmvideo.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion-test.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motionpixels.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\movsub_bsf.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mp3_header_compress_bsf.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mp3_header_decompress_bsf.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mpc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mpc7.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mpc8.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mpeg12.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mpeg12data.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mpeg12enc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mpeg4audio.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mpeg4video_parser.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mpegaudio.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mpegaudio_parser.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mpegaudiodata.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mpegaudiodec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mpegaudiodecheader.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mpegaudioenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mpegvideo.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mpegvideo_enc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mpegvideo_parser.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mpegvideo_xvmc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\msmpeg4.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\msmpeg4data.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\msrle.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\msrledec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\msvideo1.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\nellymoser.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\nellymoserdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\nellymoserenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\noise_bsf.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\nuv.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\opt.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\options.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\os2thread.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\parser.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\pcm.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\pcx.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\pixdesc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\png.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\pngdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\pngenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\pnm.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\pnm_parser.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\pnmenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\pthread.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\ptx.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\qcelp_lsp.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\qcelpdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\qdm2.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\qdrw.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\qpeg.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\qtrle.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\qtrleenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\ra144.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\ra288.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\rangecoder.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\ratecontrol.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\raw.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\rawdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\rawenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\rdft.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\remove_extradata_bsf.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\resample.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\resample2.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\rl2.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\rle.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\roqaudioenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\roqvideo.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\roqvideodec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\roqvideoenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\rpza.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\rtjpeg.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\rv10.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\rv30.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\rv30dsp.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\rv34.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\rv40.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\rv40dsp.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\s3tc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\sgidec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\sgienc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\shorten.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\simple_idct.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\smacker.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\smc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\snow.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\sonic.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\sp5xdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\sunrast.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq1.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq1dec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq1enc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\targa.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\targaenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\tiertexseqv.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\tiff.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\tiffenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\truemotion1.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\truemotion2.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\truespeech.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\tscc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\tta.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\txd.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\ulti.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\utils.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\vb.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\vc1.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\vc1_parser.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\vc1data.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\vc1dsp.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\vcr1.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\vdpau.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\vmdav.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\vmnc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\vorbis.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\vorbis_data.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\vorbis_dec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\vorbis_enc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\vp3.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\vp3_parser.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\vp3dsp.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\vp5.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\vp56.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\vp56data.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\vp6.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\vp6dsp.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\vqavideo.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\w32thread.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\wavpack.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\wma.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\wmadec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\wmaenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\wmv2.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\wmv2dec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\wmv2enc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\wnv1.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\ws-snd1.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\xan.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\xiph.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\xl.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\xsubdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\zmbv.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\zmbvenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\4xm1.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\adtsenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\aiff.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\allformats.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\amr.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\apc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\ape.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\asf.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\asfcrypt.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\asfdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\asfenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\assdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\assenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\au.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\audiointerleave.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avidec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avienc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avio.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\aviobuf.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avisynth.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avs1.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\bethsoftvid.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\bfi1.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\c931.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\crcenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\cutils.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\daud.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\dsicin.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\dv1.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\dvenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\dxa1.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\eacdata.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\electronicarts.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\ffmdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\ffmenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\file.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\flacdec1.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\flacenc1.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\flic.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\flvdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\flvenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\framecrcenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\framehook.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\gif1.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\gopher.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\gxf.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\gxfenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\http.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\id3v2.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\idcin.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\idroq.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\iff.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\img2.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\ipmovie.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\isom.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\iss.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\libnut.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\lmlm4.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\matroska.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\matroskadec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\matroskaenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\metadata.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\metadata_compat.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\mm.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\mmf.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\mov.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\movenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\mp3.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\mpc1.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\mpc81.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\mpeg.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\mpegenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\mpegts.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\mpegtsenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\mpjpeg.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\msnwc_tcp.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\mtv.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\mvi.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\mxf.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\mxfdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\mxfenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\ncdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\nsvdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\nut.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\nutdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\nutenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\nuv1.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\oggdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\oggenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\oggparseflac.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\oggparseogm.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\oggparsespeex.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\oggparsetheora.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\oggparsevorbis.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\oma.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\options1.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\os_support.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\psxstr.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\pva.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\r3d.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\raw1.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\rdt.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\riff.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\rl21.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\rm.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\rmdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\rmenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\rpl.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\rtp.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\rtp_aac.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\rtp_h263.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\rtp_h264.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\rtp_mpv.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\rtpdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\rtpenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\rtpenc_h264.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\rtpproto.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\rtsp.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\sdp.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\segafilm.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\sierravmd.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\siff.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\smacker1.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\sol.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\swfdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\swfenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\tcp.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\thp.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\tiertexseq.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\tta1.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\txd1.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\udp.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\utils_format.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\vc1test.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\vc1testenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\voc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\vocdec.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\vocenc.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\wav.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\wc3movie.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\westwood.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\wv.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\xa.c"
+"D:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\yuv4mpeg.c"
+]
+Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP1E5.tmp" 
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP1E6.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"Debug/ffmpeg.pdb" /debug /machine:I386 /out:"Debug/ffmpeg.exe" /pdbtype:sept 
+.\Debug\ffmpeg.obj
+.\Debug\alldevices.obj
+".\Debug\alsa-audio-common.obj"
+".\Debug\alsa-audio-dec.obj"
+".\Debug\alsa-audio-enc.obj"
+.\Debug\beosaudio.obj
+.\Debug\bktr.obj
+.\Debug\dv1394.obj
+.\Debug\libdc1394.obj
+.\Debug\oss_audio.obj
+.\Debug\v4l.obj
+.\Debug\v4l2.obj
+.\Debug\vfwcap.obj
+.\Debug\x11grab.obj
+.\Debug\allfilters.obj
+.\Debug\avfilter.obj
+.\Debug\avfiltergraph.obj
+.\Debug\defaults.obj
+.\Debug\formats.obj
+.\Debug\graphparser.obj
+.\Debug\adler32.obj
+.\Debug\aes.obj
+.\Debug\avstring.obj
+.\Debug\base64.obj
+.\Debug\crc.obj
+.\Debug\des.obj
+.\Debug\fifo.obj
+.\Debug\integer.obj
+.\Debug\intfloat_readwrite.obj
+.\Debug\lfg.obj
+.\Debug\lls.obj
+.\Debug\log.obj
+.\Debug\lzo.obj
+.\Debug\mathematics.obj
+.\Debug\md5.obj
+.\Debug\mem.obj
+.\Debug\pca.obj
+.\Debug\random.obj
+.\Debug\rational.obj
+.\Debug\rc4.obj
+.\Debug\sha1.obj
+.\Debug\softfloat.obj
+.\Debug\tree.obj
+.\Debug\utils_util.obj
+.\Debug\postprocess.obj
+.\Debug\postprocess_altivec_template.obj
+.\Debug\postprocess_template.obj
+.\Debug\cs_test.obj
+.\Debug\rgb2rgb.obj
+.\Debug\rgb2rgb_template.obj
+".\Debug\swscale-example.obj"
+.\Debug\swscale.obj
+.\Debug\swscale_altivec_template.obj
+.\Debug\swscale_avoption.obj
+.\Debug\swscale_bfin.obj
+.\Debug\swscale_template.obj
+.\Debug\yuv2rgb.obj
+.\Debug\yuv2rgb_altivec.obj
+.\Debug\yuv2rgb_bfin.obj
+.\Debug\yuv2rgb_mlib.obj
+.\Debug\yuv2rgb_template.obj
+.\Debug\yuv2rgb_vis.obj
+.\Debug\4xm.obj
+.\Debug\8bps.obj
+.\Debug\8svx.obj
+.\Debug\aac.obj
+.\Debug\aac_ac3_parser.obj
+.\Debug\aac_parser.obj
+.\Debug\aacenc.obj
+.\Debug\aacpsy.obj
+.\Debug\aactab.obj
+.\Debug\aandcttab.obj
+.\Debug\aasc.obj
+.\Debug\ac3.obj
+.\Debug\ac3_parser.obj
+.\Debug\ac3dec.obj
+.\Debug\ac3dec_data.obj
+.\Debug\ac3enc.obj
+.\Debug\ac3tab.obj
+.\Debug\acelp_filters.obj
+.\Debug\acelp_pitch_delay.obj
+.\Debug\acelp_vectors.obj
+.\Debug\adpcm.obj
+.\Debug\adxdec.obj
+.\Debug\adxenc.obj
+.\Debug\alac.obj
+.\Debug\alacenc.obj
+.\Debug\allcodecs.obj
+.\Debug\apedec.obj
+.\Debug\apiexample.obj
+.\Debug\asv1.obj
+.\Debug\atrac3.obj
+.\Debug\audioconvert.obj
+.\Debug\avs.obj
+.\Debug\beosthread.obj
+.\Debug\bethsoftvideo.obj
+.\Debug\bfi.obj
+.\Debug\bitstream.obj
+.\Debug\bitstream_filter.obj
+.\Debug\bmp.obj
+.\Debug\bmpenc.obj
+.\Debug\c93.obj
+.\Debug\cabac.obj
+.\Debug\cavs.obj
+.\Debug\cavs_parser.obj
+.\Debug\cavsdec.obj
+.\Debug\cavsdsp.obj
+.\Debug\celp_filters.obj
+.\Debug\celp_math.obj
+.\Debug\cinepak.obj
+.\Debug\cljr.obj
+.\Debug\cook.obj
+.\Debug\cscd.obj
+.\Debug\cyuv.obj
+.\Debug\dca.obj
+.\Debug\dca_parser.obj
+".\Debug\dct-test.obj"
+.\Debug\dirac_parser.obj
+.\Debug\dnxhd_parser.obj
+.\Debug\dnxhddata.obj
+.\Debug\dnxhddec.obj
+.\Debug\dnxhdenc.obj
+.\Debug\dpcm.obj
+.\Debug\dsicinav.obj
+.\Debug\dsputil.obj
+.\Debug\dump_extradata_bsf.obj
+.\Debug\dv.obj
+.\Debug\dvbsub.obj
+.\Debug\dvbsub_parser.obj
+.\Debug\dvbsubdec.obj
+.\Debug\dvdsub_parser.obj
+.\Debug\dvdsubdec.obj
+.\Debug\dvdsubenc.obj
+.\Debug\dxa.obj
+.\Debug\eac3dec.obj
+.\Debug\eacmv.obj
+.\Debug\eaidct.obj
+.\Debug\eatgq.obj
+.\Debug\eatgv.obj
+.\Debug\eatqi.obj
+.\Debug\elbg.obj
+.\Debug\error_resilience.obj
+.\Debug\escape124.obj
+.\Debug\eval.obj
+.\Debug\faandct.obj
+.\Debug\faanidct.obj
+.\Debug\faxcompr.obj
+.\Debug\fdctref.obj
+".\Debug\fft-test.obj"
+.\Debug\fft.obj
+.\Debug\ffv1.obj
+.\Debug\flacdec.obj
+.\Debug\flacenc.obj
+.\Debug\flashsv.obj
+.\Debug\flashsvenc.obj
+.\Debug\flicvideo.obj
+.\Debug\fraps.obj
+.\Debug\g726.obj
+.\Debug\g729dec.obj
+.\Debug\gif.obj
+.\Debug\gifdec.obj
+.\Debug\golomb.obj
+.\Debug\h261.obj
+.\Debug\h261_parser.obj
+.\Debug\h261dec.obj
+.\Debug\h261enc.obj
+.\Debug\h263.obj
+.\Debug\h263_parser.obj
+.\Debug\h263dec.obj
+.\Debug\h264.obj
+.\Debug\h264_mp4toannexb_bsf.obj
+.\Debug\h264_parser.obj
+.\Debug\h264dspenc.obj
+.\Debug\h264enc.obj
+.\Debug\h264idct.obj
+.\Debug\h264pred.obj
+.\Debug\huffman.obj
+.\Debug\huffyuv.obj
+.\Debug\idcinvideo.obj
+.\Debug\iirfilter.obj
+.\Debug\imc.obj
+.\Debug\imgconvert.obj
+.\Debug\imgconvert_template.obj
+.\Debug\imgresample.obj
+.\Debug\imx_dump_header_bsf.obj
+.\Debug\indeo2.obj
+.\Debug\indeo3.obj
+.\Debug\interplayvideo.obj
+.\Debug\intrax8.obj
+.\Debug\intrax8dsp.obj
+.\Debug\jfdctfst.obj
+.\Debug\jfdctint.obj
+.\Debug\jpegls.obj
+.\Debug\jpeglsdec.obj
+.\Debug\jpeglsenc.obj
+.\Debug\jrevdct.obj
+.\Debug\kmvc.obj
+.\Debug\lcldec.obj
+.\Debug\lclenc.obj
+.\Debug\libamr.obj
+.\Debug\libdirac_libschro.obj
+.\Debug\libdiracdec.obj
+.\Debug\libdiracenc.obj
+.\Debug\libfaac.obj
+.\Debug\libfaad.obj
+.\Debug\libgsm.obj
+.\Debug\libmp3lame.obj
+.\Debug\libopenjpeg.obj
+.\Debug\libschroedinger.obj
+.\Debug\libschroedingerdec.obj
+.\Debug\libschroedingerenc.obj
+.\Debug\libspeexdec.obj
+.\Debug\libtheoraenc.obj
+.\Debug\libvorbis.obj
+.\Debug\libx264.obj
+.\Debug\libxvid_rc.obj
+.\Debug\libxvidff.obj
+.\Debug\ljpegenc.obj
+.\Debug\loco.obj
+.\Debug\lpc.obj
+.\Debug\lsp.obj
+.\Debug\lzw.obj
+.\Debug\lzwenc.obj
+.\Debug\mace.obj
+.\Debug\mdct.obj
+.\Debug\mdec.obj
+.\Debug\mimic.obj
+.\Debug\mjpeg.obj
+.\Debug\mjpeg_parser.obj
+.\Debug\mjpega_dump_header_bsf.obj
+.\Debug\mjpegbdec.obj
+.\Debug\mjpegdec.obj
+.\Debug\mjpegenc.obj
+.\Debug\mlp.obj
+.\Debug\mlp_parser.obj
+.\Debug\mlpdec.obj
+.\Debug\mmvideo.obj
+".\Debug\motion-test.obj"
+.\Debug\motion_est.obj
+.\Debug\motion_est_template.obj
+.\Debug\motionpixels.obj
+.\Debug\movsub_bsf.obj
+.\Debug\mp3_header_compress_bsf.obj
+.\Debug\mp3_header_decompress_bsf.obj
+.\Debug\mpc.obj
+.\Debug\mpc7.obj
+.\Debug\mpc8.obj
+.\Debug\mpeg12.obj
+.\Debug\mpeg12data.obj
+.\Debug\mpeg12enc.obj
+.\Debug\mpeg4audio.obj
+.\Debug\mpeg4video_parser.obj
+.\Debug\mpegaudio.obj
+.\Debug\mpegaudio_parser.obj
+.\Debug\mpegaudiodata.obj
+.\Debug\mpegaudiodec.obj
+.\Debug\mpegaudiodecheader.obj
+.\Debug\mpegaudioenc.obj
+.\Debug\mpegvideo.obj
+.\Debug\mpegvideo_enc.obj
+.\Debug\mpegvideo_parser.obj
+.\Debug\mpegvideo_xvmc.obj
+.\Debug\msmpeg4.obj
+.\Debug\msmpeg4data.obj
+.\Debug\msrle.obj
+.\Debug\msrledec.obj
+.\Debug\msvideo1.obj
+.\Debug\nellymoser.obj
+.\Debug\nellymoserdec.obj
+.\Debug\nellymoserenc.obj
+.\Debug\noise_bsf.obj
+.\Debug\nuv.obj
+.\Debug\opt.obj
+.\Debug\options.obj
+.\Debug\os2thread.obj
+.\Debug\parser.obj
+.\Debug\pcm.obj
+.\Debug\pcx.obj
+.\Debug\pixdesc.obj
+.\Debug\png.obj
+.\Debug\pngdec.obj
+.\Debug\pngenc.obj
+.\Debug\pnm.obj
+.\Debug\pnm_parser.obj
+.\Debug\pnmenc.obj
+.\Debug\pthread.obj
+.\Debug\ptx.obj
+.\Debug\qcelp_lsp.obj
+.\Debug\qcelpdec.obj
+.\Debug\qdm2.obj
+.\Debug\qdrw.obj
+.\Debug\qpeg.obj
+.\Debug\qtrle.obj
+.\Debug\qtrleenc.obj
+.\Debug\ra144.obj
+.\Debug\ra288.obj
+.\Debug\rangecoder.obj
+.\Debug\ratecontrol.obj
+.\Debug\raw.obj
+.\Debug\rawdec.obj
+.\Debug\rawenc.obj
+.\Debug\rdft.obj
+.\Debug\remove_extradata_bsf.obj
+.\Debug\resample.obj
+.\Debug\resample2.obj
+.\Debug\rl2.obj
+.\Debug\rle.obj
+.\Debug\roqaudioenc.obj
+.\Debug\roqvideo.obj
+.\Debug\roqvideodec.obj
+.\Debug\roqvideoenc.obj
+.\Debug\rpza.obj
+.\Debug\rtjpeg.obj
+.\Debug\rv10.obj
+.\Debug\rv30.obj
+.\Debug\rv30dsp.obj
+.\Debug\rv34.obj
+.\Debug\rv40.obj
+.\Debug\rv40dsp.obj
+.\Debug\s3tc.obj
+.\Debug\sgidec.obj
+.\Debug\sgienc.obj
+.\Debug\shorten.obj
+.\Debug\simple_idct.obj
+.\Debug\smacker.obj
+.\Debug\smc.obj
+.\Debug\snow.obj
+.\Debug\sonic.obj
+.\Debug\sp5xdec.obj
+.\Debug\sunrast.obj
+.\Debug\svq1.obj
+.\Debug\svq1dec.obj
+.\Debug\svq1enc.obj
+.\Debug\svq3.obj
+.\Debug\targa.obj
+.\Debug\targaenc.obj
+.\Debug\tiertexseqv.obj
+.\Debug\tiff.obj
+.\Debug\tiffenc.obj
+.\Debug\truemotion1.obj
+.\Debug\truemotion2.obj
+.\Debug\truespeech.obj
+.\Debug\tscc.obj
+.\Debug\tta.obj
+.\Debug\txd.obj
+.\Debug\ulti.obj
+.\Debug\utils.obj
+.\Debug\vb.obj
+.\Debug\vc1.obj
+.\Debug\vc1_parser.obj
+.\Debug\vc1data.obj
+.\Debug\vc1dsp.obj
+.\Debug\vcr1.obj
+.\Debug\vdpau.obj
+.\Debug\vmdav.obj
+.\Debug\vmnc.obj
+.\Debug\vorbis.obj
+.\Debug\vorbis_data.obj
+.\Debug\vorbis_dec.obj
+.\Debug\vorbis_enc.obj
+.\Debug\vp3.obj
+.\Debug\vp3_parser.obj
+.\Debug\vp3dsp.obj
+.\Debug\vp5.obj
+.\Debug\vp56.obj
+.\Debug\vp56data.obj
+.\Debug\vp6.obj
+.\Debug\vp6dsp.obj
+.\Debug\vqavideo.obj
+.\Debug\w32thread.obj
+.\Debug\wavpack.obj
+.\Debug\wma.obj
+.\Debug\wmadec.obj
+.\Debug\wmaenc.obj
+.\Debug\wmv2.obj
+.\Debug\wmv2dec.obj
+.\Debug\wmv2enc.obj
+.\Debug\wnv1.obj
+".\Debug\ws-snd1.obj"
+.\Debug\xan.obj
+.\Debug\xiph.obj
+.\Debug\xl.obj
+.\Debug\xsubdec.obj
+.\Debug\zmbv.obj
+.\Debug\zmbvenc.obj
+.\Debug\4xm1.obj
+.\Debug\adtsenc.obj
+.\Debug\aiff.obj
+.\Debug\allformats.obj
+.\Debug\amr.obj
+.\Debug\apc.obj
+.\Debug\ape.obj
+.\Debug\asf.obj
+.\Debug\asfcrypt.obj
+.\Debug\asfdec.obj
+.\Debug\asfenc.obj
+.\Debug\assdec.obj
+.\Debug\assenc.obj
+.\Debug\au.obj
+.\Debug\audiointerleave.obj
+.\Debug\avc.obj
+.\Debug\avidec.obj
+.\Debug\avienc.obj
+.\Debug\avio.obj
+.\Debug\aviobuf.obj
+.\Debug\avisynth.obj
+.\Debug\avs1.obj
+.\Debug\bethsoftvid.obj
+.\Debug\bfi1.obj
+.\Debug\c931.obj
+.\Debug\crcenc.obj
+.\Debug\cutils.obj
+.\Debug\daud.obj
+.\Debug\dsicin.obj
+.\Debug\dv1.obj
+.\Debug\dvenc.obj
+.\Debug\dxa1.obj
+.\Debug\eacdata.obj
+.\Debug\electronicarts.obj
+.\Debug\ffmdec.obj
+.\Debug\ffmenc.obj
+.\Debug\file.obj
+.\Debug\flacdec1.obj
+.\Debug\flacenc1.obj
+.\Debug\flic.obj
+.\Debug\flvdec.obj
+.\Debug\flvenc.obj
+.\Debug\framecrcenc.obj
+.\Debug\framehook.obj
+.\Debug\gif1.obj
+.\Debug\gopher.obj
+.\Debug\gxf.obj
+.\Debug\gxfenc.obj
+.\Debug\http.obj
+.\Debug\id3v2.obj
+.\Debug\idcin.obj
+.\Debug\idroq.obj
+.\Debug\iff.obj
+.\Debug\img2.obj
+.\Debug\ipmovie.obj
+.\Debug\isom.obj
+.\Debug\iss.obj
+.\Debug\libnut.obj
+.\Debug\lmlm4.obj
+.\Debug\matroska.obj
+.\Debug\matroskadec.obj
+.\Debug\matroskaenc.obj
+.\Debug\metadata.obj
+.\Debug\metadata_compat.obj
+.\Debug\mm.obj
+.\Debug\mmf.obj
+.\Debug\mov.obj
+.\Debug\movenc.obj
+.\Debug\mp3.obj
+.\Debug\mpc1.obj
+.\Debug\mpc81.obj
+.\Debug\mpeg.obj
+.\Debug\mpegenc.obj
+.\Debug\mpegts.obj
+.\Debug\mpegtsenc.obj
+.\Debug\mpjpeg.obj
+.\Debug\msnwc_tcp.obj
+.\Debug\mtv.obj
+.\Debug\mvi.obj
+.\Debug\mxf.obj
+.\Debug\mxfdec.obj
+.\Debug\mxfenc.obj
+.\Debug\ncdec.obj
+.\Debug\nsvdec.obj
+.\Debug\nut.obj
+.\Debug\nutdec.obj
+.\Debug\nutenc.obj
+.\Debug\nuv1.obj
+.\Debug\oggdec.obj
+.\Debug\oggenc.obj
+.\Debug\oggparseflac.obj
+.\Debug\oggparseogm.obj
+.\Debug\oggparsespeex.obj
+.\Debug\oggparsetheora.obj
+.\Debug\oggparsevorbis.obj
+.\Debug\oma.obj
+.\Debug\options1.obj
+.\Debug\os_support.obj
+.\Debug\psxstr.obj
+.\Debug\pva.obj
+.\Debug\r3d.obj
+.\Debug\raw1.obj
+.\Debug\rdt.obj
+.\Debug\riff.obj
+.\Debug\rl21.obj
+.\Debug\rm.obj
+.\Debug\rmdec.obj
+.\Debug\rmenc.obj
+.\Debug\rpl.obj
+.\Debug\rtp.obj
+.\Debug\rtp_aac.obj
+.\Debug\rtp_h263.obj
+.\Debug\rtp_h264.obj
+.\Debug\rtp_mpv.obj
+.\Debug\rtpdec.obj
+.\Debug\rtpenc.obj
+.\Debug\rtpenc_h264.obj
+.\Debug\rtpproto.obj
+.\Debug\rtsp.obj
+.\Debug\sdp.obj
+.\Debug\segafilm.obj
+.\Debug\sierravmd.obj
+.\Debug\siff.obj
+.\Debug\smacker1.obj
+.\Debug\sol.obj
+.\Debug\swfdec.obj
+.\Debug\swfenc.obj
+.\Debug\tcp.obj
+.\Debug\thp.obj
+.\Debug\tiertexseq.obj
+.\Debug\tta1.obj
+.\Debug\txd1.obj
+.\Debug\udp.obj
+.\Debug\utils_format.obj
+.\Debug\vc1test.obj
+.\Debug\vc1testenc.obj
+.\Debug\voc.obj
+.\Debug\vocdec.obj
+.\Debug\vocenc.obj
+.\Debug\wav.obj
+.\Debug\wc3movie.obj
+.\Debug\westwood.obj
+.\Debug\wv.obj
+.\Debug\xa.obj
+.\Debug\yuv4mpeg.obj
+]
+Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP1E6.tmp"
+<h3>Output Window</h3>
+Compiling...
+ffmpeg.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\rational.h(51) : warning C4244: 'return' : conversion from '__int64 ' to 'int ', possible loss of data
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\framehook.h(25) : fatal error C1021: invalid preprocessor command 'warning'
+alldevices.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavdevice\alldevices.c(22) : fatal error C1083: Cannot open include file: 'avformat.h': No such file or directory
+alsa-audio-common.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavdevice\alsa-audio-common.c(31) : fatal error C1083: Cannot open include file: 'avformat.h': No such file or directory
+alsa-audio-dec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavdevice\alsa-audio-dec.c(48) : fatal error C1083: Cannot open include file: 'avformat.h': No such file or directory
+alsa-audio-enc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavdevice\alsa-audio-enc.c(40) : fatal error C1083: Cannot open include file: 'avformat.h': No such file or directory
+beosaudio.cpp
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavdevice\beosaudio.cpp(26) : fatal error C1083: Cannot open include file: 'unistd.h': No such file or directory
+bktr.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavdevice\bktr.c(28) : fatal error C1083: Cannot open include file: 'avformat.h': No such file or directory
+dv1394.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavdevice\dv1394.c(23) : fatal error C1083: Cannot open include file: 'unistd.h': No such file or directory
+libdc1394.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavdevice\libdc1394.c(24) : fatal error C1083: Cannot open include file: 'avformat.h': No such file or directory
+oss_audio.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavdevice\oss_audio.c(31) : fatal error C1083: Cannot open include file: 'sys/soundcard.h': No such file or directory
+v4l.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavdevice\v4l.c(24) : fatal error C1083: Cannot open include file: 'libavutil/rational.h': No such file or directory
+v4l2.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavdevice\v4l2.c(32) : fatal error C1083: Cannot open include file: 'avformat.h': No such file or directory
+vfwcap.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavdevice\vfwcap.c(22) : fatal error C1083: Cannot open include file: 'avformat.h': No such file or directory
+x11grab.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavdevice\x11grab.c(38) : fatal error C1083: Cannot open include file: 'config.h': No such file or directory
+allfilters.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavfilter\avfilter.h(38) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+avfilter.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavfilter\avfilter.c(22) : fatal error C1083: Cannot open include file: 'libavcodec/imgconvert.h': No such file or directory
+avfiltergraph.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavfilter\avfilter.h(38) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+defaults.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavfilter\defaults.c(22) : fatal error C1083: Cannot open include file: 'libavcodec/imgconvert.h': No such file or directory
+formats.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavfilter\avfilter.h(38) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+graphparser.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavfilter\avfilter.h(38) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+adler32.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\common.h(31) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+aes.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\common.h(31) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+avstring.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\avstring.c(74) : warning C4013: 'vsnprintf' undefined; assuming extern returning int
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\avstring.c(74) : warning C4018: '>' : signed/unsigned mismatch
+base64.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\common.h(31) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+crc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\bswap.h(30) : fatal error C1083: Cannot open include file: 'config.h': No such file or directory
+des.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\des.c(21) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+fifo.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\common.h(31) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+integer.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\common.h(31) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+intfloat_readwrite.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\common.h(31) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+lfg.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\lfg.c(22) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+lls.c
+log.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\common.h(31) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+lzo.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\common.h(31) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+mathematics.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\common.h(31) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+md5.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\bswap.h(30) : fatal error C1083: Cannot open include file: 'config.h': No such file or directory
+mem.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\common.h(31) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+pca.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\common.h(31) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+random.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\common.h(31) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+rational.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\common.h(31) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+rc4.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\common.h(31) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+sha1.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\common.h(31) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+softfloat.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\softfloat.c(21) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+tree.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\common.h(31) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+utils_util.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavutil\common.h(31) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+postprocess.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libpostproc\postprocess.c(77) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+postprocess_altivec_template.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libpostproc\postprocess_altivec_template.c(23) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+postprocess_template.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libpostproc\postprocess_template.c(26) : fatal error C1083: Cannot open include file: 'libavutil/x86_cpu.h': No such file or directory
+cs_test.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\cs_test.c(23) : fatal error C1083: Cannot open include file: 'unistd.h': No such file or directory
+rgb2rgb.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb.c(28) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+rgb2rgb_template.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(74) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(74) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(74) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(74) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(74) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(74) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(134) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(134) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(134) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(134) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(134) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(134) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(226) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(226) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(226) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(226) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(226) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(226) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(275) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(275) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(275) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(275) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(275) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(275) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(331) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(331) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(331) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(331) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(331) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(331) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(429) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(429) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(429) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(429) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(429) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(429) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(490) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(490) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(490) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(490) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(490) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(490) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(588) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(588) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(588) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(588) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(588) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(588) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(649) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(649) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(649) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(649) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(649) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(649) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(712) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(712) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(712) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(712) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(712) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(712) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(775) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(775) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(775) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(775) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(775) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(775) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(838) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(838) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(838) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(838) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(838) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(838) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(922) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(922) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(922) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(922) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(922) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(922) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(1064) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(1064) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(1064) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(1064) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(1064) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(1064) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(1205) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(1205) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(1205) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(1205) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(1205) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(1205) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(1283) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(1283) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(1283) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(1283) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(1283) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(1283) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(1355) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(1355) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(1355) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(1355) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(1355) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\rgb2rgb_template.c(1355) : fatal error C1003: error count exceeds 100; stopping compilation
+swscale-example.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale-example.c(24) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+swscale.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale.c(58) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+swscale_altivec_template.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_altivec_template.c(27) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_altivec_template.c(27) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_altivec_template.c(27) : error C2081: 'uint8_t' : name in formal parameter list illegal
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_altivec_template.c(27) : error C2085: 'altivec_packIntArrayToCharArray' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_altivec_template.c(27) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_altivec_template.c(27) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_altivec_template.c(88) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_altivec_template.c(88) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_altivec_template.c(88) : error C2085: 'yuv2yuvX_altivec_real' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_altivec_template.c(88) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_altivec_template.c(90) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_altivec_template.c(211) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_altivec_template.c(211) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_altivec_template.c(211) : error C2085: 'hScale_altivec_real' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_altivec_template.c(211) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_altivec_template.c(211) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_altivec_template.c(387) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_altivec_template.c(387) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_altivec_template.c(387) : error C2085: 'yv12toyuy2_unscaled_altivec' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_altivec_template.c(387) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_altivec_template.c(388) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_altivec_template.c(464) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_altivec_template.c(464) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_altivec_template.c(464) : error C2085: 'yv12touyvy_unscaled_altivec' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_altivec_template.c(464) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_altivec_template.c(465) : error C2059: syntax error : ')'
+swscale_avoption.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_avoption.c(21) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+swscale_bfin.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_bfin.c(26) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+swscale_template.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(911) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(911) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(911) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(911) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(911) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(913) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(946) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(946) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(946) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(946) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(946) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(948) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(955) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(955) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(955) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(955) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(955) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(956) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1022) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1022) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1022) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1022) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1022) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1024) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1181) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1181) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1181) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1181) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1181) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1182) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1288) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1288) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1288) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1288) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1288) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1289) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1503) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1503) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1503) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1503) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1503) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1503) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1528) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1528) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1528) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1528) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1528) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1528) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1565) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1565) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1565) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1565) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1565) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1565) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1589) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1589) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1589) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1589) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1589) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1589) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1638) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1638) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1638) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1638) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1638) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1638) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1639) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1639) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1639) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1639) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1639) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1639) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1640) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1640) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1640) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1640) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1640) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1640) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1641) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1641) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1641) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1641) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1641) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1641) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1642) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1642) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1642) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1642) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1642) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1642) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1643) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1643) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1643) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1643) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1643) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1643) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1678) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1678) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1678) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1678) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1678) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\swscale_template.c(1678) : fatal error C1003: error count exceeds 100; stopping compilation
+yuv2rgb.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb.c(29) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+yuv2rgb_altivec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_altivec.c(91) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+yuv2rgb_bfin.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_bfin.c(27) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+yuv2rgb_mlib.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_mlib.c(23) : fatal error C1083: Cannot open include file: 'mlib_types.h': No such file or directory
+yuv2rgb_template.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_template.c(173) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_template.c(173) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_template.c(173) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_template.c(173) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_template.c(173) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_template.c(174) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_template.c(228) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_template.c(228) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_template.c(228) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_template.c(228) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_template.c(228) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_template.c(229) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_template.c(285) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_template.c(285) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_template.c(285) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_template.c(285) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_template.c(285) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_template.c(286) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_template.c(440) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_template.c(440) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_template.c(440) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_template.c(440) : error C2085: 'RENAME' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_template.c(440) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_template.c(441) : error C2059: syntax error : ')'
+yuv2rgb_vis.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libswscale\yuv2rgb_vis.c(22) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+4xm.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\4xm.c(27) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+8bps.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\8bps.c(37) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+8svx.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+aac.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+aac_ac3_parser.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+aac_parser.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+aacenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+aacpsy.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+aactab.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\aactab.c(30) : fatal error C1083: Cannot open include file: 'libavutil/mem.h': No such file or directory
+aandcttab.c
+aasc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+ac3.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+ac3_parser.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+ac3dec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\ac3dec.c(37) : fatal error C1083: Cannot open include file: 'libavutil/crc.h': No such file or directory
+ac3dec_data.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\ac3dec_data.h(25) : fatal error C1083: Cannot open include file: 'libavutil/common.h': No such file or directory
+ac3enc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\ac3enc.c(28) : fatal error C1083: Cannot open include file: 'libavutil/crc.h': No such file or directory
+ac3tab.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\ac3tab.h(25) : fatal error C1083: Cannot open include file: 'libavutil/common.h': No such file or directory
+acelp_filters.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\acelp_filters.c(23) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+acelp_pitch_delay.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+acelp_vectors.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\acelp_vectors.c(23) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+adpcm.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+adxdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\adxdec.c(22) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+adxenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\adxenc.c(22) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+alac.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+alacenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+allcodecs.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+apedec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+apiexample.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+asv1.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+atrac3.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+audioconvert.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\audioconvert.c(28) : fatal error C1083: Cannot open include file: 'libavutil/avstring.h': No such file or directory
+avs.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+beosthread.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+bethsoftvideo.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\bethsoftvideo.c(30) : fatal error C1083: Cannot open include file: 'libavutil/common.h': No such file or directory
+bfi.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\bfi.c(29) : fatal error C1083: Cannot open include file: 'libavutil/common.h': No such file or directory
+bitstream.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+bitstream_filter.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+bmp.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+bmpenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+c93.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+cabac.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\cabac.c(29) : fatal error C1083: Cannot open include file: 'libavutil/common.h': No such file or directory
+cavs.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+cavs_parser.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+cavsdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+cavsdsp.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dsputil.h(33) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+celp_filters.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\celp_filters.c(23) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+celp_math.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\celp_math.c(23) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+cinepak.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\cinepak.c(35) : fatal error C1083: Cannot open include file: 'unistd.h': No such file or directory
+cljr.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+cook.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\cook.c(49) : fatal error C1083: Cannot open include file: 'libavutil/random.h': No such file or directory
+cscd.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+cyuv.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\cyuv.c(34) : fatal error C1083: Cannot open include file: 'unistd.h': No such file or directory
+dca.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+dca_parser.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+dct-test.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dct-test.c(31) : fatal error C1083: Cannot open include file: 'sys/time.h': No such file or directory
+dirac_parser.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dirac_parser.c(30) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+dnxhd_parser.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+dnxhddata.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+dnxhddec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+dnxhdenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+dpcm.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dpcm.c(40) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+dsicinav.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+dsputil.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+dump_extradata_bsf.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+dv.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+dvbsub.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+dvbsub_parser.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+dvbsubdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+dvdsub_parser.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dvdsub_parser.c(22) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+dvdsubdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+dvdsubenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+dxa.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dxa.c(30) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+eac3dec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+eacmv.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\eacmv.c(31) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+eaidct.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dsputil.h(33) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+eatgq.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+eatgv.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+eatqi.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+elbg.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\elbg.c(28) : fatal error C1083: Cannot open include file: 'libavutil/random.h': No such file or directory
+error_resilience.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+escape124.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+eval.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+faandct.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dsputil.h(33) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+faanidct.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dsputil.h(33) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+faxcompr.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+fdctref.c
+fft-test.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dsputil.h(33) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+fft.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dsputil.h(33) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+ffv1.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+flacdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\flacdec.c(39) : fatal error C1083: Cannot open include file: 'libavutil/crc.h': No such file or directory
+flacenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\flacenc.c(22) : fatal error C1083: Cannot open include file: 'libavutil/crc.h': No such file or directory
+flashsv.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+flashsvenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\flashsvenc.c(59) : fatal error C1083: Cannot open include file: 'zlib.h': No such file or directory
+flicvideo.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\flicvideo.c(41) : fatal error C1083: Cannot open include file: 'unistd.h': No such file or directory
+fraps.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+g726.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+g729dec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\g729dec.c(22) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+gif.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+gifdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+golomb.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\golomb.c(29) : fatal error C1083: Cannot open include file: 'libavutil/common.h': No such file or directory
+h261.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dsputil.h(33) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+h261_parser.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+h261dec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dsputil.h(33) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+h261enc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dsputil.h(33) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+h263.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dsputil.h(33) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+h263_parser.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+h263dec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+h264.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+h264_mp4toannexb_bsf.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\h264_mp4toannexb_bsf.c(21) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+h264_parser.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+h264dspenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dsputil.h(33) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+h264enc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\h264enc.c(22) : fatal error C1083: Cannot open include file: 'libavutil/common.h': No such file or directory
+h264idct.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dsputil.h(33) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+h264pred.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+huffman.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+huffyuv.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+idcinvideo.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\idcinvideo.c(50) : fatal error C1083: Cannot open include file: 'unistd.h': No such file or directory
+iirfilter.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+imc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+imgconvert.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+imgconvert_template.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(26) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(26) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(26) : error C2143: syntax error : missing '{' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(26) : warning C4228: nonstandard extension used : qualifiers after comma in declarator list are ignored
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(26) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(27) : error C2059: syntax error : 'type'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(27) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(120) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(120) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(120) : error C2143: syntax error : missing '{' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(120) : warning C4228: nonstandard extension used : qualifiers after comma in declarator list are ignored
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(120) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(121) : error C2059: syntax error : 'type'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(121) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(214) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(214) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(214) : error C2143: syntax error : missing '{' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(214) : warning C4228: nonstandard extension used : qualifiers after comma in declarator list are ignored
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(214) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(215) : error C2059: syntax error : 'type'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(215) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(321) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(321) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(321) : error C2143: syntax error : missing '{' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(321) : warning C4228: nonstandard extension used : qualifiers after comma in declarator list are ignored
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(321) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(322) : error C2059: syntax error : 'type'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(322) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(347) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(347) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(347) : error C2143: syntax error : missing '{' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(347) : warning C4228: nonstandard extension used : qualifiers after comma in declarator list are ignored
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(347) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(348) : error C2059: syntax error : 'type'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(348) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(373) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(373) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(373) : error C2143: syntax error : missing '{' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(373) : warning C4228: nonstandard extension used : qualifiers after comma in declarator list are ignored
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(373) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(374) : error C2059: syntax error : 'type'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(374) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(417) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(417) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(417) : error C2143: syntax error : missing '{' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(417) : warning C4228: nonstandard extension used : qualifiers after comma in declarator list are ignored
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(417) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(418) : error C2059: syntax error : 'type'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(418) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(454) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(454) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(454) : error C2143: syntax error : missing '{' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(454) : warning C4228: nonstandard extension used : qualifiers after comma in declarator list are ignored
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(454) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(455) : error C2059: syntax error : 'type'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(455) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(492) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(492) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(492) : error C2143: syntax error : missing '{' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(492) : warning C4228: nonstandard extension used : qualifiers after comma in declarator list are ignored
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(492) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(493) : error C2059: syntax error : 'type'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(493) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(520) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(520) : error C2091: function returns function
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(520) : error C2143: syntax error : missing '{' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(520) : warning C4228: nonstandard extension used : qualifiers after comma in declarator list are ignored
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(520) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(521) : error C2059: syntax error : 'type'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\imgconvert_template.c(521) : error C2059: syntax error : ')'
+imgresample.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+imx_dump_header_bsf.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+indeo2.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+indeo3.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\indeo3.c(25) : fatal error C1083: Cannot open include file: 'unistd.h': No such file or directory
+interplayvideo.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\interplayvideo.c(40) : fatal error C1083: Cannot open include file: 'unistd.h': No such file or directory
+intrax8.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+intrax8dsp.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dsputil.h(33) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+jfdctfst.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\jfdctfst.c(73) : fatal error C1083: Cannot open include file: 'libavutil/common.h': No such file or directory
+jfdctint.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\jfdctint.c(66) : fatal error C1083: Cannot open include file: 'libavutil/common.h': No such file or directory
+jpegls.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+jpeglsdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+jpeglsenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+jrevdct.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\jrevdct.c(67) : fatal error C1083: Cannot open include file: 'libavutil/common.h': No such file or directory
+kmvc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+lcldec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+lclenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+libamr.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+libdirac_libschro.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+libdiracdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\libdiracdec.c(36) : fatal error C1083: Cannot open include file: 'libdirac_decoder/dirac_parser.h': No such file or directory
+libdiracenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+libfaac.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+libfaad.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+libgsm.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+libmp3lame.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+libopenjpeg.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+libschroedinger.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+libschroedingerdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+libschroedingerenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\libschroedingerenc.c(33) : fatal error C1083: Cannot open include file: 'schroedinger/schro.h': No such file or directory
+libspeexdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+libtheoraenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\libtheoraenc.c(34) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+libvorbis.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\libvorbis.c(27) : fatal error C1083: Cannot open include file: 'vorbis/vorbisenc.h': No such file or directory
+libx264.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+libxvid_rc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\libxvid_rc.c(23) : fatal error C1083: Cannot open include file: 'xvid.h': No such file or directory
+libxvidff.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\libxvidff.c(28) : fatal error C1083: Cannot open include file: 'xvid.h': No such file or directory
+ljpegenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+loco.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+lpc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\lpc.c(22) : fatal error C1083: Cannot open include file: 'libavutil/lls.h': No such file or directory
+lsp.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\lsp.c(23) : fatal error C1083: Cannot open include file: 'inttypes.h': No such file or directory
+lzw.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+lzwenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+mace.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+mdct.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dsputil.h(33) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+mdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+mimic.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+mjpeg.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+mjpeg_parser.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+mjpega_dump_header_bsf.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+mjpegbdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+mjpegdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+mjpegenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+mlp.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mlp.c(24) : fatal error C1083: Cannot open include file: 'libavutil/crc.h': No such file or directory
+mlp_parser.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mlp_parser.c(29) : fatal error C1083: Cannot open include file: 'libavutil/crc.h': No such file or directory
+mlpdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+mmvideo.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mmvideo.c(34) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+motion-test.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion-test.c(29) : fatal error C1083: Cannot open include file: 'sys/time.h': No such file or directory
+motion_est.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+motion_est_template.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(116) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(116) : error C2143: syntax error : missing '{' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(117) : error C2059: syntax error : 'type'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(119) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(225) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(225) : error C2143: syntax error : missing '{' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(226) : error C2059: syntax error : 'type'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(228) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(235) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(235) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(235) : error C2085: 'ff_get_mb_score' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(235) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(236) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(274) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(274) : error C2143: syntax error : missing '{' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(275) : error C2059: syntax error : 'type'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(277) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(557) : error C2054: expected '(' to follow 'av_always_inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(557) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(557) : error C2085: 'small_diamond_search' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(557) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(559) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(599) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(599) : error C2143: syntax error : missing '{' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(599) : error C2059: syntax error : 'type'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(601) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(660) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(660) : error C2143: syntax error : missing '{' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(660) : error C2059: syntax error : 'type'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(662) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(694) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(694) : error C2143: syntax error : missing '{' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(694) : error C2059: syntax error : 'type'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(696) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(732) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(732) : error C2143: syntax error : missing '{' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(732) : error C2059: syntax error : 'type'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(734) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(779) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(779) : error C2143: syntax error : missing '{' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(779) : error C2059: syntax error : 'type'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(781) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(844) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(844) : error C2143: syntax error : missing '{' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(844) : error C2059: syntax error : 'type'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(846) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(931) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(931) : error C2143: syntax error : missing '{' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(931) : error C2059: syntax error : 'type'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(933) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(1008) : error C2054: expected '(' to follow 'av_always_inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(1008) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(1008) : error C2085: 'diamond_search' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(1008) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(1010) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(1036) : error C2054: expected '(' to follow 'av_always_inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(1036) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(1036) : error C2085: 'epzs_motion_search_internal' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(1036) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(1153) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(1153) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(1153) : error C2085: 'ff_epzs_motion_search' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(1153) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(1168) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(1168) : error C2143: syntax error : missing '{' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(1169) : error C2059: syntax error : 'type'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(1228) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(1228) : error C2143: syntax error : missing '{' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\motion_est_template.c(1229) : error C2059: syntax error : 'type'
+motionpixels.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+movsub_bsf.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\movsub_bsf.c(21) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+mp3_header_compress_bsf.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+mp3_header_decompress_bsf.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+mpc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mpc.c(28) : fatal error C1083: Cannot open include file: 'libavutil/random.h': No such file or directory
+mpc7.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mpc7.c(28) : fatal error C1083: Cannot open include file: 'libavutil/random.h': No such file or directory
+mpc8.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mpc8.c(28) : fatal error C1083: Cannot open include file: 'libavutil/random.h': No such file or directory
+mpeg12.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+mpeg12data.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mpeg12data.h(32) : fatal error C1083: Cannot open include file: 'libavutil/rational.h': No such file or directory
+mpeg12enc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+mpeg4audio.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\bitstream.h(32) : fatal error C1083: Cannot open include file: 'libavutil/bswap.h': No such file or directory
+mpeg4video_parser.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+mpegaudio.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+mpegaudio_parser.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+mpegaudiodata.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mpegaudiodata.h(30) : fatal error C1083: Cannot open include file: 'libavutil/common.h': No such file or directory
+mpegaudiodec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+mpegaudiodecheader.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+mpegaudioenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+mpegvideo.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+mpegvideo_enc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+mpegvideo_parser.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+mpegvideo_xvmc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\mpegvideo_xvmc.c(23) : fatal error C1083: Cannot open include file: 'X11/extensions/XvMC.h': No such file or directory
+msmpeg4.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+msmpeg4data.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\msmpeg4data.h(33) : fatal error C1083: Cannot open include file: 'libavutil/common.h': No such file or directory
+msrle.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\msrle.c(37) : fatal error C1083: Cannot open include file: 'unistd.h': No such file or directory
+msrledec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\msrledec.c(29) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+msvideo1.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\msvideo1.c(36) : fatal error C1083: Cannot open include file: 'unistd.h': No such file or directory
+nellymoser.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+nellymoserdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+nellymoserenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+noise_bsf.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+nuv.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\nuv.c(24) : fatal error C1083: Cannot open include file: 'libavutil/bswap.h': No such file or directory
+opt.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+options.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+os2thread.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+parser.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+pcm.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+pcx.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+pixdesc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\pixdesc.c(22) : fatal error C1083: Cannot open include file: 'libavutil/pixfmt.h': No such file or directory
+png.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+pngdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+pngenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+pnm.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+pnm_parser.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+pnmenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+pthread.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\pthread.c(24) : fatal error C1083: Cannot open include file: 'pthread.h': No such file or directory
+ptx.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\ptx.c(22) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+qcelp_lsp.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\qcelp_lsp.c(30) : fatal error C1083: Cannot open include file: 'libavutil/mathematics.h': No such file or directory
+qcelpdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+qdm2.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+qdrw.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\qdrw.c(27) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+qpeg.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+qtrle.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\qtrle.c(37) : fatal error C1083: Cannot open include file: 'unistd.h': No such file or directory
+qtrleenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+ra144.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+ra288.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+rangecoder.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+ratecontrol.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+raw.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+rawdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+rawenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+rdft.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dsputil.h(33) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+remove_extradata_bsf.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+resample.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+resample2.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+rl2.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\rl2.c(33) : fatal error C1083: Cannot open include file: 'unistd.h': No such file or directory
+rle.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+roqaudioenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+roqvideo.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+roqvideodec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\roqvideodec.c(31) : fatal error C1083: Cannot open include file: 'unistd.h': No such file or directory
+roqvideoenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\roqvideoenc.c(58) : fatal error C1083: Cannot open include file: 'unistd.h': No such file or directory
+rpza.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\rpza.c(40) : fatal error C1083: Cannot open include file: 'unistd.h': No such file or directory
+rtjpeg.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\rtjpeg.c(21) : fatal error C1083: Cannot open include file: 'libavutil/common.h': No such file or directory
+rv10.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+rv30.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+rv30dsp.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+rv34.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+rv40.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+rv40dsp.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+s3tc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\s3tc.c(24) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+sgidec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+sgienc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+shorten.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+simple_idct.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+smacker.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+smc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\smc.c(34) : fatal error C1083: Cannot open include file: 'unistd.h': No such file or directory
+snow.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+sonic.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+sp5xdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+sunrast.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\sunrast.c(22) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+svq1.c
+svq1dec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+svq1enc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+svq3.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(117) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(117) : error C2143: syntax error : missing '{' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(117) : error C2059: syntax error : 'type'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(117) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(154) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(154) : error C2081: 'DCTELEM' : name in formal parameter list illegal
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(154) : error C2143: syntax error : missing '{' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(154) : error C2059: syntax error : 'type'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(155) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(192) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(192) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(192) : error C2085: 'svq3_decode_block' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(192) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(193) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(249) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(249) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(249) : error C2085: 'svq3_mc_dir_part' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(249) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(252) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(311) : error C2054: expected '(' to follow 'inline'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(311) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(311) : error C2085: 'svq3_mc_dir' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(311) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(312) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(418) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(418) : error C2143: syntax error : missing '{' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(418) : error C2059: syntax error : 'type'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(418) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(694) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(694) : error C2143: syntax error : missing '{' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(694) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(695) : error C2054: expected '(' to follow 'h'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(779) : error C2054: expected '(' to follow 'av_cold'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(779) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(779) : error C2085: 'svq3_decode_init' : not in formal parameter list
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(779) : error C2143: syntax error : missing ';' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(779) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(890) : error C2143: syntax error : missing ')' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(890) : error C2143: syntax error : missing '{' before '*'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(891) : error C2059: syntax error : 'type'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(892) : error C2059: syntax error : ')'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(1043) : error C2061: syntax error : identifier 'svq3_decoder'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(1043) : error C2059: syntax error : ';'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(1043) : error C2513: '/*global*/ ' : no variable declared before '='
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(1045) : error C2065: 'CODEC_TYPE_VIDEO' : undeclared identifier
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(1046) : error C2065: 'CODEC_ID_SVQ3' : undeclared identifier
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(1047) : error C2065: 'H264Context' : undeclared identifier
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(1048) : error C2065: 'svq3_decode_init' : undeclared identifier
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(1050) : error C2065: 'decode_end' : undeclared identifier
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(1051) : error C2065: 'svq3_decode_frame' : undeclared identifier
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(1052) : error C2065: 'CODEC_CAP_DRAW_HORIZ_BAND' : undeclared identifier
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(1052) : error C2065: 'CODEC_CAP_DR1' : undeclared identifier
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(1052) : error C2065: 'CODEC_CAP_DELAY' : undeclared identifier
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(1053) : error C2059: syntax error : '.'
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\svq3.c(1054) : error C2059: syntax error : ','
+targa.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\targa.c(22) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+targaenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\targaenc.c(22) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+tiertexseqv.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+tiff.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+tiffenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+truemotion1.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\truemotion1.c(35) : fatal error C1083: Cannot open include file: 'unistd.h': No such file or directory
+truemotion2.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+truespeech.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\truespeech.c(22) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+tscc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+tta.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+txd.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\txd.c(24) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+ulti.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\ulti.c(30) : fatal error C1083: Cannot open include file: 'unistd.h': No such file or directory
+utils.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\utils.c(31) : fatal error C1083: Cannot open include file: 'libavutil/avstring.h': No such file or directory
+vb.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+vc1.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+vc1_parser.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+vc1data.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+vc1dsp.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dsputil.h(33) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+vcr1.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+vdpau.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+vmdav.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\vmdav.c(45) : fatal error C1083: Cannot open include file: 'unistd.h': No such file or directory
+vmnc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\vmnc.c(31) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+vorbis.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+vorbis_data.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\dsputil.h(33) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+vorbis_dec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+vorbis_enc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+vp3.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\vp3.c(35) : fatal error C1083: Cannot open include file: 'unistd.h': No such file or directory
+vp3_parser.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+vp3dsp.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+vp5.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+vp56.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+vp56data.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\vp56data.h(27) : fatal error C1083: Cannot open include file: 'libavutil/common.h': No such file or directory
+vp6.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+vp6dsp.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\vp6dsp.c(24) : fatal error C1083: Cannot open include file: 'libavutil/common.h': No such file or directory
+vqavideo.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\vqavideo.c(69) : fatal error C1083: Cannot open include file: 'unistd.h': No such file or directory
+w32thread.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+wavpack.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+wma.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+wmadec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+wmaenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+wmv2.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+wmv2dec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+wmv2enc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+wnv1.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+ws-snd1.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\ws-snd1.c(22) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+xan.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\xan.c(34) : fatal error C1083: Cannot open include file: 'unistd.h': No such file or directory
+xiph.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\xiph.c(21) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+xl.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\xl.c(27) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+xsubdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\avcodec.h(30) : fatal error C1083: Cannot open include file: 'libavutil/avutil.h': No such file or directory
+zmbv.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\zmbv.c(30) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+zmbvenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavcodec\zmbvenc.c(30) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+4xm1.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\4xm1.c(30) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+adtsenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\adtsenc.c(23) : fatal error C1083: Cannot open include file: 'libavcodec/bitstream.h': No such file or directory
+aiff.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\aiff.c(22) : fatal error C1083: Cannot open include file: 'libavutil/intfloat_readwrite.h': No such file or directory
+allformats.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+amr.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+apc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+ape.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\ape.c(25) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+asf.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+asfcrypt.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\asfcrypt.c(23) : fatal error C1083: Cannot open include file: 'libavutil/common.h': No such file or directory
+asfdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\asfdec.c(22) : fatal error C1083: Cannot open include file: 'libavutil/common.h': No such file or directory
+asfenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+assdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+assenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+au.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+audiointerleave.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\audiointerleave.c(23) : fatal error C1083: Cannot open include file: 'libavutil/fifo.h': No such file or directory
+avc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avc.c(22) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+avidec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avidec.c(22) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+avienc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+avio.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avio.c(22) : fatal error C1083: Cannot open include file: 'libavutil/avstring.h': No such file or directory
+aviobuf.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\aviobuf.c(22) : fatal error C1083: Cannot open include file: 'libavutil/crc.h': No such file or directory
+avisynth.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+avs1.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+bethsoftvid.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\bethsoftvid.c(30) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+bfi1.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\bfi1.c(29) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+c931.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+crcenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\crcenc.c(22) : fatal error C1083: Cannot open include file: 'libavutil/adler32.h': No such file or directory
+cutils.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+daud.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+dsicin.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\dsicin.c(27) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+dv1.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+dvenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+dxa1.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\dxa1.c(22) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+eacdata.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+electronicarts.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\electronicarts.c(28) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+ffmdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\ffmdec.c(22) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+ffmenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\ffmenc.c(22) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+file.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\file.c(22) : fatal error C1083: Cannot open include file: 'libavutil/avstring.h': No such file or directory
+flacdec1.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+flacenc1.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\flacenc1.c(22) : fatal error C1083: Cannot open include file: 'libavcodec/flac.h': No such file or directory
+flic.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\flic.c(34) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+flvdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\flvdec.c(27) : fatal error C1083: Cannot open include file: 'libavcodec/mpeg4audio.h': No such file or directory
+flvenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+framecrcenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\framecrcenc.c(22) : fatal error C1083: Cannot open include file: 'libavutil/adler32.h': No such file or directory
+framehook.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\framehook.c(22) : fatal error C1083: Cannot open include file: 'config.h': No such file or directory
+gif1.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+gopher.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\gopher.c(25) : fatal error C1083: Cannot open include file: 'libavutil/avstring.h': No such file or directory
+gxf.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\gxf.c(22) : fatal error C1083: Cannot open include file: 'libavutil/common.h': No such file or directory
+gxfenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\gxfenc.c(22) : fatal error C1083: Cannot open include file: 'libavutil/fifo.h': No such file or directory
+http.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\http.c(22) : fatal error C1083: Cannot open include file: 'libavutil/base64.h': No such file or directory
+id3v2.c
+idcin.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\idcin.c(71) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+idroq.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\idroq.c(30) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+iff.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\iff.c(30) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+img2.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\img2.c(23) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+ipmovie.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\ipmovie.c(35) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+isom.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+iss.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+libnut.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+lmlm4.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\lmlm4.c(25) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+matroska.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\matroska.h(25) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+matroskadec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+matroskaenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+metadata.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\metadata.c(21) : fatal error C1083: Cannot open include file: 'strings.h': No such file or directory
+metadata_compat.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\metadata_compat.c(21) : fatal error C1083: Cannot open include file: 'strings.h': No such file or directory
+mm.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\mm.c(34) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+mmf.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+mov.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\mov.c(26) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+movenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+mp3.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\mp3.c(22) : fatal error C1083: Cannot open include file: 'strings.h': No such file or directory
+mpc1.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\mpc1.c(22) : fatal error C1083: Cannot open include file: 'libavcodec/bitstream.h': No such file or directory
+mpc81.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\mpc81.c(22) : fatal error C1083: Cannot open include file: 'libavcodec/bitstream.h': No such file or directory
+mpeg.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+mpegenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\mpegenc.c(22) : fatal error C1083: Cannot open include file: 'libavutil/fifo.h': No such file or directory
+mpegts.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\mpegts.c(22) : fatal error C1083: Cannot open include file: 'libavutil/crc.h': No such file or directory
+mpegtsenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\mpegtsenc.c(22) : fatal error C1083: Cannot open include file: 'libavutil/bswap.h': No such file or directory
+mpjpeg.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+msnwc_tcp.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\msnwc_tcp.c(21) : fatal error C1083: Cannot open include file: 'libavcodec/bytestream.h': No such file or directory
+mtv.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\mtv.c(27) : fatal error C1083: Cannot open include file: 'libavutil/bswap.h': No such file or directory
+mvi.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+mxf.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\mxf.h(24) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+mxfdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\mxfdec.c(48) : fatal error C1083: Cannot open include file: 'libavutil/aes.h': No such file or directory
+mxfenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\mxfenc.c(38) : fatal error C1083: Cannot open include file: 'libavutil/fifo.h': No such file or directory
+ncdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\ncdec.c(23) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+nsvdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+nut.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\nut.c(22) : fatal error C1083: Cannot open include file: 'libavutil/tree.h': No such file or directory
+nutdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\nutdec.c(23) : fatal error C1083: Cannot open include file: 'strings.h': No such file or directory
+nutenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\nutenc.c(22) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+nuv1.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\nuv1.c(22) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+oggdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+oggenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\oggenc.c(22) : fatal error C1083: Cannot open include file: 'libavutil/crc.h': No such file or directory
+oggparseflac.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\oggparseflac.c(22) : fatal error C1083: Cannot open include file: 'libavcodec/bitstream.h': No such file or directory
+oggparseogm.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\oggparseogm.c(26) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+oggparsespeex.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\oggparsespeex.c(26) : fatal error C1083: Cannot open include file: 'libavutil/bswap.h': No such file or directory
+oggparsetheora.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\oggparsetheora.c(26) : fatal error C1083: Cannot open include file: 'libavutil/bswap.h': No such file or directory
+oggparsevorbis.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\oggparsevorbis.c(26) : fatal error C1083: Cannot open include file: 'libavutil/avstring.h': No such file or directory
+oma.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+options1.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+os_support.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\os_support.c(26) : fatal error C1083: Cannot open include file: 'config.h': No such file or directory
+psxstr.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\psxstr.c(32) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+pva.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+r3d.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\r3d.c(24) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+raw1.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\raw1.c(23) : fatal error C1083: Cannot open include file: 'libavutil/crc.h': No such file or directory
+rdt.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+riff.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\riff.c(22) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+rl21.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\rl21.c(36) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+rm.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+rmdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\rmdec.c(22) : fatal error C1083: Cannot open include file: 'libavutil/avstring.h': No such file or directory
+rmenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+rpl.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\rpl.c(22) : fatal error C1083: Cannot open include file: 'libavutil/avstring.h': No such file or directory
+rtp.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\rtp.c(22) : fatal error C1083: Cannot open include file: 'libavcodec/bitstream.h': No such file or directory
+rtp_aac.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+rtp_h263.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\rtpdec.h(25) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+rtp_h264.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\rtp_h264.c(39) : fatal error C1083: Cannot open include file: 'libavutil/base64.h': No such file or directory
+rtp_mpv.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\rtp_mpv.c(23) : fatal error C1083: Cannot open include file: 'libavcodec/mpegvideo.h': No such file or directory
+rtpdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\rtpdec.c(25) : fatal error C1083: Cannot open include file: 'libavcodec/bitstream.h': No such file or directory
+rtpenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\rtpenc.c(22) : fatal error C1083: Cannot open include file: 'libavcodec/bitstream.h': No such file or directory
+rtpenc_h264.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+rtpproto.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\rtpproto.c(27) : fatal error C1083: Cannot open include file: 'libavutil/avstring.h': No such file or directory
+rtsp.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\rtsp.c(25) : fatal error C1083: Cannot open include file: 'libavutil/avstring.h': No such file or directory
+sdp.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\sdp.c(21) : fatal error C1083: Cannot open include file: 'libavutil/avstring.h': No such file or directory
+segafilm.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\segafilm.c(30) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+sierravmd.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\sierravmd.c(30) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+siff.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\siff.c(22) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+smacker1.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\smacker1.c(26) : fatal error C1083: Cannot open include file: 'libavutil/bswap.h': No such file or directory
+sol.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\sol.c(26) : fatal error C1083: Cannot open include file: 'libavutil/bswap.h': No such file or directory
+swfdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\swfdec.c(23) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+swfenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\swfenc.c(23) : fatal error C1083: Cannot open include file: 'libavcodec/bitstream.h': No such file or directory
+tcp.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+thp.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\thp.c(22) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+tiertexseq.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+tta1.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\tta1.c(22) : fatal error C1083: Cannot open include file: 'libavcodec/bitstream.h': No such file or directory
+txd1.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\txd1.c(22) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+udp.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+utils_format.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+vc1test.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\vc1test.c(29) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+vc1testenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+voc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+vocdec.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\vocdec.c(22) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+vocenc.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+wav.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+wc3movie.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\wc3movie.c(30) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+westwood.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\westwood.c(36) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+wv.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\wv.c(22) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+xa.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\xa.c(30) : fatal error C1083: Cannot open include file: 'libavutil/intreadwrite.h': No such file or directory
+yuv4mpeg.c
+d:\workdata\medialib\ffmpeg0.5\ffmpeg\libavformat\avformat.h(45) : fatal error C1083: Cannot open include file: 'libavcodec/avcodec.h': No such file or directory
+Error executing cl.exe.
+
+
+
+<h3>Results</h3>
+ffmpeg.exe - 955 error(s), 13 warning(s)
+</pre>
+</body>
+</html>

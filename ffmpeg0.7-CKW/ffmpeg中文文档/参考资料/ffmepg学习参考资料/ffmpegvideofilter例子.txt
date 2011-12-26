@@ -1,0 +1,6 @@
+ffmpeg -y -i 23.avi -vf "movie=0:gif:actlet_icon.gif [wm];[in][wm] overlay=0:0:1 [out]" -f mp4  -acodec libmp3lame -vcodec libx264 -vpre slow -ac 1 aaaa.mp4
+
+
+
+ffmpeg -i input.mp4 -s 640x360 -vf "movie=0:png:logo.png [wm];[in][wm] overlay=(main_w-overlay_w)/2:main_h-overlay_h:1 [out]" -b 512k  -y output.mp4  
+

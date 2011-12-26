@@ -1,0 +1,12 @@
+prefix=
+exec_prefix=
+libdir=${pcfiledir}
+includedir=/i/Project/DJITPFFMPEG2/ffmpeg
+
+Name: libavformat
+Description: FFmpeg container format library
+Version: 52.31.0
+Requires: libavcodec = 52.20.0
+Conflicts:
+Libs: ${libdir}/libavformat.a   -lm -lamrnb -lm -lfaad -lx264 -lm -lws2_32 
+Cflags: -I${includedir}

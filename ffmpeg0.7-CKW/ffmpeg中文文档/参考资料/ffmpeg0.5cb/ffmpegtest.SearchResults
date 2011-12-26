@@ -1,0 +1,10 @@
+---- conf_picture Æ¥Åä (9 ÔÚ 0 ÎÄ¼þ ) ----
+Ffmpeg.c:static AVFrame conf_picture;
+Ffmpeg.c:            memset(conf_picture.data[0], 0x80, avpicture_get_size(PIX_FMT_YUV420P, enc->width, enc->height));
+Ffmpeg.c:                resampling_conf.data[i] = conf_picture.data[i] +
+Ffmpeg.c:                    (resampling_y >> (i?1:0)) * conf_picture.linesize[i] + (resampling_x >> (i?1:0));
+Ffmpeg.c:                    0, dec->height, resampling_conf.data, conf_picture.linesize);
+Ffmpeg.c:        final_picture = &conf_picture;
+Ffmpeg.c:                avcodec_get_frame_defaults(&conf_picture);
+Ffmpeg.c:                avpicture_alloc((AVPicture *)&conf_picture, PIX_FMT_YUV420P, codec->width, codec->height);
+Ffmpeg.c:            avpicture_free((AVPicture *)&conf_picture);

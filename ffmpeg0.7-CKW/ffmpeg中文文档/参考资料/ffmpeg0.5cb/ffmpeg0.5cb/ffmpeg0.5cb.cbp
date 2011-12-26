@@ -1,0 +1,2774 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="ffmpeg0.5cb" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Option virtualFolders="libavcodec\;libavdevice\;libavfilter\;libavformat\;libavutil\;libpostproc\;libswscale\;ffmpeg\;" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin\Debug\ffmpeg0.5cb" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Debug\" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin\Release\ffmpeg0.5cb" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Release\" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="config.h" />
+		<Unit filename="ffmpeg.c">
+			<Option compilerVar="CC" />
+			<Option virtualFolder="ffmpeg\" />
+		</Unit>
+		<Unit filename="libavcodec\4xm.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\4xm.d" />
+		<Unit filename="libavcodec\4xm.o" />
+		<Unit filename="libavcodec\8bps.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\8bps.d" />
+		<Unit filename="libavcodec\8bps.o" />
+		<Unit filename="libavcodec\8svx.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\8svx.d" />
+		<Unit filename="libavcodec\8svx.o" />
+		<Unit filename="libavcodec\Makefile" />
+		<Unit filename="libavcodec\aac.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\aac.h" />
+		<Unit filename="libavcodec\aac_ac3_parser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\aac_ac3_parser.d" />
+		<Unit filename="libavcodec\aac_ac3_parser.h" />
+		<Unit filename="libavcodec\aac_ac3_parser.o" />
+		<Unit filename="libavcodec\aac_parser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\aac_parser.d" />
+		<Unit filename="libavcodec\aac_parser.h" />
+		<Unit filename="libavcodec\aac_parser.o" />
+		<Unit filename="libavcodec\aacdectab.h" />
+		<Unit filename="libavcodec\aacenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\aacpsy.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\aacpsy.h" />
+		<Unit filename="libavcodec\aactab.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\aactab.h" />
+		<Unit filename="libavcodec\aandcttab.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\aandcttab.d" />
+		<Unit filename="libavcodec\aandcttab.h" />
+		<Unit filename="libavcodec\aandcttab.o" />
+		<Unit filename="libavcodec\aasc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\aasc.d" />
+		<Unit filename="libavcodec\aasc.o" />
+		<Unit filename="libavcodec\ac3.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\ac3.d" />
+		<Unit filename="libavcodec\ac3.h" />
+		<Unit filename="libavcodec\ac3.o" />
+		<Unit filename="libavcodec\ac3_parser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\ac3_parser.d" />
+		<Unit filename="libavcodec\ac3_parser.h" />
+		<Unit filename="libavcodec\ac3_parser.o" />
+		<Unit filename="libavcodec\ac3dec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\ac3dec.d" />
+		<Unit filename="libavcodec\ac3dec.h" />
+		<Unit filename="libavcodec\ac3dec.o" />
+		<Unit filename="libavcodec\ac3dec_data.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\ac3dec_data.d" />
+		<Unit filename="libavcodec\ac3dec_data.h" />
+		<Unit filename="libavcodec\ac3dec_data.o" />
+		<Unit filename="libavcodec\ac3enc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\ac3enc.d" />
+		<Unit filename="libavcodec\ac3enc.o" />
+		<Unit filename="libavcodec\ac3tab.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\ac3tab.d" />
+		<Unit filename="libavcodec\ac3tab.h" />
+		<Unit filename="libavcodec\ac3tab.o" />
+		<Unit filename="libavcodec\acelp_filters.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\acelp_filters.h" />
+		<Unit filename="libavcodec\acelp_pitch_delay.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\acelp_pitch_delay.h" />
+		<Unit filename="libavcodec\acelp_vectors.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\acelp_vectors.h" />
+		<Unit filename="libavcodec\adpcm.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\adpcm.d" />
+		<Unit filename="libavcodec\adpcm.o" />
+		<Unit filename="libavcodec\adx.h" />
+		<Unit filename="libavcodec\adxdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\adxdec.d" />
+		<Unit filename="libavcodec\adxdec.o" />
+		<Unit filename="libavcodec\adxenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\adxenc.d" />
+		<Unit filename="libavcodec\adxenc.o" />
+		<Unit filename="libavcodec\alac.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\alac.d" />
+		<Unit filename="libavcodec\alac.o" />
+		<Unit filename="libavcodec\alacenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\alacenc.d" />
+		<Unit filename="libavcodec\alacenc.o" />
+		<Unit filename="libavcodec\allcodecs.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\allcodecs.d" />
+		<Unit filename="libavcodec\allcodecs.o" />
+		<Unit filename="libavcodec\apedec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\apedec.d" />
+		<Unit filename="libavcodec\apedec.o" />
+		<Unit filename="libavcodec\apiexample.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\asv1.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\asv1.d" />
+		<Unit filename="libavcodec\asv1.o" />
+		<Unit filename="libavcodec\atrac3.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\atrac3.d" />
+		<Unit filename="libavcodec\atrac3.o" />
+		<Unit filename="libavcodec\atrac3data.h" />
+		<Unit filename="libavcodec\audioconvert.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\audioconvert.d" />
+		<Unit filename="libavcodec\audioconvert.h" />
+		<Unit filename="libavcodec\audioconvert.o" />
+		<Unit filename="libavcodec\avcodec.h" />
+		<Unit filename="libavcodec\avs.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\avs.d" />
+		<Unit filename="libavcodec\avs.o" />
+		<Unit filename="libavcodec\beosthread.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\bethsoftvideo.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\bethsoftvideo.d" />
+		<Unit filename="libavcodec\bethsoftvideo.h" />
+		<Unit filename="libavcodec\bethsoftvideo.o" />
+		<Unit filename="libavcodec\bfi.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\bfi.d" />
+		<Unit filename="libavcodec\bfi.o" />
+		<Unit filename="libavcodec\bitstream.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\bitstream.d" />
+		<Unit filename="libavcodec\bitstream.h" />
+		<Unit filename="libavcodec\bitstream.o" />
+		<Unit filename="libavcodec\bitstream_filter.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\bitstream_filter.d" />
+		<Unit filename="libavcodec\bitstream_filter.o" />
+		<Unit filename="libavcodec\bmp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\bmp.d" />
+		<Unit filename="libavcodec\bmp.h" />
+		<Unit filename="libavcodec\bmp.o" />
+		<Unit filename="libavcodec\bmpenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\bmpenc.d" />
+		<Unit filename="libavcodec\bmpenc.o" />
+		<Unit filename="libavcodec\bytestream.h" />
+		<Unit filename="libavcodec\c93.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\c93.d" />
+		<Unit filename="libavcodec\c93.o" />
+		<Unit filename="libavcodec\cabac.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\cabac.d" />
+		<Unit filename="libavcodec\cabac.h" />
+		<Unit filename="libavcodec\cabac.o" />
+		<Unit filename="libavcodec\cavs.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\cavs.d" />
+		<Unit filename="libavcodec\cavs.h" />
+		<Unit filename="libavcodec\cavs.o" />
+		<Unit filename="libavcodec\cavs_parser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\cavs_parser.d" />
+		<Unit filename="libavcodec\cavs_parser.o" />
+		<Unit filename="libavcodec\cavsdata.h" />
+		<Unit filename="libavcodec\cavsdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\cavsdec.d" />
+		<Unit filename="libavcodec\cavsdec.o" />
+		<Unit filename="libavcodec\cavsdsp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\cavsdsp.d" />
+		<Unit filename="libavcodec\cavsdsp.o" />
+		<Unit filename="libavcodec\celp_filters.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\celp_filters.d" />
+		<Unit filename="libavcodec\celp_filters.h" />
+		<Unit filename="libavcodec\celp_filters.o" />
+		<Unit filename="libavcodec\celp_math.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\celp_math.d" />
+		<Unit filename="libavcodec\celp_math.h" />
+		<Unit filename="libavcodec\celp_math.o" />
+		<Unit filename="libavcodec\cinepak.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\cinepak.d" />
+		<Unit filename="libavcodec\cinepak.o" />
+		<Unit filename="libavcodec\cljr.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\cljr.d" />
+		<Unit filename="libavcodec\cljr.o" />
+		<Unit filename="libavcodec\colorspace.h" />
+		<Unit filename="libavcodec\cook.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\cook.d" />
+		<Unit filename="libavcodec\cook.o" />
+		<Unit filename="libavcodec\cookdata.h" />
+		<Unit filename="libavcodec\cscd.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\cscd.d" />
+		<Unit filename="libavcodec\cscd.o" />
+		<Unit filename="libavcodec\cyuv.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\cyuv.d" />
+		<Unit filename="libavcodec\cyuv.o" />
+		<Unit filename="libavcodec\dca.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\dca.d" />
+		<Unit filename="libavcodec\dca.h" />
+		<Unit filename="libavcodec\dca.o" />
+		<Unit filename="libavcodec\dca_parser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\dca_parser.d" />
+		<Unit filename="libavcodec\dca_parser.o" />
+		<Unit filename="libavcodec\dcadata.h" />
+		<Unit filename="libavcodec\dcahuff.h" />
+		<Unit filename="libavcodec\dct-test.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\dirac_parser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\dirac_parser.d" />
+		<Unit filename="libavcodec\dirac_parser.o" />
+		<Unit filename="libavcodec\dnxhd_parser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\dnxhd_parser.d" />
+		<Unit filename="libavcodec\dnxhd_parser.o" />
+		<Unit filename="libavcodec\dnxhddata.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\dnxhddata.d" />
+		<Unit filename="libavcodec\dnxhddata.h" />
+		<Unit filename="libavcodec\dnxhddata.o" />
+		<Unit filename="libavcodec\dnxhddec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\dnxhddec.d" />
+		<Unit filename="libavcodec\dnxhddec.o" />
+		<Unit filename="libavcodec\dnxhdenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\dnxhdenc.d" />
+		<Unit filename="libavcodec\dnxhdenc.h" />
+		<Unit filename="libavcodec\dnxhdenc.o" />
+		<Unit filename="libavcodec\dpcm.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\dpcm.d" />
+		<Unit filename="libavcodec\dpcm.o" />
+		<Unit filename="libavcodec\dsicinav.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\dsicinav.d" />
+		<Unit filename="libavcodec\dsicinav.o" />
+		<Unit filename="libavcodec\dsputil.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\dsputil.d" />
+		<Unit filename="libavcodec\dsputil.h" />
+		<Unit filename="libavcodec\dsputil.o" />
+		<Unit filename="libavcodec\dump_extradata_bsf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\dump_extradata_bsf.d" />
+		<Unit filename="libavcodec\dump_extradata_bsf.o" />
+		<Unit filename="libavcodec\dv.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\dv.d" />
+		<Unit filename="libavcodec\dv.o" />
+		<Unit filename="libavcodec\dvbsub.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\dvbsub.d" />
+		<Unit filename="libavcodec\dvbsub.o" />
+		<Unit filename="libavcodec\dvbsub_parser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\dvbsub_parser.d" />
+		<Unit filename="libavcodec\dvbsub_parser.o" />
+		<Unit filename="libavcodec\dvbsubdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\dvbsubdec.d" />
+		<Unit filename="libavcodec\dvbsubdec.o" />
+		<Unit filename="libavcodec\dvdata.h" />
+		<Unit filename="libavcodec\dvdsub_parser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\dvdsub_parser.d" />
+		<Unit filename="libavcodec\dvdsub_parser.o" />
+		<Unit filename="libavcodec\dvdsubdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\dvdsubdec.d" />
+		<Unit filename="libavcodec\dvdsubdec.o" />
+		<Unit filename="libavcodec\dvdsubenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\dvdsubenc.d" />
+		<Unit filename="libavcodec\dvdsubenc.o" />
+		<Unit filename="libavcodec\dxa.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\eac3dec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\eac3dec.d" />
+		<Unit filename="libavcodec\eac3dec.o" />
+		<Unit filename="libavcodec\eacmv.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\eacmv.d" />
+		<Unit filename="libavcodec\eacmv.o" />
+		<Unit filename="libavcodec\eaidct.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\eaidct.d" />
+		<Unit filename="libavcodec\eaidct.o" />
+		<Unit filename="libavcodec\eatgq.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\eatgq.d" />
+		<Unit filename="libavcodec\eatgq.o" />
+		<Unit filename="libavcodec\eatgv.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\eatgv.d" />
+		<Unit filename="libavcodec\eatgv.o" />
+		<Unit filename="libavcodec\eatqi.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\eatqi.d" />
+		<Unit filename="libavcodec\eatqi.o" />
+		<Unit filename="libavcodec\elbg.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\elbg.d" />
+		<Unit filename="libavcodec\elbg.h" />
+		<Unit filename="libavcodec\elbg.o" />
+		<Unit filename="libavcodec\error_resilience.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\error_resilience.d" />
+		<Unit filename="libavcodec\error_resilience.o" />
+		<Unit filename="libavcodec\escape124.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\escape124.d" />
+		<Unit filename="libavcodec\escape124.o" />
+		<Unit filename="libavcodec\eval.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\eval.d" />
+		<Unit filename="libavcodec\eval.h" />
+		<Unit filename="libavcodec\eval.o" />
+		<Unit filename="libavcodec\faandct.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\faandct.d" />
+		<Unit filename="libavcodec\faandct.h" />
+		<Unit filename="libavcodec\faandct.o" />
+		<Unit filename="libavcodec\faanidct.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\faanidct.d" />
+		<Unit filename="libavcodec\faanidct.h" />
+		<Unit filename="libavcodec\faanidct.o" />
+		<Unit filename="libavcodec\faxcompr.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\faxcompr.d" />
+		<Unit filename="libavcodec\faxcompr.h" />
+		<Unit filename="libavcodec\faxcompr.o" />
+		<Unit filename="libavcodec\fdctref.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\fft-test.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\fft.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\fft.d" />
+		<Unit filename="libavcodec\fft.o" />
+		<Unit filename="libavcodec\ffv1.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\ffv1.d" />
+		<Unit filename="libavcodec\ffv1.o" />
+		<Unit filename="libavcodec\flac.h" />
+		<Unit filename="libavcodec\flacdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\flacdec.d" />
+		<Unit filename="libavcodec\flacdec.o" />
+		<Unit filename="libavcodec\flacenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\flacenc.d" />
+		<Unit filename="libavcodec\flacenc.o" />
+		<Unit filename="libavcodec\flashsv.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\flashsvenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\flicvideo.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\flicvideo.d" />
+		<Unit filename="libavcodec\flicvideo.o" />
+		<Unit filename="libavcodec\fraps.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\fraps.d" />
+		<Unit filename="libavcodec\fraps.o" />
+		<Unit filename="libavcodec\g726.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\g726.d" />
+		<Unit filename="libavcodec\g726.o" />
+		<Unit filename="libavcodec\g729.h" />
+		<Unit filename="libavcodec\g729data.h" />
+		<Unit filename="libavcodec\g729dec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\gif.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\gif.d" />
+		<Unit filename="libavcodec\gif.o" />
+		<Unit filename="libavcodec\gifdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\gifdec.d" />
+		<Unit filename="libavcodec\gifdec.o" />
+		<Unit filename="libavcodec\golomb.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\golomb.d" />
+		<Unit filename="libavcodec\golomb.h" />
+		<Unit filename="libavcodec\golomb.o" />
+		<Unit filename="libavcodec\h261.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\h261.d" />
+		<Unit filename="libavcodec\h261.h" />
+		<Unit filename="libavcodec\h261.o" />
+		<Unit filename="libavcodec\h261_parser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\h261_parser.d" />
+		<Unit filename="libavcodec\h261_parser.o" />
+		<Unit filename="libavcodec\h261data.h" />
+		<Unit filename="libavcodec\h261dec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\h261dec.d" />
+		<Unit filename="libavcodec\h261dec.o" />
+		<Unit filename="libavcodec\h261enc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\h261enc.d" />
+		<Unit filename="libavcodec\h261enc.o" />
+		<Unit filename="libavcodec\h263.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\h263.d" />
+		<Unit filename="libavcodec\h263.h" />
+		<Unit filename="libavcodec\h263.o" />
+		<Unit filename="libavcodec\h263_parser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\h263_parser.d" />
+		<Unit filename="libavcodec\h263_parser.h" />
+		<Unit filename="libavcodec\h263_parser.o" />
+		<Unit filename="libavcodec\h263data.h" />
+		<Unit filename="libavcodec\h263dec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\h263dec.d" />
+		<Unit filename="libavcodec\h263dec.o" />
+		<Unit filename="libavcodec\h264.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\h264.d" />
+		<Unit filename="libavcodec\h264.h" />
+		<Unit filename="libavcodec\h264.o" />
+		<Unit filename="libavcodec\h264_mp4toannexb_bsf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\h264_mp4toannexb_bsf.d" />
+		<Unit filename="libavcodec\h264_mp4toannexb_bsf.o" />
+		<Unit filename="libavcodec\h264_parser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\h264_parser.d" />
+		<Unit filename="libavcodec\h264_parser.h" />
+		<Unit filename="libavcodec\h264_parser.o" />
+		<Unit filename="libavcodec\h264data.h" />
+		<Unit filename="libavcodec\h264dspenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\h264enc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\h264idct.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\h264idct.d" />
+		<Unit filename="libavcodec\h264idct.o" />
+		<Unit filename="libavcodec\h264pred.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\h264pred.d" />
+		<Unit filename="libavcodec\h264pred.h" />
+		<Unit filename="libavcodec\h264pred.o" />
+		<Unit filename="libavcodec\huffman.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\huffman.d" />
+		<Unit filename="libavcodec\huffman.h" />
+		<Unit filename="libavcodec\huffman.o" />
+		<Unit filename="libavcodec\huffyuv.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\huffyuv.d" />
+		<Unit filename="libavcodec\huffyuv.o" />
+		<Unit filename="libavcodec\idcinvideo.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\idcinvideo.d" />
+		<Unit filename="libavcodec\idcinvideo.o" />
+		<Unit filename="libavcodec\iirfilter.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\iirfilter.h" />
+		<Unit filename="libavcodec\imc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\imc.d" />
+		<Unit filename="libavcodec\imc.o" />
+		<Unit filename="libavcodec\imcdata.h" />
+		<Unit filename="libavcodec\imgconvert.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\imgconvert.d" />
+		<Unit filename="libavcodec\imgconvert.h" />
+		<Unit filename="libavcodec\imgconvert.o" />
+		<Unit filename="libavcodec\imgconvert_template.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\imgresample.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\imx_dump_header_bsf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\imx_dump_header_bsf.d" />
+		<Unit filename="libavcodec\imx_dump_header_bsf.o" />
+		<Unit filename="libavcodec\indeo2.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\indeo2.d" />
+		<Unit filename="libavcodec\indeo2.o" />
+		<Unit filename="libavcodec\indeo2data.h" />
+		<Unit filename="libavcodec\indeo3.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\indeo3.d" />
+		<Unit filename="libavcodec\indeo3.o" />
+		<Unit filename="libavcodec\indeo3data.h" />
+		<Unit filename="libavcodec\internal.h" />
+		<Unit filename="libavcodec\interplayvideo.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\interplayvideo.d" />
+		<Unit filename="libavcodec\interplayvideo.o" />
+		<Unit filename="libavcodec\intrax8.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\intrax8.d" />
+		<Unit filename="libavcodec\intrax8.h" />
+		<Unit filename="libavcodec\intrax8.o" />
+		<Unit filename="libavcodec\intrax8dsp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\intrax8dsp.d" />
+		<Unit filename="libavcodec\intrax8dsp.o" />
+		<Unit filename="libavcodec\intrax8huf.h" />
+		<Unit filename="libavcodec\jfdctfst.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\jfdctfst.d" />
+		<Unit filename="libavcodec\jfdctfst.o" />
+		<Unit filename="libavcodec\jfdctint.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\jfdctint.d" />
+		<Unit filename="libavcodec\jfdctint.o" />
+		<Unit filename="libavcodec\jpegls.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\jpegls.d" />
+		<Unit filename="libavcodec\jpegls.h" />
+		<Unit filename="libavcodec\jpegls.o" />
+		<Unit filename="libavcodec\jpeglsdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\jpeglsdec.d" />
+		<Unit filename="libavcodec\jpeglsdec.h" />
+		<Unit filename="libavcodec\jpeglsdec.o" />
+		<Unit filename="libavcodec\jpeglsenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\jpeglsenc.d" />
+		<Unit filename="libavcodec\jpeglsenc.o" />
+		<Unit filename="libavcodec\jrevdct.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\jrevdct.d" />
+		<Unit filename="libavcodec\jrevdct.o" />
+		<Unit filename="libavcodec\kmvc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\kmvc.d" />
+		<Unit filename="libavcodec\kmvc.o" />
+		<Unit filename="libavcodec\lcl.h" />
+		<Unit filename="libavcodec\lcldec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\lcldec.d" />
+		<Unit filename="libavcodec\lcldec.o" />
+		<Unit filename="libavcodec\lclenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\libamr.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\libamr.d" />
+		<Unit filename="libavcodec\libamr.o" />
+		<Unit filename="libavcodec\libavcodec-uninstalled.pc" />
+		<Unit filename="libavcodec\libavcodec.a" />
+		<Unit filename="libavcodec\libavcodec.pc" />
+		<Unit filename="libavcodec\libdirac.h" />
+		<Unit filename="libavcodec\libdirac_libschro.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\libdirac_libschro.h" />
+		<Unit filename="libavcodec\libdiracdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\libdiracenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\libfaac.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\libfaad.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\libfaad.d" />
+		<Unit filename="libavcodec\libfaad.o" />
+		<Unit filename="libavcodec\libgsm.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\libmp3lame.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\libopenjpeg.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\libschroedinger.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\libschroedinger.h" />
+		<Unit filename="libavcodec\libschroedingerdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\libschroedingerenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\libspeexdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\libtheoraenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\libvorbis.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\libx264.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\libx264.d" />
+		<Unit filename="libavcodec\libx264.o" />
+		<Unit filename="libavcodec\libxvid_internal.h" />
+		<Unit filename="libavcodec\libxvid_rc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\libxvidff.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\ljpegenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\ljpegenc.d" />
+		<Unit filename="libavcodec\ljpegenc.o" />
+		<Unit filename="libavcodec\loco.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\loco.d" />
+		<Unit filename="libavcodec\loco.o" />
+		<Unit filename="libavcodec\lpc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\lpc.d" />
+		<Unit filename="libavcodec\lpc.h" />
+		<Unit filename="libavcodec\lpc.o" />
+		<Unit filename="libavcodec\lsp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\lsp.h" />
+		<Unit filename="libavcodec\lzw.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\lzw.d" />
+		<Unit filename="libavcodec\lzw.h" />
+		<Unit filename="libavcodec\lzw.o" />
+		<Unit filename="libavcodec\lzwenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\lzwenc.d" />
+		<Unit filename="libavcodec\lzwenc.o" />
+		<Unit filename="libavcodec\mace.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mace.d" />
+		<Unit filename="libavcodec\mace.o" />
+		<Unit filename="libavcodec\mathops.h" />
+		<Unit filename="libavcodec\mdct.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mdct.d" />
+		<Unit filename="libavcodec\mdct.o" />
+		<Unit filename="libavcodec\mdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mdec.d" />
+		<Unit filename="libavcodec\mdec.o" />
+		<Unit filename="libavcodec\mimic.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mimic.d" />
+		<Unit filename="libavcodec\mimic.o" />
+		<Unit filename="libavcodec\mjpeg.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mjpeg.d" />
+		<Unit filename="libavcodec\mjpeg.h" />
+		<Unit filename="libavcodec\mjpeg.o" />
+		<Unit filename="libavcodec\mjpeg_parser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mjpeg_parser.d" />
+		<Unit filename="libavcodec\mjpeg_parser.o" />
+		<Unit filename="libavcodec\mjpega_dump_header_bsf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mjpega_dump_header_bsf.d" />
+		<Unit filename="libavcodec\mjpega_dump_header_bsf.o" />
+		<Unit filename="libavcodec\mjpegbdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mjpegbdec.d" />
+		<Unit filename="libavcodec\mjpegbdec.o" />
+		<Unit filename="libavcodec\mjpegdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mjpegdec.d" />
+		<Unit filename="libavcodec\mjpegdec.h" />
+		<Unit filename="libavcodec\mjpegdec.o" />
+		<Unit filename="libavcodec\mjpegenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mjpegenc.d" />
+		<Unit filename="libavcodec\mjpegenc.h" />
+		<Unit filename="libavcodec\mjpegenc.o" />
+		<Unit filename="libavcodec\mlp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mlp.d" />
+		<Unit filename="libavcodec\mlp.h" />
+		<Unit filename="libavcodec\mlp.o" />
+		<Unit filename="libavcodec\mlp_parser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mlp_parser.d" />
+		<Unit filename="libavcodec\mlp_parser.h" />
+		<Unit filename="libavcodec\mlp_parser.o" />
+		<Unit filename="libavcodec\mlpdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mlpdec.d" />
+		<Unit filename="libavcodec\mlpdec.o" />
+		<Unit filename="libavcodec\mmvideo.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mmvideo.d" />
+		<Unit filename="libavcodec\mmvideo.o" />
+		<Unit filename="libavcodec\motion-test.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\motion_est.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\motion_est.d" />
+		<Unit filename="libavcodec\motion_est.o" />
+		<Unit filename="libavcodec\motion_est_template.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\motionpixels.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\motionpixels.d" />
+		<Unit filename="libavcodec\motionpixels.o" />
+		<Unit filename="libavcodec\movsub_bsf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\movsub_bsf.d" />
+		<Unit filename="libavcodec\movsub_bsf.o" />
+		<Unit filename="libavcodec\mp3_header_compress_bsf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mp3_header_compress_bsf.d" />
+		<Unit filename="libavcodec\mp3_header_compress_bsf.o" />
+		<Unit filename="libavcodec\mp3_header_decompress_bsf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mp3_header_decompress_bsf.d" />
+		<Unit filename="libavcodec\mp3_header_decompress_bsf.o" />
+		<Unit filename="libavcodec\mpc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mpc.d" />
+		<Unit filename="libavcodec\mpc.h" />
+		<Unit filename="libavcodec\mpc.o" />
+		<Unit filename="libavcodec\mpc7.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mpc7.d" />
+		<Unit filename="libavcodec\mpc7.o" />
+		<Unit filename="libavcodec\mpc7data.h" />
+		<Unit filename="libavcodec\mpc8.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mpc8.d" />
+		<Unit filename="libavcodec\mpc8.o" />
+		<Unit filename="libavcodec\mpc8data.h" />
+		<Unit filename="libavcodec\mpc8huff.h" />
+		<Unit filename="libavcodec\mpcdata.h" />
+		<Unit filename="libavcodec\mpeg12.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mpeg12.d" />
+		<Unit filename="libavcodec\mpeg12.h" />
+		<Unit filename="libavcodec\mpeg12.o" />
+		<Unit filename="libavcodec\mpeg12data.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mpeg12data.d" />
+		<Unit filename="libavcodec\mpeg12data.h" />
+		<Unit filename="libavcodec\mpeg12data.o" />
+		<Unit filename="libavcodec\mpeg12decdata.h" />
+		<Unit filename="libavcodec\mpeg12enc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mpeg12enc.d" />
+		<Unit filename="libavcodec\mpeg12enc.o" />
+		<Unit filename="libavcodec\mpeg4audio.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mpeg4audio.d" />
+		<Unit filename="libavcodec\mpeg4audio.h" />
+		<Unit filename="libavcodec\mpeg4audio.o" />
+		<Unit filename="libavcodec\mpeg4data.h" />
+		<Unit filename="libavcodec\mpeg4video_parser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mpeg4video_parser.c.bak" />
+		<Unit filename="libavcodec\mpeg4video_parser.d" />
+		<Unit filename="libavcodec\mpeg4video_parser.h" />
+		<Unit filename="libavcodec\mpeg4video_parser.o" />
+		<Unit filename="libavcodec\mpegaudio.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mpegaudio.d" />
+		<Unit filename="libavcodec\mpegaudio.h" />
+		<Unit filename="libavcodec\mpegaudio.o" />
+		<Unit filename="libavcodec\mpegaudio_parser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mpegaudio_parser.d" />
+		<Unit filename="libavcodec\mpegaudio_parser.o" />
+		<Unit filename="libavcodec\mpegaudiodata.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mpegaudiodata.d" />
+		<Unit filename="libavcodec\mpegaudiodata.h" />
+		<Unit filename="libavcodec\mpegaudiodata.o" />
+		<Unit filename="libavcodec\mpegaudiodec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mpegaudiodec.d" />
+		<Unit filename="libavcodec\mpegaudiodec.o" />
+		<Unit filename="libavcodec\mpegaudiodecheader.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mpegaudiodecheader.d" />
+		<Unit filename="libavcodec\mpegaudiodecheader.h" />
+		<Unit filename="libavcodec\mpegaudiodecheader.o" />
+		<Unit filename="libavcodec\mpegaudiodectab.h" />
+		<Unit filename="libavcodec\mpegaudioenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mpegaudioenc.d" />
+		<Unit filename="libavcodec\mpegaudioenc.o" />
+		<Unit filename="libavcodec\mpegaudiotab.h" />
+		<Unit filename="libavcodec\mpegvideo.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mpegvideo.d" />
+		<Unit filename="libavcodec\mpegvideo.h" />
+		<Unit filename="libavcodec\mpegvideo.o" />
+		<Unit filename="libavcodec\mpegvideo_common.h" />
+		<Unit filename="libavcodec\mpegvideo_enc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mpegvideo_enc.d" />
+		<Unit filename="libavcodec\mpegvideo_enc.o" />
+		<Unit filename="libavcodec\mpegvideo_parser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\mpegvideo_parser.d" />
+		<Unit filename="libavcodec\mpegvideo_parser.o" />
+		<Unit filename="libavcodec\mpegvideo_xvmc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\msmpeg4.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\msmpeg4.d" />
+		<Unit filename="libavcodec\msmpeg4.h" />
+		<Unit filename="libavcodec\msmpeg4.o" />
+		<Unit filename="libavcodec\msmpeg4data.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\msmpeg4data.d" />
+		<Unit filename="libavcodec\msmpeg4data.h" />
+		<Unit filename="libavcodec\msmpeg4data.o" />
+		<Unit filename="libavcodec\msrle.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\msrle.d" />
+		<Unit filename="libavcodec\msrle.o" />
+		<Unit filename="libavcodec\msrledec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\msrledec.d" />
+		<Unit filename="libavcodec\msrledec.h" />
+		<Unit filename="libavcodec\msrledec.o" />
+		<Unit filename="libavcodec\msvideo1.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\msvideo1.d" />
+		<Unit filename="libavcodec\msvideo1.o" />
+		<Unit filename="libavcodec\nellymoser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\nellymoser.d" />
+		<Unit filename="libavcodec\nellymoser.h" />
+		<Unit filename="libavcodec\nellymoser.o" />
+		<Unit filename="libavcodec\nellymoserdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\nellymoserdec.d" />
+		<Unit filename="libavcodec\nellymoserdec.o" />
+		<Unit filename="libavcodec\nellymoserenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\nellymoserenc.d" />
+		<Unit filename="libavcodec\nellymoserenc.o" />
+		<Unit filename="libavcodec\noise_bsf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\noise_bsf.d" />
+		<Unit filename="libavcodec\noise_bsf.o" />
+		<Unit filename="libavcodec\nuv.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\nuv.d" />
+		<Unit filename="libavcodec\nuv.o" />
+		<Unit filename="libavcodec\opt.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\opt.d" />
+		<Unit filename="libavcodec\opt.h" />
+		<Unit filename="libavcodec\opt.o" />
+		<Unit filename="libavcodec\options.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\options.d" />
+		<Unit filename="libavcodec\options.o" />
+		<Unit filename="libavcodec\os2thread.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\parser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\parser.d" />
+		<Unit filename="libavcodec\parser.h" />
+		<Unit filename="libavcodec\parser.o" />
+		<Unit filename="libavcodec\pcm.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\pcm.d" />
+		<Unit filename="libavcodec\pcm.o" />
+		<Unit filename="libavcodec\pcx.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\pcx.d" />
+		<Unit filename="libavcodec\pcx.o" />
+		<Unit filename="libavcodec\pixdesc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\pixdesc.h" />
+		<Unit filename="libavcodec\png.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\png.h" />
+		<Unit filename="libavcodec\pngdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\pngenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\pnm.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\pnm.d" />
+		<Unit filename="libavcodec\pnm.h" />
+		<Unit filename="libavcodec\pnm.o" />
+		<Unit filename="libavcodec\pnm_parser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\pnm_parser.d" />
+		<Unit filename="libavcodec\pnm_parser.o" />
+		<Unit filename="libavcodec\pnmenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\pnmenc.d" />
+		<Unit filename="libavcodec\pnmenc.o" />
+		<Unit filename="libavcodec\pthread.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\ptx.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\ptx.d" />
+		<Unit filename="libavcodec\ptx.o" />
+		<Unit filename="libavcodec\qcelp_lsp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\qcelp_lsp.d" />
+		<Unit filename="libavcodec\qcelp_lsp.o" />
+		<Unit filename="libavcodec\qcelpdata.h" />
+		<Unit filename="libavcodec\qcelpdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\qcelpdec.d" />
+		<Unit filename="libavcodec\qcelpdec.o" />
+		<Unit filename="libavcodec\qdm2.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\qdm2.d" />
+		<Unit filename="libavcodec\qdm2.o" />
+		<Unit filename="libavcodec\qdm2data.h" />
+		<Unit filename="libavcodec\qdrw.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\qdrw.d" />
+		<Unit filename="libavcodec\qdrw.o" />
+		<Unit filename="libavcodec\qpeg.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\qpeg.d" />
+		<Unit filename="libavcodec\qpeg.o" />
+		<Unit filename="libavcodec\qtrle.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\qtrle.d" />
+		<Unit filename="libavcodec\qtrle.o" />
+		<Unit filename="libavcodec\qtrleenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\qtrleenc.d" />
+		<Unit filename="libavcodec\qtrleenc.o" />
+		<Unit filename="libavcodec\ra144.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\ra144.d" />
+		<Unit filename="libavcodec\ra144.h" />
+		<Unit filename="libavcodec\ra144.o" />
+		<Unit filename="libavcodec\ra288.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\ra288.d" />
+		<Unit filename="libavcodec\ra288.h" />
+		<Unit filename="libavcodec\ra288.o" />
+		<Unit filename="libavcodec\rangecoder.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\rangecoder.d" />
+		<Unit filename="libavcodec\rangecoder.h" />
+		<Unit filename="libavcodec\rangecoder.o" />
+		<Unit filename="libavcodec\ratecontrol.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\ratecontrol.d" />
+		<Unit filename="libavcodec\ratecontrol.h" />
+		<Unit filename="libavcodec\ratecontrol.o" />
+		<Unit filename="libavcodec\raw.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\raw.d" />
+		<Unit filename="libavcodec\raw.h" />
+		<Unit filename="libavcodec\raw.o" />
+		<Unit filename="libavcodec\rawdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\rawdec.d" />
+		<Unit filename="libavcodec\rawdec.o" />
+		<Unit filename="libavcodec\rawenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\rawenc.d" />
+		<Unit filename="libavcodec\rawenc.o" />
+		<Unit filename="libavcodec\rdft.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\rdft.d" />
+		<Unit filename="libavcodec\rdft.o" />
+		<Unit filename="libavcodec\rectangle.h" />
+		<Unit filename="libavcodec\remove_extradata_bsf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\remove_extradata_bsf.d" />
+		<Unit filename="libavcodec\remove_extradata_bsf.o" />
+		<Unit filename="libavcodec\resample.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\resample.d" />
+		<Unit filename="libavcodec\resample.o" />
+		<Unit filename="libavcodec\resample2.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\resample2.d" />
+		<Unit filename="libavcodec\resample2.o" />
+		<Unit filename="libavcodec\rl.h" />
+		<Unit filename="libavcodec\rl2.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\rl2.d" />
+		<Unit filename="libavcodec\rl2.o" />
+		<Unit filename="libavcodec\rle.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\rle.d" />
+		<Unit filename="libavcodec\rle.h" />
+		<Unit filename="libavcodec\rle.o" />
+		<Unit filename="libavcodec\roqaudioenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\roqaudioenc.d" />
+		<Unit filename="libavcodec\roqaudioenc.o" />
+		<Unit filename="libavcodec\roqvideo.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\roqvideo.d" />
+		<Unit filename="libavcodec\roqvideo.h" />
+		<Unit filename="libavcodec\roqvideo.o" />
+		<Unit filename="libavcodec\roqvideodec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\roqvideodec.d" />
+		<Unit filename="libavcodec\roqvideodec.o" />
+		<Unit filename="libavcodec\roqvideoenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\roqvideoenc.d" />
+		<Unit filename="libavcodec\roqvideoenc.o" />
+		<Unit filename="libavcodec\rpza.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\rpza.d" />
+		<Unit filename="libavcodec\rpza.o" />
+		<Unit filename="libavcodec\rtjpeg.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\rtjpeg.d" />
+		<Unit filename="libavcodec\rtjpeg.h" />
+		<Unit filename="libavcodec\rtjpeg.o" />
+		<Unit filename="libavcodec\rv10.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\rv10.d" />
+		<Unit filename="libavcodec\rv10.o" />
+		<Unit filename="libavcodec\rv30.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\rv30.d" />
+		<Unit filename="libavcodec\rv30.o" />
+		<Unit filename="libavcodec\rv30data.h" />
+		<Unit filename="libavcodec\rv30dsp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\rv30dsp.d" />
+		<Unit filename="libavcodec\rv30dsp.o" />
+		<Unit filename="libavcodec\rv34.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\rv34.d" />
+		<Unit filename="libavcodec\rv34.h" />
+		<Unit filename="libavcodec\rv34.o" />
+		<Unit filename="libavcodec\rv34data.h" />
+		<Unit filename="libavcodec\rv34vlc.h" />
+		<Unit filename="libavcodec\rv40.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\rv40.d" />
+		<Unit filename="libavcodec\rv40.o" />
+		<Unit filename="libavcodec\rv40data.h" />
+		<Unit filename="libavcodec\rv40dsp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\rv40dsp.d" />
+		<Unit filename="libavcodec\rv40dsp.o" />
+		<Unit filename="libavcodec\rv40vlc2.h" />
+		<Unit filename="libavcodec\s3tc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\s3tc.d" />
+		<Unit filename="libavcodec\s3tc.h" />
+		<Unit filename="libavcodec\s3tc.o" />
+		<Unit filename="libavcodec\sgi.h" />
+		<Unit filename="libavcodec\sgidec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\sgidec.d" />
+		<Unit filename="libavcodec\sgidec.o" />
+		<Unit filename="libavcodec\sgienc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\sgienc.d" />
+		<Unit filename="libavcodec\sgienc.o" />
+		<Unit filename="libavcodec\shorten.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\shorten.d" />
+		<Unit filename="libavcodec\shorten.o" />
+		<Unit filename="libavcodec\simple_idct.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\simple_idct.d" />
+		<Unit filename="libavcodec\simple_idct.h" />
+		<Unit filename="libavcodec\simple_idct.o" />
+		<Unit filename="libavcodec\smacker.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\smacker.d" />
+		<Unit filename="libavcodec\smacker.o" />
+		<Unit filename="libavcodec\smc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\smc.d" />
+		<Unit filename="libavcodec\smc.o" />
+		<Unit filename="libavcodec\snow.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\snow.d" />
+		<Unit filename="libavcodec\snow.h" />
+		<Unit filename="libavcodec\snow.o" />
+		<Unit filename="libavcodec\sonic.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\sonic.d" />
+		<Unit filename="libavcodec\sonic.o" />
+		<Unit filename="libavcodec\sp5x.h" />
+		<Unit filename="libavcodec\sp5xdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\sp5xdec.d" />
+		<Unit filename="libavcodec\sp5xdec.o" />
+		<Unit filename="libavcodec\sunrast.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\sunrast.d" />
+		<Unit filename="libavcodec\sunrast.o" />
+		<Unit filename="libavcodec\svq1.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\svq1.d" />
+		<Unit filename="libavcodec\svq1.h" />
+		<Unit filename="libavcodec\svq1.o" />
+		<Unit filename="libavcodec\svq1_cb.h" />
+		<Unit filename="libavcodec\svq1_vlc.h" />
+		<Unit filename="libavcodec\svq1dec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\svq1dec.d" />
+		<Unit filename="libavcodec\svq1dec.o" />
+		<Unit filename="libavcodec\svq1enc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\svq1enc.d" />
+		<Unit filename="libavcodec\svq1enc.o" />
+		<Unit filename="libavcodec\svq1enc_cb.h" />
+		<Unit filename="libavcodec\svq3.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\targa.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\targa.d" />
+		<Unit filename="libavcodec\targa.o" />
+		<Unit filename="libavcodec\targaenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\targaenc.d" />
+		<Unit filename="libavcodec\targaenc.o" />
+		<Unit filename="libavcodec\tiertexseqv.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\tiertexseqv.d" />
+		<Unit filename="libavcodec\tiertexseqv.o" />
+		<Unit filename="libavcodec\tiff.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\tiff.d" />
+		<Unit filename="libavcodec\tiff.h" />
+		<Unit filename="libavcodec\tiff.o" />
+		<Unit filename="libavcodec\tiffenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\tiffenc.d" />
+		<Unit filename="libavcodec\tiffenc.o" />
+		<Unit filename="libavcodec\truemotion1.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\truemotion1.d" />
+		<Unit filename="libavcodec\truemotion1.o" />
+		<Unit filename="libavcodec\truemotion1data.h" />
+		<Unit filename="libavcodec\truemotion2.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\truemotion2.d" />
+		<Unit filename="libavcodec\truemotion2.o" />
+		<Unit filename="libavcodec\truespeech.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\truespeech.d" />
+		<Unit filename="libavcodec\truespeech.o" />
+		<Unit filename="libavcodec\truespeech_data.h" />
+		<Unit filename="libavcodec\tscc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\tta.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\tta.d" />
+		<Unit filename="libavcodec\tta.o" />
+		<Unit filename="libavcodec\txd.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\txd.d" />
+		<Unit filename="libavcodec\txd.o" />
+		<Unit filename="libavcodec\ulti.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\ulti.d" />
+		<Unit filename="libavcodec\ulti.o" />
+		<Unit filename="libavcodec\ulti_cb.h" />
+		<Unit filename="libavcodec\unary.h" />
+		<Unit filename="libavcodec\utils.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\utils.d" />
+		<Unit filename="libavcodec\utils.o" />
+		<Unit filename="libavcodec\vb.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\vb.d" />
+		<Unit filename="libavcodec\vb.o" />
+		<Unit filename="libavcodec\vc1.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\vc1.d" />
+		<Unit filename="libavcodec\vc1.h" />
+		<Unit filename="libavcodec\vc1.o" />
+		<Unit filename="libavcodec\vc1_parser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\vc1_parser.d" />
+		<Unit filename="libavcodec\vc1_parser.o" />
+		<Unit filename="libavcodec\vc1acdata.h" />
+		<Unit filename="libavcodec\vc1data.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\vc1data.d" />
+		<Unit filename="libavcodec\vc1data.h" />
+		<Unit filename="libavcodec\vc1data.o" />
+		<Unit filename="libavcodec\vc1dsp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\vc1dsp.d" />
+		<Unit filename="libavcodec\vc1dsp.o" />
+		<Unit filename="libavcodec\vcr1.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\vcr1.d" />
+		<Unit filename="libavcodec\vcr1.o" />
+		<Unit filename="libavcodec\vdpau.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\vdpau.h" />
+		<Unit filename="libavcodec\vdpau_internal.h" />
+		<Unit filename="libavcodec\vmdav.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\vmdav.d" />
+		<Unit filename="libavcodec\vmdav.o" />
+		<Unit filename="libavcodec\vmnc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\vmnc.d" />
+		<Unit filename="libavcodec\vmnc.o" />
+		<Unit filename="libavcodec\vorbis.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\vorbis.d" />
+		<Unit filename="libavcodec\vorbis.h" />
+		<Unit filename="libavcodec\vorbis.o" />
+		<Unit filename="libavcodec\vorbis_data.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\vorbis_data.d" />
+		<Unit filename="libavcodec\vorbis_data.o" />
+		<Unit filename="libavcodec\vorbis_dec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\vorbis_dec.d" />
+		<Unit filename="libavcodec\vorbis_dec.o" />
+		<Unit filename="libavcodec\vorbis_enc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\vorbis_enc.d" />
+		<Unit filename="libavcodec\vorbis_enc.o" />
+		<Unit filename="libavcodec\vorbis_enc_data.h" />
+		<Unit filename="libavcodec\vp3.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\vp3.d" />
+		<Unit filename="libavcodec\vp3.o" />
+		<Unit filename="libavcodec\vp3_parser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\vp3_parser.d" />
+		<Unit filename="libavcodec\vp3_parser.o" />
+		<Unit filename="libavcodec\vp3data.h" />
+		<Unit filename="libavcodec\vp3dsp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\vp3dsp.d" />
+		<Unit filename="libavcodec\vp3dsp.o" />
+		<Unit filename="libavcodec\vp5.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\vp5.d" />
+		<Unit filename="libavcodec\vp5.o" />
+		<Unit filename="libavcodec\vp56.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\vp56.d" />
+		<Unit filename="libavcodec\vp56.h" />
+		<Unit filename="libavcodec\vp56.o" />
+		<Unit filename="libavcodec\vp56data.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\vp56data.d" />
+		<Unit filename="libavcodec\vp56data.h" />
+		<Unit filename="libavcodec\vp56data.o" />
+		<Unit filename="libavcodec\vp5data.h" />
+		<Unit filename="libavcodec\vp6.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\vp6.d" />
+		<Unit filename="libavcodec\vp6.o" />
+		<Unit filename="libavcodec\vp6data.h" />
+		<Unit filename="libavcodec\vp6dsp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\vp6dsp.d" />
+		<Unit filename="libavcodec\vp6dsp.o" />
+		<Unit filename="libavcodec\vqavideo.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\vqavideo.d" />
+		<Unit filename="libavcodec\vqavideo.o" />
+		<Unit filename="libavcodec\w32thread.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\wavpack.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\wavpack.d" />
+		<Unit filename="libavcodec\wavpack.o" />
+		<Unit filename="libavcodec\wma.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\wma.d" />
+		<Unit filename="libavcodec\wma.h" />
+		<Unit filename="libavcodec\wma.o" />
+		<Unit filename="libavcodec\wmadata.h" />
+		<Unit filename="libavcodec\wmadec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\wmadec.d" />
+		<Unit filename="libavcodec\wmadec.o" />
+		<Unit filename="libavcodec\wmaenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\wmaenc.d" />
+		<Unit filename="libavcodec\wmaenc.o" />
+		<Unit filename="libavcodec\wmv2.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\wmv2.d" />
+		<Unit filename="libavcodec\wmv2.h" />
+		<Unit filename="libavcodec\wmv2.o" />
+		<Unit filename="libavcodec\wmv2dec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\wmv2dec.d" />
+		<Unit filename="libavcodec\wmv2dec.o" />
+		<Unit filename="libavcodec\wmv2enc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\wmv2enc.d" />
+		<Unit filename="libavcodec\wmv2enc.o" />
+		<Unit filename="libavcodec\wnv1.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\wnv1.d" />
+		<Unit filename="libavcodec\wnv1.o" />
+		<Unit filename="libavcodec\ws-snd1.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\ws-snd1.d" />
+		<Unit filename="libavcodec\ws-snd1.o" />
+		<Unit filename="libavcodec\xan.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\xan.d" />
+		<Unit filename="libavcodec\xan.o" />
+		<Unit filename="libavcodec\xiph.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\xiph.d" />
+		<Unit filename="libavcodec\xiph.h" />
+		<Unit filename="libavcodec\xiph.o" />
+		<Unit filename="libavcodec\xl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\xl.d" />
+		<Unit filename="libavcodec\xl.o" />
+		<Unit filename="libavcodec\xsubdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\xsubdec.d" />
+		<Unit filename="libavcodec\xsubdec.o" />
+		<Unit filename="libavcodec\xvmc.h" />
+		<Unit filename="libavcodec\xvmc_internal.h" />
+		<Unit filename="libavcodec\zmbv.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavcodec\zmbvenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavdevice\Makefile" />
+		<Unit filename="libavdevice\alldevices.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavdevice\alldevices.d" />
+		<Unit filename="libavdevice\alldevices.o" />
+		<Unit filename="libavdevice\alsa-audio-common.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavdevice\alsa-audio-dec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavdevice\alsa-audio-enc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavdevice\alsa-audio.h" />
+		<Unit filename="libavdevice\avdevice.h" />
+		<Unit filename="libavdevice\beosaudio.cpp" />
+		<Unit filename="libavdevice\bktr.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavdevice\dv1394.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavdevice\dv1394.h" />
+		<Unit filename="libavdevice\libavdevice-uninstalled.pc" />
+		<Unit filename="libavdevice\libavdevice.a" />
+		<Unit filename="libavdevice\libavdevice.pc" />
+		<Unit filename="libavdevice\libdc1394.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavdevice\oss_audio.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavdevice\v4l.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavdevice\v4l2.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavdevice\vfwcap.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavdevice\x11grab.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavfilter\Makefile" />
+		<Unit filename="libavfilter\allfilters.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavfilter\avfilter.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavfilter\avfilter.h" />
+		<Unit filename="libavfilter\avfiltergraph.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavfilter\avfiltergraph.h" />
+		<Unit filename="libavfilter\defaults.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavfilter\formats.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavfilter\graphparser.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavfilter\graphparser.h" />
+		<Unit filename="libavformat\4xm.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\4xm.d" />
+		<Unit filename="libavformat\4xm.o" />
+		<Unit filename="libavformat\Makefile" />
+		<Unit filename="libavformat\adtsenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\adtsenc.d" />
+		<Unit filename="libavformat\adtsenc.o" />
+		<Unit filename="libavformat\aiff.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\aiff.d" />
+		<Unit filename="libavformat\aiff.o" />
+		<Unit filename="libavformat\allformats.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\allformats.d" />
+		<Unit filename="libavformat\allformats.o" />
+		<Unit filename="libavformat\amr.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\amr.d" />
+		<Unit filename="libavformat\amr.o" />
+		<Unit filename="libavformat\apc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\apc.d" />
+		<Unit filename="libavformat\apc.o" />
+		<Unit filename="libavformat\ape.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\ape.d" />
+		<Unit filename="libavformat\ape.o" />
+		<Unit filename="libavformat\asf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\asf.d" />
+		<Unit filename="libavformat\asf.h" />
+		<Unit filename="libavformat\asf.o" />
+		<Unit filename="libavformat\asfcrypt.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\asfcrypt.d" />
+		<Unit filename="libavformat\asfcrypt.h" />
+		<Unit filename="libavformat\asfcrypt.o" />
+		<Unit filename="libavformat\asfdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\asfdec.d" />
+		<Unit filename="libavformat\asfdec.o" />
+		<Unit filename="libavformat\asfenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\asfenc.d" />
+		<Unit filename="libavformat\asfenc.o" />
+		<Unit filename="libavformat\assdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\assdec.d" />
+		<Unit filename="libavformat\assdec.o" />
+		<Unit filename="libavformat\assenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\assenc.d" />
+		<Unit filename="libavformat\assenc.o" />
+		<Unit filename="libavformat\au.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\au.d" />
+		<Unit filename="libavformat\au.o" />
+		<Unit filename="libavformat\audiointerleave.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\audiointerleave.d" />
+		<Unit filename="libavformat\audiointerleave.h" />
+		<Unit filename="libavformat\audiointerleave.o" />
+		<Unit filename="libavformat\avc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\avc.d" />
+		<Unit filename="libavformat\avc.h" />
+		<Unit filename="libavformat\avc.o" />
+		<Unit filename="libavformat\avformat.h" />
+		<Unit filename="libavformat\avi.h" />
+		<Unit filename="libavformat\avidec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\avidec.d" />
+		<Unit filename="libavformat\avidec.o" />
+		<Unit filename="libavformat\avienc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\avienc.d" />
+		<Unit filename="libavformat\avienc.o" />
+		<Unit filename="libavformat\avio.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\avio.d" />
+		<Unit filename="libavformat\avio.h" />
+		<Unit filename="libavformat\avio.o" />
+		<Unit filename="libavformat\aviobuf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\aviobuf.d" />
+		<Unit filename="libavformat\aviobuf.o" />
+		<Unit filename="libavformat\avisynth.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\avs.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\avs.d" />
+		<Unit filename="libavformat\avs.o" />
+		<Unit filename="libavformat\bethsoftvid.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\bethsoftvid.d" />
+		<Unit filename="libavformat\bethsoftvid.o" />
+		<Unit filename="libavformat\bfi.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\bfi.d" />
+		<Unit filename="libavformat\bfi.o" />
+		<Unit filename="libavformat\c93.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\c93.d" />
+		<Unit filename="libavformat\c93.o" />
+		<Unit filename="libavformat\crcenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\crcenc.d" />
+		<Unit filename="libavformat\crcenc.o" />
+		<Unit filename="libavformat\cutils.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\cutils.d" />
+		<Unit filename="libavformat\cutils.o" />
+		<Unit filename="libavformat\daud.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\daud.d" />
+		<Unit filename="libavformat\daud.o" />
+		<Unit filename="libavformat\dsicin.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\dsicin.d" />
+		<Unit filename="libavformat\dsicin.o" />
+		<Unit filename="libavformat\dv.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\dv.d" />
+		<Unit filename="libavformat\dv.h" />
+		<Unit filename="libavformat\dv.o" />
+		<Unit filename="libavformat\dvenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\dvenc.d" />
+		<Unit filename="libavformat\dvenc.o" />
+		<Unit filename="libavformat\dxa.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\dxa.d" />
+		<Unit filename="libavformat\dxa.o" />
+		<Unit filename="libavformat\eacdata.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\eacdata.d" />
+		<Unit filename="libavformat\eacdata.o" />
+		<Unit filename="libavformat\electronicarts.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\electronicarts.d" />
+		<Unit filename="libavformat\electronicarts.o" />
+		<Unit filename="libavformat\ffm.h" />
+		<Unit filename="libavformat\ffmdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\ffmdec.d" />
+		<Unit filename="libavformat\ffmdec.o" />
+		<Unit filename="libavformat\ffmenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\ffmenc.d" />
+		<Unit filename="libavformat\ffmenc.o" />
+		<Unit filename="libavformat\file.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\file.d" />
+		<Unit filename="libavformat\file.o" />
+		<Unit filename="libavformat\flacdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\flacdec.d" />
+		<Unit filename="libavformat\flacdec.o" />
+		<Unit filename="libavformat\flacenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\flacenc.d" />
+		<Unit filename="libavformat\flacenc.h" />
+		<Unit filename="libavformat\flacenc.o" />
+		<Unit filename="libavformat\flic.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\flic.d" />
+		<Unit filename="libavformat\flic.o" />
+		<Unit filename="libavformat\flv.h" />
+		<Unit filename="libavformat\flvdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\flvdec.d" />
+		<Unit filename="libavformat\flvdec.o" />
+		<Unit filename="libavformat\flvenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\flvenc.d" />
+		<Unit filename="libavformat\flvenc.o" />
+		<Unit filename="libavformat\framecrcenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\framecrcenc.d" />
+		<Unit filename="libavformat\framecrcenc.o" />
+		<Unit filename="libavformat\framehook.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\framehook.d" />
+		<Unit filename="libavformat\framehook.h" />
+		<Unit filename="libavformat\framehook.o" />
+		<Unit filename="libavformat\gif.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\gif.d" />
+		<Unit filename="libavformat\gif.o" />
+		<Unit filename="libavformat\gopher.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\gopher.d" />
+		<Unit filename="libavformat\gopher.o" />
+		<Unit filename="libavformat\gxf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\gxf.d" />
+		<Unit filename="libavformat\gxf.h" />
+		<Unit filename="libavformat\gxf.o" />
+		<Unit filename="libavformat\gxfenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\gxfenc.d" />
+		<Unit filename="libavformat\gxfenc.o" />
+		<Unit filename="libavformat\http.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\http.d" />
+		<Unit filename="libavformat\http.o" />
+		<Unit filename="libavformat\id3v2.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\id3v2.d" />
+		<Unit filename="libavformat\id3v2.h" />
+		<Unit filename="libavformat\id3v2.o" />
+		<Unit filename="libavformat\idcin.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\idcin.d" />
+		<Unit filename="libavformat\idcin.o" />
+		<Unit filename="libavformat\idroq.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\idroq.d" />
+		<Unit filename="libavformat\idroq.o" />
+		<Unit filename="libavformat\iff.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\iff.d" />
+		<Unit filename="libavformat\iff.o" />
+		<Unit filename="libavformat\img2.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\img2.d" />
+		<Unit filename="libavformat\img2.o" />
+		<Unit filename="libavformat\internal.h" />
+		<Unit filename="libavformat\ipmovie.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\ipmovie.d" />
+		<Unit filename="libavformat\ipmovie.o" />
+		<Unit filename="libavformat\isom.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\isom.d" />
+		<Unit filename="libavformat\isom.h" />
+		<Unit filename="libavformat\isom.o" />
+		<Unit filename="libavformat\iss.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\iss.d" />
+		<Unit filename="libavformat\iss.o" />
+		<Unit filename="libavformat\libavformat-uninstalled.pc" />
+		<Unit filename="libavformat\libavformat.a" />
+		<Unit filename="libavformat\libavformat.pc" />
+		<Unit filename="libavformat\libnut.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\lmlm4.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\lmlm4.d" />
+		<Unit filename="libavformat\lmlm4.o" />
+		<Unit filename="libavformat\matroska.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\matroska.d" />
+		<Unit filename="libavformat\matroska.h" />
+		<Unit filename="libavformat\matroska.o" />
+		<Unit filename="libavformat\matroskadec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\matroskadec.d" />
+		<Unit filename="libavformat\matroskadec.o" />
+		<Unit filename="libavformat\matroskaenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\matroskaenc.d" />
+		<Unit filename="libavformat\matroskaenc.o" />
+		<Unit filename="libavformat\metadata.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\metadata.d" />
+		<Unit filename="libavformat\metadata.h" />
+		<Unit filename="libavformat\metadata.o" />
+		<Unit filename="libavformat\metadata_compat.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\metadata_compat.d" />
+		<Unit filename="libavformat\metadata_compat.o" />
+		<Unit filename="libavformat\mm.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\mm.d" />
+		<Unit filename="libavformat\mm.o" />
+		<Unit filename="libavformat\mmf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\mmf.d" />
+		<Unit filename="libavformat\mmf.o" />
+		<Unit filename="libavformat\mov.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\mov.d" />
+		<Unit filename="libavformat\mov.o" />
+		<Unit filename="libavformat\movenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\movenc.d" />
+		<Unit filename="libavformat\movenc.o" />
+		<Unit filename="libavformat\mp3.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\mp3.d" />
+		<Unit filename="libavformat\mp3.o" />
+		<Unit filename="libavformat\mpc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\mpc.d" />
+		<Unit filename="libavformat\mpc.o" />
+		<Unit filename="libavformat\mpc8.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\mpc8.d" />
+		<Unit filename="libavformat\mpc8.o" />
+		<Unit filename="libavformat\mpeg.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\mpeg.d" />
+		<Unit filename="libavformat\mpeg.h" />
+		<Unit filename="libavformat\mpeg.o" />
+		<Unit filename="libavformat\mpegenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\mpegenc.d" />
+		<Unit filename="libavformat\mpegenc.o" />
+		<Unit filename="libavformat\mpegts.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\mpegts.d" />
+		<Unit filename="libavformat\mpegts.h" />
+		<Unit filename="libavformat\mpegts.o" />
+		<Unit filename="libavformat\mpegtsenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\mpegtsenc.d" />
+		<Unit filename="libavformat\mpegtsenc.o" />
+		<Unit filename="libavformat\mpjpeg.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\mpjpeg.d" />
+		<Unit filename="libavformat\mpjpeg.o" />
+		<Unit filename="libavformat\msnwc_tcp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\msnwc_tcp.d" />
+		<Unit filename="libavformat\msnwc_tcp.o" />
+		<Unit filename="libavformat\mtv.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\mtv.d" />
+		<Unit filename="libavformat\mtv.o" />
+		<Unit filename="libavformat\mvi.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\mvi.d" />
+		<Unit filename="libavformat\mvi.o" />
+		<Unit filename="libavformat\mxf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\mxf.d" />
+		<Unit filename="libavformat\mxf.h" />
+		<Unit filename="libavformat\mxf.o" />
+		<Unit filename="libavformat\mxfdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\mxfdec.d" />
+		<Unit filename="libavformat\mxfdec.o" />
+		<Unit filename="libavformat\mxfenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\mxfenc.d" />
+		<Unit filename="libavformat\mxfenc.o" />
+		<Unit filename="libavformat\ncdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\ncdec.d" />
+		<Unit filename="libavformat\ncdec.o" />
+		<Unit filename="libavformat\network.h" />
+		<Unit filename="libavformat\nsvdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\nsvdec.d" />
+		<Unit filename="libavformat\nsvdec.o" />
+		<Unit filename="libavformat\nut.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\nut.d" />
+		<Unit filename="libavformat\nut.h" />
+		<Unit filename="libavformat\nut.o" />
+		<Unit filename="libavformat\nutdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\nutdec.d" />
+		<Unit filename="libavformat\nutdec.o" />
+		<Unit filename="libavformat\nutenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\nutenc.d" />
+		<Unit filename="libavformat\nutenc.o" />
+		<Unit filename="libavformat\nuv.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\nuv.d" />
+		<Unit filename="libavformat\nuv.o" />
+		<Unit filename="libavformat\oggdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\oggdec.d" />
+		<Unit filename="libavformat\oggdec.h" />
+		<Unit filename="libavformat\oggdec.o" />
+		<Unit filename="libavformat\oggenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\oggenc.d" />
+		<Unit filename="libavformat\oggenc.o" />
+		<Unit filename="libavformat\oggparseflac.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\oggparseflac.d" />
+		<Unit filename="libavformat\oggparseflac.o" />
+		<Unit filename="libavformat\oggparseogm.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\oggparseogm.d" />
+		<Unit filename="libavformat\oggparseogm.o" />
+		<Unit filename="libavformat\oggparsespeex.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\oggparsespeex.d" />
+		<Unit filename="libavformat\oggparsespeex.o" />
+		<Unit filename="libavformat\oggparsetheora.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\oggparsetheora.d" />
+		<Unit filename="libavformat\oggparsetheora.o" />
+		<Unit filename="libavformat\oggparsevorbis.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\oggparsevorbis.d" />
+		<Unit filename="libavformat\oggparsevorbis.o" />
+		<Unit filename="libavformat\oma.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\oma.d" />
+		<Unit filename="libavformat\oma.o" />
+		<Unit filename="libavformat\options.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\options.d" />
+		<Unit filename="libavformat\options.o" />
+		<Unit filename="libavformat\os_support.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\os_support.d" />
+		<Unit filename="libavformat\os_support.h" />
+		<Unit filename="libavformat\os_support.o" />
+		<Unit filename="libavformat\psxstr.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\psxstr.d" />
+		<Unit filename="libavformat\psxstr.o" />
+		<Unit filename="libavformat\pva.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\pva.d" />
+		<Unit filename="libavformat\pva.o" />
+		<Unit filename="libavformat\qtpalette.h" />
+		<Unit filename="libavformat\r3d.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\r3d.d" />
+		<Unit filename="libavformat\r3d.o" />
+		<Unit filename="libavformat\raw.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\raw.d" />
+		<Unit filename="libavformat\raw.h" />
+		<Unit filename="libavformat\raw.o" />
+		<Unit filename="libavformat\rdt.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\rdt.d" />
+		<Unit filename="libavformat\rdt.h" />
+		<Unit filename="libavformat\rdt.o" />
+		<Unit filename="libavformat\riff.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\riff.d" />
+		<Unit filename="libavformat\riff.h" />
+		<Unit filename="libavformat\riff.o" />
+		<Unit filename="libavformat\rl2.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\rl2.d" />
+		<Unit filename="libavformat\rl2.o" />
+		<Unit filename="libavformat\rm.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\rm.d" />
+		<Unit filename="libavformat\rm.h" />
+		<Unit filename="libavformat\rm.o" />
+		<Unit filename="libavformat\rmdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\rmdec.d" />
+		<Unit filename="libavformat\rmdec.o" />
+		<Unit filename="libavformat\rmenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\rmenc.d" />
+		<Unit filename="libavformat\rmenc.o" />
+		<Unit filename="libavformat\rpl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\rpl.d" />
+		<Unit filename="libavformat\rpl.o" />
+		<Unit filename="libavformat\rtp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\rtp.d" />
+		<Unit filename="libavformat\rtp.h" />
+		<Unit filename="libavformat\rtp.o" />
+		<Unit filename="libavformat\rtp_aac.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\rtp_aac.d" />
+		<Unit filename="libavformat\rtp_aac.o" />
+		<Unit filename="libavformat\rtp_h263.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\rtp_h263.d" />
+		<Unit filename="libavformat\rtp_h263.h" />
+		<Unit filename="libavformat\rtp_h263.o" />
+		<Unit filename="libavformat\rtp_h264.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\rtp_h264.d" />
+		<Unit filename="libavformat\rtp_h264.h" />
+		<Unit filename="libavformat\rtp_h264.o" />
+		<Unit filename="libavformat\rtp_mpv.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\rtp_mpv.d" />
+		<Unit filename="libavformat\rtp_mpv.o" />
+		<Unit filename="libavformat\rtpdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\rtpdec.d" />
+		<Unit filename="libavformat\rtpdec.h" />
+		<Unit filename="libavformat\rtpdec.o" />
+		<Unit filename="libavformat\rtpenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\rtpenc.d" />
+		<Unit filename="libavformat\rtpenc.h" />
+		<Unit filename="libavformat\rtpenc.o" />
+		<Unit filename="libavformat\rtpenc_h264.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\rtpenc_h264.d" />
+		<Unit filename="libavformat\rtpenc_h264.o" />
+		<Unit filename="libavformat\rtpproto.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\rtpproto.d" />
+		<Unit filename="libavformat\rtpproto.o" />
+		<Unit filename="libavformat\rtsp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\rtsp.c.bak" />
+		<Unit filename="libavformat\rtsp.d" />
+		<Unit filename="libavformat\rtsp.h" />
+		<Unit filename="libavformat\rtsp.o" />
+		<Unit filename="libavformat\rtspcodes.h" />
+		<Unit filename="libavformat\sdp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\sdp.d" />
+		<Unit filename="libavformat\sdp.o" />
+		<Unit filename="libavformat\segafilm.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\segafilm.d" />
+		<Unit filename="libavformat\segafilm.o" />
+		<Unit filename="libavformat\sierravmd.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\sierravmd.d" />
+		<Unit filename="libavformat\sierravmd.o" />
+		<Unit filename="libavformat\siff.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\siff.d" />
+		<Unit filename="libavformat\siff.o" />
+		<Unit filename="libavformat\smacker.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\smacker.d" />
+		<Unit filename="libavformat\smacker.o" />
+		<Unit filename="libavformat\sol.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\sol.d" />
+		<Unit filename="libavformat\sol.o" />
+		<Unit filename="libavformat\swf.h" />
+		<Unit filename="libavformat\swfdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\swfdec.d" />
+		<Unit filename="libavformat\swfdec.o" />
+		<Unit filename="libavformat\swfenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\swfenc.d" />
+		<Unit filename="libavformat\swfenc.o" />
+		<Unit filename="libavformat\tcp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\tcp.d" />
+		<Unit filename="libavformat\tcp.o" />
+		<Unit filename="libavformat\thp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\thp.d" />
+		<Unit filename="libavformat\thp.o" />
+		<Unit filename="libavformat\tiertexseq.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\tiertexseq.d" />
+		<Unit filename="libavformat\tiertexseq.o" />
+		<Unit filename="libavformat\tta.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\tta.d" />
+		<Unit filename="libavformat\tta.o" />
+		<Unit filename="libavformat\txd.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\txd.d" />
+		<Unit filename="libavformat\txd.o" />
+		<Unit filename="libavformat\udp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\udp.d" />
+		<Unit filename="libavformat\udp.o" />
+		<Unit filename="libavformat\utils.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\utils.d" />
+		<Unit filename="libavformat\utils.o" />
+		<Unit filename="libavformat\vc1test.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\vc1test.d" />
+		<Unit filename="libavformat\vc1test.o" />
+		<Unit filename="libavformat\vc1testenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\vc1testenc.d" />
+		<Unit filename="libavformat\vc1testenc.o" />
+		<Unit filename="libavformat\voc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\voc.d" />
+		<Unit filename="libavformat\voc.h" />
+		<Unit filename="libavformat\voc.o" />
+		<Unit filename="libavformat\vocdec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\vocdec.d" />
+		<Unit filename="libavformat\vocdec.o" />
+		<Unit filename="libavformat\vocenc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\vocenc.d" />
+		<Unit filename="libavformat\vocenc.o" />
+		<Unit filename="libavformat\wav.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\wav.d" />
+		<Unit filename="libavformat\wav.o" />
+		<Unit filename="libavformat\wc3movie.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\wc3movie.d" />
+		<Unit filename="libavformat\wc3movie.o" />
+		<Unit filename="libavformat\westwood.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\westwood.d" />
+		<Unit filename="libavformat\westwood.o" />
+		<Unit filename="libavformat\wv.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\wv.d" />
+		<Unit filename="libavformat\wv.o" />
+		<Unit filename="libavformat\xa.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\xa.d" />
+		<Unit filename="libavformat\xa.o" />
+		<Unit filename="libavformat\yuv4mpeg.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavformat\yuv4mpeg.d" />
+		<Unit filename="libavformat\yuv4mpeg.o" />
+		<Unit filename="libavutil\Makefile" />
+		<Unit filename="libavutil\adler32.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavutil\adler32.d" />
+		<Unit filename="libavutil\adler32.h" />
+		<Unit filename="libavutil\adler32.o" />
+		<Unit filename="libavutil\aes.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavutil\aes.d" />
+		<Unit filename="libavutil\aes.h" />
+		<Unit filename="libavutil\aes.o" />
+		<Unit filename="libavutil\avstring.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavutil\avstring.d" />
+		<Unit filename="libavutil\avstring.h" />
+		<Unit filename="libavutil\avstring.o" />
+		<Unit filename="libavutil\avutil.h" />
+		<Unit filename="libavutil\base64.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavutil\base64.d" />
+		<Unit filename="libavutil\base64.h" />
+		<Unit filename="libavutil\base64.o" />
+		<Unit filename="libavutil\bswap.h" />
+		<Unit filename="libavutil\common.h" />
+		<Unit filename="libavutil\crc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavutil\crc.d" />
+		<Unit filename="libavutil\crc.h" />
+		<Unit filename="libavutil\crc.o" />
+		<Unit filename="libavutil\crc_data.h" />
+		<Unit filename="libavutil\des.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavutil\des.d" />
+		<Unit filename="libavutil\des.h" />
+		<Unit filename="libavutil\des.o" />
+		<Unit filename="libavutil\fifo.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavutil\fifo.d" />
+		<Unit filename="libavutil\fifo.h" />
+		<Unit filename="libavutil\fifo.o" />
+		<Unit filename="libavutil\integer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavutil\integer.h" />
+		<Unit filename="libavutil\internal.h" />
+		<Unit filename="libavutil\intfloat_readwrite.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavutil\intfloat_readwrite.d" />
+		<Unit filename="libavutil\intfloat_readwrite.h" />
+		<Unit filename="libavutil\intfloat_readwrite.o" />
+		<Unit filename="libavutil\intreadwrite.h" />
+		<Unit filename="libavutil\lfg.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavutil\lfg.d" />
+		<Unit filename="libavutil\lfg.h" />
+		<Unit filename="libavutil\lfg.o" />
+		<Unit filename="libavutil\libavutil-uninstalled.pc" />
+		<Unit filename="libavutil\libavutil.a" />
+		<Unit filename="libavutil\libavutil.pc" />
+		<Unit filename="libavutil\lls.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavutil\lls.d" />
+		<Unit filename="libavutil\lls.h" />
+		<Unit filename="libavutil\lls.o" />
+		<Unit filename="libavutil\log.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavutil\log.d" />
+		<Unit filename="libavutil\log.h" />
+		<Unit filename="libavutil\log.o" />
+		<Unit filename="libavutil\lzo.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavutil\lzo.d" />
+		<Unit filename="libavutil\lzo.h" />
+		<Unit filename="libavutil\lzo.o" />
+		<Unit filename="libavutil\mathematics.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavutil\mathematics.d" />
+		<Unit filename="libavutil\mathematics.h" />
+		<Unit filename="libavutil\mathematics.o" />
+		<Unit filename="libavutil\md5.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavutil\md5.d" />
+		<Unit filename="libavutil\md5.h" />
+		<Unit filename="libavutil\md5.o" />
+		<Unit filename="libavutil\mem.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavutil\mem.d" />
+		<Unit filename="libavutil\mem.h" />
+		<Unit filename="libavutil\mem.o" />
+		<Unit filename="libavutil\pca.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavutil\pca.h" />
+		<Unit filename="libavutil\pixfmt.h" />
+		<Unit filename="libavutil\random.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavutil\random.d" />
+		<Unit filename="libavutil\random.h" />
+		<Unit filename="libavutil\random.o" />
+		<Unit filename="libavutil\rational.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavutil\rational.d" />
+		<Unit filename="libavutil\rational.h" />
+		<Unit filename="libavutil\rational.o" />
+		<Unit filename="libavutil\rc4.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavutil\rc4.d" />
+		<Unit filename="libavutil\rc4.h" />
+		<Unit filename="libavutil\rc4.o" />
+		<Unit filename="libavutil\sha1.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavutil\sha1.d" />
+		<Unit filename="libavutil\sha1.h" />
+		<Unit filename="libavutil\sha1.o" />
+		<Unit filename="libavutil\softfloat.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavutil\softfloat.h" />
+		<Unit filename="libavutil\timer.h" />
+		<Unit filename="libavutil\tree.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavutil\tree.d" />
+		<Unit filename="libavutil\tree.h" />
+		<Unit filename="libavutil\tree.o" />
+		<Unit filename="libavutil\utils.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libavutil\utils.d" />
+		<Unit filename="libavutil\utils.o" />
+		<Unit filename="libavutil\x86_cpu.h" />
+		<Unit filename="libpostproc\Makefile" />
+		<Unit filename="libpostproc\postprocess.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libpostproc\postprocess.h" />
+		<Unit filename="libpostproc\postprocess_altivec_template.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libpostproc\postprocess_internal.h" />
+		<Unit filename="libpostproc\postprocess_template.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libswscale\Makefile" />
+		<Unit filename="libswscale\cs_test.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libswscale\internal_bfin.S" />
+		<Unit filename="libswscale\libswscale-uninstalled.pc" />
+		<Unit filename="libswscale\libswscale.a" />
+		<Unit filename="libswscale\libswscale.pc" />
+		<Unit filename="libswscale\rgb2rgb.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libswscale\rgb2rgb.d" />
+		<Unit filename="libswscale\rgb2rgb.h" />
+		<Unit filename="libswscale\rgb2rgb.o" />
+		<Unit filename="libswscale\rgb2rgb_template.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libswscale\swscale-example.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libswscale\swscale.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libswscale\swscale.d" />
+		<Unit filename="libswscale\swscale.h" />
+		<Unit filename="libswscale\swscale.o" />
+		<Unit filename="libswscale\swscale_altivec_template.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libswscale\swscale_avoption.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libswscale\swscale_avoption.d" />
+		<Unit filename="libswscale\swscale_avoption.o" />
+		<Unit filename="libswscale\swscale_bfin.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libswscale\swscale_internal.h" />
+		<Unit filename="libswscale\swscale_template.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libswscale\yuv2rgb.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libswscale\yuv2rgb.d" />
+		<Unit filename="libswscale\yuv2rgb.o" />
+		<Unit filename="libswscale\yuv2rgb_altivec.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libswscale\yuv2rgb_bfin.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libswscale\yuv2rgb_mlib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libswscale\yuv2rgb_template.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libswscale\yuv2rgb_vis.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

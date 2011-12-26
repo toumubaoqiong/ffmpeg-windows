@@ -1,0 +1,288 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: ffplay - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP40A.tmp" with contents
+[
+/nologo /MLd /W3 /Gm /GX /ZI /Od /I "d:\work\include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fp"Debug/ffplay.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"D:\VCsp5Ffmpeg0.5\libavcodec\cook.c"
+"D:\VCsp5Ffmpeg0.5\libavcodec\mpegvideo.c"
+"D:\VCsp5Ffmpeg0.5\libavcodec\ratecontrol.c"
+"D:\VCsp5Ffmpeg0.5\libavcodec\vp3.c"
+"D:\VCsp5Ffmpeg0.5\libavcodec\wmadec.c"
+"D:\VCsp5Ffmpeg0.5\libavutil\intfloat_readwrite.c"
+"D:\VCsp5Ffmpeg0.5\ffplay.c"
+]
+Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP40A.tmp" 
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP40B.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"Debug/ffplay.pdb" /debug /machine:I386 /out:"Debug/ffplay.exe" /pdbtype:sept 
+.\Debug\4xm_codec.obj
+.\Debug\8bps.obj
+.\Debug\aasc.obj
+.\Debug\ac3enc.obj
+.\Debug\adpcm.obj
+.\Debug\adx.obj
+.\Debug\alac.obj
+.\Debug\allcodecs.obj
+.\Debug\asv1.obj
+.\Debug\avs_codec.obj
+.\Debug\bitstream.obj
+.\Debug\bmp.obj
+.\Debug\cabac.obj
+.\Debug\cinepak.obj
+.\Debug\cljr.obj
+.\Debug\cook.obj
+.\Debug\cscd.obj
+.\Debug\cyuv.obj
+.\Debug\dpcm.obj
+.\Debug\dsputil.obj
+.\Debug\dv_codec.obj
+.\Debug\dvbsub.obj
+.\Debug\dvbsubdec.obj
+.\Debug\dvdsub.obj
+.\Debug\dvdsubenc.obj
+.\Debug\error_resilience.obj
+.\Debug\eval.obj
+.\Debug\faandct.obj
+.\Debug\fft.obj
+.\Debug\ffv1.obj
+.\Debug\flac.obj
+.\Debug\flicvideo.obj
+.\Debug\fraps.obj
+.\Debug\g726.obj
+.\Debug\golomb.obj
+.\Debug\h261.obj
+.\Debug\h263.obj
+.\Debug\h263dec.obj
+.\Debug\h264.obj
+.\Debug\h264idct.obj
+.\Debug\huffyuv.obj
+.\Debug\idcinvideo.obj
+.\Debug\imgconvert.obj
+.\Debug\imgresample.obj
+.\Debug\indeo2.obj
+.\Debug\indeo3.obj
+.\Debug\interplayvideo.obj
+.\Debug\jfdctfst.obj
+.\Debug\jfdctint.obj
+.\Debug\jrevdct.obj
+.\Debug\lcl.obj
+.\Debug\loco.obj
+.\Debug\lzo.obj
+.\Debug\mace.obj
+.\Debug\mdct.obj
+.\Debug\mem.obj
+.\Debug\mjpeg.obj
+.\Debug\mmvideo.obj
+.\Debug\motion_est.obj
+.\Debug\mpeg12.obj
+.\Debug\mpegaudio.obj
+.\Debug\mpegaudiodec.obj
+.\Debug\mpegvideo.obj
+.\Debug\msmpeg4.obj
+.\Debug\msrle.obj
+.\Debug\msvideo1.obj
+.\Debug\nuv_codec.obj
+.\Debug\opt.obj
+.\Debug\parser.obj
+.\Debug\pcm.obj
+.\Debug\png_codec.obj
+.\Debug\pnm_codec.obj
+.\Debug\qdm2.obj
+.\Debug\qdrw.obj
+.\Debug\qpeg.obj
+.\Debug\qtrle.obj
+.\Debug\ra144.obj
+.\Debug\ra288.obj
+.\Debug\rangecoder.obj
+.\Debug\ratecontrol.obj
+.\Debug\raw_codec.obj
+.\Debug\resample.obj
+.\Debug\resample2.obj
+.\Debug\roqvideo.obj
+.\Debug\rpza.obj
+.\Debug\rtjpeg.obj
+.\Debug\rv10.obj
+.\Debug\shorten.obj
+.\Debug\simple_idct.obj
+.\Debug\smacker_codec.obj
+.\Debug\smc.obj
+.\Debug\snow.obj
+.\Debug\sonic.obj
+.\Debug\svq1.obj
+.\Debug\truemotion1.obj
+.\Debug\truemotion2.obj
+.\Debug\truespeech.obj
+.\Debug\tscc.obj
+.\Debug\tta_codec.obj
+.\Debug\ulti.obj
+.\Debug\utils_codec.obj
+.\Debug\vc9.obj
+.\Debug\vcr1.obj
+.\Debug\vmdav.obj
+.\Debug\vorbis.obj
+.\Debug\vp3.obj
+.\Debug\vp3dsp.obj
+.\Debug\vqavideo.obj
+.\Debug\wmadec.obj
+.\Debug\wnv1.obj
+".\Debug\ws-snd1.obj"
+.\Debug\xan.obj
+.\Debug\xl.obj
+.\Debug\zmbv.obj
+.\Debug\4xm_format.obj
+.\Debug\adtsenc.obj
+.\Debug\aiff.obj
+.\Debug\allformats.obj
+".\Debug\asf-enc.obj"
+.\Debug\asf.obj
+.\Debug\au.obj
+.\Debug\avidec.obj
+.\Debug\avienc.obj
+.\Debug\avio.obj
+.\Debug\aviobuf.obj
+.\Debug\avs_format.obj
+.\Debug\crc.obj
+.\Debug\cutils.obj
+.\Debug\daud.obj
+.\Debug\dv_format.obj
+.\Debug\electronicarts.obj
+.\Debug\ffm.obj
+.\Debug\file.obj
+.\Debug\flic.obj
+.\Debug\flvdec.obj
+.\Debug\flvenc.obj
+.\Debug\framehook.obj
+.\Debug\gif.obj
+.\Debug\gifdec.obj
+.\Debug\http.obj
+.\Debug\idcin.obj
+.\Debug\idroq.obj
+.\Debug\img.obj
+.\Debug\img2.obj
+.\Debug\ipmovie.obj
+.\Debug\jpeg.obj
+.\Debug\matroska.obj
+.\Debug\mm.obj
+.\Debug\mmf.obj
+.\Debug\mov.obj
+.\Debug\movenc.obj
+.\Debug\mp3.obj
+.\Debug\mpeg.obj
+.\Debug\mpegts.obj
+.\Debug\mpegtsenc.obj
+.\Debug\mpjpeg.obj
+.\Debug\nsvdec.obj
+.\Debug\nut.obj
+.\Debug\nuv_format.obj
+.\Debug\ogg2.obj
+.\Debug\oggparseflac.obj
+.\Debug\oggparsetheora.obj
+.\Debug\oggparsevorbis.obj
+.\Debug\os_support.obj
+.\Debug\png_format.obj
+.\Debug\pnm_format.obj
+.\Debug\psxstr.obj
+.\Debug\raw_format.obj
+.\Debug\rm.obj
+.\Debug\rtp.obj
+.\Debug\rtpproto.obj
+.\Debug\rtsp.obj
+.\Debug\segafilm.obj
+.\Debug\sgi.obj
+.\Debug\sierravmd.obj
+.\Debug\smacker_format.obj
+.\Debug\sol.obj
+.\Debug\swf.obj
+.\Debug\tcp.obj
+.\Debug\tta_format.obj
+.\Debug\udp.obj
+.\Debug\utils_format.obj
+.\Debug\voc.obj
+.\Debug\wav.obj
+.\Debug\wc3movie.obj
+.\Debug\westwood.obj
+.\Debug\yuv.obj
+.\Debug\yuv4mpeg.obj
+.\Debug\crc_util.obj
+.\Debug\integer.obj
+.\Debug\intfloat_readwrite.obj
+.\Debug\mathematics.obj
+.\Debug\rational.obj
+.\Debug\cmdutils.obj
+.\Debug\ffplay.obj
+]
+Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP40B.tmp"
+<h3>Output Window</h3>
+Compiling...
+cook.c
+d:\vcsp5ffmpeg0.5\libavcodec\cook.c(1138) : warning C4133: 'initializing' : incompatible types - from 'unsigned char *' to 'struct COOKextradata *'
+mpegvideo.c
+d:\vcsp5ffmpeg0.5\libavcodec\cook.c(190) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\vcsp5ffmpeg0.5\libavcodec\cook.c(191) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\vcsp5ffmpeg0.5\libavcodec\cook.c(200) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\vcsp5ffmpeg0.5\libavcodec\cook.c(201) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\vcsp5ffmpeg0.5\libavcodec\mpegvideo.c(5729) : error C2485: 'align' : unrecognized extended attribute
+d:\vcsp5ffmpeg0.5\libavcodec\mpegvideo.c(5729) : error C2059: syntax error : '('
+ratecontrol.c
+vp3.c
+d:\vcsp5ffmpeg0.5\libavcodec\ratecontrol.c(176) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\vcsp5ffmpeg0.5\libavcodec\ratecontrol.c(177) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\vcsp5ffmpeg0.5\libavcodec\ratecontrol.c(238) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\vcsp5ffmpeg0.5\libavcodec\ratecontrol.c(238) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\vcsp5ffmpeg0.5\libavcodec\ratecontrol.c(281) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\vcsp5ffmpeg0.5\libavcodec\ratecontrol.c(287) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\vcsp5ffmpeg0.5\libavcodec\ratecontrol.c(288) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\vcsp5ffmpeg0.5\libavcodec\ratecontrol.c(289) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\vcsp5ffmpeg0.5\libavcodec\ratecontrol.c(290) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\vcsp5ffmpeg0.5\libavcodec\ratecontrol.c(291) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\vcsp5ffmpeg0.5\libavcodec\ratecontrol.c(724) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\vcsp5ffmpeg0.5\libavcodec\ratecontrol.c(725) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\vcsp5ffmpeg0.5\libavcodec\ratecontrol.c(906) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\vcsp5ffmpeg0.5\libavcodec\ratecontrol.c(918) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\vcsp5ffmpeg0.5\libavcodec\ratecontrol.c(817) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\vcsp5ffmpeg0.5\libavcodec\ratecontrol.c(818) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\vcsp5ffmpeg0.5\libavcodec\ratecontrol.c(845) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\vcsp5ffmpeg0.5\libavcodec\ratecontrol.c(847) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\vcsp5ffmpeg0.5\libavcodec\ratecontrol.c(853) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\vcsp5ffmpeg0.5\libavcodec\ratecontrol.c(913) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\vcsp5ffmpeg0.5\libavcodec\ratecontrol.c(918) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\vcsp5ffmpeg0.5\libavcodec\vp3.c(290) : error C2485: 'align' : unrecognized extended attribute
+d:\vcsp5ffmpeg0.5\libavcodec\vp3.c(290) : error C2059: syntax error : '('
+d:\vcsp5ffmpeg0.5\libavcodec\vp3.c(291) : error C2485: 'align' : unrecognized extended attribute
+d:\vcsp5ffmpeg0.5\libavcodec\vp3.c(291) : error C2059: syntax error : '('
+d:\vcsp5ffmpeg0.5\libavcodec\vp3.c(292) : error C2485: 'align' : unrecognized extended attribute
+d:\vcsp5ffmpeg0.5\libavcodec\vp3.c(292) : error C2059: syntax error : '('
+d:\vcsp5ffmpeg0.5\libavcodec\vp3.c(1715) : error C2485: 'align' : unrecognized extended attribute
+d:\vcsp5ffmpeg0.5\libavcodec\vp3.c(1715) : error C2059: syntax error : '('
+wmadec.c
+d:\vcsp5ffmpeg0.5\libavcodec\wmadec.c(114) : error C2485: 'align' : unrecognized extended attribute
+d:\vcsp5ffmpeg0.5\libavcodec\wmadec.c(114) : error C2059: syntax error : '('
+d:\vcsp5ffmpeg0.5\libavcodec\wmadec.c(117) : error C2485: 'align' : unrecognized extended attribute
+d:\vcsp5ffmpeg0.5\libavcodec\wmadec.c(117) : error C2059: syntax error : '('
+d:\vcsp5ffmpeg0.5\libavcodec\wmadec.c(120) : error C2485: 'align' : unrecognized extended attribute
+d:\vcsp5ffmpeg0.5\libavcodec\wmadec.c(120) : error C2059: syntax error : '('
+d:\vcsp5ffmpeg0.5\libavcodec\wmadec.c(122) : error C2485: 'align' : unrecognized extended attribute
+d:\vcsp5ffmpeg0.5\libavcodec\wmadec.c(122) : error C2059: syntax error : '('
+d:\vcsp5ffmpeg0.5\libavcodec\wmadec.c(1053) : error C2485: 'align' : unrecognized extended attribute
+d:\vcsp5ffmpeg0.5\libavcodec\wmadec.c(1053) : error C2059: syntax error : '('
+intfloat_readwrite.c
+ffplay.c
+d:\vcsp5ffmpeg0.5\libavutil\intfloat_readwrite.c(35) : warning C4761: integral size mismatch in argument; conversion supplied
+d:\vcsp5ffmpeg0.5\libavutil\intfloat_readwrite.c(59) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\vcsp5ffmpeg0.5\libavutil\intfloat_readwrite.c(60) : error C2520: conversion from unsigned __int64 to double not implemented, use signed __int64
+d:\vcsp5ffmpeg0.5\ffplay.c(24) : fatal error C1083: Cannot open include file: 'SDL.h': No such file or directory
+Error executing cl.exe.
+
+
+
+<h3>Results</h3>
+ffplay.exe - 44 error(s), 6 warning(s)
+</pre>
+</body>
+</html>

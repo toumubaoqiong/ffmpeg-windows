@@ -1,0 +1,178 @@
+# depslib dependency file v1.0
+1271035072 source:d:\workdata\medialib\ffmpeg0.5cb\ffmpeg0.5cb\ffmpeg.c
+	"config.h"
+	<ctype.h>
+	<string.h>
+	<math.h>
+	<stdlib.h>
+	<errno.h>
+	<signal.h>
+	<limits.h>
+	<unistd.h>
+	"libavformat/avformat.h"
+	"libavdevice/avdevice.h"
+	"libswscale/swscale.h"
+	"libavformat/framehook.h"
+	"libavcodec/opt.h"
+	"libavcodec/audioconvert.h"
+	"libavutil/fifo.h"
+	"libavutil/avstring.h"
+	"libavformat/os_support.h"
+	"libavformat/rtsp.h"
+	<sys/types.h>
+	<sys/resource.h>
+	<windows.h>
+	<sys/select.h>
+	<fcntl.h>
+	<sys/ioctl.h>
+	<sys/time.h>
+	<termios.h>
+	<conio.h>
+	<time.h>
+	<sys/ipc.h>
+	<sys/shm.h>
+	"ipvt_pcb.h"
+	"cmdutils.h"
+	<assert.h>
+
+1294647006 d:\workdata\medialib\ffmpeg0.5cb\ffmpeg0.5cb\config.h
+
+1301625806 d:\workdata\medialib\ffmpeg0.5cb\ffmpeg0.5cb\libavformat\avformat.h
+	<time.h>
+	<stdio.h>
+	"../libavcodec/avcodec.h"
+	"avio.h"
+
+1301626043 d:\workdata\medialib\ffmpeg0.5cb\ffmpeg0.5cb\libavcodec\avcodec.h
+	<errno.h>
+	"../libavutil/avutil.h"
+
+1256623596 d:\workdata\medialib\ffmpeg0.5cb\ffmpeg0.5cb\libavutil\avutil.h
+	"common.h"
+	"mathematics.h"
+	"rational.h"
+	"intfloat_readwrite.h"
+	"log.h"
+	"pixfmt.h"
+
+1256623596 d:\workdata\medialib\ffmpeg0.5cb\ffmpeg0.5cb\libavutil\common.h
+	<ctype.h>
+	<errno.h>
+	<inttypes.h>
+	<limits.h>
+	<math.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"mem.h"
+	"config.h"
+	"internal.h"
+
+1256623596 d:\workdata\medialib\ffmpeg0.5cb\ffmpeg0.5cb\libavutil\mem.h
+	"common.h"
+
+1256623596 d:\workdata\medialib\ffmpeg0.5cb\ffmpeg0.5cb\libavutil\internal.h
+	<limits.h>
+	<stdint.h>
+	<stddef.h>
+	<assert.h>
+	"config.h"
+	"common.h"
+	"mem.h"
+	"timer.h"
+
+1256623596 d:\workdata\medialib\ffmpeg0.5cb\ffmpeg0.5cb\libavutil\timer.h
+	<stdlib.h>
+	<stdint.h>
+	"config.h"
+
+1256623596 d:\workdata\medialib\ffmpeg0.5cb\ffmpeg0.5cb\libavutil\mathematics.h
+	<stdint.h>
+	<math.h>
+	"common.h"
+	"rational.h"
+
+1256623596 d:\workdata\medialib\ffmpeg0.5cb\ffmpeg0.5cb\libavutil\rational.h
+	<stdint.h>
+	"common.h"
+
+1256623596 d:\workdata\medialib\ffmpeg0.5cb\ffmpeg0.5cb\libavutil\intfloat_readwrite.h
+	<stdint.h>
+	"common.h"
+
+1256623596 d:\workdata\medialib\ffmpeg0.5cb\ffmpeg0.5cb\libavutil\log.h
+	<stdarg.h>
+	"avutil.h"
+
+1256623596 d:\workdata\medialib\ffmpeg0.5cb\ffmpeg0.5cb\libavutil\pixfmt.h
+
+1301626065 d:\workdata\medialib\ffmpeg0.5cb\ffmpeg0.5cb\libavformat\avio.h
+	<stdint.h>
+	"../libavutil/common.h"
+
+1256623596 d:\workdata\medialib\ffmpeg0.5cb\ffmpeg0.5cb\libavdevice\avdevice.h
+
+1301626114 d:\workdata\medialib\ffmpeg0.5cb\ffmpeg0.5cb\libswscale\swscale.h
+	"../libavutil/avutil.h"
+
+1301626113 d:\workdata\medialib\ffmpeg0.5cb\ffmpeg0.5cb\libavformat\framehook.h
+	"../libavcodec/avcodec.h"
+
+1301626081 d:\workdata\medialib\ffmpeg0.5cb\ffmpeg0.5cb\libavcodec\opt.h
+	"../libavutil/rational.h"
+	"avcodec.h"
+
+1256623596 d:\workdata\medialib\ffmpeg0.5cb\ffmpeg0.5cb\libavcodec\audioconvert.h
+	"avcodec.h"
+
+1256623596 d:\workdata\medialib\ffmpeg0.5cb\ffmpeg0.5cb\libavutil\fifo.h
+	<stdint.h>
+	"avutil.h"
+	"common.h"
+
+1256623596 d:\workdata\medialib\ffmpeg0.5cb\ffmpeg0.5cb\libavutil\avstring.h
+	<stddef.h>
+
+1301626093 d:\workdata\medialib\ffmpeg0.5cb\ffmpeg0.5cb\libavformat\os_support.h
+	"../config.h"
+	<fcntl.h>
+	<sys/socket.h>
+	<netinet/in.h>
+	<BeBuild.h>
+	<OS.h>
+
+1256623596 d:\workdata\medialib\ffmpeg0.5cb\ffmpeg0.5cb\libavformat\rtsp.h
+	<stdint.h>
+	"avformat.h"
+	"rtspcodes.h"
+	"rtpdec.h"
+	"network.h"
+
+1256623596 d:\workdata\medialib\ffmpeg0.5cb\ffmpeg0.5cb\libavformat\rtspcodes.h
+
+1301626123 d:\workdata\medialib\ffmpeg0.5cb\ffmpeg0.5cb\libavformat\rtpdec.h
+	"../libavcodec/avcodec.h"
+	"avformat.h"
+	"rtp.h"
+
+1301626131 d:\workdata\medialib\ffmpeg0.5cb\ffmpeg0.5cb\libavformat\rtp.h
+	"../libavcodec/avcodec.h"
+
+1301626139 d:\workdata\medialib\ffmpeg0.5cb\ffmpeg0.5cb\libavformat\network.h
+	"../config.h"
+	<winsock2.h>
+	<ws2tcpip.h>
+	<sys/types.h>
+	<sys/socket.h>
+	<netinet/in.h>
+	<netdb.h>
+	<arpa/inet.h>
+
+1269252486 d:\workdata\medialib\ffmpeg0.5cb\ffmpeg0.5cb\ipvt_pcb.h
+
+1256623596 d:\workdata\medialib\ffmpeg0.5cb\ffmpeg0.5cb\cmdutils.h
+	<inttypes.h>
+	"libavcodec/avcodec.h"
+	"libavformat/avformat.h"
+	"libswscale/swscale.h"
+
