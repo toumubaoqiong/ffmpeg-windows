@@ -78,26 +78,34 @@ typedef struct SwsContext
      * sws_scale() wrapper so they can be freely modified here.
      */
     SwsFunc swScale;
-    int srcW;                     ///< Width  of source      luma/alpha planes.
-    int srcH;                     ///< Height of source      luma/alpha planes.
-    int dstH;                     ///< Height of destination luma/alpha planes.
+    //输入源的宽
+	int srcW;                     ///< Width  of source      luma/alpha planes.
+    //输入源的高
+	int srcH;                     ///< Height of source      luma/alpha planes.
+    //输出的高
+	int dstH;                     ///< Height of destination luma/alpha planes.
     int chrSrcW;                  ///< Width  of source      chroma     planes.
     int chrSrcH;                  ///< Height of source      chroma     planes.
     int chrDstW;                  ///< Width  of destination chroma     planes.
     int chrDstH;                  ///< Height of destination chroma     planes.
     int lumXInc, chrXInc;
     int lumYInc, chrYInc;
+	//输出像素格式
     enum PixelFormat dstFormat;   ///< Destination pixel format.
-    enum PixelFormat srcFormat;   ///< Source      pixel format.
+    //输入源像素格式
+	enum PixelFormat srcFormat;   ///< Source      pixel format.
+	//输出像素格式的平均字节数
     int dstFormatBpp;             ///< Number of bits per pixel of the destination pixel format.
-    int srcFormatBpp;             ///< Number of bits per pixel of the source      pixel format.
+    //输入像素格式的平均字节数
+	int srcFormatBpp;             ///< Number of bits per pixel of the source      pixel format.
     int chrSrcHSubSample;         ///< Binary logarithm of horizontal subsampling factor between luma/alpha and chroma planes in source      image.
     int chrSrcVSubSample;         ///< Binary logarithm of vertical   subsampling factor between luma/alpha and chroma planes in source      image.
     int chrDstHSubSample;         ///< Binary logarithm of horizontal subsampling factor between luma/alpha and chroma planes in destination image.
     int chrDstVSubSample;         ///< Binary logarithm of vertical   subsampling factor between luma/alpha and chroma planes in destination image.
     int vChrDrop;                 ///< Binary logarithm of extra vertical subsampling factor in source image chroma planes specified by user.
     int sliceDir;                 ///< Direction that slices are fed to the scaler (1 = top-to-bottom, -1 = bottom-to-top).
-    double param[2];              ///< Input parameters for scaling algorithms that need them.
+    //缩放算法所需要的输入参数
+	double param[2];              ///< Input parameters for scaling algorithms that need them.
 
     uint32_t pal_yuv[256];
     uint32_t pal_rgb[256];
@@ -161,7 +169,8 @@ typedef struct SwsContext
     int canMMX2BeUsed;
 
     int dstY;                     ///< Last destination vertical line output from last slice.
-    int flags;                    ///< Flags passed by the user to select scaler algorithm, optimizations, subsampling, etc...
+    //输入标志
+	int flags;                    ///< Flags passed by the user to select scaler algorithm, optimizations, subsampling, etc...
     void *yuvTable;             // pointer to the yuv->rgb table start so it can be freed()
     uint8_t *table_rV[256];
     uint8_t *table_gU[256];
@@ -169,11 +178,16 @@ typedef struct SwsContext
     uint8_t *table_bU[256];
 
     //Colorspace stuff
-    int contrast, brightness, saturation;    // for sws_getColorspaceDetails
+    int contrast, //对比度
+		brightness, //亮度
+		saturation;    //饱和度
+		// for sws_getColorspaceDetails
     int srcColorspaceTable[4];
     int dstColorspaceTable[4];
+	//输入源是MPG-YUV范围，还是JPG-YUV范围？
     int srcRange;                 ///< 0 = MPG YUV range, 1 = JPG YUV range (source      image).
-    int dstRange;                 ///< 0 = MPG YUV range, 1 = JPG YUV range (destination image).
+    //输出是MPG-YUV范围，还是JPG-YUV范围？
+	int dstRange;                 ///< 0 = MPG YUV range, 1 = JPG YUV range (destination image).
     int yuv2rgb_y_offset;
     int yuv2rgb_y_coeff;
     int yuv2rgb_v2r_coeff;
@@ -216,7 +230,8 @@ typedef struct SwsContext
     DECLARE_ALIGNED(8, uint64_t, vOffset);
     int32_t  lumMmxFilter[4*MAX_FILTER_SIZE];
     int32_t  chrMmxFilter[4*MAX_FILTER_SIZE];
-    int dstW;                     ///< Width  of destination luma/alpha planes.
+    //输出的宽
+	int dstW;                     ///< Width  of destination luma/alpha planes.
     DECLARE_ALIGNED(8, uint64_t, esp);
     DECLARE_ALIGNED(8, uint64_t, vRounder);
     DECLARE_ALIGNED(8, uint64_t, u_temp);

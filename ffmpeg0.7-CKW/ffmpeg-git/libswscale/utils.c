@@ -118,6 +118,7 @@ const char *swscale_license(void)
 
 int sws_isSupportedInput(enum PixelFormat pix_fmt)
 {
+	//是否属于支持的输入像素格式
     return isSupportedIn(pix_fmt);
 }
 
@@ -151,6 +152,7 @@ int sws_isSupportedInput(enum PixelFormat pix_fmt)
 
 int sws_isSupportedOutput(enum PixelFormat pix_fmt)
 {
+	//是否属于支持的输出的像素格式
     return isSupportedOut(pix_fmt);
 }
 
@@ -815,6 +817,7 @@ static int update_flags_cpu(int flags)
 
 SwsContext *sws_alloc_context(void)
 {
+	//模式大多是一样的
     SwsContext *c = av_mallocz(sizeof(SwsContext));
 
     c->av_class = &sws_context_class;
@@ -1240,8 +1243,9 @@ SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat,
     SwsContext *c;
 
     if(!(c = sws_alloc_context()))
+	{
         return NULL;
-
+	}
     c->flags = flags;
     c->srcW = srcW;
     c->srcH = srcH;

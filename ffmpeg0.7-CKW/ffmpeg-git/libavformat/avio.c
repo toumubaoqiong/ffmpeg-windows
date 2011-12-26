@@ -310,35 +310,61 @@ int ffurl_open(URLContext **puc, const char *filename, int flags)
     return ret;
 }
 
-static inline int retry_transfer_wrapper(URLContext *h, unsigned char *buf, int size, int size_min,
-int (*transfer_func)(URLContext *h, unsigned char *buf, int size))
+//附录：扩展知识----errno.h头文件介绍 .txt
+//这是一个非常典型而且重要的转移函数（它的职责就是利用函数transfer_func处理大小为size的buf数据）
+static inline int retry_transfer_wrapper(URLContext *h, 
+				unsigned char *buf, 
+				int size, 
+				int size_min,
+				int (*transfer_func)(
+					URLContext *h, 
+					unsigned char *buf, 
+					int size))
 {
     int ret, len;
-    int fast_retries = 5;
+    int fast_retries = 5;//限定了不需要延时的尝试的次数
 
     len = 0;
     while (len < size_min)
     {
         ret = transfer_func(h, buf + len, size - len);
+		//EINTR---中断的系统调用
         if (ret == AVERROR(EINTR))
+		{
             continue;
+		}
         if (h->flags & AVIO_FLAG_NONBLOCK)
+		{
+			//如果当前情况是阻塞模式，则立即返回
             return ret;
+		}
+		//EAGAIN---再次尝试
         if (ret == AVERROR(EAGAIN))
         {
             ret = 0;
             if (fast_retries)
+			{
                 fast_retries--;
+			}
             else
+			{
                 usleep(1000);
+			}
         }
         else if (ret < 1)
+		{
             return ret < 0 ? ret : len;
+		}
         if (ret)
+		{
+			//这点也很奇怪？
             fast_retries = FFMAX(fast_retries, 2);
+		}
         len += ret;
         if (len < size && url_interrupt_cb())
+		{
             return AVERROR_EXIT;
+		}
     }
     return len;
 }

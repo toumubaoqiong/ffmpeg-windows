@@ -40,6 +40,7 @@ extern const uint8_t dither_8x8_32[8][8];
 extern const uint8_t dither_8x8_73[8][8];
 extern const uint8_t dither_8x8_220[8][8];
 
+//这个到底定义了那些国际标准啊？
 const int32_t ff_yuv2rgb_coeffs[8][4] =
 {
     {117504, 138453, 13954, 34903}, /* no sequence_display_extension */
@@ -54,8 +55,11 @@ const int32_t ff_yuv2rgb_coeffs[8][4] =
 
 const int *sws_getCoefficients(int colorspace)
 {
+	//起始搞不清楚这个值到底有什么用？
     if (colorspace > 7 || colorspace < 0)
+	{
         colorspace = SWS_CS_DEFAULT;
+	}
     return ff_yuv2rgb_coeffs[colorspace];
 }
 

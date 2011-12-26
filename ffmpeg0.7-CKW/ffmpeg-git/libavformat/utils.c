@@ -435,6 +435,11 @@ AVInputFormat *av_probe_input_format3(AVProbeData *pd, int is_opened, int *score
         }
         if (score > score_max)
         {
+			if(score >= 100)
+			{
+				int tmpInt = 2;
+				tmpInt = 3;
+			}
             score_max = score;
             fmt = fmt1;
         }
@@ -701,6 +706,7 @@ int av_open_input_file(AVFormatContext **ic_ptr, const char *filename,
     AVIOContext *pb = NULL;
     void *logctx = ap && ap->prealloced_context ? *ic_ptr : NULL;
 
+	TraceOutMsg("11111(*ic_ptr)->probesize %d\n", (*ic_ptr)->probesize);
     //获取IO文件信息
 	pd->filename = "";
     if (filename)
@@ -730,7 +736,13 @@ int av_open_input_file(AVFormatContext **ic_ptr, const char *filename,
         {
             ffio_set_buf_size(pb, buf_size);
         }
-        if (!fmt && (err = av_probe_input_buffer(pb, &fmt, filename, logctx, 0, logctx ? (*ic_ptr)->probesize : 0)) < 0)
+		TraceOutMsg("2222(*ic_ptr)->probesize %d\n", (*ic_ptr)->probesize);
+        if (!fmt && (err = av_probe_input_buffer(pb, 
+			&fmt, 
+			filename, 
+			logctx, 
+			0, 
+			logctx ? (*ic_ptr)->probesize : 0)) < 0)
         {
             goto fail;
         }

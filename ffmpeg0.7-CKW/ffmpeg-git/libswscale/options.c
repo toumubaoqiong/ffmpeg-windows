@@ -33,6 +33,7 @@ static const char *sws_context_to_name(void *ptr)
 #define DEFAULT 0
 #define VE AV_OPT_FLAG_VIDEO_PARAM | AV_OPT_FLAG_ENCODING_PARAM
 
+//每个重要的抽象数据结构都有一个这样的定义， 设置默认值
 static const AVOption options[] =
 {
     { "sws_flags", "scaler/cpu flags", OFFSET(flags), FF_OPT_TYPE_FLAGS, DEFAULT, 0, UINT_MAX, VE, "sws_flags" },

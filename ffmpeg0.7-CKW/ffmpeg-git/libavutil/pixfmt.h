@@ -67,6 +67,8 @@
  *       and that all newly added little endian formats have pix_fmt&1==0
  *       this allows simpler detection of big vs little endian.
  */
+//这么多像素格式，如何屏蔽他们之间的区别，让他们可以随意的相互转换，这是一个难题,
+//但是在libswscal库中做到了，它是如何做到的呢？敬请关注
 enum PixelFormat
 {
     PIX_FMT_NONE = -1,

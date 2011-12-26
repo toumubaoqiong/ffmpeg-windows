@@ -688,6 +688,7 @@ int avio_read(AVIOContext *s, unsigned char *buf, int size)
 		}
         if (len == 0)
         {
+			//AVIOContext的buffer_size来自与URLPorpet协议类的buffer_size
             if(size > s->buffer_size && !s->update_checksum)
             {
                 if(s->read_packet)

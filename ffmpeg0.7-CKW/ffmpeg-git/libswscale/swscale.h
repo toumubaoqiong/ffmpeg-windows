@@ -18,6 +18,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+//****************************************************************************//
+//libswscale\swscale.h, libswscale\swscale.c
+//	对图片缩放的核心头文件
+//学习的地方：
+//1.如何来设计这样一个图片缩放库的？
+//2.它其中包含了很多的不同算法和优化方法，这些是如何做到的？
+//附录：
+//1.
+//****************************************************************************//
+
+
+
+
+
+
 #ifndef SWSCALE_SWSCALE_H
 #define SWSCALE_SWSCALE_H
 
@@ -126,6 +141,7 @@ FFMPEGLIB_API const int *sws_getCoefficients(int colorspace);
 
 // when used for filters they must have an odd number of elements
 // coeffs cannot be shared between vectors
+//就是一个数组结构
 typedef struct
 {
     double *coeff;              ///< pointer to the list of coefficients
@@ -133,6 +149,7 @@ typedef struct
 } SwsVector;
 
 // vectors can be shared
+//4个数组集合结构
 typedef struct
 {
     SwsVector *lumH;
