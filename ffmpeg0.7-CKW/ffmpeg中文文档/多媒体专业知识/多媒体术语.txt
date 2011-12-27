@@ -1,0 +1,155 @@
+多媒体术语包括计算机和视频术语。下面是一些重要词汇。相反的参考标有？。
+
+Aliasing 一种显示特性。计算机生成文字或图象的斜线边缘看上去象锯齿或阶梯一样。
+Anti-aliasing 一种技术，可以将计算机生成文字或图象的斜线的锯齿边变平滑。
+Aspect ratio 宽与高之比。比如一个12X9的图象宽高比为4：3。大多数电机屏幕宽高比为4：3。HDTV屏幕宽高比为16：9。
+AVI 一种视频文件格式，Audio Video Interleaved的缩写。（Windows的视频）。
+Batch Caputer 这个功能让用户可以指定磁带的任何部分来卤质。要求的素材就可以通过可携录象机来遥控进行和卤质。
+Betacam 广播级录象机型号之一，由SONY公司制定并产生。这个系统在一直不断发展，为工业和专业市场提供各种模式。
+BIOS 系统设备、外围设备等的基本输入/输出设置。该信息存储在一种使用特定电池的存储器中，在计算机启动的时候可以改变Bit 二进制数字。计算机最小的信息单元。由0和1表示，两比特表示22=4 三比特表示23=8。
+Bitmap 一种图象文件，每个像素都有一套定值，定义相关亮度和颜色。
+Blacking 一个准备编辑磁带的过程，通过在磁带上录制黑场和连续的控制轨道来完成。如果支持时间码，那么时间码也会同时录制 进去。
+BMP birmap文件的扩展文件。
+Brightness 也叫做"luminance"。表示视频的亮度。
+Byte 一byte等于八比特（？bit）。一个符号用一byte显示（如字母数字等）。
+CD-ROM 是数据存储的媒体，例如数字视频等。
+Channel 一个数据文件的信息分类。例如颜色图象用不同的通道来区分图象里的不同色彩。立体声音频文件用通道来定义左右喇叭 的声音。视频文件用不同的通道放置声音和图象。
+Chrominance 色度。
+Chroma 色彩的质量，包括色调和饱和度。白、黑灰没有色度。
+Clip Premiere Storyboard 或Timeline 里的任何媒体类型，包括视频图象，视频场景，图象和音频文件。
+Clipboard 一个特殊的存储区域，用来保存所有Windows程序中复制、剪切和粘贴操作的内容。新的内容会马上代替旧的存储数据。
+Clock frequency 处理器处理独立时的速率。时钟频率越高，处理得越快。
+Closed GOP
+CODEC Compressor/Decompressor,compresses(packs) and de compresses(unpacks) image data的缩写。由不同的压缩方式（ 软件 CODECs和硬件 CODECs）。
+Color depth 每个像素所需的比特数。在黑白图象中1比特色彩度表示21=2^24种颜色。8比特支持28=256种颜色。24比特支持16，777， 216=2 种颜色。
+Color model 用来算术地描述和定义颜色和颜色相关连的方式。每个色彩模式豆油特定的目的，最常用的两种色彩模式是RGB和YUV。
+Color saturation 色彩的强烈度。
+Complementary 所谓补色，就是三原色的反色，如果把一种颜色和他的补色相混合，结果就会是白色。比如 红色，绿色和蓝色的补色分 别是青色，洋红，和黄色。
+COM port 电脑后面的串行接口，连续调解器、打印机或鼠标等设备。
+Composite video 复合视频信号由亮度和色度信号组成。相对与S-Video和分量信号，他的质量较低。VHS和Video8是复合视频录制和播放的 格式。？S-VHS
+Compression 使文件大小变小的方法。有两种压缩类型：无损耗和有损耗。无损压缩方式能将被压缩文件完全恢复，而有损压缩方式在 压缩过程中则会丢弃一部分数据，所以被压缩文件恢复后会与源文件有微小的差别。 
+Cropping 不同的视频数据有可能会产生画面的冲突，例如在画面边缘产生黑色的条纹，这些条纹电视屏幕上无法看到，但当这些画 面被加入特技或输出至DVD时，画面修剪功能就能通过在将其数字化的过程中把这些边缘去除避免这些问题。
+CUT 由一个场景切换到另一个场景。
+Data rate 存储媒质里每秒保存/播放的数据。
+Data transfer 衡量两个存储媒质之间传输快慢。（例如光驱和硬盘）
+rate
+DCT Discreet Cosine Transformation的缩写。多数图象数据压缩方式的部分。亮度和颜色作为频率系数存储。
+Decibel 度量声音的单位。
+Digital8 数字视频磁带格式，录制Hi8的音频和视频数据。
+Digital video 比特跟比特的存储数字视频信息。
+DirectMedia 微软都媒体应用的系统扩展程序。
+DirectShow 微软多媒体应用的系统扩展程序。
+DirectX Direct Memory Access的缩写。是微软公司出的加速视频和游戏的扩展包。
+Dissolve 一种过度特效，由一个场景渐变到另一个。
+DMA Direct Memory Access的缩写。支持大卷标的数据在计算机内部快递传送。例如视频数据。
+Driver 包含外围设备运行要求的信息的一个文件。例如采集板卡的采集驱动程序。
+DV 一种标准数字码流和压缩格式（又称蓝皮书标准）。用于在数字磁带上录制视频和音频。DV基于帧内，单独存储每一帧， 使用固定为25Mb/秒（2.98MB/秒）。视频对于NTSC取样率为4：1：1，PAL为4：2：0
+DV cassette DV带解析度为500线，分量记录的信嗓比为54db，要优于Betacam.。色度信号的带宽为Hi8或S-VHS（1.5MHz，与Betacam. 相同）的三倍，提供时间码，16位音频（或32kHz,12-bit的四声道），独立的视音频插入编辑，和直接的数字信号输入输 出，基于IEEE-1394的混合视频传输和无损编辑。
+DV recording 在DV磁带里，视频和音频数据，额外的信息和ITI部分，按
+Format 如下顺序刻在DV磁带上。
+Edit decision 一个文件，包含剪辑个部分清单，以创作完整视频作品。
+List (EDL) 
+Fade To/From 一种常用的过度特技，表示一个场景的结束，图象和伴音都逐
+Black 渐淡出成黑屏或静音（或称淡出过过渡特技）。同样还可以从黑场淡如表示节目的开始（或是淡入）过渡特技。
+
+Field 组成一个隔行扫描视频帧所需水平线的一半，在NTSC中，两个连续的262.5行扫描线的场组成一个525行扫描的帧。在PAL 中，来年各个连续的312.5扫描线的场组成一个625行扫描线的帧。
+File format 计算机在磁盘存储图象或信息的方式。
+Filters 改变产品特殊效果的工具，如改变对比度或颜色。
+FireWire 苹果计算机为IEEE-1394串行数据协议注册的名字。
+Frama 一幅视频图象。一个隔行扫描视频帧由两个连续场组成（奇数和偶数场）。
+Frame rate 定义每秒播放的视频帧数。NTSC是每秒30帧，PAL是25帧每秒。
+Frequency 处理过程的周期时间，单位是Hz。
+GOP 图象组。在？MPEG或MPEG-2压缩过程中产生的I、B和/或P政序列。这个帧序列包括所有需要重现一个完整视频片段所需的 信息。图象组越长，可编辑程度越低。
+GOP size 定义GOP的大小，一个GOP包括多少I、B，P帧，通常大小为9或12。
+Hardware CODEC 一种数字视频的压缩方式。这些视频片段使用额外的硬件录制和播放，比用软件压缩CODECs速度要快。
+Hi8 Video8的升级版本。因为更高的分辨率和更宽的带宽，所以比Video8的图象更清晰。
+HiCOLOR 表示16比特的数据类型，包括65536种颜色。TGA文件格式支持这种类型。
+Hue 区别不同的颜色，如红，黄，橙。
+Huffman-Coding 图象数据压缩的其中部分过程。
+
+IDE Integrated Device Ellectronics 的缩写。一种接口。如硬盘和光驱的接口。
+IEEE-1394 IEEE-1394-参考？FireWire(r)或i.LINK- 一种国际标准数据传输协议，由苹果计算机公司开发，注册商标为FireWire， 由电子与电器工程师研究院（IEEE）标准化。
+In general，IEEE-1394 is:传输100，200或400Mbit/s数据的硬件和软件标准。
+连接电脑和外围设备的数字接口。无须进行数模转化。
+"热拨插"在设备-开机状态下可加或拨出1394设备
+Image 表示在屏幕上的点的集合。在这里表示由像素组成的数字图象，能在计算机屏幕上显示，可以用软件对其进行操作。
+Image 减少数字图象和视频文件的数据的方法。
+compression 
+Insert cut 通过剪切插入，把独立的素材复制到一个长的文件里。
+Intertaced PAL和其它电视制式都采用隔行扫描的显示方法，PAL制式的一帧图象是由两幅互相交错的各为288线的图象组成的，相同 的，NTSC制式则为240线。
+Interleave 为了让视音频做到平滑播放并且相同步合理压缩，标准AVI格式为音频和视频数据分配了相同的空间。
+I/O Input/Output的缩写。
+Irrelevance 在图象数据压缩时可将不重要的图象信息省略，因为人眼并不能察觉这些信息的丢失。
+IRQ Interrupt Rwquest的缩写。中断可以由硬件或软件提出。
+ITI Insert & Track Information 的缩写。通过插入剪切和轨道的方法保存在视频磁带上的信息。
+JPEG Joint Photographic Experts Group的缩写。压缩数字帧的标准。 
+KByte 一KByte(Kilobyte)等于1024 ？ Byte。"K"表示"1024"。
+Key color 在图象中的使背景变透明的颜色。只在两个视频重叠的时候使用。
+Key frame rate 帮助压缩视频文件的一种方式，在压缩中关键帧是完全保存的，其他的帧则是部分保存。在解压缩使这些非关键帧由关键 帧重组出来（例如 MPEG）。
+Laser disk 存储模拟视频的媒质。只能读取，不能修改。
+Long shots 长镜头提供一贯场景的整体浏览。而且还能用做缩短长的场景。当你近景切换到远景的时候，就无法看到细节部分了，而 且容易引起丢帧。
+LPT Parallel port
+Luminance Brightness
+MIV 只有视频数据的MPEG文件，？MPA，MPG
+MByte 一 MByte（Megabyte）等于1024 ？ KBytes 或1024X1024 bytes.
+Mark In /Mark 如果在文件中只有一部分视频素材在使用，那么这部分就用
+Out 标入和标出定义出来。 
+Modulation 传输电子信息的方法。
+Motion-JPEG JPEG压缩视频片段格式。
+（M-JPEG）
+MPA 只有音频数据的MPEG文件，MIV，MPG
+MPEG Motion Pictures Experts Group缩写。视频压缩标准。相对于M-JPEG，同样的视觉效果下，它有75--80%数据压缩减 量。
+MPG 包括视频和音频数据的MPEG文件。MIV，MPA
+MPV 只有视频数据的MPEG文件。MPA，MPG
+Non-interlaced 图象刷新方式，整个图象无遗漏行的产生。非交织图象（如电脑监视器）比交织图象（如电视机闪烁要少。
+NTSC Nationla Television Standards Commottee的缩写，（美国）国家电视制式委员会。
+OpenGL open graphics library 的缩写（系统开放图象库）。Windows下3D图象的应用
+接口，由Silicon Graphics发布。
+PAL phase Alternation Line的缩写。一种视频标准，使用复合隔行扫描显示，每帧625扫描线，每秒25帧。大多数欧洲国家 使用这个视频广播标准。
+Parallel port 并行数据由8条线传输。表示同时送8比特数据。比串行接口要快，但对距离要求较高。并行接口在PC中用LPT和一个数字 表示（例如LPT1）。
+PCI bus Peripheral Component Interconnect 的缩写。由Inter公司发布的本地总线格式：32比特总线表示在时钟频率为33Mhz的 时候，每秒最大传输132MByte(PCI slot)
+PCI slot PC插槽有两种类型"PCI和AGP。
+Pixel picture element的缩写。是图象的最小组成元素。
+Port 两个设备之间传送数据、视频，音频的传送点。？serial port,parallel port 
+Prime colors GRB颜色模式的基本色：红，绿，蓝。通过这三种颜色的混合，得出其他颜色。
+QSIF Quarter Standard Image Format 的缩写。？MPEG I 格式表示分辨率为176X144的PAL和176X120的NTSC？SIF
+Quantization 图象数据压缩部分。与人眼不太相关的饿部分在压缩时将被精简掉。
+RAM Random Access Memory 的缩写。计算机中可读写的存储部分。在关闭电脑后数据就会清除。
+Redundance 在图象压缩的过程中，多余的信息可以删除掉。再解压缩时图象可以完整还原。
+Registry Windows里存储基本设置数据的地方。包括系统设置，应用程序设置和用户个性设置等数据。
+Resolution 一个图象的垂直和水平的像素数目。分辨率越高，图象越细致。
+RGB 红，绿，蓝三色的缩写。颜色的最基本三元素。用三元素来把计算机的图象颜色分解出俩的技术。
+ROM Read Only Memory 的缩写。
+Run Length RLE表示Run Length Encoding,是种图象压缩方式。在这
+Encoding 种压缩中，重复的数值不保存，只记录这个数值出现的次数。
+Scaling 调节图象需要的大小。
+SCSI Small Computers System Interface的缩写，是高数码率的硬盘接口。
+SCSI-ID 定义与SCSI适配卡连接的SCSI设备的一个数字。
+SCSI 是一块连接电脑和SCSI总线的饿连接板卡。
+Host terminator 
+SCSI terminator 电缆末端的电子回路，防止信号反馈。每个SCSI总线只要2个终端头。终端头装在SCSI电缆线的末端而不是中间。
+SECAM Sequential Couleur à M è moire的缩写，顺序传送彩色和存储。一种彩色电视系统，由法国和前苏联开发。它使用复 合隔行显示，每帧625扫描线，每秒25帧。色差信号在倒相行上按顺序传送。
+Serial port 并行接口的数据由一条线来传输。表示传输8比特数据必须一个一个地传。传输会比并行的慢。在PC中串行接口用COM和一 个数字表示（例如COM2）。
+SIF 标准图象格式，？MPEG I 格式分辨率为352X288的PAL和352X240的NTSC？QSIF
+Signal-to- 好的信号与嗓音之间的比率。通常用dB表示。
+Noise ratio 
+Single frame 一个系列或序列的其中一帧。如果用足够的速度观看这个系列，就会产生"移动图片"了
+Software CODEC 一种压缩格式，经过压缩的数字视频片段不用特殊的硬件就能直接播放。片段的质量由压缩的系统性能决定。
+S-VHS VHS的更高级版本，使用S-Video和Metal Particle磁带来传送比VHS更高亮度解析率的图象。
+S-Video 一种分量视频信号，亮度（Y）和色度（C）信息分离。S-VHS录象机使用S-Video格式。又称Y/C视频。
+Time Code 时间码利用标记出开始点来定位每一个帧的位置。通常格式是小时：分钟：秒钟：帧数（如01：22：13：21）。与磁带计 数器不同（它可以"清零"或在磁带的任意点重设），时间码是写在视频磁带上的电子信号，只能指定一次。
+Transition 把观赏者的注意力从当前的情景中转移。例如在观赏者毫无察觉的饿情况下使电影进行年代跳跃。
+TrueColor 用足够的色彩来表现真实图象。例如通常的24比特颜色，提供1670万中颜色。
+VCR Videocassette Recorder的缩写。
+VHS Video Home System的缩写。家庭VCR用1/2"磁带来录制和播放视频声音文件。VHS系统使用包括亮度和色度信息的复合 信号。
+Video8 使用8mm磁带的视频系统。Video录制复合信号。
+Video CD 带标准MPEG压缩视频的光盘。
+Video decoder 把数字视频信号转为模拟信号。
+Video encoder 把模拟视频信号转为数字信息。
+Video for 是微软的Windows中用来录制，存储和播放硬盘里视频片段的Windows工具。
+Video scan 视频信号扫描的频率。扫描频率越高，图象质量越高，越稳定。
+Rate
+Wav 音频信号的文件格式，也表示扩展文件类型（*.wav）。
+White balance 电子摄象机里的饿放大器，有三个色彩通道，红，绿，蓝，它们相互调节，使白色图象里没有其他的颜色，这样所有的颜 色才能显示正常。
+Y/C Y/C表示信号由两种分组成，Y表示亮度信息，C表示色度信息。
+YUV 视频信号的色彩模式，Y表示亮度信息，U和V表示色度信息。
