@@ -755,6 +755,7 @@ int sws_setColorspaceDetails(SwsContext *c, const int inv_table[4], int srcRange
     c->srcFormatBpp = av_get_bits_per_pixel(&(av_getav_pix_fmt_descriptors())[c->srcFormat]);
     c->flags = update_flags_cpu(c->flags);
 
+	//初始化YUV转换为RGB的数据表
     ff_yuv2rgb_c_init_tables(c, inv_table, srcRange, brightness, contrast, saturation);
     //FIXME factorize
 
@@ -1262,7 +1263,7 @@ SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat,
         c->param[1] = param[1];
     }
     sws_setColorspaceDetails(c, ff_yuv2rgb_coeffs[SWS_CS_DEFAULT], c->srcRange, ff_yuv2rgb_coeffs[SWS_CS_DEFAULT] /* FIXME*/, c->dstRange, 0, 1 << 16, 1 << 16);
-
+	//前面都容易理解，但是sws_init_context里面的函数却不是非常明白
     if(sws_init_context(c, srcFilter, dstFilter) < 0)
     {
         sws_freeContext(c);

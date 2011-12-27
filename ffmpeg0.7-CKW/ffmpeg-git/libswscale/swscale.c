@@ -2170,9 +2170,12 @@ static void reset_ptr(const uint8_t *src[], int format)
     }
 }
 
-static int check_image_pointers(uint8_t *data[4], enum PixelFormat pix_fmt,
-                                const int linesizes[4])
+static int check_image_pointers(uint8_t *data[4], //数据（为什么总是4位数组呢？）
+								enum PixelFormat pix_fmt,//数据的像素格式
+                                //数据的行数据
+								const int linesizes[4])
 {
+	//实际上就是通过const AVPixFmtDescriptor av_pix_fmt_descriptors[PIX_FMT_NB]这个常量来检测传入数据的正确性
     const AVPixFmtDescriptor *desc = &(av_getav_pix_fmt_descriptors())[pix_fmt];
     int i;
 
@@ -2190,8 +2193,14 @@ static int check_image_pointers(uint8_t *data[4], enum PixelFormat pix_fmt,
  * swscale wrapper, so we don't need to export the SwsContext.
  * Assumes planar YUV to be in YUV order instead of YVU.
  */
-int sws_scale(SwsContext *c, const uint8_t *const src[], const int srcStride[], int srcSliceY,
-              int srcSliceH, uint8_t *const dst[], const int dstStride[])
+int sws_scale(SwsContext *c, 
+			  const uint8_t *const src[], //输入源数据（是什么类型的？有与SwsContext *c一定要相同的规定吗？）
+			  const int srcStride[], //输入源数据的行的数据
+			  int srcSliceY,//输入源数据的定点Y坐标
+              int srcSliceH, //输入源数据的高度
+			  uint8_t *const dst[], //输出数据
+			  //输出数据的翰的数据
+			  const int dstStride[])
 {
     int i;
     const uint8_t *src2[4] = {src[0], src[1], src[2], src[3]};
@@ -2211,7 +2220,7 @@ int sws_scale(SwsContext *c, const uint8_t *const src[], const int srcStride[], 
         av_log(c, AV_LOG_ERROR, "bad dst image pointers\n");
         return 0;
     }
-
+	//检验输入源数据的长宽的合法性？
     if (c->sliceDir == 0 && srcSliceY != 0 && srcSliceY + srcSliceH != c->srcH)
     {
         av_log(c, AV_LOG_ERROR, "Slices start in the middle!\n");
@@ -2219,8 +2228,14 @@ int sws_scale(SwsContext *c, const uint8_t *const src[], const int srcStride[], 
     }
     if (c->sliceDir == 0)
     {
-        if (srcSliceY == 0) c->sliceDir = 1;
-        else c->sliceDir = -1;
+        if (srcSliceY == 0)
+		{
+			 c->sliceDir = 1;
+		}
+        else
+		{ 
+			c->sliceDir = -1;
+		}
     }
 
     if (usePal(c->srcFormat))
@@ -2299,13 +2314,14 @@ int sws_scale(SwsContext *c, const uint8_t *const src[], const int srcStride[], 
         }
     }
 
+	//赋值行数据，以便他们能安全的被修改
     // copy strides, so they can safely be modified
     if (c->sliceDir == 1)
     {
         // slices go from top to bottom
         int srcStride2[4] = {srcStride[0], srcStride[1], srcStride[2], srcStride[3]};
         int dstStride2[4] = {dstStride[0], dstStride[1], dstStride[2], dstStride[3]};
-
+		//根据像素格式设置输入源和输出的行数据
         reset_ptr(src2, c->srcFormat);
         reset_ptr((const uint8_t **)dst2, c->dstFormat);
 

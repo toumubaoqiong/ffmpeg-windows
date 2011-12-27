@@ -2581,7 +2581,8 @@ static int RENAME(swScale)(SwsContext *c, const uint8_t* src[], int srcStride[],
                            int srcSliceH, uint8_t* dst[], int dstStride[])
 {
     /* load a few things into local vars to make the code more readable? and faster */
-    const int srcW= c->srcW;
+    //申明这么多常量和变量，是为了获得多大的便利呢？
+	const int srcW= c->srcW;
     const int dstW= c->dstW;
     const int dstH= c->dstH;
     const int chrDstW= c->chrDstW;

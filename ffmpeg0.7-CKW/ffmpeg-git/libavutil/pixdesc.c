@@ -935,6 +935,7 @@ enum PixelFormat av_get_pix_fmt(const char *name)
 
 int av_get_bits_per_pixel(const AVPixFmtDescriptor *pixdesc)
 {
+	//不明白为什么要这样算bits
     int c, bits = 0;
     int log2_pixels = pixdesc->log2_chroma_w + pixdesc->log2_chroma_h;
 

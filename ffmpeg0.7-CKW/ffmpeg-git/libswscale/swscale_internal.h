@@ -77,6 +77,7 @@ typedef struct SwsContext
      * Note that src, dst, srcStride, dstStride will be copied in the
      * sws_scale() wrapper so they can be freely modified here.
      */
+	//像素转换的关键函数就在这里
     SwsFunc swScale;
     //输入源的宽
 	int srcW;                     ///< Width  of source      luma/alpha planes.
@@ -84,12 +85,18 @@ typedef struct SwsContext
 	int srcH;                     ///< Height of source      luma/alpha planes.
     //输出的高
 	int dstH;                     ///< Height of destination luma/alpha planes.
-    int chrSrcW;                  ///< Width  of source      chroma     planes.
-    int chrSrcH;                  ///< Height of source      chroma     planes.
-    int chrDstW;                  ///< Width  of destination chroma     planes.
-    int chrDstH;                  ///< Height of destination chroma     planes.
-    int lumXInc, chrXInc;
-    int lumYInc, chrYInc;
+    //输入源的Chroma宽
+	int chrSrcW;                  ///< Width  of source      chroma     planes.
+    //输入源的Chroma高
+	int chrSrcH;                  ///< Height of source      chroma     planes.
+    //输出的Chroma宽
+	int chrDstW;                  ///< Width  of destination chroma     planes.
+    //输出的Chroma高
+	int chrDstH;                  ///< Height of destination chroma     planes.
+    int lumXInc, //x坐标的缩放比例
+		chrXInc; //x坐标的Chroma缩放比例
+    int lumYInc, //y坐标的缩放比例
+		chrYInc; //y坐标的Chroma缩放比例
 	//输出像素格式
     enum PixelFormat dstFormat;   ///< Destination pixel format.
     //输入源像素格式
@@ -98,11 +105,16 @@ typedef struct SwsContext
     int dstFormatBpp;             ///< Number of bits per pixel of the destination pixel format.
     //输入像素格式的平均字节数
 	int srcFormatBpp;             ///< Number of bits per pixel of the source      pixel format.
-    int chrSrcHSubSample;         ///< Binary logarithm of horizontal subsampling factor between luma/alpha and chroma planes in source      image.
-    int chrSrcVSubSample;         ///< Binary logarithm of vertical   subsampling factor between luma/alpha and chroma planes in source      image.
-    int chrDstHSubSample;         ///< Binary logarithm of horizontal subsampling factor between luma/alpha and chroma planes in destination image.
-    int chrDstVSubSample;         ///< Binary logarithm of vertical   subsampling factor between luma/alpha and chroma planes in destination image.
-    int vChrDrop;                 ///< Binary logarithm of extra vertical subsampling factor in source image chroma planes specified by user.
+    //输入源高度的子偏移量
+	int chrSrcHSubSample;         ///< Binary logarithm of horizontal subsampling factor between luma/alpha and chroma planes in source      image.
+    //输入源宽度的子偏移量
+	int chrSrcVSubSample;         ///< Binary logarithm of vertical   subsampling factor between luma/alpha and chroma planes in source      image.
+    //输出高度的子偏移量
+	int chrDstHSubSample;         ///< Binary logarithm of horizontal subsampling factor between luma/alpha and chroma planes in destination image.
+    //输出宽度的子偏移量
+	int chrDstVSubSample;         ///< Binary logarithm of vertical   subsampling factor between luma/alpha and chroma planes in destination image.
+    //?
+	int vChrDrop;                 ///< Binary logarithm of extra vertical subsampling factor in source image chroma planes specified by user.
     int sliceDir;                 ///< Direction that slices are fed to the scaler (1 = top-to-bottom, -1 = bottom-to-top).
     //缩放算法所需要的输入参数
 	double param[2];              ///< Input parameters for scaling algorithms that need them.
@@ -478,6 +490,7 @@ const char *sws_format_name(enum PixelFormat format);
         || (x)==PIX_FMT_Y400A       \
         || (x)==PIX_FMT_YUVA420P    \
     )
+//检测标志位，是否是包含了调色板的8位图像格式
 #define usePal(x) (((av_getav_pix_fmt_descriptors())[x].flags & PIX_FMT_PAL) || (x) == PIX_FMT_Y400A)
 
 extern const uint64_t ff_dither4[2];
