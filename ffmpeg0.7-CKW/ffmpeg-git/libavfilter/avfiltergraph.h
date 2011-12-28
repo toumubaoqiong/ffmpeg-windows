@@ -26,7 +26,9 @@
 
 typedef struct AVFilterGraph
 {
+	//滤镜个数
     unsigned filter_count;
+	//滤镜数组
     AVFilterContext **filters;
 
     char *scale_sws_opts; ///< sws options to use for the auto-inserted scale filters

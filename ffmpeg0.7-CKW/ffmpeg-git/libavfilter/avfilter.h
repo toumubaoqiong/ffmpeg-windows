@@ -19,6 +19,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+//****************************************************************************//
+//libavfilter\avfilter.h
+//	avfilter的核心入口文件
+//学习的地方：
+//1.avfilter是如何实现功能的？音频的滤镜和视频的滤镜分别有什么不同？
+//2.在ffmpeg.c中运用的几个滤镜是怎么初始化？
+//附录：
+//1.
+//****************************************************************************//
+
+
 #ifndef AVFILTER_AVFILTER_H
 #define AVFILTER_AVFILTER_H
 
@@ -71,14 +82,18 @@ typedef struct AVFilterPad     AVFilterPad;
  * should not store pointers to this structure directly, but instead use the
  * AVFilterBufferRef structure below.
  */
+//一个滤镜的缓存数据结构
 typedef struct AVFilterBuffer
 {
+	//最多八通道缓存
     uint8_t *data[8];           ///< buffer data for each plane/channel
-    int linesize[8];            ///< number of bytes per line
-
+    //最多八通道缓存数据大小
+	int linesize[8];            ///< number of bytes per line
+	//缓存引用计数
     unsigned refcount;          ///< number of references to this buffer
 
     /** private data to be used by a custom free function */
+	//数据
     void *priv;
     /**
      * A pointer to the function to deallocate this buffer if the default
@@ -86,10 +101,12 @@ typedef struct AVFilterBuffer
      * back into a memory pool to be reused later without the overhead of
      * reallocating it from scratch.
      */
+	//释放函数指针
     void (*free)(struct AVFilterBuffer *buf);
-
+	//格式
     int format;                 ///< media format
-    int w, h;                   ///< width and height of the allocated buffer
+    //宽，高
+	int w, h;                   ///< width and height of the allocated buffer
 } AVFilterBuffer;
 
 #define AV_PERM_READ     0x01   ///< can read from the buffer
@@ -104,6 +121,7 @@ typedef struct AVFilterBuffer
  * AVFilterBufferRef is common to different media formats, audio specific
  * per reference properties must be separated out.
  */
+//音频滤镜缓存的参数
 typedef struct AVFilterBufferRefAudioProps
 {
     int64_t channel_layout;     ///< channel layout of audio buffer
@@ -118,6 +136,7 @@ typedef struct AVFilterBufferRefAudioProps
  * AVFilterBufferRef is common to different media formats, video specific
  * per reference properties must be separated out.
  */
+//视频滤镜缓存的参数
 typedef struct AVFilterBufferRefVideoProps
 {
     int w;                      ///< image width
@@ -139,24 +158,32 @@ typedef struct AVFilterBufferRefVideoProps
  */
 typedef struct AVFilterBufferRef
 {
+	//滤镜缓存
     AVFilterBuffer *buf;        ///< the buffer that this is a reference to
-    uint8_t *data[8];           ///< picture/audio data for each plane
-    int linesize[8];            ///< number of bytes per line
-    int format;                 ///< media format
+    //最多八通道数据
+	uint8_t *data[8];           ///< picture/audio data for each plane
+    //最多八通道数据大小
+	int linesize[8];            ///< number of bytes per line
+    //格式
+	int format;                 ///< media format
 
     /**
      * presentation timestamp. The time unit may change during
      * filtering, as it is specified in the link and the filter code
      * may need to rescale the PTS accordingly.
      */
+	//当前pts
     int64_t pts;
-    int64_t pos;                ///< byte position in stream, -1 if unknown
-
+    //当前位置
+	int64_t pos;                ///< byte position in stream, -1 if unknown
+	//?
     int perms;                  ///< permissions, see the AV_PERM_* flags
-
+	//缓存数据媒体类型
     enum AVMediaType type;      ///< media type of buffer data
-    AVFilterBufferRefVideoProps *video; ///< video buffer specific properties
-    AVFilterBufferRefAudioProps *audio; ///< audio buffer specific properties
+    //视频滤镜缓存参数
+	AVFilterBufferRefVideoProps *video; ///< video buffer specific properties
+    //音频滤镜缓存参数
+	AVFilterBufferRefAudioProps *audio; ///< audio buffer specific properties
 } AVFilterBufferRef;
 
 /**
@@ -238,6 +265,7 @@ FFMPEGLIB_API void avfilter_unref_buffer(AVFilterBufferRef *ref);
  * get updated as well. Therefore, we have the format list structure store a
  * pointer to each of the pointers to itself.
  */
+//看得不太懂这个数据结构的作用，但是它是一个list
 typedef struct AVFilterFormats
 {
     unsigned format_count;      ///< number of formats
@@ -331,6 +359,7 @@ FFMPEGLIB_API void avfilter_formats_changeref(AVFilterFormats **oldref,
 /**
  * A filter pad used for either input or output.
  */
+//真正产生作用的就是它啊！！！！！！！！
 struct AVFilterPad
 {
     /**
@@ -338,12 +367,14 @@ struct AVFilterPad
      * input may have the same name as an output. This may be NULL if this
      * pad has no need to ever be referenced by name.
      */
+	//名字
     const char *name;
 
     /**
      * AVFilterPad type. Only video supported now, hopefully someone will
      * add audio in the future.
      */
+	//媒体类型
     enum AVMediaType type;
 
     /**
@@ -373,6 +404,7 @@ struct AVFilterPad
      *
      * Input video pads only.
      */
+	//这个函数很神秘啊？
     void (*start_frame)(AVFilterLink *link, AVFilterBufferRef *picref);
 
     /**
@@ -519,8 +551,10 @@ FFMPEGLIB_API AVFilterBufferRef *avfilter_null_get_audio_buffer(AVFilterLink *li
  */
 typedef struct AVFilter
 {
+	//滤镜名字
     const char *name;         ///< filter name
 
+	//数据对象的大小
     int priv_size;      ///< size of private data to allocate for the filter
 
     /**
@@ -529,6 +563,7 @@ typedef struct AVFilter
      * opaque is data provided by the code requesting creation of the filter,
      * and is used to pass data to the filter.
      */
+	//初始化
     int (*init)(AVFilterContext *ctx, const char *args, void *opaque);
 
     /**
@@ -536,6 +571,7 @@ typedef struct AVFilter
      * by the filter, release any buffer references, etc. This does not need
      * to deallocate the AVFilterContext->priv memory itself.
      */
+	//释放初始化
     void (*uninit)(AVFilterContext *ctx);
 
     /**
@@ -546,35 +582,45 @@ typedef struct AVFilter
      * @return zero on success, a negative value corresponding to an
      * AVERROR code otherwise
      */
+	//????不懂它的作用是干什么的？
     int (*query_formats)(AVFilterContext *);
-
+	//AVFilterPad输入列表
     const AVFilterPad *inputs;  ///< NULL terminated list of inputs. NULL if none
-    const AVFilterPad *outputs; ///< NULL terminated list of outputs. NULL if none
+    //AVFilterPad输出列表
+	const AVFilterPad *outputs; ///< NULL terminated list of outputs. NULL if none
 
     /**
      * A description for the filter. You should use the
      * NULL_IF_CONFIG_SMALL() macro to define it.
      */
+	//描述信息
     const char *description;
 } AVFilter;
 
 /** An instance of a filter */
 struct AVFilterContext
 {
+	//滤镜类别信息
     const AVClass *av_class;              ///< needed for av_log()
 
+	//滤镜的具体对象
     AVFilter *filter;               ///< the AVFilter of which this is an instance
-
+	//名字
     char *name;                     ///< name of this filter instance
-
+	//输入pad的数量
     unsigned input_count;           ///< number of input pads
-    AVFilterPad   *input_pads;      ///< array of input pads
-    AVFilterLink **inputs;          ///< array of pointers to input links
-
+    //输入pad的数组
+	AVFilterPad   *input_pads;      ///< array of input pads
+	//输入的滤镜链接数组
+	AVFilterLink **inputs;          ///< array of pointers to input links
+	
+	//输出pad的数量
     unsigned output_count;          ///< number of output pads
-    AVFilterPad   *output_pads;     ///< array of output pads
-    AVFilterLink **outputs;         ///< array of pointers to output links
-
+    //输出pad的数组
+	AVFilterPad   *output_pads;     ///< array of output pads
+    //输出的滤镜链接数组
+	AVFilterLink **outputs;         ///< array of pointers to output links
+	//具体数据对象
     void *priv;                     ///< private data for use by the filter
 };
 
@@ -585,13 +631,17 @@ struct AVFilterContext
  * which have been negotiated and agreed upon between the filter, such as
  * image dimensions, format, etc.
  */
+//这是一个非常重要的数据结构
 struct AVFilterLink
 {
+	//输入源滤镜数据
     AVFilterContext *src;       ///< source filter
-    AVFilterPad *srcpad;        ///< output pad on the source filter
-
+    //输入源的Pad
+	AVFilterPad *srcpad;        ///< output pad on the source filter
+	//输出的滤镜数据
     AVFilterContext *dst;       ///< dest filter
-    AVFilterPad *dstpad;        ///< input pad on the dest filter
+    //输出的pad
+	AVFilterPad *dstpad;        ///< input pad on the dest filter
 
     /** stage of the initialization of the link properties (dimensions, etc) */
     enum
@@ -599,18 +649,27 @@ struct AVFilterLink
         AVLINK_UNINIT = 0,      ///< not started
         AVLINK_STARTINIT,       ///< started, but incomplete
         AVLINK_INIT             ///< complete
-    } init_state;
-
+    } init_state;//初始化状态
+	//滤镜媒体类型
     enum AVMediaType type;      ///< filter media type
 
+	//视频滤镜参数
     /* These parameters apply only to video */
-    int w;                      ///< agreed upon image width
-    int h;                      ///< agreed upon image height
-    AVRational sample_aspect_ratio; ///< agreed upon sample aspect ratio
-    /* These two parameters apply only to audio */
-    int64_t channel_layout;     ///< channel layout of current buffer (see libavutil/audioconvert.h)
-    int64_t sample_rate;        ///< samples per second
-
+    //宽
+	int w;                      ///< agreed upon image width
+    //高
+	int h;                      ///< agreed upon image height
+    //视频长宽比
+	AVRational sample_aspect_ratio; ///< agreed upon sample aspect ratio
+    //音频滤镜参数
+	/* These two parameters apply only to audio */
+    //音频通道布局
+	int64_t channel_layout;     ///< channel layout of current buffer (see libavutil/audioconvert.h)
+    //采样率
+	int64_t sample_rate;        ///< samples per second
+	
+	
+	//媒体格式
     int format;                 ///< agreed upon media format
 
     /**
@@ -618,7 +677,9 @@ struct AVFilterLink
      * These lists are used for negotiating the format to actually be used,
      * which will be loaded into the format member, above, when chosen.
      */
+	//输入滤镜格式
     AVFilterFormats *in_formats;
+	//输出滤镜格式
     AVFilterFormats *out_formats;
 
     /**
@@ -661,6 +722,7 @@ FFMPEGLIB_API int avfilter_link(AVFilterContext *src, unsigned srcpad,
  * @param filter the filter to negotiate the properties for its inputs
  * @return       zero on successful negotiation
  */
+//配置滤镜的函数
 FFMPEGLIB_API int avfilter_config_links(AVFilterContext *filter);
 
 /**

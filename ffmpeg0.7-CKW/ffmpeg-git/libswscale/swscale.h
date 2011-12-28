@@ -164,12 +164,14 @@ struct SwsContext;
  * Returns a positive value if pix_fmt is a supported input format, 0
  * otherwise.
  */
+//检验是否为支持的输入像素格式
 FFMPEGLIB_API int sws_isSupportedInput(enum PixelFormat pix_fmt);
 
 /**
  * Returns a positive value if pix_fmt is a supported output format, 0
  * otherwise.
  */
+//检验是否为支持的输出像素格式
 FFMPEGLIB_API int sws_isSupportedOutput(enum PixelFormat pix_fmt);
 
 /**
@@ -177,6 +179,7 @@ FFMPEGLIB_API int sws_isSupportedOutput(enum PixelFormat pix_fmt);
  * sws_init_context(). For filling see AVOptions, options.c and
  * sws_setColorspaceDetails().
  */
+//分配一个SwsContext
 FFMPEGLIB_API struct SwsContext *sws_alloc_context(void);
 
 /**
@@ -185,12 +188,14 @@ FFMPEGLIB_API struct SwsContext *sws_alloc_context(void);
  * @return zero or positive value on success, a negative value on
  * error
  */
+//初始化SwsContext
 FFMPEGLIB_API int sws_init_context(struct SwsContext *sws_context, SwsFilter *srcFilter, SwsFilter *dstFilter);
 
 /**
  * Frees the swscaler context swsContext.
  * If swsContext is NULL, then does nothing.
  */
+//释放SwsContext
 FFMPEGLIB_API void sws_freeContext(struct SwsContext *swsContext);
 
 #if FF_API_SWS_GETCONTEXT
@@ -209,6 +214,7 @@ FFMPEGLIB_API void sws_freeContext(struct SwsContext *swsContext);
  * @note this function is to be removed after a saner alternative is
  *       written
  */
+//通过参数获取SwsContext
 FFMPEGLIB_API struct SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat,
         int dstW, int dstH, enum PixelFormat dstFormat,
         int flags, SwsFilter *srcFilter,
@@ -241,12 +247,14 @@ FFMPEGLIB_API struct SwsContext *sws_getContext(int srcW, int srcH, enum PixelFo
  *                  the destination image
  * @return          the height of the output slice
  */
+//真正的缩放函数
 FFMPEGLIB_API int sws_scale(struct SwsContext *context, const uint8_t *const srcSlice[], const int srcStride[],
                             int srcSliceY, int srcSliceH, uint8_t *const dst[], const int dstStride[]);
 #if LIBSWSCALE_VERSION_MAJOR < 1
 /**
  * @deprecated Use sws_scale() instead.
  */
+//与sws_scale相同的功能，图片缩放函数
 FFMPEGLIB_API int sws_scale_ordered(struct SwsContext *context, const uint8_t *const src[],
                                     int srcStride[], int srcSliceY, int srcSliceH,
                                     uint8_t *dst[], int dstStride[]) attribute_deprecated;
@@ -257,6 +265,7 @@ FFMPEGLIB_API int sws_scale_ordered(struct SwsContext *context, const uint8_t *c
  * @param fullRange if 1 then the luma range is 0..255 if 0 it is 16..235
  * @return -1 if not supported
  */
+//设置颜色空间
 FFMPEGLIB_API int sws_setColorspaceDetails(struct SwsContext *c, const int inv_table[4],
         int srcRange, const int table[4], int dstRange,
         int brightness, int contrast, int saturation);
@@ -264,6 +273,7 @@ FFMPEGLIB_API int sws_setColorspaceDetails(struct SwsContext *c, const int inv_t
 /**
  * @return -1 if not supported
  */
+//获取颜色空间
 FFMPEGLIB_API int sws_getColorspaceDetails(struct SwsContext *c, int **inv_table,
         int *srcRange, int **table, int *dstRange,
         int *brightness, int *contrast, int *saturation);
@@ -271,34 +281,40 @@ FFMPEGLIB_API int sws_getColorspaceDetails(struct SwsContext *c, int **inv_table
 /**
  * Allocates and returns an uninitialized vector with length coefficients.
  */
+//分配一个Vec
 FFMPEGLIB_API SwsVector *sws_allocVec(int length);
 
 /**
  * Returns a normalized Gaussian curve used to filter stuff
  * quality=3 is high quality, lower is lower quality.
  */
+//获取一个GaussianVec
 FFMPEGLIB_API SwsVector *sws_getGaussianVec(double variance, double quality);
 
 /**
  * Allocates and returns a vector with length coefficients, all
  * with the same value c.
  */
+//获取一个ConstVec
 FFMPEGLIB_API SwsVector *sws_getConstVec(double c, int length);
 
 /**
  * Allocates and returns a vector with just one coefficient, with
  * value 1.0.
  */
+//获取一个IdentityVec
 FFMPEGLIB_API SwsVector *sws_getIdentityVec(void);
 
 /**
  * Scales all the coefficients of a by the scalar value.
  */
+//获取一个scaleVec
 FFMPEGLIB_API void sws_scaleVec(SwsVector *a, double scalar);
 
 /**
  * Scales all the coefficients of a so that their sum equals height.
  */
+//有关Vec的一些操作
 FFMPEGLIB_API void sws_normalizeVec(SwsVector *a, double height);
 FFMPEGLIB_API void sws_convVec(SwsVector *a, SwsVector *b);
 FFMPEGLIB_API void sws_addVec(SwsVector *a, SwsVector *b);
@@ -309,12 +325,14 @@ FFMPEGLIB_API void sws_shiftVec(SwsVector *a, int shift);
  * Allocates and returns a clone of the vector a, that is a vector
  * with the same coefficients as a.
  */
+//克隆一个Vec
 FFMPEGLIB_API SwsVector *sws_cloneVec(SwsVector *a);
 
 #if LIBSWSCALE_VERSION_MAJOR < 1
 /**
  * @deprecated Use sws_printVec2() instead.
  */
+//打印Vec
 FFMPEGLIB_API attribute_deprecated void sws_printVec(SwsVector *a);
 #endif
 
@@ -322,14 +340,18 @@ FFMPEGLIB_API attribute_deprecated void sws_printVec(SwsVector *a);
  * Prints with av_log() a textual representation of the vector a
  * if log_level <= av_log_level.
  */
+//打印Vec2
 FFMPEGLIB_API void sws_printVec2(SwsVector *a, AVClass *log_ctx, int log_level);
 
+//释放Vec
 FFMPEGLIB_API void sws_freeVec(SwsVector *a);
 
+//获取默认的Filter
 FFMPEGLIB_API SwsFilter *sws_getDefaultFilter(float lumaGBlur, float chromaGBlur,
         float lumaSharpen, float chromaSharpen,
         float chromaHShift, float chromaVShift,
         int verbose);
+//释放Filter
 FFMPEGLIB_API void sws_freeFilter(SwsFilter *filter);
 
 /**
@@ -345,6 +367,7 @@ FFMPEGLIB_API void sws_freeFilter(SwsFilter *filter);
  * Be warned that srcFilter and dstFilter are not checked, they
  * are assumed to remain the same.
  */
+//快速获取SwsContext
 FFMPEGLIB_API struct SwsContext *sws_getCachedContext(struct SwsContext *context,
         int srcW, int srcH, enum PixelFormat srcFormat,
         int dstW, int dstH, enum PixelFormat dstFormat,
@@ -361,6 +384,7 @@ FFMPEGLIB_API struct SwsContext *sws_getCachedContext(struct SwsContext *context
  * @param num_pixels number of pixels to convert
  * @param palette    array with [256] entries, which must match color arrangement (RGB or BGR) of src
  */
+//转换函数8-32
 FFMPEGLIB_API void sws_convertPalette8ToPacked32(const uint8_t *src, uint8_t *dst, long num_pixels, const uint8_t *palette);
 
 /**
@@ -373,6 +397,7 @@ FFMPEGLIB_API void sws_convertPalette8ToPacked32(const uint8_t *src, uint8_t *ds
  * @param num_pixels number of pixels to convert
  * @param palette    array with [256] entries, which must match color arrangement (RGB or BGR) of src
  */
+//转换函数8-24
 FFMPEGLIB_API void sws_convertPalette8ToPacked24(const uint8_t *src, uint8_t *dst, long num_pixels, const uint8_t *palette);
 
 

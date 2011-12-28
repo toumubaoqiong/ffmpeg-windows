@@ -170,6 +170,7 @@ int avfilter_insert_filter(AVFilterLink *link, AVFilterContext *filt,
     return 0;
 }
 
+//配置滤镜的函数
 int avfilter_config_links(AVFilterContext *filter)
 {
     int (*config_link)(AVFilterLink *);
@@ -197,6 +198,7 @@ int avfilter_config_links(AVFilterContext *filter)
 
             if (!(config_link = link->srcpad->config_props))
                 config_link  = avfilter_default_config_output_link;
+			//初始化滤镜
             if ((ret = config_link(link)) < 0)
                 return ret;
 

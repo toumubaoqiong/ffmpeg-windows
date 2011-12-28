@@ -22,6 +22,7 @@
  * @file
  * memory buffer source filter
  */
+//输入源的滤镜内存buffer
 
 #include "avfilter.h"
 #include "vsrc_buffer.h"

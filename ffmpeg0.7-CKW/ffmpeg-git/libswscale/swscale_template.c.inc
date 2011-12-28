@@ -2577,6 +2577,7 @@ inline static void RENAME(hcscale)(SwsContext *c, uint16_t *dst, long dstWidth, 
 #define DEBUG_SWSCALE_BUFFERS 0
 #define DEBUG_BUFFERS(...) if (DEBUG_SWSCALE_BUFFERS) av_log(c, AV_LOG_DEBUG, __VA_ARGS__)
 
+//输入的变量和sws_cale函数是一样的
 static int RENAME(swScale)(SwsContext *c, const uint8_t* src[], int srcStride[], int srcSliceY,
                            int srcSliceH, uint8_t* dst[], int dstStride[])
 {
@@ -2617,6 +2618,7 @@ static int RENAME(swScale)(SwsContext *c, const uint8_t* src[], int srcStride[],
     int lastDstY;
     uint32_t *pal=c->pal_yuv;
 
+	//下面的一个示例是：YVU缩放为YUV
     /* vars which will change and which we need to store back in the context */
     int dstY= c->dstY;
     int lumBufIndex= c->lumBufIndex;
