@@ -1,0 +1,18 @@
+mpeg4 vol header文件格式分析  
+最近在做一个3gp/mp4播放器， 用ffmpeg从3gp/mp4文件中demux出mpeg4的raw data,  无法直接用来解码，需要在第一帧之前加上vol header.   我照搬了ffmpeg的encode_vol_header的实现，很多文件（尤其是QVGA尺寸的文件)解码不了。
+  最后得知，这个vol根本不用自己生成，只要把avctx->extradata里面的长度为avctx->extradata_size的数据copy到你的第一帧前面就可以了。 
+  虽然ffmpeg有现成的vol header,还是顺便总结一下mpeg4 sp的文件格式。参考文档 《mpeg-4-14496-2》6.2节。   用UE打开一个.m4v文件，开头44字节就是vol header. 比特流的句法如下：
+  a) 全局配置信息，表征解码器准备解码的整个视频对象组  VisualObjectSequence()
+  b) 对象配置信息，表征单个视频对象。VisualObject(). 
+  c) 对象层配置信息, 表征一个视频对象的层 VideoObjectLayer(). 
+  d) ES流数据，包含了整个视频对象层里的数据。
+
+  相关代码在ffmpeg\libavcodec\h263.c的里mpeg4_encode_visual_object_header和mpeg4_encode_vol_header。有几个点需要注意。
+
+  -先写vos和vo header， vos的起始码是0x1B0, vo的起始码是0x1B5
+  -profile_and_level_indication的值，simple profile一般值为0x3
+  - vol的开头是00 00 01 00 00 00 0120
+  -vol_width和vol_height与图像尺寸一致，从=(*FormatCtx).streams[videoStream]->codec里可得。
+  - 不到8位的需补零
+
+顺便推荐一个mp4ui的软件，他可以从3GP和MP4文件中DUMP出音频和视频，很好用哦。 而且是开源的，对分析3GP格式很有帮助!
