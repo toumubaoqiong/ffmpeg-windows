@@ -515,6 +515,7 @@ static int set_codec_from_probe_data(AVFormatContext *s, AVStream *st, AVProbeDa
 /**
  * Open a media file from an IO stream. 'fmt' must be specified.
  */
+//非常重要的一个函数，获取媒体的大部分的信息就靠它了
 int av_open_input_stream(AVFormatContext **ic_ptr,
                          AVIOContext *pb, const char *filename,
                          AVInputFormat *fmt, AVFormatParameters *ap)
@@ -530,19 +531,24 @@ int av_open_input_stream(AVFormatContext **ic_ptr,
     }
 
     if(!ap->prealloced_context)
+	{
         ic = avformat_alloc_context();
+	}
     else
+	{
         ic = *ic_ptr;
-    if (!ic)
+	}
+	if (!ic)
     {
         err = AVERROR(ENOMEM);
         goto fail;
     }
-    ic->iformat = fmt;
-    ic->pb = pb;
-    ic->duration = AV_NOPTS_VALUE;
-    ic->start_time = AV_NOPTS_VALUE;
+    ic->iformat = fmt;//此iformat格式是一个常量值，不能改变
+    ic->pb = pb;//这就是文件读取的根据
+    ic->duration = AV_NOPTS_VALUE;//别忘了这里的赋值
+    ic->start_time = AV_NOPTS_VALUE;//别忘了这里的赋值
     av_strlcpy(ic->filename, filename, sizeof(ic->filename));
+	//复制文件名
 
     /* allocate private data */
     if (fmt->priv_data_size > 0)
@@ -558,21 +564,25 @@ int av_open_input_stream(AVFormatContext **ic_ptr,
     {
         ic->priv_data = NULL;
     }
-
     // e.g. AVFMT_NOFILE formats will not have a AVIOContext
     if (ic->pb)
+	{
+		//获取id3v2的信息
         ff_id3v2_read(ic, ID3v2_DEFAULT_MAGIC);
-
+	}
     if (ic->iformat->read_header)
     {
         err = ic->iformat->read_header(ic, ap);
         if (err < 0)
+		{
             goto fail;
+		}
     }
 
     if (pb && !ic->data_offset)
+	{
         ic->data_offset = avio_tell(ic->pb);
-
+	}
 #if FF_API_OLD_METADATA
     ff_metadata_demux_compat(ic);
 #endif
@@ -633,7 +643,7 @@ int av_probe_input_buffer(AVIOContext *pb, AVInputFormat **fmt,
     {
         return AVERROR(EINVAL);
     }
-
+	//这个for循环是一个很有趣的寻找核对媒体封装格式的代码
     for(probe_size = PROBE_BUF_MIN; 
 		probe_size <= max_probe_size && !*fmt && ret >= 0;
         probe_size = FFMIN(probe_size << 1, 
@@ -642,6 +652,7 @@ int av_probe_input_buffer(AVIOContext *pb, AVInputFormat **fmt,
         int ret, 
 			score = 
 				probe_size < max_probe_size ? AVPROBE_SCORE_MAX / 4 : 0;
+		//score这样计算有何意义啊？
         int buf_offset = 
 			(probe_size == PROBE_BUF_MIN) ? 0 : probe_size >> 1;
         if (probe_size < offset)
@@ -662,6 +673,7 @@ int av_probe_input_buffer(AVIOContext *pb, AVInputFormat **fmt,
             score = 0;
             ret = 0;            /* error was end of file, nothing read */
         }
+		//注意pd可不是pb,两者是截然不同的！！！！！！！！
         pd.buf_size += ret;
         pd.buf = &buf[offset];
 
@@ -3066,27 +3078,27 @@ AVStream *av_new_stream(AVFormatContext *s, int id)
         av_free(st);
         return NULL;
     }
-
+	//每个AVStream里面都有一个AVCodecContext
     st->codec = avcodec_alloc_context();
     if (s->iformat)
     {
         /* no default bitrate if decoding */
-        st->codec->bit_rate = 0;
+        st->codec->bit_rate = 0;//为什么不设置默认值，一定设置为零吗？
     }
-    st->index = s->nb_streams;
-    st->id = id;
-    st->start_time = AV_NOPTS_VALUE;
-    st->duration = AV_NOPTS_VALUE;
+    st->index = s->nb_streams;//依照当前存在的排序即可
+    st->id = id;//id也是较为简单的
+    st->start_time = AV_NOPTS_VALUE;//这些东西，不是不知道什么时候设置的吗？现在看到了吗？
+    st->duration = AV_NOPTS_VALUE;//我, 靠， duration是什么意思？答：持续的时间
     /* we set the current DTS to 0 so that formats without any timestamps
        but durations get some timestamps, formats with some unknown
        timestamps have their first few packets buffered and the
        timestamps corrected before they are returned to the user */
-    st->cur_dts = 0;
-    st->first_dts = AV_NOPTS_VALUE;
-    st->probe_packets = MAX_PROBE_PACKETS;
+    st->cur_dts = 0;//默认值？？？？
+    st->first_dts = AV_NOPTS_VALUE;//默认值？？？？
+    st->probe_packets = MAX_PROBE_PACKETS;//默认值？？？？
 
     /* default pts setting is MPEG-like */
-    av_set_pts_info(st, 33, 1, 90000);
+    av_set_pts_info(st, 33, 1, 90000);//基本上每个都是这样设置的
     st->last_IP_pts = AV_NOPTS_VALUE;
     for(i = 0; i < MAX_REORDER_DELAY + 1; i++)
         st->pts_buffer[i] = AV_NOPTS_VALUE;
@@ -3097,7 +3109,8 @@ AVStream *av_new_stream(AVFormatContext *s, int id)
         0, 1
     };
 
-    s->streams[s->nb_streams++] = st;
+    s->streams[s->nb_streams++] = st;//这里可谓久来的一笔啊
+	//它设置了两个变量,一个是s->streams， 一个是s->nb_streams
     return st;
 }
 

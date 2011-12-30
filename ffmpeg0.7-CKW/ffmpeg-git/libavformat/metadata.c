@@ -78,6 +78,7 @@ av_metadata_get(AVMetadata *m, const char *key, const AVMetadataTag *prev, int f
 //设置AVMetadata的值，有可能需要分配内存
 int av_metadata_set2(AVMetadata **pm, const char *key, const char *value, int flags)
 {
+	//AVMetadata主要就是媒体相关的标记信息，该函数这样设计很棒！
     AVMetadata *m = *pm;
     AVMetadataTag *tag = av_metadata_get(m, key, NULL, flags);
 

@@ -693,8 +693,8 @@ static int mov_read_mdhd(MOVContext *c, AVIOContext *pb, MOVAtom atom)
 
     if (c->fc->nb_streams < 1)
         return 0;
-    st = c->fc->streams[c->fc->nb_streams-1];
-    sc = st->priv_data;
+    st = c->fc->streams[c->fc->nb_streams-1];//各自联系找对象
+    sc = st->priv_data;//各自联系找对象
 
     version = avio_r8(pb);
     if (version > 1)
@@ -711,7 +711,7 @@ static int mov_read_mdhd(MOVContext *c, AVIOContext *pb, MOVAtom atom)
         creation_time = avio_rb32(pb);
         avio_rb32(pb); /* modification time */
     }
-    mov_metadata_creation_time(&st->metadata, creation_time);
+    mov_metadata_creation_time(&st->metadata, creation_time);//设置AVStream的metadata
 
     sc->time_scale = avio_rb32(pb);
     st->duration = (version == 1) ? avio_rb64(pb) : avio_rb32(pb); /* duration */
@@ -1910,13 +1910,14 @@ static int mov_read_trak(MOVContext *c, AVIOContext *pb, MOVAtom atom)
     AVStream *st;
     MOVStreamContext *sc;
     int ret;
-
+	//我的天啊， 终于找到了3GP文件建立AVStream的地方！！！！！
     st = av_new_stream(c->fc, c->fc->nb_streams);
     if (!st) return AVERROR(ENOMEM);
     sc = av_mallocz(sizeof(MOVStreamContext));
+	//MOVStreamContext与AVStream是如何搭配起来的，这是考虑的关键所在？
     if (!sc) return AVERROR(ENOMEM);
 
-    st->priv_data = sc;
+    st->priv_data = sc;//这就是结合所在！
     st->codec->codec_type = AVMEDIA_TYPE_DATA;
     sc->ffindex = st->index;
 
@@ -2050,8 +2051,8 @@ static int mov_read_tkhd(MOVContext *c, AVIOContext *pb, MOVAtom atom)
 
     if (c->fc->nb_streams < 1)
         return 0;
-    st = c->fc->streams[c->fc->nb_streams-1];
-    sc = st->priv_data;
+    st = c->fc->streams[c->fc->nb_streams-1];//典型的在哪里都能找到要用的数据的做法
+    sc = st->priv_data;//这种相互关联的做法还挺有用！
 
     version = avio_r8(pb);
     avio_rb24(pb); /* flags */
@@ -2099,6 +2100,11 @@ static int mov_read_tkhd(MOVContext *c, AVIOContext *pb, MOVAtom atom)
     height = avio_rb32(pb);      // 16.16 fixed point track height
     sc->width = width >> 16;
     sc->height = height >> 16;
+	TraceOutMsg("w %d, h %d, ow %d, oh %d\n", 
+		sc->width, 
+		sc->height,
+		width, 
+		height);
 
     // transform the display width/height according to the matrix
     // skip this if the display matrix is the default identity matrix

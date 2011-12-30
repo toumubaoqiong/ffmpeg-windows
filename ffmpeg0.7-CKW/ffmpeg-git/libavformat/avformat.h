@@ -241,6 +241,7 @@ FFMPEGLIB_API int av_append_packet(AVIOContext *s, AVPacket *pkt, int size);
  * The exact value of the fractional number is: 'val + num / den'.
  * num is assumed to be 0 <= num < den.
  */
+//带分数的典型数据结构哦， 呵呵， 我以前也写过！！！！
 typedef struct AVFrac
 {
     int64_t val, num, den;
@@ -536,9 +537,12 @@ typedef struct AVIndexEntry
  */
 typedef struct AVStream
 {
+	//流的序号
     int index;    /**< stream index in AVFormatContext */
-    int id;       /**< format-specific stream ID */
-    AVCodecContext *codec; /**< codec context */
+    //流的ID(可能是从输入文件中读取的)
+	int id;       /**< format-specific stream ID */
+    //流的编解码器
+	AVCodecContext *codec; /**< codec context */
     /**
      * Real base framerate of the stream.
      * This is the lowest framerate with which all timestamps can be
@@ -547,15 +551,19 @@ typedef struct AVStream
      * For example, if the time base is 1/90000 and all frames have either
      * approximately 3600 or 1800 timer ticks, then r_frame_rate will be 50/1.
      */
+	//平均最小的帧率
     AVRational r_frame_rate;
+	//流的数据对象
     void *priv_data;
 
     /* internal data used in av_find_stream_info() */
+	//内部数据， 用于av_find_stream_info()除此之外就没有这样的数据结构了吗？
     int64_t first_dts;
 
     /**
      * encoding: pts generation when outputting stream
      */
+	//编码输出时的pts
     struct AVFrac pts;
 
     /**
@@ -565,17 +573,22 @@ typedef struct AVStream
      * decoding: set by libavformat
      * encoding: set by libavformat in av_write_header
      */
+	//基本的时间单元
     AVRational time_base;
+	//pts上的字节数
     int pts_wrap_bits; /**< number of bits in pts (used for wrapping control) */
     /* ffmpeg.c private use */
-    int stream_copy; /**< If set, just copy stream. */
-    enum AVDiscard discard; ///< Selects which packets can be discarded at will and do not need to be demuxed.
+    //是否拷贝流
+	int stream_copy; /**< If set, just copy stream. */
+    //是否屏蔽此流
+	enum AVDiscard discard; ///< Selects which packets can be discarded at will and do not need to be demuxed.
 
     //FIXME move stuff to a flags field?
     /**
      * Quality, as it has been removed from AVCodecContext and put in AVVideoFrame.
      * MN: dunno if that is the right place for it
      */
+	//质量
     float quality;
 
     /**
@@ -586,6 +599,7 @@ typedef struct AVStream
      * @note The ASF header does NOT contain a correct start_time the ASF
      * demuxer must NOT set this.
      */
+	//开始时间(即第一帧的PTS)
     int64_t start_time;
 
     /**
@@ -593,37 +607,47 @@ typedef struct AVStream
      * If a source file does not specify a duration, but does specify
      * a bitrate, this value will be estimated from bitrate and file size.
      */
+	//持续时间
     int64_t duration;
 
 #if FF_API_OLD_METADATA
+	//语言
     attribute_deprecated char language[4]; /**< ISO 639-2/B 3-letter language code (empty string if undefined) */
 #endif
 
     /* av_read_frame() support */
+	//????
     enum AVStreamParseType need_parsing;
     struct AVCodecParserContext *parser;
 
+	//当前dts
     int64_t cur_dts;
+	//最后一个IPduration
     int last_IP_duration;
+	//最后一个IP的pts
     int64_t last_IP_pts;
     /* av_seek_frame() support */
+	//特殊的成员？
     AVIndexEntry *index_entries; /**< Only used if the format does not
                                     support seeking natively. */
-    int nb_index_entries;
+    int nb_index_entries;//特殊的成员？
+	//
     unsigned int index_entries_allocated_size;
-
+	//流的帧数
     int64_t nb_frames;                 ///< number of frames in this stream if known or 0
 
 #if FF_API_LAVF_UNUSED
+	//?
     attribute_deprecated int64_t unused[4+1];
 #endif
 
 #if FF_API_OLD_METADATA
-    attribute_deprecated char *filename; /**< source filename of the stream */
+    //?
+	attribute_deprecated char *filename; /**< source filename of the stream */
 #endif
-
+	//?
     int disposition; /**< AV_DISPOSITION_* bit field */
-
+	//探测的数据
     AVProbeData probe_data;
 #define MAX_REORDER_DELAY 16
     int64_t pts_buffer[MAX_REORDER_DELAY+1];
@@ -633,14 +657,19 @@ typedef struct AVStream
      * - encoding: Set by user.
      * - decoding: Set by libavformat.
      */
+	//采样长宽比
     AVRational sample_aspect_ratio;
 
+	//metadata
     AVMetadata *metadata;
 
     /* Intended mostly for av_read_frame() support. Not supposed to be used by */
     /* external applications; try to use something else if at all possible.    */
-    const uint8_t *cur_ptr;
-    int cur_len;
+    //不懂？
+	const uint8_t *cur_ptr;
+    //不懂？
+	int cur_len;
+	//当前的pkt
     AVPacket cur_pkt;
 
     // Timestamp generation support:
@@ -651,6 +680,7 @@ typedef struct AVStream
      * a DTS is received from the underlying container. Otherwise set to
      * AV_NOPTS_VALUE by default.
      */
+	//最后同步点的DTS
     int64_t reference_dts;
 
     /**
@@ -658,22 +688,26 @@ typedef struct AVStream
      * NOT PART OF PUBLIC API
      */
 #define MAX_PROBE_PACKETS 2500
+	//探测的pkt数目
     int probe_packets;
 
     /**
      * last packet in packet_buffer for this stream when muxing.
      * used internally, NOT PART OF PUBLIC API, dont read or write from outside of libav*
      */
+	//pkt列表
     struct AVPacketList *last_in_packet_buffer;
 
     /**
      * Average framerate
      */
+	//平均帧率
     AVRational avg_frame_rate;
 
     /**
      * Number of frames that have been demuxed during av_find_stream_info()
      */
+	//在av_find_stream_info()中被demuxed的帧数
     int codec_info_nb_frames;
 
     /**
@@ -693,6 +727,7 @@ typedef struct AVStream
      * flag to indicate that probing is requested
      * NOT PART OF PUBLIC API
      */
+	//探测请求
     int request_probe;
 } AVStream;
 

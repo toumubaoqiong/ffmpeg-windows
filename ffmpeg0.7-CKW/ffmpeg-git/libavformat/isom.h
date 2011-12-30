@@ -136,13 +136,16 @@ typedef struct MOVStreamContext
 
 typedef struct MOVContext
 {
-    AVFormatContext *fc;
+    AVFormatContext *fc;//封装格式
     int time_scale;
     int64_t duration;     ///< duration of the longest track
     int found_moov;       ///< 'moov' atom has been found
+	//mdat是干什么用的？
+	//此项是“mdat”解析的时候设置
     int found_mdat;       ///< 'mdat' atom has been found
     DVDemuxContext *dv_demux;
     AVFormatContext *dv_fctx;
+	//是否是ISO Media
     int isom;             ///< 1 if file is ISO Media (mp4/3gp)
     MOVFragment fragment; ///< current fragment in moof atom
     MOVTrackExt *trex_data;

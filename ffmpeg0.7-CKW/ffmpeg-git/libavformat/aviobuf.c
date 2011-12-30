@@ -603,6 +603,7 @@ static void fill_buffer(AVIOContext *s)
 
     if(s->read_packet)
 	{
+		//可以说这里的len就是根据剩余的缓存大小来确定的
         len = s->read_packet(s->opaque, dst, len);
 	}
     else
@@ -1014,32 +1015,48 @@ static int url_resetbuf(AVIOContext *s, int flags)
     return 0;
 }
 
-int ffio_rewind_with_probe_data(AVIOContext *s, unsigned char *buf, int buf_size)
+//使用buf和buf_size替换调AVIOContext的缓存
+int ffio_rewind_with_probe_data(AVIOContext *s, 
+								unsigned char *buf, 
+								int buf_size)
 {
+	//典型的就是为了调整AVIOContext的内部缓存
     int64_t buffer_start;
     int buffer_size;
     int overlap, new_size, alloc_size;
-
+	
+	//本函数只是在读的模式下运行
     if (s->write_flag)
+	{
         return AVERROR(EINVAL);
-
+	}
+	//缓存大小
     buffer_size = s->buf_end - s->buffer;
 
     /* the buffers must touch or overlap */
     if ((buffer_start = s->pos - buffer_size) > buf_size)
+	{
+		//检验数据的合法性
         return AVERROR(EINVAL);
-
+	}
+	//还有多少数据已经读出来了但是还没有使用
     overlap = buf_size - buffer_start;
     new_size = buf_size + buffer_size - overlap;
 
     alloc_size = FFMAX(s->buffer_size, new_size);
     if (alloc_size > buf_size)
+	{
         if (!(buf = av_realloc(buf, alloc_size)))
+		{
             return AVERROR(ENOMEM);
-
+		}
+	}
     if (new_size > buf_size)
     {
-        memcpy(buf + buf_size, s->buffer + overlap, buffer_size - overlap);
+		//实在不懂，这个有什么作用？
+        memcpy(buf + buf_size, 
+			s->buffer + overlap, 
+			buffer_size - overlap);
         buf_size = new_size;
     }
 
