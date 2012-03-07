@@ -1,0 +1,451 @@
+第-3篇参考资料
+Source Specific Multicast
+
+　　源特定组播（SSM：Source Specific Multicast）是一种区别于传统组播的新的业务模型，它使用组播组地址和组播源地址同时来标识一个组播会话，而不是向传统的组播服务那样只使用组播组地址来标识一个组播会话。SSM保留了传统PIM-SM模式中的主机显示加入组播组的高效性，但是跳过了PIM-SM模式中的共享树和RP （Rendezvous Point，集合点）规程。在传统PIM-SM模式中，共享树和RP规程使用(*，G)组对来表示一个组播会话，其中（G）表示一个特定的IP组播组，而（*）表示发向组播组G的任何一个源。SSM直接建立由(S,G)标识的一个组播最短路径树（SPT：Shortest Path Tree），其中（G）表示一个特定的IP组播组地址，而（S）表示发向组播组G的特定源的IP地址。
+　　SSM 的一个（S,G）对也被称为一个频道(Channel)，以区分传统PIM-SM组播中的任意源组播组（ASM：Any Source Multicast）。由于ASM支持点到多点和多点到多点两种组播业务模式，因此源的发现过程是ASM复杂性的原因。例如在PIM-SM模式中，用户点击浏览器中的组播内容，接收端设备只被通知到组播组的内容，而没有被通知到组播源的信息。而在SSM模式中，用户端将同时接收到组播源和组播组信息。
+　　因此,SSM特别适合于点到多点的组播服务，例如网络娱乐频道、网络新闻频道、网络体育频道等业务，但如果要求多点到多点组播服务则需要ASM模式。
+　　PIM-SSM是对传统PIM协议的扩展，使用SSM，用户能直接从组播源接收组播业务量，PIM－SSM利用PIM-SM的功能，在组播源和客户端之间，产生一个SPT树。但PIM-SSM在产生SPT树时，不需要汇聚点（RP）的帮助。
+　　一个具有SSM功能的网络相对于传统的PIM-SM网路来说，具有非常突出的优越性。网络中不再需要汇聚点，也不再需要共享树或RP的映射，同时网络中也不再需要MSDP协议，以完成RP与RP之间的源发现。
+
+
+第-2篇参考资料
+select函数以及FD_ZERO、FD_SET、FD_CLR、FD_ISSET说明
+1. select函数：
+      系统提供select函数来实现多路复用输入/输出模型。原型：   
+
+      #include   <sys/time.h>   
+      #include   <unistd.h>   
+ 
+      int select(int maxfd,fd_set *rdset,fd_set *wrset,fd_set *exset,struct timeval *timeout);
+ 
+ 参数：
+      maxfd 需要监视的最大的文件描述符值+1；
+      rdset，wrset，exset 分别对应于需要检测的可读文件描述符的集合，可写文件描述符的集合及异常文件描述符的集合；
+      struct timeval 用于描述一段时间长度，如果在这个时间内，需要监视的描述符没有事件发生则函数返回，返回值为0。
+ 
+      struct timeval结构：
+      struct timeval{
+             long tv_sec;//second
+            long tv_usec;//minisecond
+      }
+
+      timeout设置情况：
+            null：select将一直被阻塞，直到某个文件描述符上发生了事件。
+            0   ：仅检测描述符集合的状态，然后立即返回，并不等待外部事件的发生。
+            特定的时间值： 如果在指定的时间段里没有事件发生，select将超时返回。
+ 
+2. FD_ZERO、FD_SET、FD_CLR、FD_ISSET
+      FD_ZERO(fd_set *fdset)：
+      将指定的文件描述符集清空，在对文件描述符集合进行设置前，必须对其进行初始化，如果不清空，由于在系统分配内存空间后，通常并不作清空处理，所以结果是不可知的。
+      FD_SET(fd_set *fdset)：
+      用于在文件描述符集合中增加一个新的文件描述符。
+      FD_CLR(fd_set *fdset)：
+      用于在文件描述符集合中删除一个文件描述符。
+      FD_ISSET(int fd,fd_set *fdset)：
+      用于测试指定的文件描述符是否在该集合中。
+
+
+第-1篇参考资料
+liveMedia项目(http://www.live555.com/)的源代码包括四个基本的库，各种测试代码以及Media Server。四个基本的库分别是: UsageEnvironment&TaskScheduler, groupsock, liveMedia和BasicUsageEnvironment。 
+
+UsageEnvironment和TaskScheduler类用于事件的调度，实现异步读取事件的句柄的设置以及错误信息的输出。另外，还有 一个HashTable类定义了一个通用的hash表，其它代码要用到这个表。这些都是抽象类，在应用程序中基于这些类来实现自己的子类。 
+
+groupsock类是对网络接口的封装，用于收发数据包。正如名字本身，groupsock主要是面向多播数据的收发的，它也同时支持单播数据 的收发。 
+
+liveMedia库中有一系列类，基类是Medium，这些类针对不同的流媒体类型和编码。 
+
+各种测试代码在testProgram目录下，比如openRTSP等，这些代码有助于理解liveMedia的应用。 
+
+Media Server是一个纯粹的RTSP服务器。支持多种格式的媒体文件: 
+
+* TS流文件，扩展名ts。 
+* PS流文件，扩展名mpg。 
+* MPEG-4视频基本流文件，扩展名m4e。 
+* MP3文件，扩展名mp3。 
+* WAV文件(PCM)，扩展名wav。 
+* AMR音频文件，扩展名.amr。 
+* AAC文件，ADTS格式，扩展名aac。 
+
+用live555开发应用程序 
+
+基于liveMedia的程序，需要通过继承UsageEnvironment抽象类和TaskScheduler抽象类，定义相应的类来处理事 件调度，数据读写以及错误处理。live项目的源代码里有这些类的一个基本实现，这就是“BasicUsageEnvironment”库。 BasicUsageEnvironment主要是针对简单的控制台应用程序，利用select实现事件获取和处理。这个库利用Unix或者 Windows的控制台作为输入输出，处于应用程序原形或者调试的目的，可以用这个库用户可以开发传统的运行与控制台的应用。 
+通过使用自定义的“UsageEnvironment”和“TaskScheduler”抽象类的子类，这些应用程序就可以在特定的环境中运行， 不需要做过多的修改。需要指出的是在图形环境（GUI toolkit）下，抽象类 TaskScheduler 的子类在实现 doEventLoop()的时候应该与图形环境自己的事件处理框架集成。 
+
+基本概念 
+
+先来熟悉在liveMedia库中Source，Sink以及Filter等概念。Sink就是消费数据的对象，比如把接收到的数据存储到文件， 这个文件就是一个Sink。Source就是生产数据的对象，比如通过RTP读取数据。数据流经过多个'source'和'sink's，下面是一个示 例： 
+
+'source1' -> 'source2' (a filter) -> 'source3' (a filter) -> 'sink' 
+
+从其它Source接收数据的source也叫做"filters"。Module是一个sink或者一个filter。数据接收的终点是 Sink类，MediaSink是所有Sink类的基类。Sink类实现对数据的处理是通过实现纯虚函数continuePlaying()，通常情况下 continuePlaying调用fSource->getNextFrame来为Source设置数据缓冲区，处理数据的回调函数 等，fSource是MediaSink的类型为FramedSource*的类成员。 
+
+基本控制流程 
+
+基于liveMedia的应用程序的控制流程如下: 
+
+应用程序是事件驱动的，使用如下方式的循环 
+while (1) { 
+通过查找读网络句柄的列表和延迟队列（delay queue）来发现需要完成的任务 
+完成这个任务 
+} 
+对于每个sink，在进入这个循环之前，应用程序通常调用下面的方法来启动需要做的生成任务：  someSinkObject->startPlaying()。任何时候，一个Module需要获取数据都通过调用刚好在它之前的那个 Module的FramedSource::getNextFrame()方法。这是通过纯虚函数 FramedSource::doGetNextFrame() 实现的，每一个Source module都有相应的实现。 
+
+Each 'source' module's implementation of "doGetNextFrame()" works by arranging for an 'after getting' function to be called (from an event handler) when new data becomes available for the caller. 
+
+Note that the flow of data from 'sources' to 'sinks' happens within each application, and doesn't necessarily correspond to the sending or receiving of network packets. For example, a server application (such as "testMP3Streamer") that sends RTP packets will do so using one or more "RTPSink" modules. These "RTPSink" modules receive data from other, "*Source" modules (e.g., to read data from a file), and, as a side effect, transmit RTP packets.
+
+live555代码解读之一：RTSP连接的建立过程
+RTSPServer类用于构建一个RTSP服务器，该类同时在其内部定义了一个RTSPClientSession类，用于处理单独的客户会话。 
+
+首先创建RTSP服务器(具体实现类是DynamicRTSPServer)，在创建过程中，先建立 Socket(ourSocket)在TCP的554端口进行监听，然后把连接处理函数句柄 (RTSPServer::incomingConnectionHandler)和socket句柄传给任务调度器(taskScheduler)。 
+
+任务调度器把socket句柄放入后面select调用中用到的socket句柄集(fReadSet)中，同时将 socket句柄和incomingConnectionHandler句柄关联起来。接着，主程序开始进入任务调度器的主循环 （doEventLoop），在主循环中调用系统函数select阻塞，等待网络连接。 
+
+当RTSP客户端输入(rtsp://192.168.1.109/1.mpg)连接服务器时，select返回对应的scoket，进而根据前 面保存的对应关系，可找到对应处理函数句柄，这里就是前面提到的incomingConnectionHandler了。在 incomingConnectionHandler中创建了RTSPClientSession，开始对这个客户端的会话进行处理。 
+
+live555代码解读之二：DESCRIBE请求消息处理过程
+
+RTSP服务器收到客户端的DESCRIBE请求后，根据请求URL(rtsp://192.168.1.109/1.mpg)，找到对应的流媒体资源， 返回响应消息。live555中的ServerMediaSession类用来处理会话中描述，它包含多个（音频或视频）的子会话描述 (ServerMediaSubsession)。 
+
+上节我们谈到RTSP服务器收到客户端的连接请求，建立了RTSPClientSession类，处理单独的客户会话。在建立 RTSPClientSession的过程中，将新建立的socket句柄（clientSocket）和RTSP请求处理函数句柄 RTSPClientSession::incomingRequestHandler传给任务调度器，由任务调度器对两者进行一对一关联。当客户端发出 RTSP请求后，服务器主循环中的select调用返回，根据socket句柄找到对应的incomingRequestHandler，开始消息处理。 先进行消息的解析，如果发现请求是DESCRIBE则进入handleCmd_DESCRIBE函数。根据客户端请求URL的后缀(例如是1.mpg), 调用成员函数DynamicRTSPServer::lookupServerMediaSession查找对应的流媒体信息 ServerMediaSession。如果ServerMediaSession不存在，但是本地存在1.mpg文件，则创建一个新的 ServerMediaSession。在创建ServerMediaSession过程中，根据文件后缀.mpg，创建媒体MPEG-1or2的解复用 器(MPEG1or2FileServerDemux)。再由MPEG1or2FileServerDemux创建一个子会话描述 MPEG1or2DemuxedServerMediaSubsession。最后由ServerMediaSession完成组装响应消息中的SDP信 息（SDP组装过程见下面的描述），然后将响应消息发给客户端，完成一次消息交互。 
+SDP消息组装过程： 
+ServerMediaSession负责产生会话公共描述信息，子会话描述由 MPEG1or2DemuxedServerMediaSubsession产生。 MPEG1or2DemuxedServerMediaSubsession在其父类成员函数 OnDemandServerMediaSubsession::sdpLines()中生成会话描述信息。在sdpLines()实现里面，创建一个虚 构(dummy)的FramedSource(具体实现类为MPEG1or2AudioStreamFramer和 MPEG1or2VideoStreamFramer)和RTPSink（具体实现类为MPEG1or2AudioRTPSink和 MPEG1or2VideoRTPSink），最后调用setSDPLinesFromRTPSink(...)成员函数生成子会话描述。 
+
+
+以上涉及到的类以及继承关系： 
+Medium <- ServerMediaSession 
+Medium <- ServerMediaSubsession <- OnDemandServerMediaSubsession <- MPEG1or2DemuxedServerMediaSubsession 
+Medium <- MediaSource <- FramedSouse <- FramedFileSource <- ByteStreamFileSource 
+Medium <- MediaSource <- FramedSouse <- MPEG1or2DemuxedElementaryStream 
+Medium <- MPEG1or2FileServerDemux 
+Medium <- MPEG1or2Demux 
+Medium <- MediaSource <- FramedSouse <- MPEG1or2DemuxedElementaryStream 
+Medium <- MediaSource <- FramedSouse <- FramedFilter <- MPEGVideoStreamFramer <- MPEG1or2VideoStreamFramer 
+Medium <- MediaSink <- RTPSink <- MultiFramedRTPSink <- VideoRTPSink <- MPEG1or2VideoRTPSink 
+
+live555代码解读之三：SETUP 和PLAY请求消息处理过程
+前面已经提到RTSPClientSession类，用于处理单独的客户会话。其类成员函数handleCmd_SETUP()处理客户端的SETUP请 求。调用parseTransportHeader()对SETUP请求的传输头解析，调用子会话(这里具体实现类为 OnDemandServerMediaSubsession)的getStreamParameters()函数获取流媒体发送传输参数。将这些参数组 装成响应消息，返回给客户端。 
+
+获取发送传输参数的过程：调用子会话(具体实现类MPEG1or2DemuxedServerMediaSubsession)的 createNewStreamSource(...)创建MPEG1or2VideoStreamFramer，选择发送传输参数，并调用子会话的 createNewRTPSink(...)创建MPEG1or2VideoRTPSink。同时将这些信息保存在StreamState类对象中，用于 记录流的状态。 
+
+客户端发送两个SETUP请求，分别用于建立音频和视频的RTP接收。 
+
+PLAY请求消息处理过程 
+
+RTSPClientSession类成员函数handleCmd_PLAY()处理客户端的播放请求。首先调用子会话的startStream(),内 部调用MediaSink::startPlaying(...)，然后是 MultiFramedRTPSink::continuePlaying()，接着调用 MultiFramedRTPSink::buildAndSendPacket(...)。buildAndSendPacke内部先设置RTP包头， 内部再调用MultiFramedRTPSink::packFrame()填充编码帧数据。 
+packFrame内部通过 FramedSource::getNextFrame(), 接着MPEGVideoStreamFramer::doGetNextFrame()，再接着经过 MPEGVideoStreamFramer::continueReadProcessing()， FramedSource::afterGetting(...),  MultiFramedRTPSink::afterGettingFrame(...),  MultiFramedRTPSink::afterGettingFrame1(...)等一系列繁琐调用，最后到了 MultiFramedRTPSink::sendPacketIfNecessary(), 这里才真正发送RTP数据包。然后是计算下一个数据包发送时间，把MultiFramedRTPSink::sendNext(...)函数句柄传给任务 调度器，作为一个延时事件调度。在主循环中，当MultiFramedRTPSink::sendNext()被调度时，又开始调用 MultiFramedRTPSink::buildAndSendPacket(...)开始新的发送数据过程，这样客户端可以源源不断的收到服务器传 来的RTP包了。 
+
+
+发送RTP数据包的间隔计算方法： 
+Update the time at which the next packet should be sent, based on the duration of the frame that we just packed into it. 
+
+涉及到一些类有： 
+
+MPEGVideoStreamFramer: A filter that breaks up an MPEG video elementary stream into headers and frames 
+
+MPEG1or2VideoStreamFramer: A filter that breaks up an MPEG 1 or 2 video elementary stream into frames for: Video_Sequence_Header, GOP_Header, Picture_Header 
+
+MPEG1or2DemuxedElementaryStream: A MPEG 1 or 2 Elementary Stream, demultiplexed from a Program Stream 
+
+MPEG1or2Demux: Demultiplexer for a MPEG 1 or 2 Program Stream 
+
+ByteStreamFileSource: A file source that is a plain byte stream (rather than frames) 
+
+MPEGProgramStreamParser: Class for parsing MPEG program stream 
+
+StreamParser: Abstract class for parsing a byte stream 
+
+StreamState：A class that represents the state of an ongoing stream
+rtsp简介(ZT) 
+Real Time Streaming Protocol或者RTSP（实时流媒体协议），是由Real network 和 
+Netscape共同提出的如何有效地在IP网络上传输流媒体数据的应用层协议。RTSP提供一 
+种可扩展的框架，使能够提供能控制的，按需传输实时数据，比如音频和视频文件。源 
+数据可以包括现场数据的反馈和存贮的文件。rtsp对流媒体提供了诸如暂停，快进等控 
+制，而它本身并不传输数据，rtsp作用相当于流媒体服务器的远程控制。传输数据可以 
+通过传输层的tcp，udp协议，rtsp也提供了基于rtp传输机制的一些有效的方法。 
+RTSP消息格式: 
+RTSP的消息有两大类,一是请求消息(request),一是回应消息(response),两种 
+消息的格式不同. 
+请求消息: 
+方法 URI RTSP版本 CR LF 
+消息头 CR LF CR LF 
+消息体 CR LF 
+其中方法包括OPTION回应中所有的命令,URI是接受方的地址,例如 
+:rtsp://192.168.20.136 
+RTSP版本一般都是 RTSP/1.0.每行后面的CR LF表示回车换行，需要接受端有相应的解 
+析，最后一个消息头需要有两个CR LF 
+回应消息: 
+RTSP版本 状态码 解释 CR LF 
+消息头 CR LF CR LF 
+消息体 CR LF 
+其中RTSP版本一般都是RTSP/1.0,状态码是一个数值,200表示成功,解释是与状态码对应 
+的文本解释. 
+简单的rtsp交互过程: 
+C表示rtsp客户端,S表示rtsp服务端 
+1.C->S:OPTION request //询问S有哪些方法可用 
+1.S->C:OPTION response //S回应信息中包括提供的所有可用方法 
+
+2.C->S:DESCRIBE request //要求得到S提供的媒体初始化描述信息 
+2.S->C:DESCRIBE response //S回应媒体初始化描述信息，主要是sdp 
+
+3.C->S:SETUP request //设置会话的属性，以及传输模式，提醒S建立会 
+话 
+3.S->C:SETUP response //S建立会话，返回会话标识符，以及会话相关信息 
+
+
+4.C->S:PLAY request //C请求播放 
+4.S->C:PLAY response //S回应该请求的信息 
+
+S->C:发送流媒体数据 
+5.C->S:TEARDOWN request //C请求关闭会话 
+5.S->C:TEARDOWN response //S回应该请求 
+
+上述的过程是标准的、友好的rtsp流程，但实际的需求中并不一定按部就班来。 
+其中第3和4步是必需的！第一步，只要服务器客户端约定好，有哪些方法可用，则 
+option请求可以不要。第二步，如果我们有其他途径得到媒体初始化描述信息（比如 
+http请求等等），则我们也不需要通过rtsp中的describe请求来完成。第五步，可以根 
+据系统需求的设计来决定是否需要。 
+rtsp中常用方法: 
+1.OPTION 
+目的是得到服务器提供的可用方法: 
+OPTIONS rtsp://192.168.20.136:5000/xxx666 RTSP/1.0 
+CSeq: 1 //每个消息都有序号来标记，第一个包通常是option请求消息 
+User-Agent: VLC media player (LIVE555 Streaming Media v2005.11.10) 
+
+服务器的回应信息包括提供的一些方法,例如: 
+RTSP/1.0 200 OK 
+Server: UServer 0.9.7_rc1 
+Cseq: 1 //每个回应消息的cseq数值和请求消息的cseq相对应 
+Public: OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, SCALE, 
+GET_PARAMETER //服务器提供的可用的方法 
+2.DESCRIBE 
+C向S发起DESCRIBE请求,为了得到会话描述信息(SDP): 
+DESCRIBE rtsp://192.168.20.136:5000/xxx666 RTSP/1.0 
+
+CSeq: 2 
+token: 
+Accept: application/sdp 
+User-Agent: VLC media player (LIVE555 Streaming Media v2005.11.10) 
+
+服务器回应一些对此会话的描述信息(sdp): 
+RTSP/1.0 200 OK 
+Server: UServer 0.9.7_rc1 
+Cseq: 2 
+x-prev-url: rtsp://192.168.20.136:5000 
+x-next-url: rtsp://192.168.20.136:5000 
+x-Accept-Retransmit: our-retransmit 
+x-Accept-Dynamic-Rate: 1 
+Cache-Control: must-revalidate 
+Last-Modified: Fri, 10 Nov 2006 12:34:38 GMT 
+Date: Fri, 10 Nov 2006 12:34:38 GMT 
+Expires: Fri, 10 Nov 2006 12:34:38 GMT 
+Content-Base: rtsp://192.168.20.136:5000/xxx666/ 
+Content-Length: 344 
+Content-Type: application/sdp 
+
+v=0 //以下都是sdp信息 
+o=OnewaveUServerNG 1451516402 1025358037 IN IP4 192.168.20.136 
+s=/xxx666 
+u=http:/// 
+e=admin@ 
+c=IN IP4 0.0.0.0 
+t=0 0 
+a=isma-compliance:1,1.0,1 
+
+a=range:npt=0- 
+m=video 0 RTP/AVP 96 //m表示媒体描述，下面是对会话中视频通道的媒体描述 
+a=rtpmap:96 MP4V-ES/90000 
+a=fmtp:96 
+profile-level-id=245;config=000001B0F5000001B509000001000000012000C888B0E0E0FA62D089028307 
+
+a=control:trackID=0//trackID＝0表示视频流用的是通道0 
+
+3.SETUP 
+客户端提醒服务器建立会话,并确定传输模式: 
+SETUP rtsp://192.168.20.136:5000/xxx666/trackID=0 RTSP/1.0 
+CSeq: 3 
+Transport: RTP/AVP/TCP;unicast;interleaved=0-1 
+User-Agent: VLC media player (LIVE555 Streaming Media v2005.11.10) 
+//uri中带有trackID＝0，表示对该通道进行设置。Transport参数设置了传输模式，包 
+的结构。接下来的数据包头部第二个字节位置就是interleaved，它的值是每个通道都 
+不同的，trackID＝0的interleaved值有两个0或1，0表示rtp包，1表示rtcp包，接受端 
+根据interleaved的值来区别是哪种数据包。 
+
+服务器回应信息: 
+RTSP/1.0 200 OK 
+Server: UServer 0.9.7_rc1 
+Cseq: 3 
+Session: 6310936469860791894 //服务器回应的会话标识符 
+Cache-Control: no-cache 
+Transport: RTP/AVP/TCP;unicast;interleaved=0-1;ssrc=6B8B4567 
+4.PLAY 
+客户端发送播放请求: 
+PLAY rtsp://192.168.20.136:5000/xxx666 RTSP/1.0 
+CSeq: 4 
+Session: 6310936469860791894 
+Range: npt=0.000- //设置播放时间的范围 
+User-Agent: VLC media player (LIVE555 Streaming Media v2005.11.10) 
+服务器回应信息: 
+RTSP/1.0 200 OK 
+Server: UServer 0.9.7_rc1 
+Cseq: 4 
+Session: 6310936469860791894 
+Range: npt=0.000000- 
+RTP-Info: url=trackID=0;seq=17040;rtptime=1467265309 
+//seq和rtptime都是rtp包中的信息 
+5.TEARDOWN 
+客户端发起关闭请求: 
+TEARDOWN rtsp://192.168.20.136:5000/xxx666 RTSP/1.0 
+CSeq: 5 
+Session: 6310936469860791894 
+User-Agent: VLC media player (LIVE555 Streaming Media v2005.11.10) 
+服务器回应: 
+RTSP/1.0 200 OK 
+Server: UServer 0.9.7_rc1 
+Cseq: 5 
+Session: 6310936469860791894 
+Connection: Close 
+
+以上方法都是交互过程中最为常用的,其它还有一些重要的方法如 
+get/set_parameter,pause,redirect等等 
+ps: 
+sdp的格式 
+v=<version> 
+o=<username> <session id> <version> <network type> <address type> <address> 
+s=<session name> 
+i=<session description> 
+u=<URI> 
+e=<email address> 
+p=<phone number> 
+c=<network type> <address type> <connection address> 
+b=<modifier>:<bandwidth-value> 
+t=<start time> <stop time> 
+r=<repeat interval> <active duration> <list of offsets from start-time> 
+z=<adjustment time> <offset> <adjustment time> <offset> .... 
+k=<method> 
+k=<method>:<encryption key> 
+a=<attribute> 
+a=<attribute>:<value> 
+m=<media> <port> <transport> <fmt list> 
+v = （协议版本） 
+o = （所有者/创建者和会话标识符） 
+s = （会话名称） 
+i = * （会话信息） 
+u = * （URI 描述） 
+e = * （Email 地址） 
+p = * （电话号码） 
+c = * （连接信息） 
+b = * （带宽信息） 
+z = * （时间区域调整） 
+k = * （加密密钥） 
+a = * （0 个或多个会话属性行） 
+时间描述： 
+t = （会话活动时间） 
+r = * （0或多次重复次数） 
+媒体描述： 
+m = （媒体名称和传输地址） 
+i = * （媒体标题） 
+c = * （连接信息 — 如果包含在会话层则该字段可选） 
+b = * （带宽信息） 
+k = * （加密密钥） 
+a = * （0 个或多个媒体属性行） 
+参考文章：rfc2326（rtsp）；rfc2327（sdp） 
+RTSP点播消息流程实例（客户端：VLC， RTSP服务器：LIVE555 Media Server) 
+
+1)C(Client)-> M(Media Server) 
+OPTIONS rtsp://192.168.1.109/1.mpg RTSP/1.0 
+CSeq: 1 
+user-Agent: VLC media player(LIVE555 Streaming Media v2007.02.20) 
+
+1)M -> C 
+RTSP/1.0 200 OK 
+CSeq: 1 
+Date: wed, Feb 20 2008 07:13:24 GMT 
+Public: OPTIONS, DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE 
+
+2)C -> M 
+DESCRIBE rtsp://192.168.1.109/1.mpg RTSP/1.0 
+CSeq: 2 
+Accept: application/sdp 
+User-Agent: VLC media player(LIVE555 Streaming Media v2007.02.20) 
+
+2)M -> C 
+RTSP/1.0 200 OK 
+CSeq: 2 
+Date: wed, Feb 20 2008 07:13:25 GMT 
+Content-Base: rtsp://192.168.1.109/1.mpg/ 
+Content-type: application/sdp 
+Content-length: 447 
+v=0 
+o =- 2284269756 1 IN IP4 192.168.1.109 
+s=MPEG-1 or 2 program Stream, streamed by the LIVE555 Media Server 
+i=1.mpg 
+t=0 0 
+a=tool:LIVE555 Streaming Media v2008.02.08 
+a=type:broadcast 
+a=control:* 
+a=range:npt=0-66.181 
+a=x-qt-text-nam:MPEG-1 or Program Stream, streamed by the LIVE555 Media Server 
+a=x-qt-text-inf:1.mpg 
+m=video 0 RTP/AVP 32 
+c=IN IP4 0.0.0.0 
+a=control:track1 
+m=audio 0 RTP/AVP 14 
+c=IN IP4 0.0.0.0 
+a=control:track2 
+
+3)C -> M 
+SETUP rtsp://192.168.1.109/1.mpg/track1 RTSP/1.0 
+CSeq: 3 
+Transport: RTP/AVP; unicast;client_port=1112-1113 
+User-Agent: VLC media player(LIVE555 Streaming Media v2007.02.20) 
+
+3)M -> C 
+RTSP/1.0 200 OK 
+CSeq: 3 
+Date: wed, Feb 20 2008 07:13:25 GMT 
+Transport: RTP/AVP;unicast;destination=192.168.1.222;source=192.168.1.109;client_port=1112-1113;server_port=6970-6971 
+Session: 3 
+
+4)C -> M 
+SETUP rtsp://192.168.1.109/1.mpg/track2 RTSP/1.0 
+CSeq: 4 
+Transport: RTP/AVP; unicast;client_port=1114-1115 
+Session: 3 
+User-Agent: VLC media player(LIVE555 Streaming Media v2007.02.20) 
+
+4)M -> C 
+RTSP/1.0 200 OK 
+CSeq: 4 
+Date: wed, Feb 20 2008 07:13:25 GMT 
+Transport: RTP/AVP;unicast;destination=192.168.1.222;source=192.168.1.109;client_port=1114-1115;server_port=6972-6973 
+Session: 3 
+
+5)C -> M 
+PLAY rtsp://192.168.1.109/1.mpg/ RTSP/1.0 
+CSeq: 5 
+Session: 3 
+Range: npt=0.000- 
+User-Agent: VLC media player(LIVE555 Streaming Media v2007.02.20) 
+
+5)M -> C 
+RTSP/1.0 200 OK 
+CSeq: 5 
+Range: npt=0.000- 
+Session: 3 
+RTP-Info: url=rtsp://192.168.1.109/1.mpg/track1;seq=9200;rtptime=214793785,url=rtsp://192.168.1.109/1.mpg/track2;seq=12770;rtptime=31721 
+
+(开始传输流媒体...)
+
+
+
+
+第0篇参考资料
+简析LIVE555中的延时队列
+    最近在看LIVE555的源码，感觉其中的延时队列写的不错，于是就总结一下。
+    首先描述一下LIVE555中的延时队列的设计理念。首先，如下图，A,B,C分别为时间轴上的三个事件点，而head表示当前时间点。
+
+    假如我们要描述一个事件发生的时间，可以有两种方法：一种方法直接描述事件发生的绝对时间；另一种方法则是可以描述和另一事件发生的相对时间。而LIVE555中采用的就是后者。在LIVE555中，首先将所有的事件点以发生时间的先后进行排序，然后每个事件对应的时间都是相对于前一事件发生的时间差。比如B事件中存储的时间就是A事件触发后，再去触发B事件所需要的时间。这样，我们每次去查询这个队列中是否有事件被触发的时候，就只需要查询整个队列中的第一个事件就可以了。
+     然后就是LIVE555中的实现方法了。整个延时队列是用DelayQueue这个类实现的，而它的基类DelayQueueEntry就是用来描述每个事件节点的。在DelayQueueEntry中的主要成员有以下几个：fDelayTimeRemaining表示的就是与前一事件之间的时间差；fNext和fPrev就是指向时间轴上的下一个事件和前一个事件的指针；ftoken表示当前节点的标识；handleTimeout就是事件超时后的处理方法。
+     而DelayQueue类里描述的则是具体的实现方法。首先是一些对这个队列进行的基本操作：addEntry实现的是在队列中增加事件节点；removeEntry实现的是在队列中删除某事件节点；updateEntry实现的则是更新某事件的触发时间；而findEntryByToken则是根据节点的标识查找相应的事件。在此类中最常用的方法应该是synchronize，它实现的就是将整个事件队列和当前系统时间进行同步，检测有无事件已经被触发，如果触发并调用handleAlarm方法对相应事件进行处理。而属性fLastSyncTime表示的就是上次同步的系统时间，其实一般情况下，方法synchronize的实现方法其实就是简单地把队列上第一个事件节点存储的时间差减去当前系统时间和上次同步时间的差。
+     基本的实现方法应该就这些，如果大家对这个延时队列感兴趣的话，可以去阅读LIVE555的源码。

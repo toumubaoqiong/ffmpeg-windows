@@ -1,0 +1,244 @@
+对于live555的服务器端：
+1.一个资源对应一个唯一的ServerMediaSession
+2.一个服务器端有一个资源HashTable------fServerMediaSessions
+2.1	分析：HashTable这是UsageEnvironment库中的一个接口类，但是它的部分接口的实现
+	是在BasicUsageEnvironment库中，因为它的作用要通过它的派生类BasicHashTable来实现。
+	2.1.1Medium是liveMedia库中的基类，任何的对象都是基于该类的派生，
+		它有如下的成员：
+	class Medium 
+	{
+	private:
+  		friend class MediaLookupTable;
+  		UsageEnvironment& fEnviron;				//类的环境
+  		char fMediumName[mediumNameMaxLen];		//派生类的名字
+  		TaskToken fNextTask;					//任务
+	};
+	其中的MediaLookupTable非常重要，通过它可以找到相应的Medium类
+	class MediaLookupTable
+	{
+	private:
+    	UsageEnvironment &fEnv;
+    	HashTable *fTable;
+    	unsigned fNameGenerator;
+	};
+	可以看到在MediaLookupTable和ServerMediaSession中都存在一个HashTable的成员，
+	但是他们的用途是不一样的，
+	（一）在MediaLookupTable中的HashTable是为了查找Medium
+	（二）在ServerMediaSession中的HashTable是为了查找资料文件
+	现在我们来分析一下HashTable的类是如何实现的：
+	class BasicHashTable
+	{
+	private:
+  		TableEntry** fBuckets;  // pointer to bucket array
+  		TableEntry* fStaticBuckets[SMALL_HASH_TABLE_SIZE]; // used for small tables
+  		unsigned fNumBuckets; 	//fStaticBuckets数组的成员数量
+  		unsigned fNumEntries;	//成员的总数
+  		unsigned fRebuildSize; 	//成员超过设定的数量后，fStaticBuckets增加的倍数大小 		
+  		unsigned fDownShift; 	//用于获取KEY, 仅用于STRING_HASH_KEYS
+  		unsigned fMask;			//用于获取KEY，使用于STRING_HASH_KEYS和ONE_WORD_HASH_KEYS
+  		int fKeyType;			//类型,两种类型STRING_HASH_KEYS和ONE_WORD_HASH_KEYS
+	};
+	这个类的实现是比较简单的，直接就是一个列表list数组，然后形成一个HashTable;
+	
+	
+2.2 RTSPServer的分析：
+	class RTSPServer public Medium
+	{
+	private:
+  		friend class RTSPClientSession;
+  		friend class ServerMediaSessionIterator;
+  		int fRTSPServerSocket;								//RTSP服务器端口
+  		Port fRTSPServerPort;								//RTSP服务器端口数字
+  		int fHTTPServerSocket; 								//HTTP服务器端口
+  		// for optional RTSP-over-HTTP tunneling
+  		Port fHTTPServerPort; 								//HTTP服务器端口数字
+  		// ditto
+  		HashTable* fClientSessionsForHTTPTunneling; 		//HTTP的client列表
+  		// ditto (maps 'session cookie' strings to "RTSPClientSession"s)
+  		UserAuthenticationDatabase* fAuthDB;				//管理资源访问权限
+  		unsigned fReclamationTestSeconds;					//RTSP协议交互的超时时间
+  		HashTable* fServerMediaSessions;					//服务器端资源的表
+	};
+	首先其成员函数
+	static int setUpOurSocket(UsageEnvironment& env, Port& ourPort);
+	用于生成服务器端口，其中包括建立网络服务器端口的一些必须步骤：
+	一、初始化网络WSAStartup()
+	二、建立socket()
+	三、端口设置setsockopt()
+	四、端口绑定bind()
+	五、设置为非阻塞模式
+	六、增加端口发送缓存
+	七、监听listen()
+	接着：RTSPServer::RTSPServer(UsageEnvironment &env,
+                       int ourSocket, Port ourPort,
+                       UserAuthenticationDatabase *authDatabase,
+                       unsigned reclamationTestSeconds)
+  	构造函数生成RTSPServer对象，实际上在RTSPServer中可以设置两个端口
+  	来监听客户端的链接,  一个是RTSP端口，一般是554, 8554,
+  	还有一个是HTTP端口，有如下可能为：80, 8080, 8000, 两个端口可以同时
+  	存在。两者分别有自己的链接处理函数：
+  	static void incomingConnectionHandlerRTSP();
+  	static void incomingConnectionHandlerHTTP();
+  	
+  	
+2.2TaskScheduler------BasicTaskScheduler0-------BasicTaskScheduler分析
+	class TaskScheduler 
+	{
+	protected:
+  		TaskScheduler(); // abstract base class
+	};
+	这是一个接口类，其功能需要通过它的派生类来实现，它的接口主要是设置定时器和
+	事件回调函数。
+	class BasicTaskScheduler0: public TaskScheduler 
+	{
+	protected:
+  		// To implement delayed operations:
+  		DelayQueue fDelayQueue;				//延时队列
+
+  		// To implement background reads:
+  		HandlerSet* fHandlers;				//socket回调函数的列表
+  		int fLastHandledSocketNum;			//最后一个socket事件对应的socket
+
+		//以下是处理其他时间的数据，可以扩展自己的时间类型
+  		// To implement event triggers:
+  		EventTriggerId fTriggersAwaitingHandling, fLastUsedTriggerMask; // implemented as 32-bit bitmaps
+  		TaskFunc* fTriggeredEventHandlers[MAX_NUM_EVENT_TRIGGERS];
+  		void* fTriggeredEventClientDatas[MAX_NUM_EVENT_TRIGGERS];
+  		unsigned fLastUsedTriggerNum; // in the range [0,MAX_NUM_EVENT_TRIGGERS)
+	};
+	BasicTaskScheduler0是TaskScheduler第一层派生列，它有一个重要的成员DelayQueue fDelayQueue;
+	这是实现定时器功能的成员。
+	class BasicTaskScheduler: public BasicTaskScheduler0
+	{
+	protected:
+  		// To implement background operations:
+  		int fMaxNumSockets;		//最大的socket端口号
+  		fd_set fReadSet;		//检测socket等类似的fd有没有读的变化
+  		fd_set fWriteSet;		//检测socket等类似的fd有没有写的变化
+  		fd_set fExceptionSet;	//检测socket等类似的fd有没有异常的变化
+	};
+	
+	2.2.1分析DelayQueue
+	上面没有分析深入的东西，下面将分析DelayQueue fDelayQueue，采用的方式是至下往上：
+	最底层：
+	struct timeval 
+	{
+        long    tv_sec;         //seconds				//秒
+        long    tv_usec;        //and microseconds		//微秒
+	};
+	这是操作系统的Socket库的结构体，它是整个定时器的基础，在它的基础上封装了一个函数，
+	提供timeval的所有操作：
+	class Timeval 
+	{
+	public:
+		//各种比较、赋值操作
+	private:
+  		struct timeval fTv;
+	};
+	在封装一个极其简单的类：
+	class DelayInterval: public Timeval 
+	{
+	public:
+  		DelayInterval(time_base_seconds seconds, time_base_seconds useconds)
+    		:Timeval(seconds, useconds) {}
+	}
+	这个类只是为了生成定时器时间。
+	在类class DelayQueueEntry 
+	{
+	private:
+  		friend class DelayQueue;
+  		DelayQueueEntry* fNext;
+  		DelayQueueEntry* fPrev;
+  		DelayInterval fDeltaTimeRemaining;//定时器时间
+
+  		long fToken;			 //
+  		static long tokenCounter;//计算定时器事件产生的次数
+	}
+	在DelayQueue中实现的原理：
+	一主要的数据结构是一个从小到大排列的列表，结构如下：
+	struct tmpList
+	{
+		DelayQueueEntry* fNext;
+  		DelayQueueEntry* fPrev;
+  		DelayInterval fDeltaTimeRemaining;
+  	};
+  	其定时器的数据记录在DelayInterval fDeltaTimeRemaining;中，
+  	但是它的数据是以前一个定时器时间与自己的定时器时间的差的形式来记录的。
+  	这里的从大到小，并不是这个差值的从小到大，而是定时器时间的从小到大。
+  	所以，DelayQueue的主要数据结构是一个定时器时间从短到长的列表，
+  	每个成员记录的定时器数值是与前一个定时器时间的差值。
+  	其中两个核心的函数是：
+  	一、void DelayQueue::synchronize();用当前的时间对队列的时间进行同步，
+  	因为是差值记录，所以同步的时候，首先计算当前的时间与上次同步的时间的
+  	差值，然后将对列表从头开始同步，直到这个差值为0。
+  	二、void addEntry(DelayQueueEntry* newEntry);添加一个定时器到队列中，
+  	但是首先应该调用synchronize();同步一下，接着就是选择合适的位置，
+  	要遵守队列的排列顺序，然后才插入进去。
+  	2.2.2分析HandlerSet
+  	class HandlerSet 
+  	{
+	private:
+  		friend class HandlerIterator;
+  		HandlerDescriptor fHandlers;
+	};
+  	HandlerSet类主要是提供socket回调函数的处理，其核心的功能是
+  	在HandlerDescriptor fHandlers;实现：
+  	class HandlerDescriptor 
+  	{
+	private:
+  		// Descriptors are linked together in a doubly-linked list:
+  		friend class HandlerSet;
+  		friend class HandlerIterator;
+  		HandlerDescriptor* fNextHandler;
+  		HandlerDescriptor* fPrevHandler;
+  	public:
+  		int socketNum;		//socket端口
+  		int conditionSet;	//socket端口属性，读、写等
+  		TaskScheduler::BackgroundHandlerProc* handlerProc;	//回调函数
+  		void* clientData;	//回调函数的输入数据
+	};
+	HandlerDescriptor类实际上就是一个列表，提供查找、增加和删除等功能。
+	
+2.3BasicUsageEnvironment------BasicUsageEnvironment0------UsageEnvironment
+	本次分析采用自下往上的分析方法：
+	class UsageEnvironment 
+	{
+	public:
+    	void* liveMediaPriv;		//用于查找类的名字
+  		void* groupsockPriv;		//用于查找socket		
+  	private:	
+  		TaskScheduler& fScheduler;	//任务调度器
+	};
+	UsageEnvironment是一个接口类，但是它有三个成员，重要功能都在里面，任务调度，
+	类名和socket查询等
+	class BasicUsageEnvironment0: public UsageEnvironment 
+	{
+	private:
+		//主要是打印消息
+    	char fResultMsgBuffer[RESULT_MSG_BUFFER_MAX];
+  		unsigned fCurBufferSize;	
+  		unsigned fBufferMaxSize;
+	};
+	BasicUsageEnvironment0只是答应消息而已
+	class BasicUsageEnvironment: public BasicUsageEnvironment0 
+	{
+	public:
+  		static BasicUsageEnvironment* createNew(TaskScheduler& taskScheduler);
+	protected:
+  		BasicUsageEnvironment(TaskScheduler& taskScheduler);
+      	// called only by "createNew()" (or subclass constructors)
+   	};
+   	BasicUsageEnvironment只是建立环境而已
+	总体上来说, BasicUsageEnvironment类是非常简单的，它只是为了装载TaskScheduler类而已，
+	另外在具体的应用中呈现相关的查找作用
+	
+	
+2.4Medium类 	
+	Medium类是liveMedia库的基石，是全体的抽象类，特别要注意其中的Source, Sink的区别，
+	Source是产生数据的对象， 比如通过RTP读取数据，这一类型的基类是:MediaSource
+	Sink是消费数据的对象，比如接受到的数据存储到文件，这个文件就是一个Sink, 这一类型的基类是：MediaSink,
+	一次的数据的接受和发送要经过多个Source和Sink.
+	对于Source的类图层次为如下:(以后类的层次关系会用画图来表示)
+	
+	但是现在的服务器资源类让我感觉很困惑：
+   	
