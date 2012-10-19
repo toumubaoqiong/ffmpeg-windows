@@ -1,0 +1,377 @@
+/* src/config.h.in.  Generated from configure.ac by autoheader.  */
+
+/* Define if building universal (internal helper macro) */
+#undef AC_APPLE_UNIVERSAL_BUILD
+
+/* Specifies ABI version for audio capture */
+#undef AUDIO_CAPTURE_ABI_VERSION
+
+/* Specifies ABI version for audio playback */
+#undef AUDIO_PLAYBACK_ABI_VERSION
+
+/* Autoconf result */
+#undef AUTOCONF_RESULT
+
+/* Build drivers as a standalone libraries */
+#undef BUILD_LIBRARIES
+
+/* Specifies ABI version for shared objects */
+#undef COMMON_LIB_ABI_VERSION
+
+/* We build with debug messages */
+#undef DEBUG
+
+/* Current GIT revision */
+#undef GIT_VERSION
+
+/* We have 32-bit Linux */
+#undef HAVE_32B_LINUX
+
+/* We have 64-bit Linux */
+#undef HAVE_64B_LINUX
+
+/* Build with ALSA support */
+#undef HAVE_ALSA
+
+/* Define to 1 if you have the <AudioUnit/AudioUnit.h> header file. */
+#undef HAVE_AUDIOUNIT_AUDIOUNIT_H
+
+/* Define to 1 if you have the <Carbon/Carbon.h> header file. */
+#undef HAVE_CARBON_CARBON_H
+
+/* Build with CoreAudio support */
+#undef HAVE_COREAUDIO
+
+/* CUDA is present on the system */
+#undef HAVE_CUDA
+
+/* Build with DeckLink support */
+#undef HAVE_DECKLINK
+
+/* Build with DELTACAST support */
+#undef HAVE_DELTACAST
+
+/* Build with DVS support */
+#undef HAVE_DVS
+
+/* We have libdv */
+#undef HAVE_DV_CODEC
+
+/* Build with DXT_GLSL support */
+#undef HAVE_DXT_GLSL
+
+/* Build with support for FastDXT */
+#undef HAVE_FASTDXT
+
+/* We have Firewire DV */
+#undef HAVE_FIREWIRE_DV_FREEBSD
+
+/* Build with OpenGL output */
+#undef HAVE_GL
+
+/* Define to 1 if you have the <GLUT/glut.h> header file. */
+#undef HAVE_GLUT_GLUT_H
+
+/* Define to 1 if you have the <GL/glut.h> header file. */
+#undef HAVE_GL_GLUT_H
+
+/* Define to 1 if you have the <GL/glx.h> header file. */
+#undef HAVE_GL_GLX_H
+
+/* Define to 1 if you have the <GL/gl.h> header file. */
+#undef HAVE_GL_GL_H
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#undef HAVE_INTTYPES_H
+
+/* Enable IPv6 support */
+#undef HAVE_IPv6
+
+/* Build with JACK support */
+#undef HAVE_JACK
+
+/* Build with JACK transport support */
+#undef HAVE_JACK_TRANS
+
+/* Build with JPEG support */
+#undef HAVE_JPEG
+
+/* Define to 1 if you have the `asound' library (-lasound). */
+#undef HAVE_LIBASOUND
+
+/* Define to 1 if you have the `GL' library (-lGL). */
+#undef HAVE_LIBGL
+
+/* Define to 1 if you have the `GLEW' library (-lGLEW). */
+#undef HAVE_LIBGLEW
+
+/* Define to 1 if you have the `gpujpeg' library (-lgpujpeg). */
+#undef HAVE_LIBGPUJPEG
+
+/* Define to 1 if you have the `portaudio' library (-lportaudio). */
+#undef HAVE_LIBPORTAUDIO
+
+/* Define to 1 if you have the `rt' library (-lrt). */
+#undef HAVE_LIBRT
+
+/* Define to 1 if you have the `SDL_mixer' library (-lSDL_mixer). */
+#undef HAVE_LIBSDL_MIXER
+
+/* Define to 1 if you have the `SDL_ttf' library (-lSDL_ttf). */
+#undef HAVE_LIBSDL_TTF
+
+/* Define to 1 if you have the `videomasterhd' library (-lvideomasterhd). */
+#undef HAVE_LIBVIDEOMASTERHD
+
+/* Define to 1 if you have the `X11' library (-lX11). */
+#undef HAVE_LIBX11
+
+/* Build with Linsys support */
+#undef HAVE_LINSYS
+
+/* This is Linux */
+#undef HAVE_LINUX
+
+/* This is Mac X OS */
+#undef HAVE_MACOSX
+
+/* This is Mac X OS Leopard */
+#undef HAVE_MACOSX_LEOPARD
+
+/* Define to 1 if you have the <memory.h> header file. */
+#undef HAVE_MEMORY_H
+
+/* Define to 1 if you have the <OpenGL/glext.h> header file. */
+#undef HAVE_OPENGL_GLEXT_H
+
+/* Define to 1 if you have the <OpenGL/gl.h> header file. */
+#undef HAVE_OPENGL_GL_H
+
+/* Build with Portaudio support */
+#undef HAVE_PORTAUDIO
+
+/* Define to 1 if you have the <QuickTime/QuickTime.h> header file. */
+#undef HAVE_QUICKTIME_QUICKTIME_H
+
+/* Build with SAGE support */
+#undef HAVE_SAGE
+
+/* Build scale postprocessor */
+#undef HAVE_SCALE
+
+/* Define to 1 if you have the `sched_setscheduler' function. */
+#undef HAVE_SCHED_SETSCHEDULER
+
+/* Build with screen_capture */
+#undef HAVE_SCREEN_CAP
+
+/* Build with SDL support */
+#undef HAVE_SDL
+
+/* We have SDL version >= 1.21 */
+#undef HAVE_SDL_1210
+
+/* Define to 1 if you have the <SDL/SDL.h> header file. */
+#undef HAVE_SDL_SDL_H
+
+/* Build with SPEEX support */
+#undef HAVE_SPEEX
+
+/* Define to 1 if stdbool.h conforms to C99. */
+#undef HAVE_STDBOOL_H
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#undef HAVE_STDINT_H
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#undef HAVE_STDLIB_H
+
+/* Define to 1 if you have the <strings.h> header file. */
+#undef HAVE_STRINGS_H
+
+/* Define to 1 if you have the <string.h> header file. */
+#undef HAVE_STRING_H
+
+/* Define to 1 if you have the <stropts.h> header file. */
+#undef HAVE_STROPTS_H
+
+/* Define to 1 if you have the <sys/filio.h> header file. */
+#undef HAVE_SYS_FILIO_H
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#undef HAVE_SYS_STAT_H
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#undef HAVE_SYS_TYPES_H
+
+/* Define to 1 if you have the <sys/wait.h> header file. */
+#undef HAVE_SYS_WAIT_H
+
+/* Build with testcard2 capture */
+#undef HAVE_TESTCARD
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#undef HAVE_UNISTD_H
+
+/* Define to 1 if you have the <VideoMasterHD_Core.h> header file. */
+#undef HAVE_VIDEOMASTERHD_CORE_H
+
+/* Define to 1 if you have the <VideoMasterHD_Sdi_Audio.h> header file. */
+#undef HAVE_VIDEOMASTERHD_SDI_AUDIO_H
+
+/* Define to 1 if you have the <VideoMasterHD_Sdi.h> header file. */
+#undef HAVE_VIDEOMASTERHD_SDI_H
+
+/* Define to 1 if the system has the type `_Bool'. */
+#undef HAVE__BOOL
+
+/* OS kernel major version */
+#undef OS_VERSION_MAJOR
+
+/* OS kernel minor version */
+#undef OS_VERSION_MINOR
+
+/* Name of package */
+#undef PACKAGE
+
+/* Define to the address where bug reports for this package should be sent. */
+#undef PACKAGE_BUGREPORT
+
+/* Define to the full name of this package. */
+#undef PACKAGE_NAME
+
+/* Define to the full name and version of this package. */
+#undef PACKAGE_STRING
+
+/* Define to the one symbol short name of this package. */
+#undef PACKAGE_TARNAME
+
+/* Define to the home page for this package. */
+#undef PACKAGE_URL
+
+/* Define to the version of this package. */
+#undef PACKAGE_VERSION
+
+/* The size of `int *', as computed by sizeof. */
+#undef SIZEOF_INT_P
+
+/* Define to 1 if you have the ANSI C header files. */
+#undef STDC_HEADERS
+
+/* We want to use OpenGL pixel buffer objects */
+#undef USE_PBO_DXT_ENCODER
+
+/* We use RT priority */
+#undef USE_RT
+
+/* Version number of package */
+#undef VERSION
+
+/* Specifies ABI version for video capture devices */
+#undef VIDEO_CAPTURE_ABI_VERSION
+
+/* Specifies ABI version for video compression */
+#undef VIDEO_COMPRESS_ABI_VERSION
+
+/* Specifies ABI version for video decompression */
+#undef VIDEO_DECOMPRESS_ABI_VERSION
+
+/* Specifies ABI version for video displays */
+#undef VIDEO_DISPLAY_ABI_VERSION
+
+/* Specifies ABI version for video postprocess */
+#undef VO_PP_ABI_VERSION
+
+/* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
+   significant byte first (like Motorola and SPARC, unlike Intel). */
+#if defined AC_APPLE_UNIVERSAL_BUILD
+# if defined __BIG_ENDIAN__
+#  define WORDS_BIGENDIAN 1
+# endif
+#else
+# ifndef WORDS_BIGENDIAN
+#  undef WORDS_BIGENDIAN
+# endif
+#endif
+
+/* This is little endian system */
+#undef WORDS_SMALLENDIAN
+
+/* Define to 1 if the X Window System is missing or not being used. */
+#undef X_DISPLAY_MISSING
+
+/* Define to 1 if type `char' is unsigned and you are not using gcc.  */
+#ifndef __CHAR_UNSIGNED__
+# undef __CHAR_UNSIGNED__
+#endif
+
+/* Define to empty if `const' does not conform to ANSI C. */
+#undef const
+
+/* Define to `short' if <sys/types.h> does not define. */
+#undef int16_t
+
+/* Define to `long' if <sys/types.h> does not define. */
+#undef int32_t
+
+/* Define to `long long' if <sys/types.h> does not define. */
+#undef int64_t
+
+/* Define to `signed char' if <sys/types.h> does not define. */
+#undef int8_t
+
+/* Define to `unsigned int' if <sys/types.h> does not define. */
+#undef size_t
+
+/* Define to `unsigned short' if <sys/types.h> does not define. */
+#undef uint16_t
+
+/* Define to `unsigned int' if <sys/types.h> does not define. */
+#undef uint32_t
+
+/* Define to `unsigned char' if <sys/types.h> does not define. */
+#undef uint8_t
+
+
+#ifndef __cplusplus
+#ifdef HAVE_STDBOOL_H
+# include <stdbool.h>
+#else
+# ifndef HAVE__BOOL
+#  ifdef __cplusplus
+typedef bool _Bool;
+#  else
+#   define _Bool signed char
+#  endif
+# endif
+# define bool _Bool
+# define false 0
+# define true 1
+# define __bool_true_false_are_defined 1
+#endif
+#endif // ! defined __cplusplus
+
+
+
+/*
+ * Mac OS X Snow Leopard does not have posix_memalign
+ * so supplying a fake one (Macs allocate always aligned pointers
+ * to a 16 byte boundry.
+ */
+#if defined HAVE_MACOSX && OS_VERSION_MAJOR <= 9
+#include <errno.h>
+#include <stdlib.h>
+#ifndef POSIX_MEMALIGN
+#define POSIX_MEMALIGN
+static inline int posix_memalign(void **memptr, size_t alignment, size_t size);
+
+static inline int posix_memalign(void **memptr, size_t alignment, size_t size)
+{
+       if(!alignment || (alignment & (alignment - 1)) || alignment > 16) return EINVAL;
+       *memptr=malloc(size);
+       if(!*memptr) return ENOMEM;
+       return 0;
+}
+#endif // POSIX_MEMALIGN
+#endif // defined HAVE_MACOSX && OS_VERSION_MAJOR <= 9
+

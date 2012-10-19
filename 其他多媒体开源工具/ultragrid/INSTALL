@@ -1,0 +1,30 @@
+
+UltraGrid installation instructions
+
+   Copyright (c) 2005-2012 CESNET z.s.p.o.
+   Copyright (c) 2001-2004 University of Southern California 
+   Copyright (c) 2003-2004 University of Glasgow
+   Copyright (c) 2003 University of Sydney
+   Copyright (c) 1993-2001 University College London
+   Copyright (c) 1996 Internet Software Consortium
+   Copyright (c) 1993 Regents of the University of California
+   Copyright (c) 1993 Eric Young
+   Copyright (c) 1992 Xerox Corporation
+   Copyright (c) 1991-1992 RSA Data Security, Inc.
+   Copyright (c) 1991 Massachusetts Institute of Technology
+   Copyright (c) 1991-1998 Free Software Foundation, Inc.
+   All rights reserved.
+
+   This software is distributed under license, see the file COPYRIGHT for
+   full terms and conditions.
+
+Installation instructions
+  UltraGrid is compiled with following commands:
+  $ ./autogen.sh
+  $ make
+  And optionally:
+  $ make install
+
+  For further installation instructions please visit the following web-pages:
+  https://www.sitola.cz/igrid/index.php/UltraGrid
+

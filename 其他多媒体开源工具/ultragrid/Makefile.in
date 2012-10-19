@@ -1,0 +1,562 @@
+AR            = ar
+RANLIB        = ranlib
+CC            = @CC@
+CXX           = @CXX@
+QMAKE         = @QMAKE@
+LINKER        = @LINKER@
+CFLAGS        = -fPIC -g @DEFS@ @CFLAGS@ @X_CFLAGS@ -DPATH_PREFIX=@prefix@ -DLIB_DIR=@libdir@ -msse2
+CPPFLAGS      = @CPPFLAGS@
+CXXFLAGS      = -fPIC -g @DEFS@ @CXXFLAGS@ -DPATH_PREFIX=@prefix@ -DLIB_DIR=@libdir@ -Wno-multichar -Wno-deprecated -msse2
+NVCCFLAGS     = @NVCCFLAGS@ -Xcompiler -fPIC
+LDFLAGS      =  @LDFLAGS@
+LIBS         += @LIBS@ @JACK_TRANS_LIB@ @MATHLIBS@ @COREAUDIO_LIB@ \
+		@X_PRE_LIBS@ @X_LIBS@ @X_EXTRA_LIBS@ -lm -pthread
+INC           = -I. -Isrc -Itest @DVS_INC@ @DELTACAST_INC@ @FASTDXT_INC@ @QUICKTIME_INC@ @DECKLINK_INC@ @PORTAUDIO_INC@ \
+                @GL_INC@ @SAGE_INC@ @LINSYS_INC@ @JACK_TRANS_INC@ @JPEG_INC@ @COREAUDIO_INC@ @SPEEX_INC@
+DECKLINK_PATH = @DECKLINK_PATH@
+TARGET        = bin/uv
+PERF          = bin/uv_perf
+BUNDLE        = uv.app
+DXT_GLSL_CFLAGS = @DXT_GLSL_CFLAGS@
+NVCC	      = @NVCC@
+
+DOCS 	      = COPYRIGHT README REPORTING-BUGS
+
+GUI_TARGET    = @GUI_TARGET@
+
+PREFIX = @prefix@
+prefix = $(PREFIX)
+exec_prefix = @exec_prefix@
+INSTALL = @INSTALL@
+bindir = @bindir@
+libdir = @libdir@
+datadir = @datadir@
+docdir = @docdir@/ultragrid/
+datarootdir = @datarootdir@
+uv_datadir = @datadir@/ultragrid/
+
+HEADERS	      = @HEADERS@
+
+OBJS	      = @OBJS@ \
+	        src/bitstream.o \
+		src/debug.o \
+		src/perf.o \
+		src/ntp.o \
+		src/pdb.o \
+		src/tile.o \
+		src/tv.o \
+		src/transmit.o \
+		src/tfrc.o \
+		src/rtp/ldgm.o \
+		src/rtp/pbuf.o \
+		src/rtp/decoders.o \
+		src/rtp/audio_decoders.o \
+		src/rtp/ptime.o \
+		src/rtp/net_udp.o \
+		src/rtp/ll.o \
+		src/rtp/rtp.o \
+		src/rtp/rtp_callback.o \
+		src/audio/audio.o \
+		src/audio/audio_capture.o \
+		src/audio/audio_playback.o \
+		src/audio/capture/none.o \
+		src/audio/capture/sdi.o \
+		src/audio/capture/testcard.o \
+		src/audio/playback/none.o \
+		src/audio/playback/sdi.o \
+		src/audio/utils.o \
+		@COREAUDIO_OBJ@ \
+		@JACK_TRANS_OBJ@ \
+		@SPEEX_OBJ@ \
+		src/compat/platform_semaphore.o \
+		src/compat/platform_time.o \
+		src/crypto/crypt_aes.o \
+		src/crypto/crypt_aes_impl.o \
+		src/crypto/crypt_des.o \
+		src/crypto/md5.o \
+		src/crypto/random.o \
+		src/ihdtv/ihdtv.o \
+		src/utils/fs_lock.o \
+		src/utils/packet_counter.o \
+		src/utils/ring_buffer.o \
+		src/video.o \
+		src/video_codec.o \
+		src/video_capture.o \
+		src/video_capture/null.o \
+		src/video_capture/aggregate.o \
+		src/video_compress.o \
+		src/video_compress/none.o \
+		src/video_decompress.o \
+		src/video_decompress/null.o \
+		src/video_display.o \
+		src/video_display/aggregate.o \
+		src/video_display/null.o \
+		src/vo_postprocess.o \
+		src/vo_postprocess/3d-interlaced.o \
+		src/vo_postprocess/double-framerate.o \
+		src/vo_postprocess/split.o \
+		@X_OBJ@ \
+		ldgm-coding/ldgm-session-cpu.o \
+		ldgm-coding/ldgm-session.o \
+		ldgm-coding/tanner.o \
+		ldgm-coding/matrix-gen/matrix-generator.o \
+		ldgm-coding/matrix-gen/ldpc-matrix.o \
+		@LIB_SUPPORT_OBJ@ \
+
+LIB_COMMON = \
+		src/audio/utils.o \
+		src/compat/platform_semaphore.o \
+		src/crypto/random.o \
+		src/debug.o \
+		src/tile.o \
+		src/tv.o \
+		src/utils/fs_lock.o \
+		src/utils/ring_buffer.o \
+		src/video.o \
+		src/video_codec.o \
+
+
+# -------------------------------------------------------------------------------------------------
+all: $(TARGET) $(GUI_TARGET) modules ag-plugins configure-messages
+
+modules: @LIB_TARGETS@
+
+$(TARGET): $(OBJS) src/main.o $(HEADERS)
+	@if [ ! -d bin ]; then mkdir bin; fi
+	$(LINKER) $(LDFLAGS) $(OBJS) src/main.o $(LIBS) -o $(TARGET)
+
+.c.o:
+	$(CC) $(CFLAGS) $(INC) -c $< -o $@
+
+.cpp.o:
+	$(CXX) $(CXXFLAGS) $(INC) -c $< -o $@
+
+# Set suffix for CUDA files
+.SUFFIXES: .cu
+
+# Pattern rule for compiling CUDA files
+%.cu.o: %.cu
+	$(NVCC) $(NVCCFLAGS) -c $< -o $@
+
+src/audio/resample.o:
+	$(CC) $(CFLAGS) $(INC) -DEXPORT="" -DRANDOM_PREFIX=speex -DFLOATING_POINT -DOUTSIDE_SPEEX -I. -I speex-1.2rc1/include/speex -Iinclude -fvisibility=hidden  -c speex-1.2rc1/libspeex/resample.c  -fPIC -DPIC -o $@
+
+src/audio/preprocess.o:
+	$(CC) $(CFLAGS) $(INC) -DEXPORT="" -DRANDOM_PREFIX=speex -DFLOATING_POINT -DOUTSIDE_SPEEX -I. -I speex-1.2rc1/include/speex -Iinclude -fvisibility=hidden  -c speex-1.2rc1/libspeex/preprocess.c  -fPIC -DPIC -o $@
+
+src/audio/filterbank.o:
+	$(CC) $(CFLAGS) $(INC) -DEXPORT="" -DRANDOM_PREFIX=speex -DFLOATING_POINT -DOUTSIDE_SPEEX -I. -I speex-1.2rc1/include/speex -I/include -fvisibility=hidden  -c speex-1.2rc1/libspeex/filterbank.c  -fPIC -DPIC -o $@
+
+src/audio/fftwrap.o:
+	$(CC) $(CFLAGS) $(INC) -DUSE_SMALLFT -DEXPORT="" -DRANDOM_PREFIX=speex -DFLOATING_POINT -DOUTSIDE_SPEEX -I. -I speex-1.2rc1/include/speex -Iinclude -fvisibility=hidden  -c speex-1.2rc1/libspeex/fftwrap.c  -fPIC -DPIC -o $@
+
+src/audio/smallft.o:
+	$(CC) $(CFLAGS) $(INC) -DEXPORT="" -DRANDOM_PREFIX=speex -DFLOATING_POINT -DOUTSIDE_SPEEX -I. -I speex-1.2rc1/include/speex -Iinclude -fvisibility=hidden  -c speex-1.2rc1/libspeex/smallft.c  -fPIC -DPIC -o $@
+
+src/audio/mdf.o:
+	$(CC) $(CFLAGS) $(INC) -DEXPORT="" -DRANDOM_PREFIX=speex -DFLOATING_POINT -DOUTSIDE_SPEEX -I. -I speex-1.2rc1/include/speex -Iinclude -fvisibility=hidden  -c speex-1.2rc1/libspeex/mdf.c  -fPIC -DPIC -o $@
+
+
+src/mac_gl_common.o: src/mac_gl_common.m src/mac_gl_common.h
+	$(CC) $(CFLAGS) $(INC) -x objective-c -c $< -o $@
+
+src/utils/autorelease_pool.o: src/utils/autorelease_pool.m src/utils/autorelease_pool.h
+	$(CC) $(CFLAGS) $(INC) -x objective-c -c $< -o $@
+
+src/utils/packet_counter.o: src/utils/packet_counter.cpp src/utils/packet_counter.h
+	$(CXX) $(CXXFLAGS) $(INC) -c $< -o $@
+
+src/video_capture/DeckLinkAPIDispatch.o: $(DECKLINK_PATH)/DeckLinkAPIDispatch.cpp
+	$(CXX) $(CXXFLAGS) -c $(INC) -o src/video_capture/DeckLinkAPIDispatch.o $(DECKLINK_PATH)/DeckLinkAPIDispatch.cpp
+
+src/video_display/sage_wrapper.o: src/video_display/sage_wrapper.cxx
+	$(CXX) $(CXXFLAGS) -c $(INC) -DQUANTA_USE_PTHREADS -DQUANTA_THREAD_SAFE -DGLSL_YUV -o src/video_display/sage_wrapper.o src/video_display/sage_wrapper.cxx
+
+dxt_compress/dxt_encoder.o: dxt_compress/dxt_encoder.c dxt_compress/dxt_glsl.h
+	$(CC) $(CFLAGS) $(INC) $(DXT_GLSL_CFLAGS) $< -c -o $@
+
+dxt_compress/dxt_decoder.o: dxt_compress/dxt_decoder.c dxt_compress/dxt_glsl.h
+	$(CC) $(CFLAGS) $(INC) $(DXT_GLSL_CFLAGS) $< -c -o $@
+
+dxt_compress/dxt_glsl.h:dxt_compress/compress_vp.glsl \
+		dxt_compress/compress_dxt1_fp.glsl dxt_compress/compress_dxt5ycocg_fp.glsl \
+		dxt_compress/display_fp.glsl dxt_compress/display_dxt5ycocg_fp.glsl \
+		dxt_compress/yuv422_to_yuv444.glsl dxt_compress/display_dxt1_yuv_fp.glsl \
+		dxt_compress/rgba_to_yuv422.glsl
+	echo "/**" > $@
+	echo " * GLSL source codes for DXT compressions" >> $@
+	echo " *" >> $@
+	echo " * @author Martin Srom" >> $@
+	echo " */" >> $@
+	# Write vp_compress
+	echo "static const char vp_compress[] = " >> $@
+	printf "\"#version 140\\\n\"\n" >> $@
+	printf "\"#define GL_legacy 0\\\n\"\n" >> $@
+	cat dxt_compress/compress_vp.glsl | sed 's/\(.*\)/    \"\1\\n\"/' >> $@
+	echo ";" >> $@
+	# Write vp_compress_legacy
+	echo "static const char vp_compress_legacy[] = " >> $@
+	printf "\"#define GL_legacy 1\\\n\"\n" >> $@
+	cat dxt_compress/compress_vp.glsl | sed 's/\(.*\)/    \"\1\\n\"/' >> $@
+	echo ";" >> $@
+	# Write fp_compress_dxt1
+	echo "static const char fp_compress_dxt1[] = " >> $@
+	printf "\"#version 140\\\n\"\n" >> $@
+	printf "\"#define GL_legacy 0\\\n\"\n" >> $@
+	printf "\"#define FORMAT_YUV 0\\\n\"\n" >> $@
+	cat  dxt_compress/compress_dxt1_fp.glsl | sed 's/\(.*\)/    \"\1\\n\"/' >> $@
+	echo ";" >> $@
+	# Write fp_compress_dxt1 yuv
+	echo "static const char fp_compress_dxt1_yuv[] = " >> $@
+	printf "\"#version 140\\\n\"\n" >> $@
+	printf "\"#define GL_legacy 0\\\n\"\n" >> $@
+	printf "\"#define FORMAT_YUV 1\\\n\"\n" >> $@
+	cat  dxt_compress/compress_dxt1_fp.glsl | sed 's/\(.*\)/    \"\1\\n\"/' >> $@
+	echo ";" >> $@
+	# Write fp_compress_dxt1_legacy
+	echo "static const char fp_compress_dxt1_legacy[] = " >> $@
+	printf "\"#define GL_legacy 1\\\n\"\n" >> $@
+	printf "\"#define FORMAT_YUV 0\\\n\"\n" >> $@
+	cat  dxt_compress/compress_dxt1_fp.glsl | sed 's/\(.*\)/    \"\1\\n\"/' >> $@
+	echo ";" >> $@
+	# Write fp_compress_dxt1_legacy
+	echo "static const char fp_compress_dxt1_yuv_legacy[] = " >> $@
+	printf "\"#define GL_legacy 1\\\n\"\n" >> $@
+	printf "\"#define FORMAT_YUV 1\\\n\"\n" >> $@
+	cat  dxt_compress/compress_dxt1_fp.glsl | sed 's/\(.*\)/    \"\1\\n\"/' >> $@
+	echo ";" >> $@
+	# Write fp_compress_dxt5ycocg
+	echo "static const char fp_compress_dxt5ycocg[] = " >> $@
+	printf "\"#version 140\\\n\"\n" >> $@
+	printf "\"#define GL_legacy 0\\\n\"\n" >> $@
+	printf "\"#define FORMAT_YUV 0\\\n\"\n" >> $@
+	cat dxt_compress/compress_dxt5ycocg_fp.glsl | sed 's/\(.*\)/    \"\1\\n\"/' >> $@
+	echo ";" >> $@
+	# Write fp_compress_dxt5ycocg yuv
+	echo "static const char fp_compress_dxt5ycocg_yuv[] = " >> $@
+	printf "\"#version 140\\\n\"\n" >> $@
+	printf "\"#define GL_legacy 0\\\n\"\n" >> $@
+	printf "\"#define FORMAT_YUV 1\\\n\"\n" >> $@
+	cat dxt_compress/compress_dxt5ycocg_fp.glsl | sed 's/\(.*\)/    \"\1\\n\"/' >> $@
+	echo ";" >> $@
+	# Write fp_compress_dxt5ycocg_legacy
+	echo "static const char fp_compress_dxt5ycocg_legacy[] = " >> $@
+	printf "\"#define GL_legacy 1\\\n\"\n" >> $@
+	printf "\"#define FORMAT_YUV 0\\\n\"\n" >> $@
+	cat dxt_compress/compress_dxt5ycocg_fp.glsl | sed 's/\(.*\)/    \"\1\\n\"/' >> $@
+	echo ";" >> $@
+	# Write fp_compress_dxt5ycocg_legacy yuv
+	echo "static const char fp_compress_dxt5ycocg_yuv_legacy[] = " >> $@
+	printf "\"#define GL_legacy 1\\\n\"\n" >> $@
+	printf "\"#define FORMAT_YUV 1\\\n\"\n" >> $@
+	cat dxt_compress/compress_dxt5ycocg_fp.glsl | sed 's/\(.*\)/    \"\1\\n\"/' >> $@
+	echo ";" >> $@
+	# Write fp_display_dxt1
+	echo "static const char fp_display[] = " >> $@
+	printf "\"#version 140\\\n\"\n" >> $@
+	printf "\"#define GL_legacy 0\\\n\"\n" >> $@
+	cat dxt_compress/display_fp.glsl | sed 's/\(.*\)/    \"\1\\n\"/' >> $@
+	echo ";" >> $@
+	# Write fp_display_dxt1 legacy
+	echo "static const char fp_display_legacy[] = " >> $@
+	printf "\"#define GL_legacy 1\\\n\"\n" >> $@
+	cat dxt_compress/display_fp.glsl | sed 's/\(.*\)/    \"\1\\n\"/' >> $@
+	echo ";" >> $@
+	# Write fp_display_dxt5ycocg
+	echo "static const char fp_display_dxt5ycocg[] = " >> $@
+	printf "\"#version 140\\\n\"\n" >> $@
+	printf "\"#define GL_legacy 0\\\n\"\n" >> $@
+	cat dxt_compress/display_dxt5ycocg_fp.glsl | sed 's/\(.*\)/    \"\1\\n\"/' >> $@
+	echo ";" >> $@
+	# Write fp_display_dxt5ycocg (legacy)
+	echo "static const char fp_display_dxt5ycocg_legacy[] = " >> $@
+	printf "\"#define GL_legacy 1\\\n\"\n" >> $@
+	cat dxt_compress/display_dxt5ycocg_fp.glsl | sed 's/\(.*\)/    \"\1\\n\"/' >> $@
+	echo ";" >> $@
+	# yuv 422 to yuv 444 shader
+	echo "static const char fp_yuv422_to_yuv_444[] = " >> $@
+	printf "\"#version 140\\\n\"\n" >> $@
+	printf "\"#define GL_legacy 0\\\n\"\n" >> $@
+	cat dxt_compress/yuv422_to_yuv444.glsl | sed 's/\(.*\)/    \"\1\\n\"/' >> $@
+	echo ";" >> $@
+	# yuv 422 to yuv 444 shader (legacy)
+	echo "static const char fp_yuv422_to_yuv_444_legacy[] = " >> $@
+	printf "\"#define GL_legacy 1\\\n\"\n" >> $@
+	cat dxt_compress/yuv422_to_yuv444.glsl | sed 's/\(.*\)/    \"\1\\n\"/' >> $@
+	echo ";" >> $@
+	# display YUV dxt1
+	echo "static const char fp_display_dxt1_yuv[] = " >> $@
+	printf "\"#version 140\\\n\"\n" >> $@
+	printf "\"#define GL_legacy 0\\\n\"\n" >> $@
+	cat dxt_compress/display_dxt1_yuv_fp.glsl | sed 's/\(.*\)/    \"\1\\n\"/' >> $@
+	echo ";" >> $@
+	# display YUV dxt1 (legacy)
+	echo "static const char fp_display_dxt1_yuv_legacy[] = " >> $@
+	printf "\"#define GL_legacy 1\\\n\"\n" >> $@
+	cat dxt_compress/display_dxt1_yuv_fp.glsl | sed 's/\(.*\)/    \"\1\\n\"/' >> $@
+	echo ";" >> $@
+	# rgba to yuv 422 shader
+	echo "static const char fp_display_rgba_to_yuv422[] = " >> $@
+	printf "\"#version 140\\\n\"\n" >> $@
+	printf "\"#define GL_legacy 0\\\n\"\n" >> $@
+	cat dxt_compress/rgba_to_yuv422.glsl | sed 's/\(.*\)/    \"\1\\n\"/' >> $@
+	echo ";" >> $@
+	# rgba to yuv 422 shader legacy
+	echo "static const char fp_display_rgba_to_yuv422_legacy[] = " >> $@
+	printf "\"#define GL_legacy 1\\\n\"\n" >> $@
+	cat dxt_compress/rgba_to_yuv422.glsl | sed 's/\(.*\)/    \"\1\\n\"/' >> $@
+	echo ";" >> $@
+	# rgba to yuv 422 vertex
+	#echo "static const char vp_display_rgba_to_yuv422[] = " >> $@
+	#cat dxt_compress/rgba_to_yuv422_vp.glsl | sed 's/\(.*\)/    \"\1\\n\"/' >> $@
+	#echo ";" >> $@
+
+
+libgpujpeg/libgpujpeg.a:
+	CUDA_INSTALL_PATH=@CUDA_PATH@ make -j -C libgpujpeg/
+
+@FASTDXT_PATH@/libdxt.a:
+	make -j -C @FASTDXT_PATH@/ lib
+
+gui/QT/uv-qt:
+	cd gui/QT; $(QMAKE) ; make -j; cd -
+
+# -------------------------------------------------------------------------------------------------
+TEST_OBJS = test/test_bitstream.o \
+	    test/test_aes.o \
+	    test/test_des.o \
+	    test/test_md5.o \
+	    test/test_random.o \
+	    test/test_video_display.o \
+	    test/test_video_capture.o \
+	    test/test_tv.o \
+	    test/test_net_udp.o \
+	    test/test_rtp.o \
+	    test/run_tests.o
+
+test/run_tests: $(TEST_OBJS) $(OBJS)
+	$(LINKER) $(CFLAGS) $(TEST_OBJS) $(OBJS) $(LIBS) -o test/run_tests
+
+suggest-tests:
+	@echo ""
+	@echo "*** Now type \"make tests\" to run the test suite"
+	@echo ""
+
+configure-messages:
+	@echo -e "@POST_COMPILE_MSG@"
+
+
+tests: test/run_tests
+	@test/run_tests
+
+# -------------------------------------------------------------------------------------------------
+ag-plugins: ag_plugin/uvReceiverService.zip ag_plugin/uvSenderService.zip
+
+AG_PLUGIN_TX_SCRIPTS = ag_plugin/uvSenderService.py \
+                       ag_plugin/uvSenderService.svc \
+                       ag_plugin/uvSenderService.manifest
+
+ag_plugin/uvSenderService.zip: $(AG_PLUGIN_TX_SCRIPTS) $(TARGET)
+	@echo "Creating AccessGrid plugin: uvSenderService.zip"
+	@rm  -f ag_plugin/uvSenderService.zip
+	@zip -j ag_plugin/uvSenderService.zip $(AG_PLUGIN_TX_SCRIPTS) $(TARGET)
+
+AG_PLUGIN_RX_SCRIPTS = ag_plugin/uvReceiverService.py \
+                       ag_plugin/uvReceiverService.svc \
+                       ag_plugin/uvReceiverService.manifest
+
+ag_plugin/uvReceiverService.zip: $(AG_PLUGIN_RX_SCRIPTS) $(TARGET)
+	@echo "Creating AccessGrid plugin: uvReceiverService.zip"
+	@rm  -f ag_plugin/uvReceiverService.zip
+	@zip -j ag_plugin/uvReceiverService.zip $(AG_PLUGIN_RX_SCRIPTS) $(TARGET)
+
+# -------------------------------------------------------------------------------------------------
+clean:
+	-rm -f $(OBJS) $(HEADERS) src/main.o $(TARGET) src/version.h
+	-rm -f $(TEST_OBJS) test/run_tests
+	-rm -f ag_plugin/uvReceiverService.zip ag_plugin/uvSenderService.zip
+	-rm -rf $(BUNDLE)
+	-rm -rf $(PERF) src/uv_perf.o
+	-rm -rf @LIB_OBJS@ @LIB_TARGETS@ @LIB_HEADERS@
+	make -C libgpujpeg/ clean
+	make -C @FASTDXT_PATH@/ clean
+	if [ -f "gui/QT/Makefile" ]; then make -C gui/QT/ clean; fi
+
+distclean: clean
+	-rm -f Makefile config.status config.cache config.log src/config.h tags
+
+etags:
+	etags src/*.[ch] src/*/*.[ch]
+
+ctags:
+	ctags src/*.[ch] src/*/*.[ch]
+
+release:
+	cvs tag release-`cat VERSION | sed "s/\./-/g"`
+
+bundle-nolib: all
+	mkdir -p $(BUNDLE)/Contents/MacOS
+	cp $(TARGET) $(BUNDLE)/Contents/MacOS/
+	cp -r data/MacOS-bundle-template/* $(BUNDLE)/
+
+bundle: bundle-nolib
+	@if `which dylibbundler`; then \
+		dylibbundler -od -b -x $(BUNDLE)/Contents/MacOS/uv -d $(BUNDLE)/Contents/libs/; \
+		if ( otool -L $(BUNDLE)/Contents/MacOS/uv | grep -q @rpath/libcudart.dylib ) ; then install_name_tool -change @rpath/libcudart.dylib @executable_path/../libs/libcudart.dylib $(BUNDLE)/Contents/MacOS/uv ; fi ; \
+		if ( otool -L $(BUNDLE)/Contents/MacOS/uv | grep -q @rpath/libnpp.dylib ) ; then install_name_tool -change @rpath/libnpp.dylib @executable_path/../libs/libnpp.dylib $(BUNDLE)/Contents/MacOS/uv ; fi ; \
+		if ( otool -L $(BUNDLE)/Contents/libs/libnpp.dylib | grep -q @rpath/libcudart.dylib ) ; then install_name_tool -change @rpath/libcudart.dylib @executable_path/../libs/libcudart.dylib $(BUNDLE)/Contents/libs/libnpp.dylib ; fi ; \
+	else \
+		echo "WARNING: Cannot find dylibbundler. We cannot put libraries into a bundle so it probably won't be portable."; \
+	fi
+
+	#echo -n "UltraGrid" > $(BUNDLE)/Contents/PkgInfo
+
+perf: src/tv.o src/crypto/random.o
+	$(CC) $(CFLAGS) -DPERF src/uv_perf.c src/crypto/random.o src/tv.o -o $(PERF)
+
+@COMMON_LIB_TARGET@: $(LIB_COMMON)
+	mkdir -p lib/ultragrid
+	$(LINKER) $(LDFLAGS) -shared -Wl,-soname,ug_lib_common.so.@lib_common_abi_version@ $(LIB_COMMON) -o $@
+
+sdl: @SDL_LIB_TARGET@
+gl: @GL_LIB_TARGET@
+testcard: @TESTCARD_LIB_TARGET@
+testcard2: @TESTCARD2_LIB_TARGET@
+decklink: @DECKLINK_PLAY_LIB_TARGET@ @DECKLINK_CAP_LIB_TARGET@ @DECKLINK_SOUND_PLAY_LIB_TARGET@
+quad: @QUAD_LIB_TARGET@
+deltacast: @DELTACAST_DISP_LIB_TARGET@ @DELTACAST_CAP_LIB_TARGET@
+dvs: @DVS_CAP_LIB_TARGET@ @DVS_DISP_LIB_TARGET@
+screen: @SCREEN_CAP_LIB_TARGET@
+sage: @SAGE_LIB_TARGET@
+fastdxt: @FASTDXT_LIB_TARGET@
+rtdxt: @RTDXT_COMPRESS_LIB_TARGET@ @RTDXT_DECOMPRESS_LIB_TARGET@
+jpeg: @JPEG_DECOMPRESS_LIB_TARGET@ @JPEG_COMPRESS_LIB_TARGET@
+alsa: @ALSA_PLAY_LIB_TARGET@ @ALSA_CAP_LIB_TARGET@
+portaudio: @PORTAUDIO_PLAY_LIB_TARGET@ @PORTAUDIO_CAP_LIB_TARGET@
+jack: @JACK_CAP_LIB_TARGET@ @JACK_PLAY_LIB_TARGET@
+scale: @SCALE_LIB_TARGET@
+
+@SDL_LIB_TARGET@: @SDL_OBJ@
+	mkdir -p lib/ultragrid
+	$(LINKER) $(LDFLAGS) -shared -Wl,-soname,display_sdl.so.@video_display_abi_version@ $^ @SDL_LIBS@ -o $@
+
+@GL_LIB_TARGET@: @GL_OBJ@
+	mkdir -p lib/ultragrid
+	$(LINKER) $(LDFLAGS) -shared -Wl,-soname,display_gl.so.@video_display_abi_version@ $^ @GL_LIB@ -o $@
+
+@TESTCARD_LIB_TARGET@: @TESTCARD_OBJ@
+	mkdir -p lib/ultragrid
+	$(LINKER) $(LDFLAGS) -shared -Wl,-soname,vidcap_testcard.so.@video_capture_abi_version@ $^ @TESTCARD_LIB@ -o $@
+
+@TESTCARD2_LIB_TARGET@: @TESTCARD2_OBJ@
+	mkdir -p lib/ultragrid
+	$(LINKER) $(LDFLAGS) -shared -Wl,-soname,vidcap_testcard2.so.@video_capture_abi_version@ $^ @TESTCARD2_LIB@ -o $@
+
+@DECKLINK_CAP_LIB_TARGET@: @DECKLINK_COMMON@ @DECKLINK_CAP_OBJ@
+	mkdir -p lib/ultragrid
+	$(LINKER) $(LDFLAGS) -shared -Wl,-soname,vidcap_decklink.so.@video_capture_abi_version@ $^ @DECKLINK_LIB@ -o $@
+
+@DECKLINK_DISP_LIB_TARGET@: src/video_capture/decklink.o @DECKLINK_COMMON@ @DECKLINK_DISP_OBJ@
+	mkdir -p lib/ultragrid
+	$(LINKER) $(LDFLAGS) -shared -Wl,-soname,display_decklink.so.@video_display_abi_version@ $^ @DECKLINK_LIB@ -o $@
+
+@LINSYS_LIB_TARGET@: @LINSYS_OBJ@
+	mkdir -p lib/ultragrid
+	$(LINKER) $(LDFLAGS) -shared -Wl,-soname,vidcap_linsys.so.@video_display_abi_version@ $^ -o $@
+
+@DELTACAST_CAP_LIB_TARGET@: @DELTACAST_DISP_OBJ@ @DELTACAST_CAP_OBJ@
+	mkdir -p lib/ultragrid
+	$(LINKER) $(LDFLAGS) -shared -Wl,-soname,vidcap_deltacast.so.@video_capture_abi_version@ $^ @DELTACAST_LIB@ -o $@
+
+@DELTACAST_DISP_LIB_TARGET@: @DELTACAST_DISP_OBJ@
+	mkdir -p lib/ultragrid
+	$(LINKER) $(LDFLAGS) -shared -Wl,-soname,display_deltacast.so.@video_display_abi_version@ $^ @DELTACAST_LIB@ -o $@
+
+@DVS_CAP_LIB_TARGET@: src/video_display/dvs.o @DVS_CAP_OBJ@
+	mkdir -p lib/ultragrid
+	$(LINKER) $(LDFLAGS) -shared -Wl,-soname,vidcap_dvs.so.@video_capture_abi_version@ $^ @DVS_LIB@ -o $@
+
+@DVS_DISP_LIB_TARGET@: @DVS_DISP_OBJ@
+	mkdir -p lib/ultragrid
+	$(LINKER) $(LDFLAGS) -shared -Wl,-soname,display_dvs.so.@video_display_abi_version@ $^ @DVS_LIB@ -o $@
+
+@SCREEN_CAP_LIB_TARGET@: @SCREEN_CAP_OBJ@
+	mkdir -p lib/ultragrid
+	$(LINKER) $(LDFLAGS) -shared -Wl,-soname,vidcap_screen.so.@video_capture_abi_version@ $^ @SCREEN_CAP_LIB@ -o $@
+
+@SAGE_LIB_TARGET@: @SAGE_OBJ@
+	mkdir -p lib/ultragrid
+	$(LINKER) $(LDFLAGS) -shared -Wl,-soname,display_sage.so.@video_display_abi_version@ $^ @SAGE_LIB@ -o $@
+
+@FASTDXT_LIB_TARGET@: @FASTDXT_OBJ@
+	mkdir -p lib/ultragrid
+	$(LINKER) $(LDFLAGS) -shared -Wl,-soname,vcompress_fastdxt.so.@video_compress_abi_version@ $^ @FASTDXT_LIB@ -o $@
+
+@RTDXT_COMPRESS_LIB_TARGET@: @GL_COMMON_OBJ@ @RTDXT_COMMON_OBJ@ @RTDXT_COMPRESS_OBJ@ @RTDXT_COMMON_HEADERS@
+	mkdir -p lib/ultragrid
+	$(LINKER) $(LDFLAGS) -shared -Wl,-soname,vcompress_rtdxt.so.@video_compress_abi_version@ @GL_COMMON_OBJ@ @RTDXT_COMMON_OBJ@ @RTDXT_COMPRESS_OBJ@ @RTDXT_LIB@ -o $@
+
+@JPEG_COMPRESS_LIB_TARGET@: @JPEG_COMPRESS_OBJ@ @JPEG_COMMON_OBJ@
+	mkdir -p lib/ultragrid
+	$(LINKER) $(LDFLAGS) -shared -Wl,-soname,vcompress_jpeg.so.@video_compress_abi_version@ $^ @JPEG_LIB@ -o $@
+
+@RTDXT_DECOMPRESS_LIB_TARGET@: @GL_COMMON_OBJ@ @RTDXT_COMMON_OBJ@ @RTDXT_DECOMPRESS_OBJ@ @RTDXT_COMMON_HEADERS@
+	mkdir -p lib/ultragrid
+	$(LINKER) $(LDFLAGS) -shared -Wl,-soname,vdecompress_rtdxt.so.@video_decompress_abi_version@  @GL_COMMON_OBJ@ @RTDXT_COMMON_OBJ@ @RTDXT_DECOMPRESS_OBJ@ @RTDXT_LIB@ -o $@
+
+@JPEG_DECOMPRESS_LIB_TARGET@: @JPEG_DECOMPRESS_OBJ@ @JPEG_COMMON_OBJ@
+	mkdir -p lib/ultragrid
+	$(LINKER) $(LDFLAGS) -shared -Wl,-soname,vdecompress_jpeg.so.@video_decompress_abi_version@ $^ @JPEG_LIB@ -o $@
+
+@ALSA_PLAY_LIB_TARGET@: @ALSA_PLAY_OBJ@
+	mkdir -p lib/ultragrid
+	$(LINKER) $(LDFLAGS) -shared -Wl,-soname,aplay_alsa.so.@audio_playback_abi_version@ $^ @ALSA_LIB@ -o $@
+
+@ALSA_CAP_LIB_TARGET@: @ALSA_CAP_OBJ@ src/audio/playback/alsa.o
+	mkdir -p lib/ultragrid
+	$(LINKER) $(LDFLAGS) -shared -Wl,-soname,acap_alsa.so.@audio_capture_abi_version@ $^ @ALSA_LIB@ -o $@
+
+@PORTAUDIO_PLAY_LIB_TARGET@: @PORTAUDIO_PLAY_OBJ@
+	mkdir -p lib/ultragrid
+	$(LINKER) $(LDFLAGS) -shared -Wl,-soname,aplay_portaudio.so.@audio_playback_abi_version@ $^ @PORTAUDIO_LIB@ -o $@
+
+@PORTAUDIO_CAP_LIB_TARGET@: @PORTAUDIO_CAP_OBJ@
+	mkdir -p lib/ultragrid
+	$(LINKER) $(LDFLAGS) -shared -Wl,-soname,acap_portaudio.so.@audio_capture_abi_version@ $^ @PORTAUDIO_LIB@ -o $@
+
+@JACK_CAP_LIB_TARGET@: @JACK_CAP_OBJ@ @SPEEX_OBJ@
+	mkdir -p lib/ultragrid
+	$(LINKER) $(LDFLAGS) -shared -Wl,-soname,acap_jack.so.@audio_capture_abi_version@ $^ @JACK_LIB@ -o $@
+
+@JACK_PLAY_LIB_TARGET@: @JACK_PLAY_OBJ@ @SPEEX_OBJ@
+	mkdir -p lib/ultragrid
+	$(LINKER) $(LDFLAGS) -shared -Wl,-soname,aplay_jack.so.@audio_playback_abi_version@ $^ @JACK_LIB@ -o $@
+
+@DECKLINK_SOUND_PLAY_LIB_TARGET@: @DECKLINK_SOUND_PLAY_OBJ@ @DECKLINK_COMMON@
+	mkdir -p lib/ultragrid
+	$(LINKER) $(LDFLAGS) -shared -Wl,-soname,aplay_jack.so.@audio_playback_abi_version@ $^ @DECKLINK_LIB@ -o $@
+
+@SCALE_LIB_TARGET@: @SCALE_OBJ@ @GL_COMMON_OBJ@
+	mkdir -p lib/ultragrid
+	$(LINKER) $(LDFLAGS) -shared -Wl,-soname,vo_pp_scale.so.@vo_pp_abi_version@ $^ @SCALE_LIB@ -o $@
+
+install: all
+	$(INSTALL) -d -m 755 $(DESTDIR)/$(bindir)
+	$(INSTALL) -m 755 bin/uv $(DESTDIR)/$(bindir)
+	if [ -f "$(GUI_TARGET)" ]; then $(INSTALL) -m 755 $(GUI_TARGET) $(DESTDIR)/$(bindir); fi
+	if [ -n "@LIB_TARGETS@" ]; then\
+		$(INSTALL) -d -m 755 $(DESTDIR)/$(libdir)/ultragrid;\
+		$(INSTALL) -m 644 @LIB_TARGETS@ $(DESTDIR)/$(libdir)/ultragrid/;\
+	fi
+	$(INSTALL) -d -m 755 $(DESTDIR)/$(uv_datadir)
+	$(INSTALL) -m 755 data/ultragrid-bugreport-collect.sh $(DESTDIR)/$(uv_datadir)
+	$(INSTALL) -d -m 755 $(DESTDIR)/$(docdir)
+	$(INSTALL) -m 644 $(DOCS) $(DESTDIR)/$(docdir)
+
+uninstall:
+	$(RM) $(DESTDIR)/$(bindir)/uv
+	if [ -n "@LIB_TARGETS@" ]; then for n in @LIB_TARGETS@; do $(RM) $(DESTDIR)/$(libdir)/ultragrid/`basename $$n`; done; fi
+	$(RM) $(DESTDIR)/$(uv_datadir)/ultragrid-bugreport-collect.sh
+	for n in $(DOCS); do $(RM) $(DESTDIR)/$(docdir)/$$n; done; fi
+	$(RM) $(DESTDIR)/$(uv_datadir)/ultragrid-bugreport-collect.sh
+	if [ -f "$(GUI_TARGET)" ]; then $(RM) $(DESTDIR)/$(bindir)/`basename $(GUI_TARGET)`; fi
