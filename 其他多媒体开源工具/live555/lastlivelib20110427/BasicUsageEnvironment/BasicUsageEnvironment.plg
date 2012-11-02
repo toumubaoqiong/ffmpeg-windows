@@ -1,0 +1,45 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: BasicUsageEnvironment - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP809.tmp" with contents
+[
+/nologo /MLd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /Fp"Debug/BasicUsageEnvironment.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"D:\workdata\live\lastlivelib20110427\BasicUsageEnvironment\BasicHashTable.cpp"
+"D:\workdata\live\lastlivelib20110427\BasicUsageEnvironment\BasicTaskScheduler.cpp"
+"D:\workdata\live\lastlivelib20110427\BasicUsageEnvironment\BasicTaskScheduler0.cpp"
+"D:\workdata\live\lastlivelib20110427\BasicUsageEnvironment\BasicUsageEnvironment.cpp"
+"D:\workdata\live\lastlivelib20110427\BasicUsageEnvironment\BasicUsageEnvironment0.cpp"
+"D:\workdata\live\lastlivelib20110427\BasicUsageEnvironment\DelayQueue.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP809.tmp" 
+Creating command line "link.exe -lib /nologo /out:"Debug\BasicUsageEnvironment.lib"  .\Debug\BasicHashTable.obj .\Debug\BasicTaskScheduler.obj .\Debug\BasicTaskScheduler0.obj .\Debug\BasicUsageEnvironment.obj .\Debug\BasicUsageEnvironment0.obj .\Debug\DelayQueue.obj "
+<h3>Output Window</h3>
+Compiling...
+BasicHashTable.cpp
+BasicTaskScheduler.cpp
+BasicTaskScheduler0.cpp
+BasicUsageEnvironment.cpp
+BasicUsageEnvironment0.cpp
+DelayQueue.cpp
+Creating library...
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP80A.bat" with contents
+[
+@echo off
+copy .\Debug\BasicUsageEnvironment.lib ..\debug\BasicUsageEnvironment.lib
+]
+Creating command line "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP80A.bat"
+
+已复制         1 个文件。
+
+
+
+<h3>Results</h3>
+BasicUsageEnvironment.lib - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

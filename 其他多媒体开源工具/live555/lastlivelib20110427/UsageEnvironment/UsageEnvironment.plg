@@ -1,0 +1,39 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: UsageEnvironment - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP818.tmp" with contents
+[
+/nologo /MLd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /Fp"Debug/UsageEnvironment.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"D:\workdata\live\lastlivelib20110427\UsageEnvironment\HashTable.cpp"
+"D:\workdata\live\lastlivelib20110427\UsageEnvironment\strDup.cpp"
+"D:\workdata\live\lastlivelib20110427\UsageEnvironment\UsageEnvironment.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP818.tmp" 
+Creating command line "link.exe -lib /nologo /out:"Debug\UsageEnvironment.lib"  .\Debug\HashTable.obj .\Debug\strDup.obj .\Debug\UsageEnvironment.obj "
+<h3>Output Window</h3>
+Compiling...
+HashTable.cpp
+strDup.cpp
+UsageEnvironment.cpp
+Creating library...
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP819.bat" with contents
+[
+@echo off
+copy .\Debug\UsageEnvironment.lib ..\debug\UsageEnvironment.lib
+]
+Creating command line "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP819.bat"
+
+已复制         1 个文件。
+
+
+
+<h3>Results</h3>
+UsageEnvironment.lib - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>
