@@ -1,0 +1,6 @@
+1.本工程直接在VC6.0下打开就可以全部正常编译，Debug/Release都可以，
+其中注意的一点是：如果安装了C:\Program Files\Microsoft Platform SDK for Windows XP SP2\include，请不要在VC6.0中包含这个目录，不然会出现windowsocket的库错误。
+
+2.在Debug模式下添加Movies文件夹和在Movies中添加相应的视频文件，即可用VLC测试视频的播放，具体的目录如下：
+DarwinStreamingSrvr5.5.5-Source\WinNTSupport\Debug\Movies
+其中代码运行的调试入口是：void TaskThread::Entry()
