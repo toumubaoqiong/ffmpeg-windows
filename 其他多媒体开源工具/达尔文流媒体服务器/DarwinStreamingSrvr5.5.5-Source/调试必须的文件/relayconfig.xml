@@ -1,0 +1,6 @@
+<RELAY_CONFIG>
+	<OBJECT TYPE="relay" NAME="***qtssDefaultRelay***">
+		<OBJECT CLASS="source" TYPE="announced_source">
+		</OBJECT>
+	</OBJECT>
+</RELAY_CONFIG>
