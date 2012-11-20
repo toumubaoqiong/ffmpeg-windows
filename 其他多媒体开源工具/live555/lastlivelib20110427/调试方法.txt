@@ -1,0 +1,2 @@
+1.在调试mediaServer或者testLiveFFmpeg1的过程中遇到一个小问题，
+服务器端找不到媒体文件，这个需要在Dedug中设置work dir才行。
